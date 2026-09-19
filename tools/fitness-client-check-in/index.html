@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Fitness Client Check-In Tracker for Coaches | Glenerds</title>
+<meta name="description" content="Free client check-in tracker for online fitness coaches: log weekly check-ins, track weight and adherence, compare weeks. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/fitness-client-check-in/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Fitness Client Check-In Tracker for Coaches | Glenerds">
+<meta property="og:description" content="Free client check-in tracker for online fitness coaches: log weekly check-ins, track weight and adherence, compare weeks. Offline, no account.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/fitness-client-check-in/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this really free for coaching use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes \u2014 log check-ins for one client with every feature, free forever. No account, no trial clock, no upsell inside the tool."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is client data stored?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In your browser\u2019s local storage on your device. Nothing is uploaded, which keeps client data private by default \u2014 but export backups regularly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I track more than weight?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each entry holds weight, waist, adherence, and freeform notes. That covers the core weekly check-in for most physique and lifestyle coaching."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What about photos and measurements?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The free tracker keeps the essentials. Photo protocols, full measurement sets, macros-vs-actuals, and side-by-side week comparisons live in the paid version."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if I coach multiple clients?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Then you need FitnessCheckIn: a full client roster with per-client histories, photo checklists, measurement tracking, week-over-week comparisons, and one-click feedback drafts \u2014 $29 one-time, offline, yours forever."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Client Check-In Tracker</p>
+<main>
+<div class="hero">
+<h1>Free Fitness Client Check-In Tracker &mdash; Log Weekly Check-Ins Offline</h1>
+<p class="lead">Need a simple client check-in log that works offline? Record each client's weekly check-in &mdash;
+weight, measurements, macros vs. actuals, adherence score &mdash; and compare any two weeks side by side,
+without a coaching-platform subscription. One client, fully featured, free forever; your clients need no
+account and install nothing.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Fitness client check-in tracker">
+
+<label>Client name: <input type="text" id="fc-name" placeholder="e.g. Alex" aria-label="Client name"></label>
+<label>Date: <input type="date" id="fc-date" aria-label="Check-in date"></label><br>
+<label>Weight (lb): <input type="number" id="fc-wt" step="0.1" min="0" style="width:6rem" aria-label="Weight"></label>
+<label>Waist (in): <input type="number" id="fc-waist" step="0.1" min="0" style="width:6rem" aria-label="Waist"></label>
+<label>Adherence 1&ndash;10: <input type="number" id="fc-adh" min="1" max="10" step="1" style="width:4rem" aria-label="Adherence score"></label><br>
+<label>Notes: <input type="text" id="fc-notes" placeholder="Training, nutrition, sleep..." style="width:60%" aria-label="Check-in notes"></label>
+<button id="fc-add">Log check-in</button>
+<button id="fc-export" class="plain">Export backup</button>
+<table><thead><tr><th>Date</th><th>Weight</th><th>&Delta; lb</th><th>Waist</th><th>Adherence</th><th>Notes</th><th></th></tr></thead>
+<tbody id="fc-rows"></tbody></table>
+<p class="small">Entries are stored in this browser only. The free tracker covers one client &mdash; see below for a full roster.</p>
+</div>
+<p class="small" style="margin-top:1rem"><strong>Coaching more than one client?</strong> <a href="../../products/online-fitness-coach-check-in-tracker/index.html">FitnessCheckIn</a> holds your whole roster with weekly histories.</p>
+<p class="small">Free tool by <a href="../../index.html">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+
+<div class="toolbox">
+<h3 style="margin-top:0">Free vs. full version</h3>
+<table><tbody>
+<tr><td><strong>Free tool on this page</strong></td><td><strong>FitnessCheckIn &mdash; $29 one-time</strong></td></tr>
+<tr><td>One client</td><td>Full client roster with per-client weekly history</td></tr>
+<tr><td>Manual week comparison</td><td>Side-by-side week comparison with trend spotting</td></tr>
+<tr><td>Basic logging</td><td>Photo protocol checklists and one-click client feedback message drafts</td></tr>
+</tbody></table>
+<p><a class="btn" href="https://glenerds.gumroad.com/l/online-fitness-coach-check-in-tracker">Get FitnessCheckIn &mdash; $29 one-time</a></p>
+<p class="small">No subscription. No account. The full tool runs offline in your browser, just like this free one.</p>
+</div>
+
+
+
+
+
+<script>
+(function(){
+  var KEY='glenerds-fitcheck-v1';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{name:'',entries:[]}}catch(e){return{name:'',entries:[]}}}
+  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  var data=load();
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function render(){
+    var tb=document.getElementById('fc-rows');tb.innerHTML='';
+    var sorted=data.entries.slice().sort(function(a,b){return a.date<b.date?-1:1;});
+    sorted.forEach(function(e,i){
+      var prev=sorted[i-1],d=e.wt&&prev&&prev.wt?(e.wt-prev.wt):null;
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td>'+esc(e.date)+'</td><td>'+(e.wt||'&mdash;')+'</td><td>'
+        +(d===null?'&mdash;':(d>0?'+':'')+d.toFixed(1))+'</td><td>'+(e.waist||'&mdash;')
+        +'</td><td>'+(e.adh||'&mdash;')+'</td><td>'+esc(e.notes||'')+'</td>';
+      var td=document.createElement('td');var b=document.createElement('button');
+      b.textContent='Remove';b.className='plain';
+      b.onclick=function(){data.entries=data.entries.filter(function(x){return x.id!==e.id;});save(data);render();};
+      td.appendChild(b);tr.appendChild(td);tb.appendChild(tr);
+    });
+    document.getElementById('fc-name').value=data.name||'';
+  }
+  document.getElementById('fc-add').onclick=function(){
+    var dt=document.getElementById('fc-date').value;
+    if(!dt){alert('Pick a date for the check-in.');return;}
+    data.name=document.getElementById('fc-name').value.trim();
+    data.entries.push({id:'e'+Date.now().toString(36),date:dt,
+      wt:parseFloat(document.getElementById('fc-wt').value)||null,
+      waist:parseFloat(document.getElementById('fc-waist').value)||null,
+      adh:parseInt(document.getElementById('fc-adh').value,10)||null,
+      notes:document.getElementById('fc-notes').value.trim()});
+    ['fc-wt','fc-waist','fc-adh','fc-notes'].forEach(function(id){document.getElementById(id).value='';});
+    save(data);render();
+  };
+  document.getElementById('fc-export').onclick=function(){
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='client-checkins-backup.json';a.click();};
+  document.getElementById('fc-date').value=new Date().toISOString().slice(0,10);
+  render();
+})();
+</script>
+<section class="block prose">
+
+<h2 class="sec">How to run a weekly check-in</h2>
+<p>Once a week, log the client&rsquo;s weight, waist measurement, adherence score, and a few notes on
+training and nutrition. The table keeps every week in order and shows the weight change from the
+previous check-in, so trends are visible without digging through old messages. One honest data point
+per week beats a perfect spreadsheet you never open &mdash; consistency of logging matters more than
+precision of any single number.</p>
+<h2 class="sec">What to actually look at</h2>
+<p>Ignore any single week&rsquo;s weight; watch the 3&ndash;4 week trend. Weight flat while waist
+shrinks usually means recomposition is working. Adherence scores below 7 two weeks running mean the
+plan &mdash; not the client &mdash; needs adjusting. Notes are where the coaching happens: sleep,
+stress, and travel explain more variance than most coaches admit. Keep the notes short and factual
+and they become a goldmine at month three.</p>
+<h2 class="sec">Worked example</h2>
+<p>Log Maya's check-ins: week 1 at 172 lb with 7/10 adherence, week 4 at 168 lb with 9/10. The side-by-side
+comparison shows the trend in seconds &mdash; weight down 4 lb as adherence climbed &mdash; with no digging
+through four weeks of chat history to find the numbers.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>Is this really free for coaching use?</dt>
+<dd>Yes &mdash; log check-ins for one client with every feature, free forever. No account, no trial
+clock, no upsell inside the tool.</dd>
+<dt>Where is client data stored?</dt>
+<dd>In your browser&rsquo;s local storage on your device. Nothing is uploaded, which keeps client
+data private by default &mdash; but export backups regularly.</dd>
+<dt>Can I track more than weight?</dt>
+<dd>Each entry holds weight, waist, adherence, and freeform notes. That covers the core weekly
+check-in for most physique and lifestyle coaching.</dd>
+<dt>What about photos and measurements?</dt>
+<dd>The free tracker keeps the essentials. Photo protocols, full measurement sets, macros-vs-actuals,
+and side-by-side week comparisons live in the paid version.</dd>
+<dt>What if I coach multiple clients?</dt>
+<dd>Then you need <strong>FitnessCheckIn</strong>: a full client roster with per-client histories,
+photo checklists, measurement tracking, week-over-week comparisons, and one-click feedback drafts
+&mdash; $29 one-time, offline, yours forever.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>FitnessCheckIn &mdash; $29 one-time</h3><p>A full client roster with weekly histories, photo protocols, and one-click feedback drafts.</p><a class="btn" href="../../products/online-fitness-coach-check-in-tracker/index.html">Learn more</a></div>
+<div class="card"><h3>Free Offline Habit Tracker</h3><p>Daily adherence habits are what move check-ins; track them free.</p><a class="btn" href="../habit-tracker/index.html">Open the free tool</a></div>
+<div class="card"><h3>Trainerize / TrueCoach Alternative</h3><p>An honest comparison: when the one-time offline tool wins, and when the subscription alternative is the better call.</p><a class="btn" href="../../alternatives/trainerize-truecoach-alternative/index.html">Read the comparison</a></div>
+</div>
+</section>
+
+
+<div class="cta-band">
+<h2>Need the full version?</h2>
+<p><strong>FitnessCheckIn</strong> is the offline client check-in tracker for online coaches: a full client roster, weekly histories, photo protocols, measurements, and one-click client feedback drafts. $29 one-time, no subscription.</p>
+<a class="btn" href="https://glenerds.gumroad.com/l/online-fitness-coach-check-in-tracker">Get FitnessCheckIn &mdash; $29 one-time</a>
+<p class="small"><a href="../../products/online-fitness-coach-check-in-tracker/index.html">Learn more about FitnessCheckIn</a>
+&middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

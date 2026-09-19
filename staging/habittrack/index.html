@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Habit Tracker — Build Streaks & Daily Habits Offline (HabitTrack)</title>
+<meta name="description" content="Free habit tracker with streaks, heatmap, rest days and partial credit. 100% offline, no account, no ads — your habits never leave your device.">
+<style>
+/* ==========================================================================
+   GLENERDS DESIGN SYSTEM v1.0
+   --------------------------------------------------------------------------
+   One shared visual language for every Glenerds microtool.
+   Designed to be INLINED into each app's <style> block — keeps the
+   single-file property: zero network requests, file:// safe, no webfonts,
+   no CDNs, no frameworks, no build step.
+
+   Usage: paste this whole file inside a STYLE element in <head>, then use
+   the g- classes below. See INTEGRATION.md for the theme-toggle wiring.
+
+   Conventions:
+   - Every class is prefixed `g-` to avoid collisions.
+   - Theming is driven by `data-theme="light|dark"` on <html>.
+   - First load with no saved choice honors prefers-color-scheme.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --g-bg:            #f8fafc;   /* page background: soft cool white */
+  --g-surface:       #ffffff;   /* cards, panels */
+  --g-surface-2:     #f1f5f9;   /* recessed / inset areas, tab track */
+  --g-border:        #e2e8f0;   /* hairlines */
+  --g-border-strong: #cbd5e1;
+
+  /* Text */
+  --g-text:          #0f172a;   /* slate-900 */
+  --g-text-soft:     #334155;   /* slate-700 — secondary text */
+  --g-muted:         #64748b;   /* slate-500 — captions, hints */
+
+  /* Accent: refined indigo */
+  --g-accent:        #4f46e5;   /* indigo-600 */
+  --g-accent-hover:  #4338ca;   /* indigo-700 */
+  --g-accent-ink:    #ffffff;   /* text on accent */
+  --g-accent-soft:   #eef2ff;   /* indigo-50 — tinted fills */
+  --g-accent-ring:   rgba(79, 70, 229, 0.22);
+
+  /* Status */
+  --g-good:          #047857;   /* emerald-700 */
+  --g-good-soft:     #ecfdf5;
+  --g-bad:           #b42318;
+  --g-bad-soft:      #fef3f2;
+  --g-warn:          #b45309;
+  --g-warn-soft:     #fffbeb;
+
+  /* Inputs */
+  --g-input-bg:      #ffffff;
+  --g-input-border:  #cbd5e1;
+  --g-code-bg:       #f1f5f9;
+
+  /* Shape + motion */
+  --g-radius-sm: 8px;
+  --g-radius-md: 12px;
+  --g-radius-lg: 16px;
+  --g-radius-pill: 999px;
+  --g-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --g-shadow-md: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --g-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --g-ease: 160ms ease;
+
+  /* Type */
+  --g-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, system-ui, sans-serif;
+  --g-mono: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Consolas,
+            "Liberation Mono", monospace;
+}
+
+/* Dark theme: genuinely designed — deep blue-black, lifted surfaces,
+   brightened indigo. Not an inversion of light. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --g-bg:            #0b0e14;
+  --g-surface:       #141926;
+  --g-surface-2:     #0f1420;
+  --g-border:        #232c40;
+  --g-border-strong: #33405c;
+
+  --g-text:          #f1f5f9;
+  --g-text-soft:     #cbd5e1;
+  --g-muted:         #94a3b8;
+
+  --g-accent:        #818cf8;   /* indigo-400 — readable on dark */
+  --g-accent-hover:  #a5b4fc;   /* indigo-300 */
+  --g-accent-ink:    #0b0e14;
+  --g-accent-soft:   rgba(129, 140, 248, 0.14);
+  --g-accent-ring:   rgba(129, 140, 248, 0.35);
+
+  --g-good:          #34d399;
+  --g-good-soft:     rgba(52, 211, 153, 0.12);
+  --g-bad:           #f87171;
+  --g-bad-soft:      rgba(248, 113, 113, 0.12);
+  --g-warn:          #fbbf24;
+  --g-warn-soft:     rgba(251, 191, 36, 0.12);
+
+  --g-input-bg:      #0f1420;
+  --g-input-border:  #33405c;
+  --g-code-bg:       #0f1420;
+
+  --g-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --g-shadow-md: 0 1px 3px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --g-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+
+.g-app {
+  font-family: var(--g-font);
+  background: var(--g-bg);
+  color: var(--g-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Page container */
+.g-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+/* ---------- 3. TYPOGRAPHY ---------- */
+.g-display  { font-size: 1.9rem;  font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;  margin: 0 0 8px; }
+.g-title    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;  margin: 0 0 6px; }
+.g-body     { font-size: 1rem;    color: var(--g-text-soft); margin: 0 0 12px; }
+.g-caption  { font-size: 0.85rem; color: var(--g-muted);    margin: 0; }
+.g-mono     { font-family: var(--g-mono); font-size: 0.9em; }
+
+/* ---------- 4. HEADER ---------- */
+.g-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 4px;
+}
+.g-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.g-brand-mark {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--g-accent);
+  color: var(--g-accent-ink);
+  font-weight: 800; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-sm);
+  user-select: none;
+}
+.g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
+.g-tagline { color: var(--g-muted); font-size: 0.92rem; margin: 6px 0 14px; max-width: 56ch; }
+
+/* Theme toggle */
+.g-theme-toggle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  border-radius: var(--g-radius-pill);
+  padding: 8px 14px;
+  font-size: 0.88rem; font-weight: 600; font-family: var(--g-font);
+  cursor: pointer;
+  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
+  white-space: nowrap;
+}
+.g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
+.g-theme-toggle:active { transform: scale(0.97); }
+
+/* ---------- 5. TABS (segmented control) ---------- */
+.g-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  background: var(--g-surface-2);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 4px;
+  margin: 14px 0;
+}
+.g-tab {
+  flex: 1 1 auto;
+  appearance: none;
+  border: 0; background: transparent;
+  color: var(--g-muted);
+  font-family: var(--g-font);
+  font-size: 0.93rem; font-weight: 600;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
+  white-space: nowrap;
+}
+.g-tab:hover { color: var(--g-text); }
+.g-tab[aria-selected="true"] {
+  background: var(--g-surface);
+  color: var(--g-text);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-tab:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+
+/* ---------- 6. CARDS ---------- */
+.g-card {
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  padding: 22px;
+  margin: 16px 0;
+  box-shadow: var(--g-shadow-sm);
+}
+.g-card > .g-title { margin-bottom: 4px; }
+.g-card .g-desc { color: var(--g-muted); font-size: 0.92rem; margin: 0 0 14px; }
+.g-card-flat { box-shadow: none; }
+
+/* ---------- 7. BUTTONS ---------- */
+.g-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--g-font);
+  font-size: 0.95rem; font-weight: 650;
+  border-radius: 10px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--g-ease), border-color var(--g-ease),
+              color var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
+  text-decoration: none;
+  line-height: 1.2;
+}
+.g-btn:active { transform: translateY(1px) scale(0.99); }
+.g-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.g-btn-primary {
+  background: var(--g-accent);
+  border-color: var(--g-accent);
+  color: var(--g-accent-ink);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-btn-primary:hover:not(:disabled) { background: var(--g-accent-hover); border-color: var(--g-accent-hover); }
+
+.g-btn-secondary {
+  background: var(--g-surface);
+  border-color: var(--g-border-strong);
+  color: var(--g-text);
+}
+.g-btn-secondary:hover:not(:disabled) { border-color: var(--g-accent); color: var(--g-accent); }
+
+.g-btn-danger {
+  background: var(--g-bad-soft);
+  border-color: transparent;
+  color: var(--g-bad);
+}
+.g-btn-danger:hover:not(:disabled) { background: var(--g-bad); color: #fff; }
+
+.g-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--g-text-soft);
+}
+.g-btn-ghost:hover:not(:disabled) { background: var(--g-surface-2); color: var(--g-text); }
+
+.g-btn-sm { font-size: 0.85rem; padding: 8px 13px; border-radius: 8px; }
+.g-btn-block { display: flex; width: 100%; }
+.g-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+
+/* ---------- 8. FORMS ---------- */
+.g-field { margin: 12px 0; }
+.g-label { display: block; font-weight: 650; font-size: 0.92rem; margin-bottom: 6px; color: var(--g-text); }
+.g-hint { font-size: 0.82rem; color: var(--g-muted); margin-top: 6px; }
+
+.g-input, .g-select, .g-textarea {
+  width: 100%;
+  font-family: var(--g-font);
+  font-size: 1rem;
+  color: var(--g-text);
+  background: var(--g-input-bg);
+  border: 1px solid var(--g-input-border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  transition: border-color var(--g-ease), box-shadow var(--g-ease);
+}
+.g-input::placeholder, .g-textarea::placeholder { color: var(--g-muted); opacity: 0.75; }
+.g-input:hover, .g-select:hover, .g-textarea:hover { border-color: var(--g-border-strong); }
+.g-input:focus, .g-select:focus, .g-textarea:focus {
+  outline: none;
+  border-color: var(--g-accent);
+  box-shadow: 0 0 0 3px var(--g-accent-ring);
+}
+.g-textarea { min-height: 96px; resize: vertical; }
+.g-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+[data-theme="dark"] .g-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.g-input:disabled, .g-select:disabled, .g-textarea:disabled {
+  opacity: 0.55; cursor: not-allowed; background: var(--g-surface-2);
+}
+
+/* Validation */
+.g-input.is-invalid, .g-select.is-invalid {
+  border-color: var(--g-bad);
+}
+.g-input.is-invalid:focus, .g-select.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--g-bad-soft);
+}
+.g-error { display: none; color: var(--g-bad); font-size: 0.86rem; font-weight: 600; margin-top: 6px; }
+.g-error.show { display: block; }
+
+/* Checkbox / radio rows */
+.g-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.95rem; color: var(--g-text-soft);
+  cursor: pointer; margin: 10px 0;
+}
+.g-check input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  margin: 1px 0 0;
+  border: 1.5px solid var(--g-input-border);
+  border-radius: 6px;
+  background: var(--g-input-bg);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--g-ease), border-color var(--g-ease);
+}
+.g-check input[type="radio"] { border-radius: 50%; }
+.g-check input:checked { background: var(--g-accent); border-color: var(--g-accent); }
+.g-check input:checked::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: no-repeat center / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 6.8 11.8 12.5 4.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.g-check input[type="radio"]:checked::after {
+  background: none;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--g-accent-ink);
+}
+.g-check input:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--g-accent-ring); }
+
+/* ---------- 9. RESULT PANELS ---------- */
+.g-result {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: var(--g-radius-md);
+  border: 1px solid var(--g-border);
+  background: var(--g-surface-2);
+}
+.g-big-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 2px 0 6px;
+}
+.g-verdict { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+.g-verdict-good { color: var(--g-good); }
+.g-verdict-bad  { color: var(--g-bad); }
+.g-verdict-warn { color: var(--g-warn); }
+.g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
+
+/* Show-your-work math block */
+.g-math {
+  font-family: var(--g-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background: var(--g-code-bg);
+  border: 1px solid var(--g-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: var(--g-text-soft);
+}
+
+/* ---------- 10. STAT ROWS ---------- */
+.g-stats { margin: 12px 0 0; border-top: 1px solid var(--g-border); }
+.g-stat {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--g-border);
+  font-size: 0.95rem;
+}
+.g-stat:last-child { border-bottom: 0; }
+.g-stat .g-stat-label { color: var(--g-muted); }
+.g-stat .g-stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+.g-stat .g-stat-value.good { color: var(--g-good); }
+.g-stat .g-stat-value.bad  { color: var(--g-bad); }
+
+/* ---------- 11. TABLES ---------- */
+.g-table-wrap { overflow-x: auto; margin: 12px -4px 0; padding: 0 4px; }
+.g-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.g-table th {
+  text-align: left;
+  font-size: 0.76rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--g-muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--g-border-strong);
+  white-space: nowrap;
+}
+.g-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+.g-table tr:last-child td { border-bottom: 0; }
+.g-table tbody tr { transition: background var(--g-ease); }
+.g-table tbody tr:hover { background: var(--g-surface-2); }
+
+/* ---------- 12. BADGES / PILLS ---------- */
+.g-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; font-weight: 700;
+  border-radius: var(--g-radius-pill);
+  padding: 4px 11px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.g-badge-accent { background: var(--g-accent-soft); color: var(--g-accent); }
+.g-badge-good   { background: var(--g-good-soft);   color: var(--g-good); }
+.g-badge-bad    { background: var(--g-bad-soft);    color: var(--g-bad); }
+.g-badge-warn   { background: var(--g-warn-soft);   color: var(--g-warn); }
+.g-badge-neutral{ background: var(--g-surface-2);    color: var(--g-muted); border: 1px solid var(--g-border); }
+.g-badge-dot::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+}
+
+/* ---------- 13. EMPTY STATES ---------- */
+.g-empty {
+  text-align: center;
+  border: 1.5px dashed var(--g-border-strong);
+  border-radius: var(--g-radius-lg);
+  padding: 36px 20px;
+  margin: 16px 0;
+  color: var(--g-muted);
+}
+.g-empty-icon { font-size: 2rem; margin-bottom: 8px; }
+.g-empty .g-title { font-size: 1.05rem; color: var(--g-text-soft); }
+.g-empty p { font-size: 0.9rem; margin: 4px 0 14px; }
+
+/* ---------- 14. FOOTER ---------- */
+.g-footer {
+  text-align: center;
+  margin: 32px 0 8px;
+  font-size: 0.85rem;
+  color: var(--g-muted);
+}
+.g-footer a { color: var(--g-accent); text-decoration: none; font-weight: 600; }
+.g-footer a:hover { text-decoration: underline; }
+.g-footer .g-fine { display: block; margin-top: 8px; font-size: 0.78rem; }
+
+/* ---------- 15. LAYOUT HELPERS ---------- */
+.g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.g-stack > * + * { margin-top: 12px; }
+.g-divider { border: 0; border-top: 1px solid var(--g-border); margin: 20px 0; }
+
+/* ---------- 16. FOCUS (accessibility) ---------- */
+.g-btn:focus-visible,
+.g-theme-toggle:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--g-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 17. RESPONSIVE ---------- */
+@media (max-width: 560px) {
+  .g-wrap { padding: 14px 12px 40px; }
+  .g-display { font-size: 1.6rem; }
+  .g-card { padding: 18px 16px; border-radius: 14px; }
+  .g-big-number { font-size: 2rem; }
+  .g-grid-2, .g-grid-3 { grid-template-columns: 1fr; }
+  .g-brand-mark { width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px; }
+  .g-brand-name { font-size: 1.2rem; }
+  .g-tab { padding: 9px 10px; font-size: 0.88rem; }
+}
+
+/* ---------- 18. MOTION PREFERENCE ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+
+/* ---------- 19. ICONS ----------
+   Requires the glenerds-icons.svg sprite inlined in the page (see
+   INTEGRATION.md). <use> inherits stroke from the wrapper, so the two
+   variants are just classes on the <svg> element. */
+.g-icon {
+  width: 24px; height: 24px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  fill: none;
+  vertical-align: -4px;
+}
+.g-icon-sm { width: 18px; height: 18px; }
+.g-icon-lg { width: 32px; height: 32px; }
+/* Flash variant: brand indigo gradient stroke instead of text color. */
+.g-icon-flash { stroke: url(#g-grad-indigo); }
+.g-btn .g-icon { width: 20px; height: 20px; vertical-align: -3px; }
+.g-tab .g-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; }
+
+/* ---------- 20. APP ICONS ----------
+   iOS-style rounded-square gradient tile + one white glyph.
+   Each app picks its own gradient via --g-ai1 / --g-ai2. */
+.g-appicon {
+  --g-ai1: #6366f1;
+  --g-ai2: #8b5cf6;
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--g-ai1), var(--g-ai2));
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  flex: 0 0 auto;
+}
+.g-appicon .g-icon { width: 32px; height: 32px; color: #ffffff; }
+.g-appicon-sm { width: 44px; height: 44px; border-radius: 13px; }
+.g-appicon-sm .g-icon { width: 24px; height: 24px; }
+.g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
+.g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+/* ===== HabitTrack app styles (on top of the Glenerds Design System) ===== */
+.sub{color:var(--g-muted);margin:4px 0 12px;font-size:.92rem}
+.streak-note{display:flex;gap:10px;align-items:flex-start;background:var(--g-accent-soft);border:1px solid var(--g-border);border-radius:var(--g-radius-md);padding:12px 14px;font-size:.88rem;color:var(--g-text-soft);margin:12px 0 4px}
+.streak-note .g-icon{margin-top:1px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 4px}
+.stat{background:var(--g-surface);border:1px solid var(--g-border);border-radius:var(--g-radius-md);padding:12px 14px;box-shadow:var(--g-shadow-sm)}
+.stat .n{font-size:1.35rem;font-weight:800;letter-spacing:-0.01em;display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.stat .l{font-size:.78rem;color:var(--g-muted);margin-top:2px}
+.habit-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.icon{font-size:1.35rem;line-height:1}
+.habit-name{font-weight:700;font-size:1.08rem;flex:1;min-width:120px;letter-spacing:-0.01em}
+.rate{color:var(--g-muted);font-size:.84rem;margin-top:6px}
+.daybtns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.daybtns button{flex:1;min-width:96px;padding:12px 8px;background:var(--g-surface);border:1px solid var(--g-border-strong);color:var(--g-text);border-radius:10px;font-size:.92rem;font-weight:650;cursor:pointer;font-family:var(--g-font);transition:border-color var(--g-ease),box-shadow var(--g-ease),background var(--g-ease),transform var(--g-ease)}
+.daybtns button:hover:not(:disabled){border-color:var(--g-accent)}
+.daybtns button:active:not(:disabled){transform:scale(.98)}
+.daybtns button:disabled{opacity:.45;cursor:default}
+.daybtns button.done-on{background:var(--g-good);border-color:var(--g-good);color:#fff}
+[data-theme="dark"] .daybtns button.done-on{color:#06281c}
+.daybtns button.partial-on{border-color:var(--g-warn);box-shadow:inset 0 0 0 2px var(--g-warn)}
+.daybtns button.skip-on{border-style:dashed;opacity:.75}
+.habit-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.detail{margin-top:14px;border-top:1px solid var(--g-border);padding-top:14px}
+.hmap{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,15px);gap:3px;overflow-x:auto;padding:8px 2px}
+.cell{width:15px;height:15px;border-radius:4px;background:var(--g-surface-2);border:1px solid var(--g-border);cursor:pointer}
+.cell.missed{background:var(--g-surface-2)}
+.cell.partial{opacity:.6}
+.cell.skip{background:transparent;border:1px dashed var(--g-muted)}
+.cell:hover{outline:2px solid var(--g-accent)}
+.legend{display:flex;gap:6px;align-items:center;font-size:.75rem;color:var(--g-muted);margin-top:8px;flex-wrap:wrap}
+.modal-back{position:fixed;inset:0;background:rgba(2,6,12,.5);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal{background:var(--g-surface);border:1px solid var(--g-border);border-radius:var(--g-radius-lg);padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--g-shadow-lg)}
+.modal h2{margin:0 0 12px;font-size:1.2rem;font-weight:800;letter-spacing:-0.01em}
+.chk-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chk-row label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--g-input-border);border-radius:var(--g-radius-pill);padding:8px 14px;font-size:.88rem;cursor:pointer;background:var(--g-input-bg);color:var(--g-text-soft);font-weight:600;transition:border-color var(--g-ease),color var(--g-ease),background var(--g-ease)}
+.chk-row label:has(input:checked){border-color:var(--g-accent);color:var(--g-accent);background:var(--g-accent-soft)}
+.swatches{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.swatch{width:34px;height:34px;border-radius:50%;cursor:pointer;border:2px solid transparent;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);transition:transform var(--g-ease),box-shadow var(--g-ease)}
+.swatch:hover{transform:scale(1.1)}
+.swatch.sel{box-shadow:0 0 0 2px var(--g-surface),0 0 0 4px var(--g-text)}
+.icons{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.icons button{font-size:1.25rem;padding:8px 12px;background:var(--g-surface);border:1px solid var(--g-border);border-radius:10px;cursor:pointer;line-height:1;transition:border-color var(--g-ease),background var(--g-ease)}
+.icons button:hover{border-color:var(--g-accent)}
+.icons button.sel{border-color:var(--g-accent);box-shadow:inset 0 0 0 2px var(--g-accent);background:var(--g-accent-soft)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:11px 20px;border-radius:var(--g-radius-pill);font-size:.9rem;font-weight:600;z-index:99;display:none;box-shadow:var(--g-shadow-lg);white-space:nowrap}
+[data-theme="dark"] .toast{background:#f1f5f9;color:#0b0e14}
+.note-line{font-size:.82rem;color:var(--g-muted);margin-top:8px;font-style:italic}
+.hidden{display:none!important}
+.io-block{margin:10px 0}
+#impMsg p{margin:8px 0 0}
+@media (max-width:560px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .modal{padding:20px 18px}
+}
+</style>
+<script>
+/* Pre-paint theme init: same storage key the app has always used (habittrack.theme).
+   Runs before first paint so there is no light/dark flash. */
+(function(){var t=null;try{t=localStorage.getItem('habittrack.theme')}catch(e){}
+if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+document.documentElement.setAttribute('data-theme',t);})();
+</script>
+</head>
+<body class="g-app">
+<!-- ==========================================================================
+     GLENERDS ICON SET v1.0 — inline SVG <symbol> sprite
+     --------------------------------------------------------------------------
+     Inline this whole file right after <body> in each app (or paste the
+     <svg> block). Zero external requests. See INTEGRATION.md for usage.
+
+     - 24x24 grid, stroke-based line icons, stroke-width 2, round caps/joins.
+     - Clean variant inherits text color (currentColor).
+     - Flash variant: add class "g-icon-flash" to the <svg> wrapper and the
+       stroke renders in the brand indigo gradient instead.
+     - All geometry inherits from the symbol; do not set stroke/fill on <use>.
+     ========================================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-grad-indigo" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#818cf8"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="g-grad-sunset" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="g-grad-ocean" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="g-grad-royal" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#c084fc"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- calculator -->
+  <symbol id="g-i-calc" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6.5" y="3" width="11" height="18" rx="2"/>
+    <path d="M9.5 7.5h5"/>
+    <path d="M9.5 12h.02M12 12h.02M14.5 12h.02M9.5 15.5h.02M12 15.5h.02M14.5 15.5h.02"/>
+  </symbol>
+
+  <!-- chart / graph (bars) -->
+  <symbol id="g-i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20h16"/>
+    <path d="M7.5 20v-6.5M12 20V6.5M16.5 20v-9.5"/>
+  </symbol>
+
+  <!-- calendar -->
+  <symbol id="g-i-cal" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>
+    <path d="M8 3v3.5M16 3v3.5M3.5 10h17"/>
+  </symbol>
+
+  <!-- checkmark -->
+  <symbol id="g-i-check" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.8 12.6l4.7 4.7L19.2 7.2"/>
+  </symbol>
+
+  <!-- streak flame -->
+  <symbol id="g-i-flame" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.2c.9 2.8-.5 4.3-1.7 5.6C8.7 10.5 7 12.4 7 15.2a5 5 0 0010 0c0-2-1-3.5-2-4.9-.4 1.1-1.1 1.9-2.1 2.3.4-3-.4-6.7-.9-9.4z"/>
+  </symbol>
+
+  <!-- star -->
+  <symbol id="g-i-star" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/>
+  </symbol>
+
+  <!-- moon -->
+  <symbol id="g-i-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.2 14.8A8.3 8.3 0 019.2 3.8a8.3 8.3 0 1011 11z"/>
+  </symbol>
+
+  <!-- sun -->
+  <symbol id="g-i-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4.2"/>
+    <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/>
+  </symbol>
+
+  <!-- plus -->
+  <symbol id="g-i-plus" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5.5v13M5.5 12h13"/>
+  </symbol>
+
+  <!-- trash -->
+  <symbol id="g-i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 6.8h15"/>
+    <path d="M9.5 6.2V4.8a1.3 1.3 0 011.3-1.3h2.4a1.3 1.3 0 011.3 1.3v1.4"/>
+    <path d="M6.8 6.8l.9 12.4a1.6 1.6 0 001.6 1.5h5.4a1.6 1.6 0 001.6-1.5l.9-12.4"/>
+    <path d="M10 10.8v5.5M14 10.8v5.5"/>
+  </symbol>
+
+  <!-- download -->
+  <symbol id="g-i-download" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4v10.5"/>
+    <path d="M7.6 11L12 15.4 16.4 11"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- upload -->
+  <symbol id="g-i-upload" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 15.5V5"/>
+    <path d="M7.6 9.4L12 5l4.4 4.4"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- settings gear -->
+  <symbol id="g-i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3.4"/>
+    <path d="M12 5v2.2M12 16.8V19M5 12h2.2M16.8 12H19M7.1 7.1l1.5 1.5M15.4 15.4l1.5 1.5M16.9 7.1l-1.5 1.5M8.6 15.4l-1.5 1.5"/>
+  </symbol>
+
+  <!-- heart -->
+  <symbol id="g-i-heart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20.5c-5-3.4-8.5-6.8-8.5-10.6C3.5 7.1 5.7 5 8.4 5c1.5 0 2.8.8 3.6 2 .8-1.2 2.1-2 3.6-2 2.7 0 4.9 2.1 4.9 4.9 0 3.8-3.5 7.2-8.5 10.6z"/>
+  </symbol>
+
+  <!-- clock -->
+  <symbol id="g-i-clock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 7.3V12l3.2 2"/>
+  </symbol>
+
+  <!-- target -->
+  <symbol id="g-i-target" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <circle cx="12" cy="12" r="4.8"/>
+    <circle cx="12" cy="12" r="1.4"/>
+  </symbol>
+
+  <!-- trophy -->
+  <symbol id="g-i-trophy" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 4h9v4.5a4.5 4.5 0 01-9 0V4z"/>
+    <path d="M7.5 5.5H4.5a3.5 3.5 0 003.8 3.8M16.5 5.5h3a3.5 3.5 0 01-3.8 3.8"/>
+    <path d="M12 13v4M8.5 20.5h7"/>
+  </symbol>
+
+  <!-- tag -->
+  <symbol id="g-i-tag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.6 13.4L11 3.8a2 2 0 00-1.4-.6H5a1.8 1.8 0 00-1.8 1.8v4.6c0 .5.2 1 .6 1.4l9.6 9.6a1.9 1.9 0 002.7 0l4.5-4.5a1.9 1.9 0 000-2.7z"/>
+    <circle cx="8" cy="8" r="1.4"/>
+  </symbol>
+
+  <!-- search -->
+  <symbol id="g-i-search" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="6.5"/>
+    <path d="M15.8 15.8l4.7 4.7"/>
+  </symbol>
+
+  <!-- edit pencil -->
+  <symbol id="g-i-edit" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20l1.2-4.2L16.7 4.3a2 2 0 012.9 2.9L8.1 18.7 4 20z"/>
+    <path d="M14.8 6.2l2.9 2.9"/>
+  </symbol>
+
+  <!-- share -->
+  <symbol id="g-i-share" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6.5" cy="12" r="2.5"/>
+    <circle cx="17" cy="5.8" r="2.5"/>
+    <circle cx="17" cy="18.2" r="2.5"/>
+    <path d="M8.7 10.9l6.1-3.5M8.7 13.1l6.1 3.5"/>
+  </symbol>
+
+  <!-- lock -->
+  <symbol id="g-i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/>
+    <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/>
+    <path d="M12 14.5v2"/>
+  </symbol>
+
+  <!-- sparkles -->
+  <symbol id="g-i-sparkles" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8-4.8-1.7 4.8-1.7L12 3.5z"/>
+    <path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/>
+  </symbol>
+
+  <!-- home -->
+  <symbol id="g-i-home" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11.2L12 4l8 7.2"/>
+    <path d="M6.2 9.8V20h11.6V9.8"/>
+    <path d="M10 20v-4.8h4V20"/>
+  </symbol>
+
+  <!-- back arrow -->
+  <symbol id="g-i-back" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.8 5.5L8.3 12l6.5 6.5"/>
+  </symbol>
+
+  <!-- close X -->
+  <symbol id="g-i-x" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 6l12 12M18 6L6 18"/>
+  </symbol>
+
+  <!-- info -->
+  <symbol id="g-i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 11v5"/>
+    <path d="M12 7.6v.2"/>
+  </symbol>
+
+  <!-- wallet -->
+  <symbol id="g-i-wallet" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="6.5" width="18" height="13" rx="3"/>
+    <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
+    <circle cx="17.5" cy="14.8" r="1.1"/>
+  </symbol>
+
+  <!-- list -->
+  <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
+    <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
+  </symbol>
+
+  <!-- bell -->
+  <symbol id="g-i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.2 16v-4.8a5.8 5.8 0 0111.6 0V16l1.7 2.8H4.5L6.2 16z"/>
+    <path d="M10 20.5a2.2 2.2 0 004 0"/>
+  </symbol>
+</svg>
+<div class="g-wrap">
+  <header class="g-header">
+    <div class="g-brand">
+      <span class="g-appicon g-appicon-sm" style="--g-ai1:#fb7185;--g-ai2:#f59e0b" aria-hidden="true">
+        <svg class="g-icon" aria-hidden="true"><use href="#g-i-flame"/></svg>
+      </span>
+      <h1 class="g-brand-name">HabitTrack</h1>
+    </div>
+    <button class="g-theme-toggle" id="themeBtn" aria-label="Toggle dark mode">
+      <svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon" id="themeUse"/></svg><span id="themeLabel">Dark</span>
+    </button>
+  </header>
+  <p class="g-tagline">Free daily habit tracker with streaks. Works fully offline — your habits never leave your device.</p>
+
+  <div class="g-btn-row" style="margin-top:0">
+    <button class="g-btn g-btn-primary" id="newHabitBtn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-plus"/></svg>New habit</button>
+    <button class="g-btn g-btn-secondary" id="exportBtn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg>Export</button>
+    <button class="g-btn g-btn-secondary" id="importBtn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-upload"/></svg>Import</button>
+  </div>
+
+  <div class="stats" id="statsStrip" aria-live="polite"></div>
+  <p class="streak-note"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-flame"/></svg><span><b>How streaks work:</b> done or partial days extend your streak · rest days pause it without breaking · a missed day resets it.</span></p>
+
+  <div id="habitList"></div>
+
+  <div class="g-card hidden" id="ioCard">
+    <p class="g-title" style="display:flex;align-items:center;gap:8px"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg>Backup &amp; restore</p>
+    <div class="io-block">
+      <div class="g-btn-row" style="margin:0">
+        <button class="g-btn g-btn-sm g-btn-secondary" id="expJson"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg>Download JSON</button>
+        <button class="g-btn g-btn-sm g-btn-secondary" id="expCsv"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg>Download CSV</button>
+      </div>
+    </div>
+    <div class="io-block">
+      <label class="g-label" for="impFile">Import a previous backup (JSON or CSV)</label>
+      <input type="file" class="g-input" id="impFile" accept=".json,.csv,application/json,text/csv">
+    </div>
+    <p class="g-hint">JSON import replaces everything after confirmation. CSV import matches rows to habits by name and merges daily entries.</p>
+    <div id="impMsg"></div>
+  </div>
+
+  <footer class="g-footer">
+    Made for people who like streaks. <a href="https://glenerds.gumroad.com">by Glenerds</a>
+  </footer>
+</div>
+
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ============ storage ============ */
+const LS_KEY = "habittrack.v1";
+const THEME_KEY = "habittrack.theme";
+let state = { habits: [], log: {} };
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(!d || typeof d !== "object" || !Array.isArray(d.habits) || !d.log || typeof d.log !== "object") throw new Error("bad shape");
+    state = d;
+  }catch(e){
+    state = { habits: [], log: {} }; // corrupt storage -> safe defaults, no crash
+  }
+}
+function saveState(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){ /* storage full/blocked: keep running in-memory */ }
+}
+
+/* ============ date utils (timezone-safe: local calendar dates only, never UTC) ============ */
+function localKey(d){
+  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,"0"), day = String(d.getDate()).padStart(2,"0");
+  return y + "-" + m + "-" + day;
+}
+function parseKey(k){
+  const p = k.split("-");
+  return new Date(Number(p[0]), Number(p[1])-1, Number(p[2]));
+}
+function addDays(d, n){
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate()+n);
+}
+function todayKey(){ return localKey(new Date()); }
+function fmtDay(k){
+  const d = parseKey(k);
+  return d.toLocaleDateString(undefined, {weekday:"short", month:"short", day:"numeric"});
+}
+
+/* ============ habit model ============ */
+const COLORS = ["#0b6e4f","#1a73e8","#9334e6","#d93025","#e8710a","#f9ab00","#0097a7","#5c6bc0","#ec407a","#616161"];
+const ICONS = ["✅","🏃","📚","💧","🧘","💪","🎸","✍️","🌱","😴","🥗","🚭","💰","🧠","🎯","⭐"];
+const I_FLAME = '<svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-flame"/></svg>';
+const I_FLAME_FLASH = '<svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-flame"/></svg>';
+const I_CHART = '<svg class="g-icon" aria-hidden="true"><use href="#g-i-chart"/></svg>';
+const I_EDIT = '<svg class="g-icon" aria-hidden="true"><use href="#g-i-edit"/></svg>';
+const I_TRASH = '<svg class="g-icon" aria-hidden="true"><use href="#g-i-trash"/></svg>';
+
+function uid(){ return "h" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function isScheduled(h, d){
+  if(h.type === "daily") return true;
+  return Array.isArray(h.weekdays) && h.weekdays.indexOf(d.getDay()) !== -1;
+}
+function entry(hid, key){
+  const l = state.log[hid];
+  return l ? (l[key] || null) : null;
+}
+function setEntry(hid, key, status, note){
+  if(!state.log[hid]) state.log[hid] = {};
+  if(status == null && !note){
+    delete state.log[hid][key];
+  }else{
+    state.log[hid][key] = { status: status, note: note || "" };
+  }
+  saveState();
+}
+
+/* ============ streaks ============
+   Rules: done/partial extend the streak. A rest (skip) day pauses it — it neither
+   extends nor breaks the streak. A missed scheduled day resets it. Non-scheduled
+   days (weekly plans) are invisible to streak math. */
+function computeStreaks(h){
+  const end = new Date(); end.setHours(0,0,0,0);
+  const created = parseKey(h.created);
+  let cur = 0;
+  // current streak: walk back from today; if today is still open, start at yesterday
+  let d = new Date(end);
+  if(isScheduled(h, d) && !entry(h.id, localKey(d))) d = addDays(d, -1);
+  while(d >= created){
+    if(!isScheduled(h, d)){ d = addDays(d, -1); continue; }
+    const e = entry(h.id, localKey(d));
+    if(e && (e.status === "done" || e.status === "partial")){ cur++; d = addDays(d, -1); }
+    else if(e && e.status === "skip"){ d = addDays(d, -1); } // pause, no break
+    else break;
+  }
+  // best streak: scan whole life
+  let best = 0, run = 0, d2 = new Date(created);
+  while(d2 <= end){
+    if(isScheduled(h, d2)){
+      const e = entry(h.id, localKey(d2));
+      if(e && (e.status === "done" || e.status === "partial")){ run++; if(run > best) best = run; }
+      else if(e && e.status === "skip"){ /* pause */ }
+      else run = 0;
+    }
+    d2 = addDays(d2, 1);
+  }
+  return { current: cur, best: best };
+}
+
+function completionRate(h){
+  const end = new Date(); end.setHours(0,0,0,0);
+  const created = parseKey(h.created);
+  let scheduled = 0, completed = 0, skipped = 0, d = new Date(created);
+  while(d <= end){
+    if(isScheduled(h, d)){
+      scheduled++;
+      const e = entry(h.id, localKey(d));
+      if(e && (e.status === "done" || e.status === "partial")) completed++;
+      else if(e && e.status === "skip") skipped++;
+    }
+    d = addDays(d, 1);
+  }
+  const denom = scheduled - skipped;
+  return { pct: denom > 0 ? Math.round(completed / denom * 100) : 0, completed, scheduled: denom };
+}
+
+/* ============ theme ============ */
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  document.getElementById("themeUse").setAttribute("href", t === "dark" ? "#g-i-sun" : "#g-i-moon");
+  document.getElementById("themeLabel").textContent = t === "dark" ? "Light" : "Dark";
+  try{ localStorage.setItem(THEME_KEY, t); }catch(e){}
+}
+function initTheme(){
+  let t = null;
+  try{ t = localStorage.getItem(THEME_KEY); }catch(e){}
+  if(t !== "dark" && t !== "light"){
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  applyTheme(t);
+}
+/* ============ helpers ============ */
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.style.display = "block";
+  clearTimeout(el._t); el._t = setTimeout(()=>{ el.style.display = "none"; }, 2200);
+}
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function closeModal(){ document.getElementById("modalRoot").innerHTML = ""; }
+function openModal(html){
+  const root = document.getElementById("modalRoot");
+  root.innerHTML = '<div class="modal-back" id="mback"><div class="modal" role="dialog" aria-modal="true">' + html + "</div></div>";
+  document.getElementById("mback").addEventListener("click", e => { if(e.target.id === "mback") closeModal(); });
+}
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
+
+/* ============ rendering ============ */
+function renderStats(){
+  const el = document.getElementById("statsStrip");
+  const tk = todayKey();
+  let checkins = 0, longest = 0;
+  state.habits.forEach(h => {
+    const st = computeStreaks(h);
+    if(st.current > longest) longest = st.current;
+    const e = entry(h.id, tk);
+    if(e && (e.status === "done" || e.status === "partial")) checkins++;
+  });
+  const dueToday = state.habits.filter(h => isScheduled(h, new Date())).length;
+  el.innerHTML =
+    statHtml(checkins, "done today") +
+    statHtml(state.habits.length, "habits") +
+    statHtml(I_FLAME_FLASH + longest, "longest streak") +
+    statHtml(dueToday, "due today");
+}
+function statHtml(n, l){ return '<div class="stat"><div class="n">' + n + '</div><div class="l">' + esc(l) + "</div></div>"; }
+
+function renderList(){
+  const list = document.getElementById("habitList");
+  if(state.habits.length === 0){
+    list.innerHTML = '<div class="g-empty"><div class="g-empty-icon"><svg class="g-icon g-icon-lg g-icon-flash" aria-hidden="true"><use href="#g-i-sparkles"/></svg></div><p class="g-title">No habits yet</p><p>Tap <b>+ New habit</b> to start your first streak.</p></div>';
+    return;
+  }
+  const tk = todayKey();
+  const now = new Date();
+  list.innerHTML = state.habits.map(h => {
+    const st = computeStreaks(h);
+    const cr = completionRate(h);
+    const e = entry(h.id, tk);
+    const cur = e ? e.status : null;
+    const due = isScheduled(h, now);
+    const partialBtn = h.allowPartial
+      ? '<button data-act="partial" data-h="' + h.id + '" class="' + (cur === "partial" ? "partial-on" : "") + '" ' + (due ? "" : "disabled") + '>◐ Partial</button>' : "";
+    return '<div class="g-card" data-card="' + h.id + '">' +
+      '<div class="habit-head">' +
+        '<span class="dot" style="background:' + esc(h.color) + '"></span>' +
+        '<span class="icon" aria-hidden="true">' + esc(h.icon) + "</span>" +
+        '<span class="habit-name">' + esc(h.name) + "</span>" +
+        '<span class="g-badge g-badge-good" title="Current streak / best streak">' + I_FLAME + st.current + " (best " + st.best + ")</span>" +
+      "</div>" +
+      '<div class="rate">' + esc(scheduleLabel(h)) + " · " + cr.pct + "% completion (" + cr.completed + "/" + cr.scheduled + " days)</div>" +
+      '<div class="daybtns">' +
+        '<button data-act="done" data-h="' + h.id + '" class="' + (cur === "done" ? "done-on" : "") + '" ' + (due ? "" : "disabled") + ">✓ Done</button>" +
+        partialBtn +
+        '<button data-act="skip" data-h="' + h.id + '" class="' + (cur === "skip" ? "skip-on" : "") + '" ' + (due ? "" : "disabled") + ">☾ Rest day</button>" +
+      "</div>" +
+      (e && e.note ? '<div class="note-line">📝 ' + esc(e.note) + "</div>" : "") +
+      '<div class="habit-actions">' +
+        '<button class="g-btn g-btn-sm g-btn-secondary" data-act="detail" data-h="' + h.id + '">' + I_CHART + "Details &amp; history</button>" +
+        '<button class="g-btn g-btn-sm g-btn-secondary" data-act="edit" data-h="' + h.id + '">' + I_EDIT + "Edit</button>" +
+        '<button class="g-btn g-btn-sm g-btn-danger" data-act="del" data-h="' + h.id + '">' + I_TRASH + "Delete</button>" +
+      "</div>" +
+      '<div class="detail hidden" id="detail-' + h.id + '"></div>' +
+    "</div>";
+  }).join("");
+}
+function scheduleLabel(h){
+  if(h.type === "daily") return "Every day";
+  const names = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  return "Weekly: " + h.weekdays.slice().sort((a,b)=>a-b).map(i => names[i]).join(", ");
+}
+
+/* GitHub-style heatmap: trailing N days, weeks as columns */
+function heatmapHtml(h, days){
+  days = days || 119;
+  const end = new Date(); end.setHours(0,0,0,0);
+  const start = addDays(end, -(days - 1));
+  // align start back to Sunday so columns are full weeks
+  const aligned = addDays(start, -start.getDay());
+  let html = '<div class="hmap" role="img" aria-label="Activity heatmap">';
+  let d = new Date(aligned);
+  while(d <= end){
+    const k = localKey(d);
+    const inRange = d >= start;
+    const scheduled = inRange && d >= parseKey(h.created) && isScheduled(h, d);
+    let cls = "cell", title = fmtDay(k), bg = "";
+    if(scheduled){
+      const e = entry(h.id, k);
+      if(e && e.status === "done"){ cls += " partial"; bg = ' style="background:' + esc(h.color) + '"'; title += " — done"; }
+      else if(e && e.status === "partial"){ cls += " partial"; bg = ' style="background:' + esc(h.color) + '"'; title += " — partial"; }
+      else if(e && e.status === "skip"){ cls += " skip"; title += " — rest day"; }
+      else if(d < end){ cls += " missed"; title += " — missed"; }
+      else { title += " — today, not logged"; }
+      html += '<div class="' + cls + '"' + bg + ' title="' + esc(title) + '" data-day="' + k + '" data-h="' + h.id + '" tabindex="0" role="button" aria-label="' + esc(title) + '"></div>';
+    }else{
+      html += '<div class="cell" style="visibility:hidden"></div>';
+    }
+    d = addDays(d, 1);
+  }
+  html += "</div>";
+  html += '<div class="legend"><span>Less</span>' +
+    '<span class="cell missed" style="cursor:default"></span>' +
+    '<span class="cell partial" style="background:' + esc(h.color) + ';cursor:default"></span>' +
+    '<span>More</span><span class="cell skip" style="cursor:default"></span><span>rest</span>' +
+    '<span style="margin-left:8px">Tap any day to log or edit it.</span></div>';
+  return html;
+}
+
+function renderDetail(hid){
+  const h = state.habits.find(x => x.id === hid);
+  if(!h) return;
+  const box = document.getElementById("detail-" + hid);
+  const st = computeStreaks(h);
+  const cr = completionRate(h);
+  let total = 0, partials = 0, skips = 0;
+  Object.keys(state.log[hid] || {}).forEach(k => {
+    const s = state.log[hid][k].status;
+    if(s === "done"){ total++; } else if(s === "partial"){ total++; partials++; } else if(s === "skip"){ skips++; }
+  });
+  box.innerHTML =
+    '<div class="rate">Current streak <b>' + st.current + '</b> · Best streak <b>' + st.best + '</b> · ' +
+    'Check-ins <b>' + total + '</b>' + (partials ? " (" + partials + " partial)" : "") +
+    " · Rest days <b>" + skips + "</b> · Since " + esc(h.created) + "</div>" +
+    heatmapHtml(h, 119);
+  box.classList.remove("hidden");
+}
+
+/* ============ day editor (tap a heatmap cell or today buttons) ============ */
+function openDayEditor(hid, key){
+  const h = state.habits.find(x => x.id === hid);
+  if(!h) return;
+  const e = entry(hid, key);
+  const cur = e ? e.status : null;
+  const note = e ? (e.note || "") : "";
+  const partialBtn = h.allowPartial
+    ? '<button data-dact="partial" class="' + (cur === "partial" ? "partial-on" : "") + '">◐ Partial credit</button>' : "";
+  openModal(
+    "<h2>" + esc(h.icon) + " " + esc(h.name) + "</h2>" +
+    '<p class="sub">' + esc(fmtDay(key)) + (key === todayKey() ? " (today)" : "") + "</p>" +
+    '<div class="daybtns" style="margin-top:0">' +
+      '<button data-dact="done" class="' + (cur === "done" ? "done-on" : "") + '">✓ Done</button>' +
+      partialBtn +
+      '<button data-dact="skip" class="' + (cur === "skip" ? "skip-on" : "") + '">☾ Rest day</button>' +
+      '<button data-dact="clear">✕ Clear</button>' +
+    "</div>" +
+    '<label class="g-label" for="dayNote" style="margin-top:14px">Note for this day</label>' +
+    '<textarea class="g-textarea" id="dayNote" maxlength="500" placeholder="Optional note…">' + esc(note) + "</textarea>" +
+    '<div class="g-btn-row"><button class="g-btn g-btn-primary" id="daySave">Save</button><button class="g-btn g-btn-secondary" id="dayCancel">Cancel</button></div>'
+  );
+  const root = document.getElementById("modalRoot");
+  let chosen = cur;
+  root.querySelectorAll("[data-dact]").forEach(b => {
+    b.addEventListener("click", () => {
+      chosen = b.getAttribute("data-dact") === "clear" ? null : b.getAttribute("data-dact");
+      root.querySelectorAll("[data-dact]").forEach(x => x.classList.remove("done-on","partial-on","skip-on"));
+      if(chosen === "done") b.classList.add("done-on");
+      if(chosen === "partial") b.classList.add("partial-on");
+      if(chosen === "skip") b.classList.add("skip-on");
+    });
+  });
+  document.getElementById("dayCancel").addEventListener("click", closeModal);
+  document.getElementById("daySave").addEventListener("click", () => {
+    const n = document.getElementById("dayNote").value.trim().slice(0, 500);
+    setEntry(hid, key, chosen, n);
+    closeModal(); renderAll();
+    toast("Saved");
+  });
+}
+
+/* ============ habit editor ============ */
+function openHabitEditor(existing){
+  const h = existing || { name:"", type:"daily", weekdays:[1,2,3,4,5], color:COLORS[0], icon:ICONS[0], allowPartial:true };
+  const dayNames = ["S","M","T","W","T","F","S"];
+  openModal(
+    "<h2>" + (existing ? "Edit habit" : "New habit") + "</h2>" +
+    '<label class="g-label" for="hzName">Name</label>' +
+    '<input type="text" class="g-input" id="hzName" maxlength="60" value="' + esc(h.name) + '" placeholder="e.g. Read 20 pages">' +
+    '<label class="g-label" style="margin-top:14px">Schedule</label>' +
+    '<div class="chk-row" id="hzType">' +
+      '<label><input type="radio" name="hztype" value="daily" ' + (h.type === "daily" ? "checked" : "") + '> Every day</label>' +
+      '<label><input type="radio" name="hztype" value="weekly" ' + (h.type === "weekly" ? "checked" : "") + "> Certain days</label>" +
+    "</div>" +
+    '<div class="chk-row" id="hzDays" style="' + (h.type === "weekly" ? "" : "display:none") + ';margin-top:8px">' +
+      dayNames.map((n,i) => '<label><input type="checkbox" value="' + i + '" ' + (h.weekdays.indexOf(i) !== -1 ? "checked" : "") + ">" + n + "</label>").join("") +
+    "</div>" +
+    '<label class="g-label" style="margin-top:14px">Color</label><div class="swatches" id="hzColors">' +
+      COLORS.map(c => '<div class="swatch' + (h.color === c ? " sel" : "") + '" data-c="' + c + '" style="background:' + c + '"></div>').join("") +
+    "</div>" +
+    '<label class="g-label" style="margin-top:14px">Icon</label><div class="icons" id="hzIcons">' +
+      ICONS.map(ic => '<button type="button" class="' + (h.icon === ic ? "sel" : "") + '" data-ic="' + esc(ic) + '">' + esc(ic) + "</button>").join("") +
+    "</div>" +
+    '<label class="g-check"><input type="checkbox" id="hzPartial" ' + (h.allowPartial ? "checked" : "") + '> Allow partial credit (a half-done day still counts)</label>' +
+    '<div class="g-btn-row"><button class="g-btn g-btn-primary" id="hzSave">' + (existing ? "Save changes" : "Create habit") + '</button><button class="g-btn g-btn-secondary" id="hzCancel">Cancel</button></div>'
+  );
+  let color = h.color, icon = h.icon;
+  const root = document.getElementById("modalRoot");
+  root.querySelectorAll('input[name="hztype"]').forEach(r => r.addEventListener("change", () => {
+    document.getElementById("hzDays").style.display = root.querySelector('input[name="hztype"]:checked').value === "weekly" ? "" : "none";
+  }));
+  root.querySelectorAll("#hzColors .swatch").forEach(s => s.addEventListener("click", () => {
+    root.querySelectorAll("#hzColors .swatch").forEach(x => x.classList.remove("sel"));
+    s.classList.add("sel"); color = s.getAttribute("data-c");
+  }));
+  root.querySelectorAll("#hzIcons button").forEach(b => b.addEventListener("click", () => {
+    root.querySelectorAll("#hzIcons button").forEach(x => x.classList.remove("sel"));
+    b.classList.add("sel"); icon = b.getAttribute("data-ic");
+  }));
+  document.getElementById("hzCancel").addEventListener("click", closeModal);
+  document.getElementById("hzSave").addEventListener("click", () => {
+    const name = document.getElementById("hzName").value.trim().slice(0, 60);
+    if(!name){ toast("Give the habit a name"); return; }
+    const type = root.querySelector('input[name="hztype"]:checked').value;
+    let weekdays = [0,1,2,3,4,5,6];
+    if(type === "weekly"){
+      weekdays = Array.from(root.querySelectorAll("#hzDays input:checked")).map(x => Number(x.value));
+      if(weekdays.length === 0){ toast("Pick at least one day"); return; }
+    }
+    const allowPartial = document.getElementById("hzPartial").checked;
+    if(existing){
+      existing.name = name; existing.type = type; existing.weekdays = weekdays;
+      existing.color = color; existing.icon = icon; existing.allowPartial = allowPartial;
+      toast("Habit updated");
+    }else{
+      state.habits.push({ id: uid(), name, type, weekdays, color, icon, allowPartial, created: todayKey() });
+      toast("Habit created — good luck 🔥");
+    }
+    saveState(); closeModal(); renderAll();
+  });
+}
+
+/* ============ list event delegation ============ */
+document.getElementById("habitList").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-act]");
+  const cell = e.target.closest(".cell[data-day]");
+  if(cell){
+    openDayEditor(cell.getAttribute("data-h"), cell.getAttribute("data-day"));
+    return;
+  }
+  if(!btn) return;
+  const hid = btn.getAttribute("data-h");
+  const act = btn.getAttribute("data-act");
+  const h = state.habits.find(x => x.id === hid);
+  if(!h) return;
+  if(act === "done" || act === "partial" || act === "skip"){
+    const tk = todayKey();
+    const cur = entry(hid, tk);
+    // tapping the active status again clears it (quick undo)
+    if(cur && cur.status === act){ setEntry(hid, tk, null, ""); }
+    else { const note = cur ? (cur.note || "") : ""; setEntry(hid, tk, act, note); }
+    renderAll();
+  }else if(act === "detail"){
+    const box = document.getElementById("detail-" + hid);
+    if(box.classList.contains("hidden")) renderDetail(hid);
+    else box.classList.add("hidden");
+  }else if(act === "edit"){
+    openHabitEditor(h);
+  }else if(act === "del"){
+    openModal(
+      "<h2>Delete habit?</h2>" +
+      '<p class="sub">“' + esc(h.name) + '” and all of its history will be removed from this device. This cannot be undone.</p>' +
+      '<div class="g-btn-row"><button class="g-btn g-btn-danger" id="delYes">Delete</button><button class="g-btn g-btn-secondary" id="delNo">Keep it</button></div>'
+    );
+    document.getElementById("delNo").addEventListener("click", closeModal);
+    document.getElementById("delYes").addEventListener("click", () => {
+      state.habits = state.habits.filter(x => x.id !== hid);
+      delete state.log[hid];
+      saveState(); closeModal(); renderAll();
+      toast("Habit deleted");
+    });
+  }
+});
+// keyboard access to heatmap cells
+document.getElementById("habitList").addEventListener("keydown", e => {
+  if((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("cell") && e.target.getAttribute("data-day")){
+    e.preventDefault();
+    openDayEditor(e.target.getAttribute("data-h"), e.target.getAttribute("data-day"));
+  }
+});
+
+/* ============ export / import ============ */
+function download(filename, text, mime){
+  const blob = new Blob([text], {type: mime});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function exportJson(){
+  download("habittrack-backup-" + todayKey() + ".json",
+    JSON.stringify({ app: "habittrack", version: 1, exported: new Date().toISOString(), habits: state.habits, log: state.log }, null, 2),
+    "application/json");
+}
+function csvEsc(v){
+  v = String(v == null ? "" : v);
+  return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function exportCsv(){
+  const rows = ["habit_name,date,status,note"];
+  state.habits.forEach(h => {
+    Object.keys(state.log[h.id] || {}).sort().forEach(k => {
+      const en = state.log[h.id][k];
+      rows.push([csvEsc(h.name), csvEsc(k), csvEsc(en.status), csvEsc(en.note || "")].join(","));
+    });
+  });
+  download("habittrack-backup-" + todayKey() + ".csv", rows.join("\n"), "text/csv");
+}
+function parseCsv(text){
+  const rows = [];
+  let cur = [""], inQ = false;
+  for(let i = 0; i < text.length; i++){
+    const c = text[i];
+    if(inQ){
+      if(c === '"'){ if(text[i+1] === '"'){ cur[cur.length-1] += '"'; i++; } else inQ = false; }
+      else cur[cur.length-1] += c;
+    }else{
+      if(c === '"') inQ = true;
+      else if(c === ",") cur.push("");
+      else if(c === "\n"){ rows.push(cur); cur = [""]; }
+      else if(c === "\r"){ /* skip */ }
+      else cur[cur.length-1] += c;
+    }
+  }
+  if(cur.length > 1 || cur[0] !== "") rows.push(cur);
+  return rows;
+}
+function importFile(file){
+  const msg = document.getElementById("impMsg");
+  msg.innerHTML = "";
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const text = String(reader.result || "");
+      if(/\.json$/i.test(file.name) || text.trim().charAt(0) === "{"){
+        const d = JSON.parse(text);
+        if(!d || !Array.isArray(d.habits) || !d.log || typeof d.log !== "object") throw new Error("not a HabitTrack backup");
+        d.habits.forEach(h => {
+          if(!h.id || !h.name) throw new Error("habit entry missing id/name");
+          if(!h.created || !/^\d{4}-\d{2}-\d{2}$/.test(h.created)) h.created = todayKey();
+        });
+        Object.keys(d.log).forEach(hid => {
+          Object.keys(d.log[hid]).forEach(k => {
+            if(!/^\d{4}-\d{2}-\d{2}$/.test(k)) throw new Error("bad date key: " + k);
+            const s = d.log[hid][k] && d.log[hid][k].status;
+            if(["done","partial","skip"].indexOf(s) === -1) throw new Error("bad status: " + s);
+          });
+        });
+        if(!window.confirm("Replace everything on this device with the backup (" + d.habits.length + " habits)?")) return;
+        state = { habits: d.habits, log: d.log };
+        saveState(); renderAll();
+        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Imported ' + d.habits.length + " habits.</p>";
+      }else{
+        // CSV: match rows to habits by name, merge entries
+        const rows = parseCsv(text);
+        if(rows.length < 2) throw new Error("CSV has no data rows");
+        const header = rows[0].map(s => s.trim().toLowerCase());
+        const hi = header.indexOf("habit_name"), di = header.indexOf("date"),
+              si = header.indexOf("status"), ni = header.indexOf("note");
+        if(hi === -1 || di === -1 || si === -1) throw new Error("CSV needs habit_name, date, status columns");
+        let merged = 0, skipped = 0;
+        for(let r = 1; r < rows.length; r++){
+          const row = rows[r];
+          const name = (row[hi] || "").trim(), date = (row[di] || "").trim(), status = (row[si] || "").trim();
+          const note = ni === -1 ? "" : (row[ni] || "");
+          const h = state.habits.find(x => x.name === name);
+          if(!h || !/^\d{4}-\d{2}-\d{2}$/.test(date) || ["done","partial","skip"].indexOf(status) === -1){ skipped++; continue; }
+          setEntry(h.id, date, status, note);
+          merged++;
+        }
+        renderAll();
+        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Merged ' + merged + " entries" + (skipped ? " (" + skipped + " rows skipped — unknown habit, bad date or status)" : "") + ".</p>";
+      }
+    }catch(err){
+      msg.innerHTML = '<p class="sub" style="color:var(--g-bad)">Import failed: ' + esc(err.message) + ". Nothing was changed.</p>";
+    }
+  };
+  reader.onerror = () => {
+    msg.innerHTML = '<p class="sub" style="color:var(--g-bad)">Could not read that file.</p>';
+  };
+  reader.readAsText(file);
+}
+
+/* ============ init ============ */
+function renderAll(){ renderStats(); renderList(); }
+
+document.getElementById("themeBtn").addEventListener("click", () => {
+  applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+});
+document.getElementById("newHabitBtn").addEventListener("click", () => openHabitEditor(null));
+document.getElementById("exportBtn").addEventListener("click", () => {
+  document.getElementById("ioCard").classList.remove("hidden");
+  document.getElementById("impMsg").innerHTML = "";
+  document.getElementById("ioCard").scrollIntoView({behavior:"smooth", block:"nearest"});
+});
+document.getElementById("importBtn").addEventListener("click", () => {
+  document.getElementById("ioCard").classList.remove("hidden");
+  document.getElementById("impMsg").innerHTML = "";
+});
+document.getElementById("expJson").addEventListener("click", exportJson);
+document.getElementById("expCsv").addEventListener("click", exportCsv);
+document.getElementById("impFile").addEventListener("change", e => {
+  if(e.target.files && e.target.files[0]) importFile(e.target.files[0]);
+  e.target.value = "";
+});
+
+loadState();
+initTheme();
+renderAll();
+</script>
+</body>
+</html>

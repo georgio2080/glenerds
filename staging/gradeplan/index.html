@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Final Grade Calculator & GPA Calculator — See Every Step of the Math (GradePlan)</title>
+<meta name="description" content="Free final grade calculator: what score do you need on the final exam? Plus weighted course grade and GPA calculators. Shows every formula step, works fully offline, no account, no ads.">
+<style>
+:root{
+  --bg:#ffffff; --fg:#1a1a1a; --muted:#5c5c5c; --card:#f4f5f7; --border:#d9dce1;
+  --accent:#1a73e8; --accent-fg:#ffffff; --good:#137333; --bad:#b3261e; --warn:#8a5a00;
+  --input-bg:#ffffff; --code-bg:#eef1f4; --shadow:0 1px 3px rgba(0,0,0,.08);
+}
+[data-theme="dark"]{
+  --bg:#121417; --fg:#e8eaed; --muted:#a8adb5; --card:#1d2126; --border:#3a4048;
+  --accent:#8ab4f8; --accent-fg:#0b1c33; --good:#7ddf9b; --bad:#ff8a80; --warn:#ffcf6b;
+  --input-bg:#171b20; --code-bg:#22282f; --shadow:0 1px 3px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+header.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:8px 0 4px}
+h1{font-size:1.5rem;margin:0}
+.sub{color:var(--muted);margin:4px 0 12px;font-size:.95rem}
+.theme-btn{background:var(--card);border:1px solid var(--border);color:var(--fg);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.9rem;white-space:nowrap}
+.theme-btn:hover{border-color:var(--accent)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.tab{background:var(--card);border:1px solid var(--border);color:var(--fg);border-radius:10px;padding:10px 14px;cursor:pointer;font-size:.95rem;font-weight:600}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+.card h2{margin:0 0 4px;font-size:1.15rem}
+.card p.desc{color:var(--muted);font-size:.9rem;margin:0 0 12px}
+.field{margin:10px 0}
+label{display:block;font-weight:600;margin-bottom:4px;font-size:.92rem}
+input[type=number],input[type=text],select{background:var(--input-bg);color:var(--fg);border:1px solid var(--border);border-radius:8px;padding:9px 10px;font-size:1rem;width:100%}
+input[type=checkbox]{width:auto;transform:scale(1.2);margin-right:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+.hint{font-size:.82rem;color:var(--muted)}
+.err{color:var(--bad);font-size:.88rem;margin:6px 0;display:none}
+.result{margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--bg);display:none}
+.result.show{display:block}
+.big{font-size:2rem;font-weight:800;margin:2px 0}
+.verdict-good{color:var(--good);font-weight:700}
+.verdict-bad{color:var(--bad);font-weight:700}
+.work{background:var(--code-bg);border-radius:8px;padding:10px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85rem;margin-top:10px;white-space:pre-wrap;word-break:break-word}
+.work b{font-family:inherit}
+.rowline{display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap}
+.rowline input[type=text]{flex:2;min-width:90px}
+.rowline input[type=number]{flex:1;min-width:64px}
+.rowline select{flex:1;min-width:80px}
+.rm{background:none;border:1px solid var(--border);color:var(--bad);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:.85rem}
+.add{background:none;border:1px dashed var(--accent);color:var(--accent);border-radius:8px;padding:9px 12px;cursor:pointer;font-size:.92rem;font-weight:600;margin-top:6px}
+.scale{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:10px}
+.scale th,.scale td{border:1px solid var(--border);padding:5px 8px;text-align:left}
+.scale th{background:var(--code-bg)}
+footer{margin:28px 0 12px;color:var(--muted);font-size:.85rem;text-align:center}
+footer a{color:var(--accent)}
+.attrib{font-size:.8rem}
+@media print{
+  .tabs,.theme-btn,.add,.rm,footer .noprint{display:none}
+  .card{break-inside:avoid;box-shadow:none}
+  body{background:#fff;color:#000}
+  .card,.result{background:#fff}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>🎓 GradePlan</h1>
+      <p class="sub">Free final-exam, course-grade &amp; GPA calculator — every formula shown, fully offline, no account, no ads.</p>
+    </div>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode">🌙 Dark</button>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Calculator tools">
+    <button class="tab" role="tab" id="tabbtn-final" aria-selected="true" aria-controls="tab-final" data-tab="final">📝 Final Exam Solver</button>
+    <button class="tab" role="tab" id="tabbtn-course" aria-selected="false" aria-controls="tab-course" data-tab="course">📊 Course Grade</button>
+    <button class="tab" role="tab" id="tabbtn-gpa" aria-selected="false" aria-controls="tab-gpa" data-tab="gpa">🏅 GPA Calculator</button>
+  </div>
+
+  <!-- ============ FINAL EXAM SOLVER ============ -->
+  <section class="card" id="tab-final" role="tabpanel" aria-labelledby="tabbtn-final">
+    <h2>What do I need on the final?</h2>
+    <p class="desc">Enter your current grade, the grade you want, and how much the final is worth. GradePlan solves for the exact score you need — and tells you honestly when the goal is impossible.</p>
+    <div class="grid2">
+      <div class="field"><label for="f-cur">Current grade (%)</label><input type="number" id="f-cur" min="0" max="100" step="0.01" value="85" inputmode="decimal"></div>
+      <div class="field"><label for="f-goal">Desired final grade (%)</label><input type="number" id="f-goal" min="0" max="100" step="0.01" value="90" inputmode="decimal"></div>
+    </div>
+    <div class="field"><label for="f-wt">Final exam weight (% of course grade)</label><input type="number" id="f-wt" min="0.01" max="100" step="0.01" value="25" inputmode="decimal"></div>
+    <p class="err" id="f-err" role="alert"></p>
+    <div class="result" id="f-res">
+      <div class="big" id="f-big" aria-live="polite"></div>
+      <div id="f-verdict"></div>
+      <div class="work" id="f-work"></div>
+    </div>
+  </section>
+
+  <!-- ============ COURSE GRADE ============ -->
+  <section class="card" id="tab-course" role="tabpanel" aria-labelledby="tabbtn-course" hidden>
+    <h2>Weighted course grade</h2>
+    <p class="desc">Add each grading category with its weight and your score. Weights are scaled automatically if they don't total 100%.</p>
+    <div id="c-rows"></div>
+    <button class="add" id="c-add">+ Add category</button>
+    <p class="err" id="c-err" role="alert"></p>
+    <div class="result" id="c-res">
+      <div class="big" id="c-big" aria-live="polite"></div>
+      <div id="c-note" class="hint"></div>
+      <div class="work" id="c-work"></div>
+    </div>
+  </section>
+
+  <!-- ============ GPA ============ -->
+  <section class="card" id="tab-gpa" role="tabpanel" aria-labelledby="tabbtn-gpa" data-tab="gpa" hidden>
+    <h2>GPA calculator</h2>
+    <p class="desc">Add each course with credits and letter grade. Toggle weighted mode to add +1.0 for Honors/AP courses.</p>
+    <div class="rowline">
+      <label style="margin:0"><input type="checkbox" id="g-weighted"> Weighted (Honors/AP +1.0)</label>
+    </div>
+    <div id="g-rows"></div>
+    <button class="add" id="g-add">+ Add course</button>
+    <p class="err" id="g-err" role="alert"></p>
+    <div class="result" id="g-res">
+      <div class="big" id="g-big" aria-live="polite"></div>
+      <div id="g-note" class="hint"></div>
+      <div class="work" id="g-work"></div>
+    </div>
+    <table class="scale" aria-label="Grade point scale">
+      <tr><th>Grade</th><th>Points</th><th>Grade</th><th>Points</th></tr>
+      <tr><td>A+ / A</td><td>4.0</td><td>C+</td><td>2.3</td></tr>
+      <tr><td>A−</td><td>3.7</td><td>C</td><td>2.0</td></tr>
+      <tr><td>B+</td><td>3.3</td><td>C−</td><td>1.7</td></tr>
+      <tr><td>B</td><td>3.0</td><td>D+</td><td>1.3</td></tr>
+      <tr><td>B−</td><td>2.7</td><td>D / D−</td><td>1.0 / 0.7</td></tr>
+      <tr><td></td><td></td><td>F</td><td>0.0</td></tr>
+    </table>
+  </section>
+
+  <footer>
+    <p class="attrib">Made by <a href="https://glenerds.gumroad.com">Glenerds</a> · free tools, no tracking, works offline</p>
+    <p class="hint">Estimates for planning only — always confirm with your official syllabus or registrar.</p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* ---------- theme ---------- */
+const root=document.documentElement, themeBtn=document.getElementById('themeBtn');
+function setTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('gradeplan-theme',t);}catch(e){}themeBtn.textContent=t==='dark'?'☀️ Light':'🌙 Dark';}
+(function(){let t=null;try{t=localStorage.getItem('gradeplan-theme');}catch(e){}
+if(!t)t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';setTheme(t);})();
+themeBtn.addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+/* ---------- tabs ---------- */
+const tabBtns=[...document.querySelectorAll('.tab')];
+function showTab(name){tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.setAttribute('aria-selected',on);document.getElementById('tab-'+b.dataset.tab).hidden=!on;});try{localStorage.setItem('gradeplan-tab',name);}catch(e){}}
+tabBtns.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const r2=x=>Math.round(x*100)/100;
+function num(v){const n=parseFloat(v);return isFinite(n)?n:NaN;}
+function showErr(id,msg){const e=$(id);if(msg){e.textContent=msg;e.style.display='block';}else{e.textContent='';e.style.display='none';}}
+
+/* ---------- FINAL SOLVER ---------- */
+const fCur=$('f-cur'),fGoal=$('f-goal'),fWt=$('f-wt');
+function calcFinal(){
+  showErr('f-err','');
+  const c=num(fCur.value),d=num(fGoal.value),w=num(fWt.value);
+  if(isNaN(c)||c<0||c>100)return showErr('f-err','Current grade must be between 0 and 100.'),$ ('f-res').classList.remove('show');
+  if(isNaN(d)||d<0||d>100)return showErr('f-err','Desired grade must be between 0 and 100.'),$ ('f-res').classList.remove('show');
+  if(isNaN(w)||w<=0||w>100)return showErr('f-err','Final weight must be more than 0 and at most 100.'),$ ('f-res').classList.remove('show');
+  const wf=w/100, need=(d-(1-wf)*c)/wf;
+  const maxScore=(1-wf)*c+wf*100, minScore=(1-wf)*c;
+  const big=$('f-big'),ver=$('f-verdict');
+  if(need>100){
+    big.textContent='Not possible 😞';
+    ver.innerHTML='<span class="verdict-bad">Even a perfect 100% on the final only gets you to '+r2(maxScore)+'%.</span> Consider aiming for '+r2(maxScore)+'% instead, or ask about extra credit.';
+  }else if(need<0){
+    big.textContent='Already guaranteed 🎉';
+    ver.innerHTML='<span class="verdict-good">You keep your goal even with a 0% on the final (floor: '+r2(minScore)+'% if you skip it entirely).</span>';
+  }else{
+    big.textContent=r2(need)+'% needed';
+    ver.innerHTML='You need <b>'+r2(need)+'%</b> on the final to finish with <b>'+r2(d)+'%</b> in the course.';
+  }
+  $('f-work').textContent='required = (desired − (1 − w) × current) ÷ w\nrequired = ('+d+' − (1 − '+r2(wf)+') × '+c+') ÷ '+r2(wf)+'\nrequired = ('+d+' − '+r2((1-wf)*c)+') ÷ '+r2(wf)+' = '+r2(need)+'%';
+  $('f-res').classList.add('show');
+  save();
+}
+[fCur,fGoal,fWt].forEach(i=>i.addEventListener('input',calcFinal));
+
+/* ---------- COURSE GRADE ---------- */
+const cRows=$('c-rows');
+function cRow(name,wt,sc){
+  const d=document.createElement('div');d.className='rowline';
+  d.innerHTML='<input type="text" placeholder="Category (e.g. Homework)" aria-label="Category name" maxlength="40">'+
+    '<input type="number" placeholder="Weight %" aria-label="Weight percent" min="0" max="100" step="0.01" inputmode="decimal">'+
+    '<input type="number" placeholder="Score %" aria-label="Score percent" min="0" max="100" step="0.01" inputmode="decimal">'+
+    '<button class="rm" type="button" aria-label="Remove category">✕</button>';
+  const ins=d.querySelectorAll('input');
+  if(name!==undefined)ins[0].value=name; if(wt!==undefined)ins[1].value=wt; if(sc!==undefined)ins[2].value=sc;
+  ins.forEach(i=>i.addEventListener('input',calcCourse));
+  d.querySelector('.rm').addEventListener('click',()=>{d.remove();calcCourse();});
+  return d;
+}
+function calcCourse(){
+  showErr('c-err','');
+  const rows=[...cRows.querySelectorAll('.rowline')];
+  let tw=0,ts=0,lines=[],ok=false;
+  for(const r of rows){
+    const ins=r.querySelectorAll('input');
+    const name=(ins[0].value||'Category').trim()||'Category';
+    const w=num(ins[1].value),s=num(ins[2].value);
+    if(isNaN(w)||isNaN(s))continue;
+    if(w<0||w>100)return showErr('c-err','Weights must be between 0 and 100.'),$ ('c-res').classList.remove('show');
+    if(s<0||s>100)return showErr('c-err','Scores must be between 0 and 100.'),$ ('c-res').classList.remove('show');
+    ok=true;tw+=w;ts+=w*s;lines.push('  '+name+': '+w+'% × '+s+'% = '+r2(w*s));
+  }
+  if(!ok)return $('c-res').classList.remove('show');
+  if(tw===0)return showErr('c-err','Total weight is 0 — add weights to your categories.'),$ ('c-res').classList.remove('show');
+  const avg=ts/tw;
+  $('c-big').textContent=r2(avg)+'%';
+  $('c-note').textContent=tw===100?'Weights total exactly 100%.':'Weights total '+r2(tw)+'% — scaled to 100% automatically.';
+  $('c-work').textContent='grade = Σ(weight × score) ÷ Σ(weight)\n'+lines.join('\n')+'\n= '+r2(ts)+' ÷ '+r2(tw)+' = '+r2(avg)+'%';
+  $('c-res').classList.add('show');
+  save();
+}
+$('c-add').addEventListener('click',()=>{cRows.appendChild(cRow());save();});
+
+/* ---------- GPA ---------- */
+const POINTS={'A+':4.0,'A':4.0,'A-':3.7,'B+':3.3,'B':3.0,'B-':2.7,'C+':2.3,'C':2.0,'C-':1.7,'D+':1.3,'D':1.0,'D-':0.7,'F':0.0};
+const gRows=$('g-rows'),gW=$('g-weighted');
+function gRow(name,cr,gr,hon){
+  const d=document.createElement('div');d.className='rowline';
+  let opts='';for(const g of Object.keys(POINTS))opts+='<option'+(gr===g?' selected':'')+'>'+g+'</option>';
+  d.innerHTML='<input type="text" placeholder="Course" aria-label="Course name" maxlength="40">'+
+    '<input type="number" placeholder="Credits" aria-label="Credits" min="0" max="12" step="0.5" inputmode="decimal">'+
+    '<select aria-label="Letter grade">'+opts+'</select>'+
+    '<label class="hint" style="margin:0;white-space:nowrap"><input type="checkbox" aria-label="Honors or AP">H/AP</label>'+
+    '<button class="rm" type="button" aria-label="Remove course">✕</button>';
+  const ins=d.querySelectorAll('input');
+  if(name!==undefined)ins[0].value=name; if(cr!==undefined)ins[1].value=cr; if(hon)ins[2].checked=true;
+  d.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',calcGpa));
+  d.querySelectorAll('input,select').forEach(i=>i.addEventListener('change',calcGpa));
+  d.querySelector('.rm').addEventListener('click',()=>{d.remove();calcGpa();});
+  return d;
+}
+function calcGpa(){
+  showErr('g-err','');
+  const rows=[...gRows.querySelectorAll('.rowline')];
+  const weighted=gW.checked;
+  let tc=0,tqp=0,lines=[],ok=false;
+  for(const r of rows){
+    const t=r.querySelector('input[type=text]').value.trim()||'Course';
+    const cr=num(r.querySelector('input[type=number]').value);
+    const gr=r.querySelector('select').value;
+    const hon=r.querySelector('input[type=checkbox]').checked;
+    if(isNaN(cr))continue;
+    if(cr<=0||cr>12)return showErr('g-err','Credits must be between 0 and 12.'),$ ('g-res').classList.remove('show');
+    const pts=POINTS[gr]+(weighted&&hon?1.0:0);
+    ok=true;tc+=cr;tqp+=pts*cr;
+    lines.push('  '+t+': '+gr+' → '+r2(POINTS[gr])+(weighted&&hon?' +1.0 (H/AP)':'')+' × '+cr+' cr = '+r2(pts*cr)+' pts');
+  }
+  if(!ok)return $('g-res').classList.remove('show');
+  const gpa=tqp/tc;
+  $('g-big').textContent='GPA '+r2(gpa);
+  $('g-note').textContent=r2(tc)+' total credits · '+r2(tqp)+' quality points · '+(weighted?'weighted 4.0 scale (+1.0 Honors/AP)':'unweighted 4.0 scale');
+  $('g-work').textContent='GPA = Σ(grade points × credits) ÷ Σ(credits)\n'+lines.join('\n')+'\n= '+r2(tqp)+' ÷ '+r2(tc)+' = '+r2(gpa);
+  $('g-res').classList.add('show');
+  save();
+}
+$('g-add').addEventListener('click',()=>{gRows.appendChild(gRow());save();});
+gW.addEventListener('change',calcGpa);
+
+/* ---------- persistence (strict validation) ---------- */
+const LSKEY='gradeplan-v1';
+function save(){
+  try{
+    const data={
+      tab:tabBtns.find(b=>b.getAttribute('aria-selected')==='true').dataset.tab,
+      f:[fCur.value,fGoal.value,fWt.value],
+      c:[...cRows.querySelectorAll('.rowline')].map(r=>{const i=r.querySelectorAll('input');return[i[0].value,i[1].value,i[2].value];}),
+      g:[...gRows.querySelectorAll('.rowline')].map(r=>[r.querySelector('input[type=text]').value,r.querySelector('input[type=number]').value,r.querySelector('select').value,r.querySelector('input[type=checkbox]').checked]),
+      gw:gW.checked
+    };
+    localStorage.setItem(LSKEY,JSON.stringify(data));
+  }catch(e){}
+}
+function validNumStr(v,min,max){if(typeof v!=='string')return false;const n=parseFloat(v);return v===''||(isFinite(n)&&n>=min&&n<=max);}
+function load(){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem(LSKEY));}catch(e){return;}
+  if(!d||typeof d!=='object')return;
+  try{
+    if(Array.isArray(d.f)&&d.f.length===3&&d.f.every(v=>validNumStr(v,0,100))){fCur.value=d.f[0];fGoal.value=d.f[1];fWt.value=d.f[2];}
+    if(Array.isArray(d.c)){cRows.innerHTML='';for(const r of d.c.slice(0,30)){if(!Array.isArray(r)||r.length!==3)continue;const[n,w,s]=r;if(typeof n!=='string'||n.length>40||!validNumStr(w,0,100)||!validNumStr(s,0,100))continue;cRows.appendChild(cRow(n,w,s));}}
+    if(Array.isArray(d.g)){gRows.innerHTML='';for(const r of d.g.slice(0,30)){if(!Array.isArray(r)||r.length!==4)continue;const[n,cr,gr,hon]=r;if(typeof n!=='string'||n.length>40||!POINTS.hasOwnProperty(gr)||typeof hon!=='boolean')continue;if(!validNumStr(cr,0,12))continue;gRows.appendChild(gRow(n,cr,gr,hon));}}
+    if(typeof d.gw==='boolean')gW.checked=d.gw;
+    if(typeof d.tab==='string'&&['final','course','gpa'].includes(d.tab))showTab(d.tab);
+  }catch(e){}
+}
+
+/* ---------- init ---------- */
+if(!cRows.children.length){cRows.appendChild(cRow('Homework',40,92));cRows.appendChild(cRow('Exams',60,78));}
+if(!gRows.children.length){gRows.appendChild(gRow('Biology',3,'A',false));gRows.appendChild(gRow('Algebra II',4,'B+',false));}
+load();
+if(!cRows.children.length)cRows.appendChild(cRow());
+if(!gRows.children.length)gRows.appendChild(gRow());
+calcFinal();calcCourse();calcGpa();
+</script>
+</body>
+</html>

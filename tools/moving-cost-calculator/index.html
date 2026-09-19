@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Moving Cost Calculator — Estimate Your Move | Glenerds</title>
+<meta name="description" content="Free moving cost calculator: estimate DIY, container, and full-service move costs by home size and distance. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/moving-cost-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Moving Cost Calculator — Estimate Your Move | Glenerds">
+<meta property="og:description" content="Free moving cost calculator: estimate DIY, container, and full-service move costs by home size and distance. Offline, no account.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/moving-cost-calculator/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How accurate is this estimate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is a ballpark built from national averages \u2014 good for budgeting and for spotting a quote that looks wrong, not a substitute for real quotes from movers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is the range so wide?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Season, exact route, stairs, long carries, and how precisely you estimated your inventory all move the final number. The low\u2013high range reflects that real-world spread."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is DIY always cheaper?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually, but not always by as much as people expect once you add truck rental, fuel, packing materials, and your own time. Run both scenarios above before deciding."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is valuation coverage?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The mover\u2019s liability for damage. Basic coverage is minimal by law; full valuation costs more but actually covers replacement value. Worth pricing for a long-distance move."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "I have quotes in hand \u2014 how do I know which mover to trust?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "That is exactly what MoveAudit is for: it scores each mover against 35 scam red-flag signals, compares up to 4 quotes side by side, and checks estimates against the federal 110% rule. Nine dollars, one time, offline."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Moving Cost Calculator</p>
+<main>
+<div class="hero">
+<h1>Free Moving Cost Calculator &mdash; What Will Your Move Cost?</h1>
+<p class="lead">How much will your move actually cost? Get a realistic range before you call a single mover:
+pick your home size and distance, choose a DIY truck, a portable container, or full-service movers, and
+this free calculator builds an itemized estimate with a low&ndash;high range. It runs entirely offline in
+your browser &mdash; no account, no email capture, no quote-site sales calls. Use it to budget the move and
+to sanity-check the quotes movers give you: if a quote lands far outside the range, that's worth a second look.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Moving cost calculator">
+
+<label>Home size:
+<select id="mv-size" aria-label="Home size">
+<option value="0">Studio</option><option value="1" selected>1 bedroom</option>
+<option value="2">2 bedrooms</option><option value="3">3 bedrooms</option>
+<option value="4">4 bedrooms</option><option value="5">5+ bedrooms</option>
+</select></label>
+<label>Distance (miles): <input type="number" id="mv-miles" value="500" min="0" step="10" style="width:6rem" aria-label="Distance in miles"></label>
+<label>Move type:
+<select id="mv-type" aria-label="Move type">
+<option value="diy">DIY rental truck</option>
+<option value="container">Portable container</option>
+<option value="full" selected>Full-service movers</option>
+</select></label><br>
+<label><input type="checkbox" id="mv-pack"> Packing service</label>
+<label><input type="checkbox" id="mv-store"> 1 month storage</label>
+<label><input type="checkbox" id="mv-val"> Full valuation coverage</label><br>
+<button id="mv-go">Estimate my move</button>
+<div id="mv-out" style="margin-top:1rem"></div>
+<p class="small">Estimates use national-average ballparks so you can sanity-check quotes &mdash; your actual quotes are what matter.</p>
+</div>
+<p class="small" style="margin-top:1rem"><strong>Want to keep and compare estimates like this across movers?</strong> <a href="../../products/moving-company-quote-comparison-scam-checker/index.html">MoveAudit</a> scores each mover against 35 scam red flags and ranks your quotes side by side.</p>
+<p class="small">Free tool by <a href="../../index.html">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+
+<div class="toolbox">
+<h3 style="margin-top:0">Free vs. full version</h3>
+<table><tbody>
+<tr><td><strong>Free tool on this page</strong></td><td><strong>MoveAudit &mdash; $9 one-time</strong></td></tr>
+<tr><td>One-scenario cost estimates (DIY, container, or full-service)</td><td>Vets your actual movers and their actual quotes</td></tr>
+<tr><td>National-average ballparks for budgeting</td><td>35-signal scam red-flag scoring per mover</td></tr>
+<tr><td>No saved comparisons</td><td>Side-by-side comparison of up to 4 quotes, federal 110% rule check, and a printable vetting report</td></tr>
+</tbody></table>
+<p><a class="btn" href="https://glenerds.gumroad.com/l/moving-company-quote-comparison-scam-checker">Get MoveAudit &mdash; $9 one-time</a></p>
+<p class="small">No subscription. No account. The full tool runs offline in your browser, just like this free one.</p>
+</div>
+
+
+
+
+
+<script>
+(function(){
+  var KEY='glenerds-movecost-v1';
+  var BASE={diy:[180,260,340,430,520,620],container:[1400,1900,2500,3200,3900,4600],full:[900,1300,2100,3300,4700,6100]};
+  var PERMILE={diy:0.89,container:1.60,full:2.75};
+  function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||null}catch(e){return null}}
+  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  function calc(){
+    var size=parseInt(document.getElementById('mv-size').value,10);
+    var miles=Math.max(0,parseFloat(document.getElementById('mv-miles').value)||0);
+    var type=document.getElementById('mv-type').value;
+    var pack=document.getElementById('mv-pack').checked;
+    var store=document.getElementById('mv-store').checked;
+    var val=document.getElementById('mv-val').checked;
+    var base=BASE[type][size],mile=PERMILE[type]*miles;
+    var extras=0,lines=[];
+    lines.push(['Base '+typeLabel(type),base]);
+    if(miles>0){lines.push(['Distance ('+miles.toLocaleString()+' mi)',mile]);}
+    if(pack){var p=base*0.25;extras+=p;lines.push(['Packing service',p]);}
+    if(store){extras+=160;lines.push(['Storage (1 month)',160]);}
+    if(val){extras+=120;lines.push(['Valuation coverage',120]);}
+    var mid=base+mile+extras,low=mid*0.85,high=mid*1.3;
+    var html='<p style="font-size:1.2rem"><strong>Estimated range: '+money(low)+' &ndash; '+money(high)+'</strong></p><table><tbody>';
+    lines.forEach(function(l){html+='<tr><td>'+l[0]+'</td><td>'+money(l[1])+'</td></tr>';});
+    html+='</tbody></table>';
+    document.getElementById('mv-out').innerHTML=html;
+    save({size:size,miles:miles,type:type,pack:pack,store:store,val:val});
+  }
+  function typeLabel(t){return t==='diy'?'truck rental':t==='container'?'container':'movers';}
+  var d=load();
+  if(d){document.getElementById('mv-size').value=d.size;document.getElementById('mv-miles').value=d.miles;
+    document.getElementById('mv-type').value=d.type;document.getElementById('mv-pack').checked=!!d.pack;
+    document.getElementById('mv-store').checked=!!d.store;document.getElementById('mv-val').checked=!!d.val;}
+  document.getElementById('mv-go').onclick=calc;
+  ['mv-size','mv-miles','mv-type','mv-pack','mv-store','mv-val'].forEach(function(id){
+    document.getElementById(id).addEventListener('change',calc);});
+  calc();
+})();
+</script>
+<section class="block prose">
+
+<h2 class="sec">How to use the moving cost calculator</h2>
+<p>Choose your home size and the distance of your move, then pick how you plan to move: a DIY rental
+truck, a portable container, or full-service movers. Add packing, storage, or valuation coverage if
+you need them, and the calculator builds an itemized estimate with a realistic low&ndash;high range.
+Your settings are remembered in this browser, so you can tweak scenarios &mdash; DIY versus full-service,
+say &mdash; without re-entering everything.</p>
+<h2 class="sec">What actually drives moving costs</h2>
+<p>Three things dominate the price: how much stuff you have (home size), how far it goes (distance),
+and how much labor you buy (DIY vs. full-service). Everything else &mdash; packing, storage, valuation
+&mdash; is a meaningful but smaller adder. The single most expensive mistake is comparing quotes that
+aren&rsquo;t for the same service: a cheap full-service quote next to a container quote is not an
+apples-to-apples comparison. Get every quote in writing with the same inventory list, and be wary of
+any estimate that comes in far below the others &mdash; that is the classic setup for a hostage-load
+scam where the price doubles on moving day.</p>
+<h2 class="sec">Worked example</h2>
+<p>A 1-bedroom, 500-mile full-service move: $1,300 base + $1,375 for distance = a $2,675 midpoint, shown as a
+<strong>$2,274&ndash;$3,478</strong> range. Switch the same inputs to a DIY truck for a 100-mile studio move and
+the range drops to <strong>$229&ndash;$350</strong> &mdash; the tool makes the trade-off concrete in one click,
+before you've talked to a single mover.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>How accurate is this estimate?</dt>
+<dd>It is a ballpark built from national averages &mdash; good for budgeting and for spotting a quote
+that looks wrong, not a substitute for real quotes from movers.</dd>
+<dt>Why is the range so wide?</dt>
+<dd>Season, exact route, stairs, long carries, and how precisely you estimated your inventory all
+move the final number. The low&ndash;high range reflects that real-world spread.</dd>
+<dt>Is DIY always cheaper?</dt>
+<dd>Usually, but not always by as much as people expect once you add truck rental, fuel, packing
+materials, and your own time. Run both scenarios above before deciding.</dd>
+<dt>What is valuation coverage?</dt>
+<dd>The mover&rsquo;s liability for damage. Basic coverage is minimal by law; full valuation costs
+more but actually covers replacement value. Worth pricing for a long-distance move.</dd>
+<dt>I have quotes in hand &mdash; how do I know which mover to trust?</dt>
+<dd>That is exactly what <strong>MoveAudit</strong> is for: it scores each mover against 35 scam
+red-flag signals, compares up to 4 quotes side by side, and checks estimates against the federal
+110% rule. Nine dollars, one time, offline.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>MoveAudit &mdash; $9 one-time</h3><p>Scores every mover against 35 scam red-flag signals and compares up to 4 quotes side by side.</p><a class="btn" href="../../products/moving-company-quote-comparison-scam-checker/index.html">Learn more</a></div>
+<div class="card"><h3>Free Security Deposit Deduction Calculator</h3><p>Closing out the old place? Itemize deductions and compute the refund.</p><a class="btn" href="../security-deposit-deduction-calculator/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Contractor Bid Comparison Worksheet</h3><p>Settling in? Compare two contractor bids line by line.</p><a class="btn" href="../contractor-bid-comparison/index.html">Open the free tool</a></div>
+<div class="card"><h3>Moving Quote Website Alternative</h3><p>An honest comparison: when the one-time offline tool wins, and when the subscription alternative is the better call.</p><a class="btn" href="../../alternatives/moving-quote-websites-alternative/index.html">Read the comparison</a></div>
+</div>
+</section>
+
+
+<div class="cta-band">
+<h2>Need the full version?</h2>
+<p><strong>MoveAudit</strong> scores every mover you consider against 35 red-flag signals, compares up to 4 quotes side by side, and checks estimates against the federal 110% rule. $9 one-time, no subscription.</p>
+<a class="btn" href="https://glenerds.gumroad.com/l/moving-company-quote-comparison-scam-checker">Get MoveAudit &mdash; $9 one-time</a>
+<p class="small"><a href="../../products/moving-company-quote-comparison-scam-checker/index.html">Learn more about MoveAudit</a>
+&middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

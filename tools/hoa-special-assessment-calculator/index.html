@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free HOA Special Assessment Calculator | Glenerds</title>
+<meta name="description" content="Free HOA special assessment calculator: estimate your share of a special assessment from project cost, units, and reserves. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/hoa-special-assessment-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free HOA Special Assessment Calculator | Glenerds">
+<meta property="og:description" content="Free HOA special assessment calculator: estimate your share of a special assessment from project cost, units, and reserves. Offline, no account.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/hoa-special-assessment-calculator/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can I be assessed right after buying?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes \u2014 assessments attach to the unit, not the previous owner. This is why HOA due diligence belongs in every condo purchase, not just the home inspection."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Equal split or ownership percentage?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on the HOA\u2019s declaration. Many split equally per unit; some weight by square footage or unit type. Your resale package states the method \u2014 use the toggle above to match it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can assessments be financed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Often the HOA offers a payment plan, or you can finance your share independently. Either way, interest makes the true cost higher than the sticker number."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do reserves really matter that much?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "They are the entire ballgame. Well-funded reserves turn a $250,000 roof into a non-event; thin reserves turn it into a five-figure surprise per owner."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I judge an HOA before buying?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "With the numbers, not vibes. HOA ReserveCheck scores HOA financial health from your resale-package figures, gauges special-assessment likelihood, and flags Fannie Mae warrantability risks \u2014 $9 one-time, offline."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Special Assessment Calculator</p>
+<main>
+<div class="hero">
+<h1>Free HOA Special Assessment Calculator &mdash; What Would You Owe?</h1>
+<p class="lead">What would a special assessment actually cost you? Enter the project cost, the number of units, and
+what the HOA holds in reserves, and this free calculator estimates your personal share &mdash; plus what it
+equals in months of dues. Essential homework before you buy into any condo or townhome community. Free,
+offline, no account.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="HOA special assessment calculator">
+
+<label>Total project cost: $<input type="number" id="ha-cost" value="250000" min="0" step="1000" style="width:8rem" aria-label="Total project cost"></label>
+<label>Number of units: <input type="number" id="ha-units" value="40" min="1" step="1" style="width:5rem" aria-label="Number of units"></label><br>
+<label>Your share: <select id="ha-share" aria-label="Share method"><option value="equal">Equal split per unit</option><option value="pct">My ownership %</option></select></label>
+<label id="ha-pctwrap" style="display:none">Ownership %: <input type="number" id="ha-pct" value="2.5" min="0" max="100" step="0.1" style="width:5rem" aria-label="Ownership percent"></label><br>
+<label>Reserve funds available: $<input type="number" id="ha-res" value="60000" min="0" step="1000" style="width:8rem" aria-label="Reserve funds"></label>
+<label>Your monthly dues: $<input type="number" id="ha-dues" value="350" min="0" step="10" style="width:6rem" aria-label="Monthly dues"></label><br>
+<button id="ha-go">Calculate my share</button>
+<div id="ha-out" style="margin-top:1rem"></div>
+<p class="small">A planning estimate only &mdash; your HOA&rsquo;s governing documents control how assessments are actually allocated.</p>
+</div>
+<p class="small" style="margin-top:1rem"><strong>Buying into this HOA?</strong> <a href="../../products/hoa-resale-package-reserve-study-risk-analyzer/index.html">HOA ReserveCheck</a> scores the association's full financial picture, not just one assessment.</p>
+<p class="small">Free tool by <a href="../../index.html">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+
+<div class="toolbox">
+<h3 style="margin-top:0">Free vs. full version</h3>
+<table><tbody>
+<tr><td><strong>Free tool on this page</strong></td><td><strong>HOA ReserveCheck &mdash; $9 one-time</strong></td></tr>
+<tr><td>Your share of one assessment</td><td>Full HOA financial-health scoring from resale-package figures</td></tr>
+<tr><td>No risk flags beyond thin reserves</td><td>Weighted risk score, special-assessment likelihood gauge, and Fannie Mae warrantability warnings</td></tr>
+<tr><td>One scenario at a time</td><td>12-item document-request checklist and a printable due-diligence report</td></tr>
+</tbody></table>
+<p><a class="btn" href="https://glenerds.gumroad.com/l/hoa-resale-package-reserve-study-risk-analyzer">Get HOA ReserveCheck &mdash; $9 one-time</a></p>
+<p class="small">No subscription. No account. The full tool runs offline in your browser, just like this free one.</p>
+</div>
+
+
+
+
+
+<script>
+(function(){
+  var KEY='glenerds-hoaassess-v1';
+  function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
+  function gv(id){return parseFloat(document.getElementById(id).value)||0;}
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||null}catch(e){return null}}
+  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  function calc(){
+    var cost=gv('ha-cost'),units=Math.max(1,gv('ha-units')),res=gv('ha-res'),dues=gv('ha-dues');
+    var method=document.getElementById('ha-share').value;
+    var share=method==='equal'?1/units:gv('ha-pct')/100;
+    var gross=cost*share,resShare=res*share,net=Math.max(0,gross-resShare);
+    var months=dues>0?net/dues:0;
+    var fundPct=cost>0?res/cost*100:0;
+    var html='<p style="font-size:1.2rem"><strong>Your estimated share: '+money(net)+'</strong></p>'
+      +'<table><tbody>'
+      +'<tr><td>Gross share of project</td><td>'+money(gross)+'</td></tr>'
+      +'<tr><td>Less your share of reserves</td><td>&minus;'+money(resShare)+'</td></tr>'
+      +'<tr><td><strong>Out of pocket</strong></td><td><strong>'+money(net)+'</strong></td></tr>'
+      +'<tr><td>Equals months of dues</td><td>'+months.toFixed(1)+'</td></tr>'
+      +'<tr><td>Reserves cover</td><td>'+fundPct.toFixed(0)+'% of project</td></tr>'
+      +'</tbody></table>';
+    if(fundPct<30){html+='<p><strong>⚠ Thin reserves.</strong> Under a third of the project covered by reserves is exactly when large assessments happen.</p>';}
+    document.getElementById('ha-out').innerHTML=html;
+    save({cost:cost,units:units,res:res,dues:dues,method:method,pct:gv('ha-pct')});
+  }
+  var d=load();
+  if(d){document.getElementById('ha-cost').value=d.cost;document.getElementById('ha-units').value=d.units;
+    document.getElementById('ha-res').value=d.res;document.getElementById('ha-dues').value=d.dues;
+    document.getElementById('ha-share').value=d.method;document.getElementById('ha-pct').value=d.pct;}
+  function syncPct(){document.getElementById('ha-pctwrap').style.display=
+    document.getElementById('ha-share').value==='pct'?'inline':'none';}
+  document.getElementById('ha-share').addEventListener('change',function(){syncPct();calc();});
+  ['ha-cost','ha-units','ha-res','ha-dues','ha-pct'].forEach(function(id){
+    document.getElementById(id).addEventListener('input',calc);});
+  document.getElementById('ha-go').onclick=calc;
+  syncPct();calc();
+})();
+</script>
+<section class="block prose">
+
+<h2 class="sec">How special assessments work</h2>
+<p>When an HOA&rsquo;s reserves cannot cover a major repair &mdash; roof, siding, elevators, paving
+&mdash; the board levies a special assessment: a one-time charge divided among owners. Your share
+depends on your ownership percentage (often equal per unit, sometimes weighted by unit size). The
+calculator above takes the project cost, subtracts the reserve funds already saved, and shows your
+out-of-pocket share plus what it equals in months of regular dues &mdash; the number that makes the
+pain concrete.</p>
+<h2 class="sec">Reading the warning signs early</h2>
+<p>Assessments rarely come from nowhere. Thin reserves relative to the age of big-ticket components
+is the tell: a 25-year-old roof with 10% of its replacement cost reserved is a future assessment
+wearing a disguise. Before buying into any HOA, read the reserve study &mdash; not just the dues
+amount &mdash; and ask when the last study was done. A study older than five years is itself a red flag.</p>
+<h2 class="sec">Worked example</h2>
+<p>A $240,000 roof project across 40 units with $60,000 in reserves: your equal share is $6,000 gross, minus
+$1,500 covered by reserves &mdash; <strong>$4,500</strong> out of pocket, or 12.9 months of $350 dues. Reserves
+cover only 25% of the project, so the tool raises its thin-reserves warning: this is exactly when large
+assessments happen.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>Can I be assessed right after buying?</dt>
+<dd>Yes &mdash; assessments attach to the unit, not the previous owner. This is why HOA due diligence
+belongs in every condo purchase, not just the home inspection.</dd>
+<dt>Equal split or ownership percentage?</dt>
+<dd>It depends on the HOA&rsquo;s declaration. Many split equally per unit; some weight by square
+footage or unit type. Your resale package states the method &mdash; use the toggle above to match it.</dd>
+<dt>Can assessments be financed?</dt>
+<dd>Often the HOA offers a payment plan, or you can finance your share independently. Either way,
+interest makes the true cost higher than the sticker number.</dd>
+<dt>Do reserves really matter that much?</dt>
+<dd>They are the entire ballgame. Well-funded reserves turn a $250,000 roof into a non-event; thin
+reserves turn it into a five-figure surprise per owner.</dd>
+<dt>How do I judge an HOA before buying?</dt>
+<dd>With the numbers, not vibes. <strong>HOA ReserveCheck</strong> scores HOA financial health from
+your resale-package figures, gauges special-assessment likelihood, and flags Fannie Mae
+warrantability risks &mdash; $9 one-time, offline.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>HOA ReserveCheck &mdash; $9 one-time</h3><p>Scores HOA financial health from resale-package figures and flags special-assessment risk.</p><a class="btn" href="../../products/hoa-resale-package-reserve-study-risk-analyzer/index.html">Learn more</a></div>
+<div class="card"><h3>Free Security Deposit Deduction Calculator</h3><p>Renting while you house-hunt? Keep the deposit math clean.</p><a class="btn" href="../security-deposit-deduction-calculator/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Contractor Bid Comparison Worksheet</h3><p>Planning the renovation? Compare contractor bids line by line.</p><a class="btn" href="../contractor-bid-comparison/index.html">Open the free tool</a></div>
+<div class="card"><h3>HOA Management Software Alternative</h3><p>An honest comparison: when the one-time offline tool wins, and when the subscription alternative is the better call.</p><a class="btn" href="../../alternatives/hoa-management-software-alternative/index.html">Read the comparison</a></div>
+</div>
+</section>
+
+
+<div class="cta-band">
+<h2>Need the full version?</h2>
+<p><strong>HOA ReserveCheck</strong> is the offline risk analyzer for condo and townhome buyers: key in the figures from the HOA documents and get a weighted financial-risk score and special-assessment gauge. $9 one-time, no subscription.</p>
+<a class="btn" href="https://glenerds.gumroad.com/l/hoa-resale-package-reserve-study-risk-analyzer">Get HOA ReserveCheck &mdash; $9 one-time</a>
+<p class="small"><a href="../../products/hoa-resale-package-reserve-study-risk-analyzer/index.html">Learn more about HOA ReserveCheck</a>
+&middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

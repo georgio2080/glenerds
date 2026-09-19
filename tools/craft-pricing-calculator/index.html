@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Craft Pricing Calculator for Handmade Sellers | Glenerds</title>
+<meta name="description" content="Free craft pricing calculator: enter materials, labor, and fees to get a suggested handmade product price with a profit verdict. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/craft-pricing-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Craft Pricing Calculator for Handmade Sellers | Glenerds">
+<meta property="og:description" content="Free craft pricing calculator: enter materials, labor, and fees to get a suggested handmade product price with a profit verdict. Offline, no account.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/craft-pricing-calculator/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What margin should I target?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Thirty percent profit after fees is a healthy baseline for handmade goods; wholesale needs room for the retailer\u2019s markup on top, so price wholesale at roughly half of retail and check the math still works."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I count my own labor?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes \u2014 always. Unpaid labor is a hobby subsidy, not a business model. If the price only works with free labor, the product does not work."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What counts as overhead?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Anything the product consumes that is not direct materials: packaging, labels, a share of tools, electricity, market booth fees spread across units. A dollar or two per item is a sane starting point."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do different sales channels change the price?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Fees differ \u2014 your own site, a marketplace, a craft fair, wholesale \u2014 so the same item needs a different price per channel. Re-run the calculator with each channel\u2019s fee to keep every channel profitable."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if I sell many different products?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "That is where a per-product recipe system pays off. CraftCost lets you build a cost recipe per product, time real production batches with a built-in labor timer, and get channel-by-channel suggested prices with the Healthy / Thin / Underwater verdict \u2014 $14 one-time, offline."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Craft Pricing Calculator</p>
+<main>
+<div class="hero">
+<h1>Free Craft Pricing Calculator &mdash; Price Handmade Goods That Profit</h1>
+<p class="lead">Are your handmade prices actually covering your costs? Enter what a product really costs &mdash;
+materials, your labor hours, overhead, and marketplace fees &mdash; and this free calculator returns a
+suggested price plus an honest verdict on your current price: Healthy, Thin, or Underwater. Built for Etsy
+and craft-fair sellers who suspect they're underpricing but can't prove it. Free, offline, no account; your
+numbers never leave your browser.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Craft pricing calculator">
+
+<label>Materials cost per item: $<input type="number" id="cp-mat" value="4.50" min="0" step="0.01" style="width:6rem" aria-label="Materials cost"></label>
+<label>Labor hours per item: <input type="number" id="cp-hrs" value="0.5" min="0" step="0.1" style="width:5rem" aria-label="Labor hours"></label>
+<label>Your hourly rate: $<input type="number" id="cp-rate" value="20" min="0" step="0.5" style="width:5rem" aria-label="Hourly rate"></label><br>
+<label>Overhead per item: $<input type="number" id="cp-oh" value="1" min="0" step="0.1" style="width:5rem" aria-label="Overhead per item"></label>
+<label>Marketplace fee %: <input type="number" id="cp-fee" value="10" min="0" max="50" step="0.5" style="width:5rem" aria-label="Marketplace fee percent"></label>
+<label>Target profit margin %: <input type="number" id="cp-margin" value="30" min="0" max="90" step="1" style="width:5rem" aria-label="Target profit margin percent"></label><br>
+<label>Your current price (optional): $<input type="number" id="cp-cur" value="0" min="0" step="0.01" style="width:6rem" aria-label="Current selling price"></label>
+<button id="cp-go">Calculate price</button>
+<div id="cp-out" style="margin-top:1rem"></div>
+<p class="small">Fee default of 10% approximates a typical marketplace cut &mdash; adjust it to your actual channel.</p>
+</div>
+<p class="small" style="margin-top:1rem"><strong>Pricing more than one product?</strong> <a href="../../products/handmade-pricing-calculator-etsy-craft-sellers/index.html">CraftCost</a> keeps a cost recipe per product and times your real labor.</p>
+<p class="small">Free tool by <a href="../../index.html">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+
+<div class="toolbox">
+<h3 style="margin-top:0">Free vs. full version</h3>
+<table><tbody>
+<tr><td><strong>Free tool on this page</strong></td><td><strong>CraftCost &mdash; $14 one-time</strong></td></tr>
+<tr><td>One product at a time</td><td>Cost recipes for your whole product catalog</td></tr>
+<tr><td>You type labor hours from memory</td><td>Built-in batch labor timer feeds real measured minutes into each recipe</td></tr>
+<tr><td>One suggested price</td><td>Suggested prices per sales channel &mdash; Etsy, craft fair, wholesale &mdash; each with its own verdict</td></tr>
+</tbody></table>
+<p><a class="btn" href="https://glenerds.gumroad.com/l/handmade-pricing-calculator-etsy-craft-sellers">Get CraftCost &mdash; $14 one-time</a></p>
+<p class="small">No subscription. No account. The full tool runs offline in your browser, just like this free one.</p>
+</div>
+
+
+
+
+
+<script>
+(function(){
+  var KEY='glenerds-craftprice-v1';
+  function money(n){return '$'+n.toFixed(2);}
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||null}catch(e){return null}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({
+    mat:gv('cp-mat'),hrs:gv('cp-hrs'),rate:gv('cp-rate'),oh:gv('cp-oh'),fee:gv('cp-fee'),margin:gv('cp-margin'),cur:gv('cp-cur')}))}catch(e){}}
+  function gv(id){return parseFloat(document.getElementById(id).value)||0;}
+  function verdict(margin){
+    if(margin>=30)return['Healthy','Your margin leaves real room for growth, discounts, and surprises.'];
+    if(margin>=15)return['Thin','You are covering costs but one bad batch or fee hike eats the profit.'];
+    return['Underwater','This price loses money on every sale once fees and labor are counted.'];}
+  function calc(){
+    var mat=gv('cp-mat'),hrs=gv('cp-hrs'),rate=gv('cp-rate'),oh=gv('cp-oh');
+    var fee=gv('cp-fee')/100,margin=gv('cp-margin')/100,cur=gv('cp-cur');
+    var labor=hrs*rate,cost=mat+labor+oh;
+    var denom=1-fee-margin,price=denom>0?cost/denom:0;
+    var html='<p style="font-size:1.2rem"><strong>Suggested price: '+money(price)+'</strong></p>';
+    html+='<table><tbody><tr><td>Materials</td><td>'+money(mat)+'</td></tr>'
+      +'<tr><td>Labor ('+hrs+'h @ '+money(rate)+'/h)</td><td>'+money(labor)+'</td></tr>'
+      +'<tr><td>Overhead</td><td>'+money(oh)+'</td></tr>'
+      +'<tr><td><strong>True cost per item</strong></td><td><strong>'+money(cost)+'</strong></td></tr>'
+      +'<tr><td>Marketplace fees ('+(fee*100).toFixed(1)+'%)</td><td>'+money(price*fee)+'</td></tr>'
+      +'<tr><td>Your profit ('+(margin*100).toFixed(0)+'%)</td><td>'+money(price*margin)+'</td></tr></tbody></table>';
+    if(cur>0){
+      var actualMargin=(cur-cost-cur*fee)/cur*100;
+      var v=verdict(actualMargin);
+      html+='<p><strong>Your current price of '+money(cur)+': '+v[0]+'</strong> ('+actualMargin.toFixed(1)+'% margin)<br><span class="small">'+v[1]+'</span></p>';
+    }
+    document.getElementById('cp-out').innerHTML=html;save();
+  }
+  var d=load();
+  if(d){['mat','hrs','rate','oh','fee','margin','cur'].forEach(function(k,i){
+    var ids=['cp-mat','cp-hrs','cp-rate','cp-oh','cp-fee','cp-margin','cp-cur'];
+    if(d[k]!==undefined)document.getElementById(ids[i]).value=d[k];});}
+  document.getElementById('cp-go').onclick=calc;
+  ['cp-mat','cp-hrs','cp-rate','cp-oh','cp-fee','cp-margin','cp-cur'].forEach(function(id){
+    document.getElementById(id).addEventListener('input',calc);});
+  calc();
+})();
+</script>
+<section class="block prose">
+
+<h2 class="sec">How handmade pricing actually works</h2>
+<p>Most underpricing is not generosity &mdash; it is arithmetic that never happened. Add materials,
+your labor at a real hourly rate (not minimum wage &mdash; what your time is worth), a slice of
+overhead, then divide by what is left after fees and your target margin. The formula above does
+exactly that: <em>price = true cost &divide; (1 &minus; fee% &minus; margin%)</em>. Enter your current
+price too and you get an honest Healthy / Thin / Underwater verdict on it.</p>
+<h2 class="sec">The labor trap</h2>
+<p>Labor is where handmade pricing dies. &ldquo;It only took me an hour&rdquo; at a made-up $10/hour
+is how a $4 candle sells for $8 and nets $2. Time yourself across a real batch, use an hourly rate
+you would accept from an employer, and put that number in without flinching. If the resulting price
+feels too high for your market, the answer is rarely to cut your rate &mdash; it is to simplify the
+product, raise perceived value, or accept that this particular item is not a viable product.</p>
+<h2 class="sec">Worked example</h2>
+<p>Materials $12, 2 hours of labor at $20/hr, $3 overhead: true cost <strong>$55</strong>. With 6.5% marketplace
+fees and a 30% margin target, the suggested price is <strong>$86.61</strong>. If you're currently charging $45,
+the verdict reads <strong>Underwater at &minus;28.7% margin</strong> &mdash; the fees and labor alone eat the price.
+That's the number most sellers are missing.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>What margin should I target?</dt>
+<dd>Thirty percent profit after fees is a healthy baseline for handmade goods; wholesale needs room
+for the retailer&rsquo;s markup on top, so price wholesale at roughly half of retail and check the
+math still works.</dd>
+<dt>Should I count my own labor?</dt>
+<dd>Yes &mdash; always. Unpaid labor is a hobby subsidy, not a business model. If the price only works
+with free labor, the product does not work.</dd>
+<dt>What counts as overhead?</dt>
+<dd>Anything the product consumes that is not direct materials: packaging, labels, a share of tools,
+electricity, market booth fees spread across units. A dollar or two per item is a sane starting point.</dd>
+<dt>How do different sales channels change the price?</dt>
+<dd>Fees differ &mdash; your own site, a marketplace, a craft fair, wholesale &mdash; so the same item
+needs a different price per channel. Re-run the calculator with each channel&rsquo;s fee to keep every
+channel profitable.</dd>
+<dt>What if I sell many different products?</dt>
+<dd>That is where a per-product recipe system pays off. <strong>CraftCost</strong> lets you build a
+cost recipe per product, time real production batches with a built-in labor timer, and get channel-by-channel
+suggested prices with the Healthy / Thin / Underwater verdict &mdash; $14 one-time, offline.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>CraftCost &mdash; $14 one-time</h3><p>Per-product cost recipes, a batch labor timer, and suggested prices for every sales channel.</p><a class="btn" href="../../products/handmade-pricing-calculator-etsy-craft-sellers/index.html">Learn more</a></div>
+<div class="card"><h3>Free BBQ Contest Cost Tracker</h3><p>Sell at events too? Track whether a show weekend actually paid.</p><a class="btn" href="../bbq-contest-cost-tracker/index.html">Open the free tool</a></div>
+<div class="card"><h3>Craftybase Alternative</h3><p>An honest comparison: when the one-time offline tool wins, and when the subscription alternative is the better call.</p><a class="btn" href="../../alternatives/craftybase-alternative/index.html">Read the comparison</a></div>
+</div>
+</section>
+
+
+<div class="cta-band">
+<h2>Need the full version?</h2>
+<p><strong>CraftCost</strong> is the offline pricing calculator for Etsy and craft sellers: per-product cost recipes, a batch labor timer, and suggested prices for every sales channel. $14 one-time, no subscription.</p>
+<a class="btn" href="https://glenerds.gumroad.com/l/handmade-pricing-calculator-etsy-craft-sellers">Get CraftCost &mdash; $14 one-time</a>
+<p class="small"><a href="../../products/handmade-pricing-calculator-etsy-craft-sellers/index.html">Learn more about CraftCost</a>
+&middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

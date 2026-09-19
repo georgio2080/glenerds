@@ -1,0 +1,533 @@
+/* ==========================================================================
+   GLENERDS DESIGN SYSTEM v1.0
+   --------------------------------------------------------------------------
+   One shared visual language for every Glenerds microtool.
+   Designed to be INLINED into each app's <style> block — keeps the
+   single-file property: zero network requests, file:// safe, no webfonts,
+   no CDNs, no frameworks, no build step.
+
+   Usage: paste this whole file inside a STYLE element in <head>, then use
+   the g- classes below. See INTEGRATION.md for the theme-toggle wiring.
+
+   Conventions:
+   - Every class is prefixed `g-` to avoid collisions.
+   - Theming is driven by `data-theme="light|dark"` on <html>.
+   - First load with no saved choice honors prefers-color-scheme.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --g-bg:            #f8fafc;   /* page background: soft cool white */
+  --g-surface:       #ffffff;   /* cards, panels */
+  --g-surface-2:     #f1f5f9;   /* recessed / inset areas, tab track */
+  --g-border:        #e2e8f0;   /* hairlines */
+  --g-border-strong: #cbd5e1;
+
+  /* Text */
+  --g-text:          #0f172a;   /* slate-900 */
+  --g-text-soft:     #334155;   /* slate-700 — secondary text */
+  --g-muted:         #64748b;   /* slate-500 — captions, hints */
+
+  /* Accent: refined indigo */
+  --g-accent:        #4f46e5;   /* indigo-600 */
+  --g-accent-hover:  #4338ca;   /* indigo-700 */
+  --g-accent-ink:    #ffffff;   /* text on accent */
+  --g-accent-soft:   #eef2ff;   /* indigo-50 — tinted fills */
+  --g-accent-ring:   rgba(79, 70, 229, 0.22);
+
+  /* Status */
+  --g-good:          #047857;   /* emerald-700 */
+  --g-good-soft:     #ecfdf5;
+  --g-bad:           #b42318;
+  --g-bad-soft:      #fef3f2;
+  --g-warn:          #b45309;
+  --g-warn-soft:     #fffbeb;
+
+  /* Inputs */
+  --g-input-bg:      #ffffff;
+  --g-input-border:  #cbd5e1;
+  --g-code-bg:       #f1f5f9;
+
+  /* Shape + motion */
+  --g-radius-sm: 8px;
+  --g-radius-md: 12px;
+  --g-radius-lg: 16px;
+  --g-radius-pill: 999px;
+  --g-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --g-shadow-md: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --g-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --g-ease: 160ms ease;
+
+  /* Type */
+  --g-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, system-ui, sans-serif;
+  --g-mono: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Consolas,
+            "Liberation Mono", monospace;
+}
+
+/* Dark theme: genuinely designed — deep blue-black, lifted surfaces,
+   brightened indigo. Not an inversion of light. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --g-bg:            #0b0e14;
+  --g-surface:       #141926;
+  --g-surface-2:     #0f1420;
+  --g-border:        #232c40;
+  --g-border-strong: #33405c;
+
+  --g-text:          #f1f5f9;
+  --g-text-soft:     #cbd5e1;
+  --g-muted:         #94a3b8;
+
+  --g-accent:        #818cf8;   /* indigo-400 — readable on dark */
+  --g-accent-hover:  #a5b4fc;   /* indigo-300 */
+  --g-accent-ink:    #0b0e14;
+  --g-accent-soft:   rgba(129, 140, 248, 0.14);
+  --g-accent-ring:   rgba(129, 140, 248, 0.35);
+
+  --g-good:          #34d399;
+  --g-good-soft:     rgba(52, 211, 153, 0.12);
+  --g-bad:           #f87171;
+  --g-bad-soft:      rgba(248, 113, 113, 0.12);
+  --g-warn:          #fbbf24;
+  --g-warn-soft:     rgba(251, 191, 36, 0.12);
+
+  --g-input-bg:      #0f1420;
+  --g-input-border:  #33405c;
+  --g-code-bg:       #0f1420;
+
+  --g-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --g-shadow-md: 0 1px 3px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --g-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+
+.g-app {
+  font-family: var(--g-font);
+  background: var(--g-bg);
+  color: var(--g-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Page container */
+.g-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+/* ---------- 3. TYPOGRAPHY ---------- */
+.g-display  { font-size: 1.9rem;  font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;  margin: 0 0 8px; }
+.g-title    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;  margin: 0 0 6px; }
+.g-body     { font-size: 1rem;    color: var(--g-text-soft); margin: 0 0 12px; }
+.g-caption  { font-size: 0.85rem; color: var(--g-muted);    margin: 0; }
+.g-mono     { font-family: var(--g-mono); font-size: 0.9em; }
+
+/* ---------- 4. HEADER ---------- */
+.g-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 4px;
+}
+.g-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.g-brand-mark {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--g-accent);
+  color: var(--g-accent-ink);
+  font-weight: 800; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-sm);
+  user-select: none;
+}
+.g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
+.g-tagline { color: var(--g-muted); font-size: 0.92rem; margin: 6px 0 14px; max-width: 56ch; }
+
+/* Theme toggle */
+.g-theme-toggle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  border-radius: var(--g-radius-pill);
+  padding: 8px 14px;
+  font-size: 0.88rem; font-weight: 600; font-family: var(--g-font);
+  cursor: pointer;
+  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
+  white-space: nowrap;
+}
+.g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
+.g-theme-toggle:active { transform: scale(0.97); }
+
+/* ---------- 5. TABS (segmented control) ---------- */
+.g-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  background: var(--g-surface-2);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 4px;
+  margin: 14px 0;
+}
+.g-tab {
+  flex: 1 1 auto;
+  appearance: none;
+  border: 0; background: transparent;
+  color: var(--g-muted);
+  font-family: var(--g-font);
+  font-size: 0.93rem; font-weight: 600;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
+  white-space: nowrap;
+}
+.g-tab:hover { color: var(--g-text); }
+.g-tab[aria-selected="true"] {
+  background: var(--g-surface);
+  color: var(--g-text);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-tab:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+
+/* ---------- 6. CARDS ---------- */
+.g-card {
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  padding: 22px;
+  margin: 16px 0;
+  box-shadow: var(--g-shadow-sm);
+}
+.g-card > .g-title { margin-bottom: 4px; }
+.g-card .g-desc { color: var(--g-muted); font-size: 0.92rem; margin: 0 0 14px; }
+.g-card-flat { box-shadow: none; }
+
+/* ---------- 7. BUTTONS ---------- */
+.g-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--g-font);
+  font-size: 0.95rem; font-weight: 650;
+  border-radius: 10px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--g-ease), border-color var(--g-ease),
+              color var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
+  text-decoration: none;
+  line-height: 1.2;
+}
+.g-btn:active { transform: translateY(1px) scale(0.99); }
+.g-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.g-btn-primary {
+  background: var(--g-accent);
+  border-color: var(--g-accent);
+  color: var(--g-accent-ink);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-btn-primary:hover:not(:disabled) { background: var(--g-accent-hover); border-color: var(--g-accent-hover); }
+
+.g-btn-secondary {
+  background: var(--g-surface);
+  border-color: var(--g-border-strong);
+  color: var(--g-text);
+}
+.g-btn-secondary:hover:not(:disabled) { border-color: var(--g-accent); color: var(--g-accent); }
+
+.g-btn-danger {
+  background: var(--g-bad-soft);
+  border-color: transparent;
+  color: var(--g-bad);
+}
+.g-btn-danger:hover:not(:disabled) { background: var(--g-bad); color: #fff; }
+
+.g-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--g-text-soft);
+}
+.g-btn-ghost:hover:not(:disabled) { background: var(--g-surface-2); color: var(--g-text); }
+
+.g-btn-sm { font-size: 0.85rem; padding: 8px 13px; border-radius: 8px; }
+.g-btn-block { display: flex; width: 100%; }
+.g-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+
+/* ---------- 8. FORMS ---------- */
+.g-field { margin: 12px 0; }
+.g-label { display: block; font-weight: 650; font-size: 0.92rem; margin-bottom: 6px; color: var(--g-text); }
+.g-hint { font-size: 0.82rem; color: var(--g-muted); margin-top: 6px; }
+
+.g-input, .g-select, .g-textarea {
+  width: 100%;
+  font-family: var(--g-font);
+  font-size: 1rem;
+  color: var(--g-text);
+  background: var(--g-input-bg);
+  border: 1px solid var(--g-input-border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  transition: border-color var(--g-ease), box-shadow var(--g-ease);
+}
+.g-input::placeholder, .g-textarea::placeholder { color: var(--g-muted); opacity: 0.75; }
+.g-input:hover, .g-select:hover, .g-textarea:hover { border-color: var(--g-border-strong); }
+.g-input:focus, .g-select:focus, .g-textarea:focus {
+  outline: none;
+  border-color: var(--g-accent);
+  box-shadow: 0 0 0 3px var(--g-accent-ring);
+}
+.g-textarea { min-height: 96px; resize: vertical; }
+.g-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+[data-theme="dark"] .g-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.g-input:disabled, .g-select:disabled, .g-textarea:disabled {
+  opacity: 0.55; cursor: not-allowed; background: var(--g-surface-2);
+}
+
+/* Validation */
+.g-input.is-invalid, .g-select.is-invalid {
+  border-color: var(--g-bad);
+}
+.g-input.is-invalid:focus, .g-select.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--g-bad-soft);
+}
+.g-error { display: none; color: var(--g-bad); font-size: 0.86rem; font-weight: 600; margin-top: 6px; }
+.g-error.show { display: block; }
+
+/* Checkbox / radio rows */
+.g-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.95rem; color: var(--g-text-soft);
+  cursor: pointer; margin: 10px 0;
+}
+.g-check input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  margin: 1px 0 0;
+  border: 1.5px solid var(--g-input-border);
+  border-radius: 6px;
+  background: var(--g-input-bg);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--g-ease), border-color var(--g-ease);
+}
+.g-check input[type="radio"] { border-radius: 50%; }
+.g-check input:checked { background: var(--g-accent); border-color: var(--g-accent); }
+.g-check input:checked::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: no-repeat center / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 6.8 11.8 12.5 4.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.g-check input[type="radio"]:checked::after {
+  background: none;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--g-accent-ink);
+}
+.g-check input:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--g-accent-ring); }
+
+/* ---------- 9. RESULT PANELS ---------- */
+.g-result {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: var(--g-radius-md);
+  border: 1px solid var(--g-border);
+  background: var(--g-surface-2);
+}
+.g-big-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 2px 0 6px;
+}
+.g-verdict { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+.g-verdict-good { color: var(--g-good); }
+.g-verdict-bad  { color: var(--g-bad); }
+.g-verdict-warn { color: var(--g-warn); }
+.g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
+
+/* Show-your-work math block */
+.g-math {
+  font-family: var(--g-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background: var(--g-code-bg);
+  border: 1px solid var(--g-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: var(--g-text-soft);
+}
+
+/* ---------- 10. STAT ROWS ---------- */
+.g-stats { margin: 12px 0 0; border-top: 1px solid var(--g-border); }
+.g-stat {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--g-border);
+  font-size: 0.95rem;
+}
+.g-stat:last-child { border-bottom: 0; }
+.g-stat .g-stat-label { color: var(--g-muted); }
+.g-stat .g-stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+.g-stat .g-stat-value.good { color: var(--g-good); }
+.g-stat .g-stat-value.bad  { color: var(--g-bad); }
+
+/* ---------- 11. TABLES ---------- */
+.g-table-wrap { overflow-x: auto; margin: 12px -4px 0; padding: 0 4px; }
+.g-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.g-table th {
+  text-align: left;
+  font-size: 0.76rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--g-muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--g-border-strong);
+  white-space: nowrap;
+}
+.g-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+.g-table tr:last-child td { border-bottom: 0; }
+.g-table tbody tr { transition: background var(--g-ease); }
+.g-table tbody tr:hover { background: var(--g-surface-2); }
+
+/* ---------- 12. BADGES / PILLS ---------- */
+.g-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; font-weight: 700;
+  border-radius: var(--g-radius-pill);
+  padding: 4px 11px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.g-badge-accent { background: var(--g-accent-soft); color: var(--g-accent); }
+.g-badge-good   { background: var(--g-good-soft);   color: var(--g-good); }
+.g-badge-bad    { background: var(--g-bad-soft);    color: var(--g-bad); }
+.g-badge-warn   { background: var(--g-warn-soft);   color: var(--g-warn); }
+.g-badge-neutral{ background: var(--g-surface-2);    color: var(--g-muted); border: 1px solid var(--g-border); }
+.g-badge-dot::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+}
+
+/* ---------- 13. EMPTY STATES ---------- */
+.g-empty {
+  text-align: center;
+  border: 1.5px dashed var(--g-border-strong);
+  border-radius: var(--g-radius-lg);
+  padding: 36px 20px;
+  margin: 16px 0;
+  color: var(--g-muted);
+}
+.g-empty-icon { font-size: 2rem; margin-bottom: 8px; }
+.g-empty .g-title { font-size: 1.05rem; color: var(--g-text-soft); }
+.g-empty p { font-size: 0.9rem; margin: 4px 0 14px; }
+
+/* ---------- 14. FOOTER ---------- */
+.g-footer {
+  text-align: center;
+  margin: 32px 0 8px;
+  font-size: 0.85rem;
+  color: var(--g-muted);
+}
+.g-footer a { color: var(--g-accent); text-decoration: none; font-weight: 600; }
+.g-footer a:hover { text-decoration: underline; }
+.g-footer .g-fine { display: block; margin-top: 8px; font-size: 0.78rem; }
+
+/* ---------- 15. LAYOUT HELPERS ---------- */
+.g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.g-stack > * + * { margin-top: 12px; }
+.g-divider { border: 0; border-top: 1px solid var(--g-border); margin: 20px 0; }
+
+/* ---------- 16. FOCUS (accessibility) ---------- */
+.g-btn:focus-visible,
+.g-theme-toggle:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--g-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 17. RESPONSIVE ---------- */
+@media (max-width: 560px) {
+  .g-wrap { padding: 14px 12px 40px; }
+  .g-display { font-size: 1.6rem; }
+  .g-card { padding: 18px 16px; border-radius: 14px; }
+  .g-big-number { font-size: 2rem; }
+  .g-grid-2, .g-grid-3 { grid-template-columns: 1fr; }
+  .g-brand-mark { width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px; }
+  .g-brand-name { font-size: 1.2rem; }
+  .g-tab { padding: 9px 10px; font-size: 0.88rem; }
+}
+
+/* ---------- 18. MOTION PREFERENCE ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+
+/* ---------- 19. ICONS ----------
+   Requires the glenerds-icons.svg sprite inlined in the page (see
+   INTEGRATION.md). <use> inherits stroke from the wrapper, so the two
+   variants are just classes on the <svg> element. */
+.g-icon {
+  width: 24px; height: 24px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  fill: none;
+  vertical-align: -4px;
+}
+.g-icon-sm { width: 18px; height: 18px; }
+.g-icon-lg { width: 32px; height: 32px; }
+/* Flash variant: brand indigo gradient stroke instead of text color. */
+.g-icon-flash { stroke: url(#g-grad-indigo); }
+.g-btn .g-icon { width: 20px; height: 20px; vertical-align: -3px; }
+.g-tab .g-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; }
+
+/* ---------- 20. APP ICONS ----------
+   iOS-style rounded-square gradient tile + one white glyph.
+   Each app picks its own gradient via --g-ai1 / --g-ai2. */
+.g-appicon {
+  --g-ai1: #6366f1;
+  --g-ai2: #8b5cf6;
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--g-ai1), var(--g-ai2));
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  flex: 0 0 auto;
+}
+.g-appicon .g-icon { width: 32px; height: 32px; color: #ffffff; }
+.g-appicon-sm { width: 44px; height: 44px; border-radius: 13px; }
+.g-appicon-sm .g-icon { width: 24px; height: 24px; }
+.g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
+.g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }

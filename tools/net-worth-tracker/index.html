@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Net Worth Tracker — Calculate Your Net Worth Offline | Glenerds</title>
+<meta name="description" content="Free net worth tracker: list assets and debts, see your net worth instantly, track it over time. Runs offline in your browser; your financial data never leaves your device.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/net-worth-tracker/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Net Worth Tracker — Calculate Your Net Worth Offline | Glenerds">
+<meta property="og:description" content="Free net worth tracker: list assets and debts, see your net worth instantly, track it over time. Runs offline in your browser; your financial data never leaves your device.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/net-worth-tracker/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+<link rel="stylesheet" href="../../style.css"><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Should my home count in net worth?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, at a realistic market value, minus the remaining mortgage. Just remember that home equity is illiquid \u2014 it counts, but you cannot spend it without selling or borrowing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What about my car?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Include it at private-sale value, not what you paid. Cars depreciate, so revisit the number yearly rather than letting an old figure flatter the total."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a negative net worth bad?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is common, especially early in a career with student loans. What matters is the direction: steady upward movement means the plan is working."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where does my data go?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nowhere. It is stored in your browser's local storage on your device. Export a JSON backup before clearing browser data or switching devices."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "My biggest asset is my home \u2014 how do I protect that investment?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Before buying a condo or townhome, the HOA's finances matter as much as the unit itself. The paid analyzer below scores HOA financial health from resale-package figures and flags special-assessment risk."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">◐ Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; Free Tools &rsaquo; Net Worth Tracker</p>
+<main>
+<div class="hero">
+<h1>Free Net Worth Tracker &mdash; What You Own Minus What You Owe</h1>
+<p class="lead">What's your net worth right now &mdash; really? List what you own (bank accounts, investments, home,
+car) and what you owe (credit cards, loans, mortgage), and this free tracker subtracts one from the other
+live as you type. No bank connections, no account, no sign-up: everything stays in your browser, nothing is
+uploaded. Update it monthly and watch the number move.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Net worth tracker">
+<h3>Assets (what you own)</h3>
+<input type="text" id="nw-aname" placeholder="e.g. Checking account" aria-label="Asset name">
+<input type="number" id="nw-avalue" placeholder="0.00" step="0.01" aria-label="Asset value">
+<button id="nw-add-asset">Add asset</button>
+<table><thead><tr><th>Asset</th><th>Value</th><th></th></tr></thead><tbody id="nw-assets"></tbody></table>
+<h3>Debts (what you owe)</h3>
+<input type="text" id="nw-dname" placeholder="e.g. Credit card" aria-label="Debt name">
+<input type="number" id="nw-dvalue" placeholder="0.00" step="0.01" aria-label="Debt value">
+<button id="nw-add-debt">Add debt</button>
+<table><thead><tr><th>Debt</th><th>Balance</th><th></th></tr></thead><tbody id="nw-debts"></tbody></table>
+<p id="nw-result" style="font-size:1.15rem"></p>
+<button id="nw-export" class="plain">Export backup</button>
+<p class="small">Use round numbers or exact figures &mdash; whatever you are comfortable typing. It never leaves this device.</p>
+</div>
+
+<script>
+(function(){
+  var KEY='glenerds-networth-v1';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{assets:[],debts:[]}}catch(e){return{assets:[],debts:[]}}}
+  function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+  var data=load();
+  function uid(){return 'n'+Date.now().toString(36)+Math.floor(Math.random()*999)}
+  function money(v){return '$'+Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+  function render(){
+    function rows(list,el,btnId){
+      var t=document.getElementById(el);t.innerHTML='';
+      var sum=0;
+      list.forEach(function(it){
+        sum+=parseFloat(it.value)||0;
+        var tr=document.createElement('tr');
+        var td1=document.createElement('td');td1.textContent=it.name;
+        var td2=document.createElement('td');td2.textContent=money(it.value);
+        var td3=document.createElement('td');
+        var b=document.createElement('button');b.textContent='Remove';b.className='plain';
+        b.onclick=function(){var i=list.indexOf(it);list.splice(i,1);save(data);render()};
+        td3.appendChild(b);tr.appendChild(td1);tr.appendChild(td2);tr.appendChild(td3);t.appendChild(tr);
+      });
+      return sum;
+    }
+    var aSum=rows(data.assets,'nw-assets');
+    var dSum=rows(data.debts,'nw-debts');
+    var nw=aSum-dSum;
+    var el=document.getElementById('nw-result');
+    el.innerHTML='Assets: '+money(aSum)+' &nbsp;|&nbsp; Debts: '+money(dSum)
+      +'<br><strong>Net worth: '+money(nw)+'</strong>';
+    el.style.color=nw>=0?'':'#c0392b';
+  }
+  document.getElementById('nw-add-asset').onclick=function(){
+    var n=document.getElementById('nw-aname').value.trim(),v=parseFloat(document.getElementById('nw-avalue').value);
+    if(!n||isNaN(v))return;data.assets.push({id:uid(),name:n,value:v});save(data);render();
+    document.getElementById('nw-aname').value='';document.getElementById('nw-avalue').value='';
+  };
+  document.getElementById('nw-add-debt').onclick=function(){
+    var n=document.getElementById('nw-dname').value.trim(),v=parseFloat(document.getElementById('nw-dvalue').value);
+    if(!n||isNaN(v))return;data.debts.push({id:uid(),name:n,value:v});save(data);render();
+    document.getElementById('nw-dname').value='';document.getElementById('nw-dvalue').value='';
+  };
+  document.getElementById('nw-export').onclick=function(){
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var aEl=document.createElement('a');aEl.href=URL.createObjectURL(blob);aEl.download='net-worth-backup.json';aEl.click();
+  };
+  render();
+})();
+</script>
+<div class="toolbox">
+<h3 style="margin-top:0">Free forever &mdash; no paid version</h3>
+<p>This net worth tracker is complete as-is: unlimited assets and debts, live totals, JSON export &mdash; free forever.</p>
+<p><strong>Buying a condo?</strong> Your home may be your biggest asset &mdash; <a href="../../products/hoa-resale-package-reserve-study-risk-analyzer/index.html"><strong>HOA ReserveCheck &mdash; $9 one-time</strong></a> scores the HOA's finances from the resale-package figures and flags special-assessment risk before you buy. No subscription. No account.</p>
+</div>
+
+<section class="block prose">
+<h2 class="sec">How to calculate your net worth</h2>
+<p>Net worth is simply everything you own minus everything you owe. List bank balances, investment
+accounts, your home's estimated value, vehicles, and anything else of meaningful value under assets.
+List credit card balances, student loans, auto loans, mortgages, and any other debts under debts.
+The tracker does the subtraction and shows the result live as you add items. Most people are
+surprised the first time &mdash; in either direction &mdash; which is exactly why the number is worth
+knowing: you cannot improve what you do not measure.</p>
+<h2 class="sec">What to include (and what to skip)</h2>
+<p>Include anything with real monetary value: cash, savings, brokerage and retirement accounts, home
+equity (market value minus mortgage), cars at realistic resale value. Skip small household items;
+tracking every coffee mug adds noise without insight. Update the numbers monthly or quarterly &mdash;
+more often than that and you are mostly watching market noise. The trend over six to twelve months
+is what matters: is the number climbing, flat, or sliding? A climbing number means your financial
+system is working, whatever the starting point.</p>
+<h2 class="sec">Why track it offline</h2>
+<p>Net worth is the single most sensitive number in personal finance, and account-aggregator apps ask
+you to hand it &mdash; along with your bank logins &mdash; to a third party. This tracker inverts that:
+the math happens on your device, the data lives in your browser, and there is no company on the
+other end. You give up automatic syncing; you keep complete privacy. For a number you check a few
+times a year, that is a trade worth making.</p>
+<h2 class="sec">Worked example</h2>
+<p>Assets: $8,000 in savings and a $12,000 car &mdash; $20,000 total. Debts: a $3,500 credit card balance and
+an $18,000 student loan &mdash; $21,500 total. Net worth: <strong>&minus;$1,500</strong>, shown in red. It
+stings, but now it's a number instead of a feeling: pay $1,500 off the card and the tracker crosses into
+positive territory the moment you update it.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>Should my home count in net worth?</dt>
+<dd>Yes, at a realistic market value, minus the remaining mortgage. Just remember that home equity
+is illiquid &mdash; it counts, but you cannot spend it without selling or borrowing.</dd>
+<dt>What about my car?</dt>
+<dd>Include it at private-sale value, not what you paid. Cars depreciate, so revisit the number
+yearly rather than letting an old figure flatter the total.</dd>
+<dt>Is a negative net worth bad?</dt>
+<dd>It is common, especially early in a career with student loans. What matters is the direction:
+steady upward movement means the plan is working.</dd>
+<dt>Where does my data go?</dt>
+<dd>Nowhere. It is stored in your browser's local storage on your device. Export a JSON backup
+before clearing browser data or switching devices.</dd>
+<dt>My biggest asset is my home &mdash; how do I protect that investment?</dt>
+<dd>Before buying a condo or townhome, the HOA's finances matter as much as the unit itself. The
+paid analyzer below scores HOA financial health from resale-package figures and flags
+special-assessment risk.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>Free 52-Week Savings Challenge Calculator</h3><p>Grow the asset side with weekly savings math done for you.</p><a class="btn" href="../savings-challenge/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Offline Habit Tracker</h3><p>The daily habits that move the number, tracked free.</p><a class="btn" href="../habit-tracker/index.html">Open the free tool</a></div>
+</div>
+</section>
+
+<div class="cta-band">
+<h2>Buying a condo? Check the HOA's finances first.</h2>
+<p>HOA ReserveCheck is the offline risk analyzer for condo and townhome buyers: key in the figures
+from the HOA documents and get a weighted financial-risk score, a special-assessment likelihood
+gauge, and a printable due-diligence report. One-time purchase, no subscription.</p>
+<a class="btn" href="../../products/hoa-resale-package-reserve-study-risk-analyzer/index.html">See HOA ReserveCheck &mdash; $9 one-time</a>
+<p class="small">Prefer to browse everything? <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

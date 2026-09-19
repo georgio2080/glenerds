@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free 52-Week Savings Challenge Calculator &amp; Tracker | Glenerds</title>
+<meta name="description" content="Free 52-week savings challenge calculator: customize weekly amounts, track progress week by week, see your running total. Offline, no account, no subscription.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/savings-challenge/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free 52-Week Savings Challenge Calculator &amp; Tracker | Glenerds">
+<meta property="og:description" content="Free 52-week savings challenge calculator: customize weekly amounts, track progress week by week, see your running total. Offline, no account, no subscription.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/savings-challenge/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+<link rel="stylesheet" href="../../style.css"><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much does the classic 52-week challenge save?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "$1,378. Week n saves n dollars, so the total is the sum of 1 through 52. Customize the start amount and weekly increase above to see any variation instantly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I have to follow the weeks in order?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Check off whichever weeks you complete. Many savers do the expensive weeks first (reverse challenge) while motivation is high, then coast through the cheap weeks at the end."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my savings data private?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Completely. The tracker stores your progress in your browser's local storage and never sends it anywhere. There is no account, no analytics, and no server."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if I miss a week?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Just leave it unchecked and keep going. You can double up later or extend the challenge past week 52 \u2014 the running total column shows exactly where you stand either way."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can this help my small business finances too?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Saving consistently is half the equation; the other half is pricing your work so there is something left to save. If you sell handmade goods, the paid calculator below turns your supply costs, labor, and fees into prices that actually leave a margin."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">◐ Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; Free Tools &rsaquo; 52-Week Savings Challenge</p>
+<main>
+<div class="hero">
+<h1>Free 52-Week Savings Challenge Calculator &amp; Tracker</h1>
+<p class="lead">How much does the 52-week money challenge actually save? $1,378 with the classic $1-a-week rules
+&mdash; and this free calculator works out any variation. Set your own starting amount and weekly increase,
+check off each week as the money moves into savings, and watch the running total grow. Two strategies beat
+the hard back half: run the challenge in reverse (big weeks first, while motivation is high) or split each
+week into daily transfers. Offline, no account; your savings data never leaves your browser.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="52-week savings challenge calculator">
+<label>Start week 1 at: $<input type="number" id="sv-start" min="0.5" step="0.5" style="width:5rem" aria-label="Starting amount"></label>
+<label>Increase each week by: $<input type="number" id="sv-weekly" min="0.5" step="0.5" style="width:5rem" aria-label="Weekly increase"></label>
+<button id="sv-reset" class="plain">Reset</button>
+<p><strong id="sv-total"></strong><br><span id="sv-progress" class="small"></span></p>
+<table><thead><tr><th>Week</th><th>Save</th><th>Running total</th><th>Done</th></tr></thead>
+<tbody id="sv-rows"></tbody></table>
+<p class="small">Check a week when the money is actually saved. Everything is stored in your browser only.</p>
+</div>
+
+<script>
+(function(){
+  var KEY='glenerds-save52-v1';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{done:{},weekly:1,start:1}}catch(e){return{done:{},weekly:1,start:1}}}
+  function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+  var data=load();
+  function render(){
+    var w=parseFloat(document.getElementById('sv-weekly').value)||data.weekly;
+    var s=parseFloat(document.getElementById('sv-start').value)||data.start;
+    data.weekly=w;data.start=s;
+    var total=0,rows='',doneCount=0;
+    for(var i=1;i<=52;i++){
+      var amt=s+(i-1)*w;total+=amt;
+      var done=!!data.done[i];if(done)doneCount++;
+      rows+='<tr><td>Week '+i+'</td><td>$'+amt.toFixed(2)+'</td><td>$'+total.toFixed(2)+'</td>'
+        +'<td><input type="checkbox" data-w="'+i+'"'+(done?' checked':'')+' aria-label="Mark week '+i+' done"></td></tr>';
+    }
+    document.getElementById('sv-rows').innerHTML=rows;
+    var saved=0;for(var j=1;j<=52;j++){if(data.done[j])saved+=s+(j-1)*w}
+    document.getElementById('sv-total').textContent='Challenge total: $'+total.toFixed(2);
+    document.getElementById('sv-progress').textContent='Saved so far: $'+saved.toFixed(2)+' ('+doneCount+'/52 weeks)';
+    var boxes=document.querySelectorAll('#sv-rows input[type=checkbox]');
+    boxes.forEach(function(b){b.onchange=function(){var wk=parseInt(b.getAttribute('data-w'),10);data.done[wk]=b.checked;save(data);render()}});
+    save(data);
+  }
+  document.getElementById('sv-weekly').value=data.weekly;
+  document.getElementById('sv-start').value=data.start;
+  document.getElementById('sv-weekly').oninput=render;
+  document.getElementById('sv-start').oninput=render;
+  document.getElementById('sv-reset').onclick=function(){if(confirm('Reset all 52 weeks?')){data={done:{},weekly:parseFloat(document.getElementById('sv-weekly').value)||1,start:parseFloat(document.getElementById('sv-start').value)||1};save(data);render()}};
+  render();
+})();
+</script>
+<div class="toolbox">
+<h3 style="margin-top:0">Free forever &mdash; no paid version</h3>
+<p>This savings challenge tracker is complete as-is: any start amount, any weekly increase, all 52 weeks with a running total &mdash; free forever.</p>
+<p><strong>Sell handmade goods?</strong> <a href="../../products/handmade-pricing-calculator-etsy-craft-sellers/index.html"><strong>CraftCost &mdash; $14 one-time</strong></a> applies the same offline philosophy to the other half of the equation: turning supplies, labor, and fees into prices that actually leave a margin. No subscription. No account.</p>
+</div>
+
+<section class="block prose">
+<h2 class="sec">How the 52-week savings challenge works</h2>
+<p>The standard challenge starts by saving $1 in week one, $2 in week two, $3 in week three, and so
+on, increasing by one dollar each week until week 52. Done straight through, that adds up to
+<strong>$1,378</strong>. The calculator above starts with those classic settings, but the real power
+is customization: set the starting amount and weekly increase to match your budget. Starting at $5
+and increasing by $5 each week, for example, finishes at $6,890 &mdash; a serious emergency fund built
+one painless increment at a time.</p>
+<p>The hardest part of any savings challenge is the back half, when weekly amounts get large. Two
+strategies help: run the challenge in reverse (start with week 52's big amount while motivation is
+highest), or split the weekly amount into a daily transfer so it never feels like a lump sum. Use
+the checkboxes above honestly &mdash; only check a week when the money has actually moved into savings
+&mdash; and the "saved so far" counter keeps you accountable without any judgment.</p>
+<h2 class="sec">Making the challenge fit a tight budget</h2>
+<p>If the classic $1,378 version feels out of reach, shrink it. A $0.50 start with $0.50 weekly
+increases totals $689 &mdash; still a meaningful cushion. The point is the habit of moving money
+consistently, not the headline number. Many people run two challenges at once: a small one for
+guilt-free spending money and a larger one for the emergency fund. Because this tracker lives in
+your browser with no account, there is nothing stopping you from opening it in two tabs with
+different settings.</p>
+<h2 class="sec">Worked example</h2>
+<p>Classic rules: start at $1, increase by $1 each week. Week 1 saves $1, week 52 saves $52, and the total
+is the sum of 1 through 52 &mdash; <strong>$1,378</strong>, which the calculator shows the moment the page
+loads. Change the start to $5 with $5 weekly increases and the total becomes <strong>$6,890</strong>; drop
+to $0.50 and $0.50 and it's <strong>$689</strong>. The running-total column shows exactly where you stand at
+any week, checked or not.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>How much does the classic 52-week challenge save?</dt>
+<dd>$1,378. Week <em>n</em> saves <em>n</em> dollars, so the total is the sum of 1 through 52.
+Customize the start amount and weekly increase above to see any variation instantly.</dd>
+<dt>Do I have to follow the weeks in order?</dt>
+<dd>No. Check off whichever weeks you complete. Many savers do the expensive weeks first (reverse
+challenge) while motivation is high, then coast through the cheap weeks at the end.</dd>
+<dt>Is my savings data private?</dt>
+<dd>Completely. The tracker stores your progress in your browser's local storage and never sends it
+anywhere. There is no account, no analytics, and no server.</dd>
+<dt>What if I miss a week?</dt>
+<dd>Just leave it unchecked and keep going. You can double up later or extend the challenge past
+week 52 &mdash; the running total column shows exactly where you stand either way.</dd>
+<dt>Can this help my small business finances too?</dt>
+<dd>Saving consistently is half the equation; the other half is pricing your work so there is
+something left to save. If you sell handmade goods, the paid calculator below turns your supply
+costs, labor, and fees into prices that actually leave a margin.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>Free Net Worth Tracker</h3><p>What you own minus what you owe, updated live and kept private.</p><a class="btn" href="../net-worth-tracker/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Offline Habit Tracker</h3><p>Saving is a habit &mdash; build the daily streak behind it.</p><a class="btn" href="../habit-tracker/index.html">Open the free tool</a></div>
+</div>
+</section>
+
+<div class="cta-band">
+<h2>Sell handmade goods? Price them to actually profit.</h2>
+<p>CraftCost is the offline pricing calculator for Etsy and craft sellers: enter supplies, build a
+recipe per product, and get a suggested price for every sales channel &mdash; with a Healthy / Thin /
+Underwater verdict on your current prices. One-time purchase, no subscription.</p>
+<a class="btn" href="../../products/handmade-pricing-calculator-etsy-craft-sellers/index.html">See CraftCost &mdash; $14 one-time</a>
+<p class="small">Prefer to browse everything? <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

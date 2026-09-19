@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Security Deposit Deduction Calculator for Landlords | Glenerds</title>
+<meta name="description" content="Free security deposit deduction calculator: itemize deductions and compute the tenant refund instantly. Offline, no account, printable.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/security-deposit-deduction-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Security Deposit Deduction Calculator for Landlords | Glenerds">
+<meta property="og:description" content="Free security deposit deduction calculator: itemize deductions and compute the tenant refund instantly. Offline, no account, printable.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/security-deposit-deduction-calculator/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How fast must I return the deposit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on your state \u2014 commonly 14 to 60 days. The deadline is strict in most states, and missing it can cost you multiples of the deposit, so calendar it at move-out."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I deduct for normal wear and tear?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Wear and tear is the landlord\u2019s cost of doing business. Only damage beyond ordinary use, unpaid amounts, and agreed cleaning qualify."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if deductions exceed the deposit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The calculator flags it. You can bill the former tenant for the balance, but collecting is a separate battle \u2014 small claims court is the usual venue."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I keep receipts?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes \u2014 every deduction should trace to an invoice or receipt. \u201cEstimated\u201d deductions without documentation are the first thing challenged."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What about deadlines and full tenancy records?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "DepositDocket (Landlord Ledger) tracks each tenancy with deduction itemization, a return-deadline countdown, and professional printable tenant statements \u2014 built for landlords with 1\u201310 units, $14 one-time, offline."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Deposit Deduction Calculator</p>
+<main>
+<div class="hero">
+<h1>Free Security Deposit Deduction Calculator</h1>
+<p class="lead">How much of the deposit do you actually return? Itemize every deduction &mdash; cleaning, repairs,
+missing items &mdash; and this free calculator computes the tenant's refund instantly, with a clean itemized
+statement you can print. Built for small landlords who want deposit math that holds up if a tenant disputes
+it. Free, offline, no account.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Security deposit deduction calculator">
+
+<label>Deposit held: $<input type="number" id="sd-dep" value="1500" min="0" step="0.01" style="width:7rem" aria-label="Deposit amount"></label>
+<label>Tenant: <input type="text" id="sd-tenant" placeholder="Tenant name" aria-label="Tenant name"></label>
+<button id="sd-add">Add deduction</button>
+<table><thead><tr><th>Deduction</th><th>Amount</th><th></th></tr></thead>
+<tbody id="sd-rows"></tbody></table>
+<p id="sd-out" style="font-size:1.15rem"></p>
+<button id="sd-print">Print statement</button>
+<p class="small">A record-keeping tool, not legal advice &mdash; deposit rules and deadlines vary by state.</p>
+</div>
+<p class="small" style="margin-top:1rem"><strong>Managing more than one tenancy?</strong> <a href="../../products/depositdocket/index.html">DepositDocket</a> keeps per-tenancy deposit records with deadlines, offline.</p>
+<p class="small">Free tool by <a href="../../index.html">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+
+<div class="toolbox">
+<h3 style="margin-top:0">Free vs. full version</h3>
+<table><tbody>
+<tr><td><strong>Free tool on this page</strong></td><td><strong>DepositDocket (Landlord Ledger) &mdash; $14 one-time</strong></td></tr>
+<tr><td>One deposit, one statement</td><td>Per-tenancy deposit records for 1&ndash;10 units</td></tr>
+<tr><td>No deadline tracking</td><td>Return-deadline tracking and full tenancy records in one offline file</td></tr>
+</tbody></table>
+<p><a class="btn" href="https://glenerds.gumroad.com/l/depositdocket">Get DepositDocket (Landlord Ledger) &mdash; $14 one-time</a></p>
+<p class="small">No subscription. No account. The full tool runs offline in your browser, just like this free one.</p>
+</div>
+
+
+
+
+
+<script>
+(function(){
+  var KEY='glenerds-deposit-v1';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{dep:1500,tenant:'',items:[]}}catch(e){return{dep:1500,tenant:'',items:[]}}}
+  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  var data=load();
+  function money(n){return '$'+Number(n).toFixed(2);}
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function render(){
+    var tb=document.getElementById('sd-rows');tb.innerHTML='';
+    var tot=0;
+    data.items.forEach(function(it){
+      tot+=it.amt;
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td>'+esc(it.desc||'(no description)')+'</td><td>'+money(it.amt)+'</td>';
+      var td=document.createElement('td');var b=document.createElement('button');
+      b.textContent='Remove';b.className='plain';
+      b.onclick=function(){data.items=data.items.filter(function(x){return x.id!==it.id;});save(data);render();};
+      td.appendChild(b);tr.appendChild(td);tb.appendChild(tr);
+    });
+    var refund=Math.max(0,data.dep-tot);
+    var extra=tot>data.dep?tot-data.dep:0;
+    document.getElementById('sd-out').innerHTML='<strong>Refund to tenant: '+money(refund)+'</strong>'
+      +(extra>0?'<br><span class="small">Deductions exceed the deposit by '+money(extra)+'.</span>':'');
+    document.getElementById('sd-dep').value=data.dep;
+    document.getElementById('sd-tenant').value=data.tenant||'';
+  }
+  document.getElementById('sd-add').onclick=function(){
+    var desc=prompt('Deduction description (e.g. Carpet cleaning):');
+    if(desc===null)return;
+    var amt=parseFloat(prompt('Amount for "'+desc+'":',''));
+    if(isNaN(amt)||amt<0){alert('Enter a valid amount.');return;}
+    data.items.push({id:'d'+Date.now().toString(36),desc:desc,amt:amt});
+    save(data);render();
+  };
+  document.getElementById('sd-dep').addEventListener('input',function(e){data.dep=parseFloat(e.target.value)||0;save(data);render();});
+  document.getElementById('sd-tenant').addEventListener('input',function(e){data.tenant=e.target.value;save(data);});
+  document.getElementById('sd-print').onclick=function(){window.print();};
+  render();
+})();
+</script>
+<section class="block prose">
+
+<h2 class="sec">How to document deposit deductions</h2>
+<p>Every deduction needs three things: what it was for, what it cost, and proof it was necessary.
+Add each deduction above with a plain description &mdash; &ldquo;carpet cleaning, unit 4B&rdquo;
+beats &ldquo;cleaning&rdquo; &mdash; and the calculator keeps a running refund total. Print the
+itemized statement and send it with the refund: tenants who see organized paperwork rarely dispute it,
+and the ones who do will find you already prepared.</p>
+<h2 class="sec">What you can and cannot deduct</h2>
+<p>Unpaid rent, damage beyond normal wear and tear, and cleaning to return the unit to its move-in
+condition are the standard categories. &ldquo;Normal wear and tear&rdquo; is where most fights
+start: faded paint after three years is wear; a hole in the wall is damage. Photos at move-in and
+move-out settle more disputes than any calculator &mdash; take them every time, timestamped.</p>
+<h2 class="sec">Worked example</h2>
+<p>$1,500 deposit, three deductions: carpet cleaning $180, wall repair $220, missing keys $75. Total deductions
+<strong>$475</strong>, refund <strong>$1,025</strong>. Add one more $1,100 repair and the tool flags that
+deductions exceed the deposit by $75 &mdash; the kind of edge case that's easy to get wrong by hand.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>How fast must I return the deposit?</dt>
+<dd>It depends on your state &mdash; commonly 14 to 60 days. The deadline is strict in most states,
+and missing it can cost you multiples of the deposit, so calendar it at move-out.</dd>
+<dt>Can I deduct for normal wear and tear?</dt>
+<dd>No. Wear and tear is the landlord&rsquo;s cost of doing business. Only damage beyond ordinary
+use, unpaid amounts, and agreed cleaning qualify.</dd>
+<dt>What if deductions exceed the deposit?</dt>
+<dd>The calculator flags it. You can bill the former tenant for the balance, but collecting is a
+separate battle &mdash; small claims court is the usual venue.</dd>
+<dt>Should I keep receipts?</dt>
+<dd>Yes &mdash; every deduction should trace to an invoice or receipt. &ldquo;Estimated&rdquo;
+deductions without documentation are the first thing challenged.</dd>
+<dt>What about deadlines and full tenancy records?</dt>
+<dd><strong>DepositDocket</strong> (Landlord Ledger) tracks each tenancy with deduction itemization,
+a return-deadline countdown, and professional printable tenant statements &mdash; built for landlords
+with 1&ndash;10 units, $14 one-time, offline.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>DepositDocket (Landlord Ledger) &mdash; $14 one-time</h3><p>Offline record-keeping for landlords with 1&ndash;10 units: per-tenancy deposit records and deadline tracking.</p><a class="btn" href="../../products/depositdocket/index.html">Learn more</a></div>
+<div class="card"><h3>Free Moving Cost Calculator</h3><p>Between tenants? Budget the turnover move.</p><a class="btn" href="../moving-cost-calculator/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free HOA Special Assessment Calculator</h3><p>Own a condo rental? Estimate assessment exposure.</p><a class="btn" href="../hoa-special-assessment-calculator/index.html">Open the free tool</a></div>
+</div>
+</section>
+
+
+<div class="cta-band">
+<h2>Need the full version?</h2>
+<p><strong>DepositDocket</strong> (Landlord Ledger) is the offline record-keeping tool for landlords with 1&ndash;10 units: per-tenancy deposit records, deduction itemization, return-deadline countdowns, and printable tenant statements. $14 one-time, no subscription.</p>
+<a class="btn" href="https://glenerds.gumroad.com/l/depositdocket">Get DepositDocket &mdash; $14 one-time</a>
+<p class="small"><a href="../../products/depositdocket/index.html">Learn more about DepositDocket</a>
+&middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

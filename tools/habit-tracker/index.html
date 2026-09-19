@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Offline Habit Tracker — Build Daily Streaks | Glenerds</title>
+<meta name="description" content="Free offline habit tracker that runs in your browser. Build streaks, track daily habits, export backups. No account, no subscription, your data stays on your device.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/habit-tracker/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Offline Habit Tracker — Build Daily Streaks | Glenerds">
+<meta property="og:description" content="Free offline habit tracker that runs in your browser. Build streaks, track daily habits, export backups. No account, no subscription, your data stays on your device.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/habit-tracker/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+<link rel="stylesheet" href="../../style.css"><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this habit tracker really free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Every feature on this page \u2014 unlimited habits, streak counts, totals, and JSON export \u2014 is free and always will be. There is no premium tier and no account wall."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is my data stored?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In your browser's local storage, on your device only. Glenerds never sees it, and nothing is uploaded anywhere. Clearing your browser data will erase your habits, so use the export button for backups you care about."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on my phone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The page is responsive and works in any modern mobile browser. Add it to your home screen for app-like access; it still runs fully offline after the first load."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I track weekly instead of daily habits?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The tracker is built around daily check-ins, which is where streaks are most motivating. For a weekly habit, many people check in on the day they do it and simply let the other days stay empty \u2014 the total check-in count still tells the real story."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if I want more than a habit tracker?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If you coach clients or run a fitness business, the free tracker above covers personal habits. For managing other people's check-ins \u2014 weekly logs, photo protocols, measurements, and client feedback drafts \u2014 take a look at the paid toolkit below."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">◐ Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; Free Tools &rsaquo; Habit Tracker</p>
+<main>
+<div class="hero">
+<h1>Free Offline Habit Tracker &mdash; Build Streaks Without an Account</h1>
+<p class="lead">Need a habit tracker that works offline with no account? Add your habits, tap the dots each day,
+and watch your streaks grow &mdash; every check-in stored in your browser, nothing uploaded anywhere.
+No sign-up, no app install, no subscription. Open the page and start.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Habit tracker">
+<input type="text" id="habit-name" placeholder="New habit, e.g. Read 20 pages" aria-label="New habit name">
+<button id="habit-add">Add habit</button>
+<button id="habit-export" class="plain">Export backup</button>
+<div class="habit-grid" id="habit-list"></div>
+<p class="small">Tip: click a date circle to toggle it. Your habits are saved automatically in this browser.</p>
+</div>
+
+<script>
+(function(){
+  var KEY='glenerds-habit-v1';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{habits:[]}}catch(e){return{habits:[]}}}
+  function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+  var data=load();
+  function uid(){return 'h'+Date.now().toString(36)+Math.floor(Math.random()*999)}
+  function todayStr(){var d=new Date();return d.toISOString().slice(0,10)}
+  function last14(){var out=[],d=new Date();for(var i=13;i>=0;i--){var t=new Date(d);t.setDate(d.getDate()-i);out.push(t.toISOString().slice(0,10))}return out}
+  function render(){
+    var wrap=document.getElementById('habit-list');wrap.innerHTML='';
+    var days=last14(),today=todayStr();
+    if(!data.habits.length){wrap.innerHTML='<p class="small">No habits yet. Add your first one above.</p>'}
+    data.habits.forEach(function(h){
+      var div=document.createElement('div');div.className='habit';
+      var head=document.createElement('div');head.className='hname';head.textContent=h.name;
+      var del=document.createElement('button');del.className='plain';del.textContent='Delete';del.style.marginLeft='0.5rem';
+      del.onclick=function(){data.habits=data.habits.filter(function(x){return x.id!==h.id});save(data);render()};
+      head.appendChild(del);div.appendChild(head);
+      var dots=document.createElement('div');dots.className='dots';
+      days.forEach(function(day){
+        var b=document.createElement('button');b.className='dot'+(h.days[day]?' on':'');
+        b.title=day;b.textContent=new Date(day+'T12:00:00').getDate();
+        b.setAttribute('aria-label',(h.days[day]?'Done ':'Not done ')+h.name+' on '+day);
+        b.onclick=function(){h.days[day]=!h.days[day];save(data);render()};
+        dots.appendChild(b);
+      });
+      div.appendChild(dots);
+      var streak=0,d=new Date();
+      while(true){var s=d.toISOString().slice(0,10);if(h.days[s]){streak++;d.setDate(d.getDate()-1)}else break}
+      var meta=document.createElement('p');meta.className='small';
+      meta.textContent='Current streak: '+streak+' day'+(streak===1?'':'s')+'  |  Total check-ins: '+Object.keys(h.days).filter(function(k){return h.days[k]}).length;
+      div.appendChild(meta);wrap.appendChild(div);
+    });
+  }
+  document.getElementById('habit-add').onclick=function(){
+    var inp=document.getElementById('habit-name');var v=inp.value.trim();if(!v)return;
+    data.habits.push({id:uid(),name:v,days:{}});inp.value='';save(data);render();
+  };
+  document.getElementById('habit-export').onclick=function(){
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='habit-tracker-backup.json';a.click();
+  };
+  render();
+})();
+</script>
+<div class="toolbox">
+<h3 style="margin-top:0">Free forever &mdash; no paid version</h3>
+<p>This habit tracker is complete as-is: unlimited habits, streak counts, totals, and JSON export &mdash; free for personal use, forever.</p>
+<p><strong>Coaching clients instead of yourself?</strong> <a href="../../products/online-fitness-coach-check-in-tracker/index.html"><strong>FitnessCheckIn &mdash; $29 one-time</strong></a> is the coaching version: a full client roster with weekly check-in histories, photo protocols, measurements, and one-click feedback drafts. No subscription. No account.</p>
+</div>
+
+<section class="block prose">
+<h2 class="sec">How to use the habit tracker</h2>
+<p>Add each habit you want to build &mdash; exercise, reading, meditation, saving money, anything with
+a daily repetition. Each habit gets a row of the last 14 days. Click a date to mark it done; click
+again to undo. Your current streak counts backward from today, so a missed day simply resets the
+counter without erasing your history. Use the export button any time to download a JSON backup of
+all your habits, which you can keep with your other files or move to another browser.</p>
+<h2 class="sec">Why streaks work</h2>
+<p>Habit research consistently finds that visible progress is one of the strongest motivators for
+keeping a new behavior going. A streak turns an abstract goal ("exercise more") into a concrete
+daily question ("did I keep the chain alive today?"). The tracker above is deliberately minimal:
+no gamified coins, no social feed, no reminders begging for attention &mdash; just your habits and
+your history. That simplicity is also why it works offline: there is no server to sync with, so
+the whole tool is a single page that loads instantly and works on a plane, in a basement, or
+anywhere else with no signal.</p>
+<h2 class="sec">Worked example</h2>
+<p>Add a habit called "Read 20 pages". Tap today's dot, then the 13 dots before it. The tracker reads
+<strong>Current streak: 14 days</strong> with 14 total check-ins. Miss tomorrow and the streak resets to
+zero &mdash; but your history stays, so those 14 days still count in your totals. That's the whole game:
+the streak is the motivator, the history is the record.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>Is this habit tracker really free?</dt>
+<dd>Yes. Every feature on this page &mdash; unlimited habits, streak counts, totals, and JSON export
+&mdash; is free and always will be. There is no premium tier and no account wall.</dd>
+<dt>Where is my data stored?</dt>
+<dd>In your browser's local storage, on your device only. Glenerds never sees it, and nothing is
+uploaded anywhere. Clearing your browser data will erase your habits, so use the export button for
+backups you care about.</dd>
+<dt>Does it work on my phone?</dt>
+<dd>Yes. The page is responsive and works in any modern mobile browser. Add it to your home screen
+for app-like access; it still runs fully offline after the first load.</dd>
+<dt>Can I track weekly instead of daily habits?</dt>
+<dd>The tracker is built around daily check-ins, which is where streaks are most motivating. For a
+weekly habit, many people check in on the day they do it and simply let the other days stay empty
+&mdash; the total check-in count still tells the real story.</dd>
+<dt>What if I want more than a habit tracker?</dt>
+<dd>If you coach clients or run a fitness business, the free tracker above covers personal habits.
+For managing other people's check-ins &mdash; weekly logs, photo protocols, measurements, and
+client feedback drafts &mdash; take a look at the paid toolkit below.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>Free Fitness Client Check-In Tracker</h3><p>Log one client's weekly check-ins &mdash; weight, measurements, adherence &mdash; and compare weeks.</p><a class="btn" href="../fitness-client-check-in/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free 52-Week Savings Challenge Calculator</h3><p>Build the saving habit with the weekly math done for you.</p><a class="btn" href="../savings-challenge/index.html">Open the free tool</a></div>
+</div>
+</section>
+
+<div class="cta-band">
+<h2>Coaching clients, not just yourself?</h2>
+<p>FitnessCheckIn is the offline client check-in tracker for online coaches: log weekly check-ins,
+compare weeks side by side, and generate client feedback in one click. One-time purchase, no subscription.</p>
+<a class="btn" href="../../products/online-fitness-coach-check-in-tracker/index.html">See FitnessCheckIn &mdash; $29 one-time</a>
+<p class="small">Prefer to browse everything? <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

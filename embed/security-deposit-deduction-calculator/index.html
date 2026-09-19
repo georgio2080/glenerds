@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Security Deposit Deduction Calculator for Landlords | Glenerds</title>
+<meta name="description" content="Free security deposit deduction calculator: itemize deductions and compute the tenant refund instantly. Offline, no account, printable.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/security-deposit-deduction-calculator/">
+<meta name="robots" content="noindex">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+<link rel="stylesheet" href="../../style.css">
+<style>
+.embed-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.7rem .25rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.embed-head strong{font-size:1.05rem}
+.embed-head .theme-toggle{margin-left:0;padding:.25rem .55rem;font-size:.78rem}
+.wrap{max-width:720px}
+.toolbox{margin:0 0 1rem}
+.attrib{text-align:center;margin:1rem 0 1.5rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="embed-head"><strong>Security Deposit Deduction Calculator</strong><span><a href="https://glenerds.gumroad.com" style="font-size:.85rem;font-weight:600;margin-right:.6rem">Store</a><button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">◐</button></span></div>
+<div class="toolbox" role="region" aria-label="Security deposit deduction calculator">
+
+<label>Deposit held: $<input type="number" id="sd-dep" value="1500" min="0" step="0.01" style="width:7rem" aria-label="Deposit amount"></label>
+<label>Tenant: <input type="text" id="sd-tenant" placeholder="Tenant name" aria-label="Tenant name"></label>
+<button id="sd-add">Add deduction</button>
+<table><thead><tr><th>Deduction</th><th>Amount</th><th></th></tr></thead>
+<tbody id="sd-rows"></tbody></table>
+<p id="sd-out" style="font-size:1.15rem"></p>
+<button id="sd-print">Print statement</button>
+<p class="small">A record-keeping tool, not legal advice &mdash; deposit rules and deadlines vary by state.</p>
+</div>
+<p class="small attrib">Powered by <a href="https://glenerds.netlify.app/tools/security-deposit-deduction-calculator/" target="_blank" rel="noopener">Glenerds</a> &mdash; <a href="https://glenerds.netlify.app/tools/security-deposit-deduction-calculator/" target="_blank" rel="noopener">open the full free tool</a> &mdash; <a href="https://glenerds.gumroad.com/l/depositdocket" target="_blank" rel="noopener">Want the full offline version? Get DepositDocket &mdash; $14 one-time</a> &mdash; <a href="../../site-map/index.html">Site map</a></p>
+</div>
+<script>
+(function(){
+  var KEY='glenerds-deposit-v1';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{dep:1500,tenant:'',items:[]}}catch(e){return{dep:1500,tenant:'',items:[]}}}
+  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  var data=load();
+  function money(n){return '$'+Number(n).toFixed(2);}
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function render(){
+    var tb=document.getElementById('sd-rows');tb.innerHTML='';
+    var tot=0;
+    data.items.forEach(function(it){
+      tot+=it.amt;
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td>'+esc(it.desc||'(no description)')+'</td><td>'+money(it.amt)+'</td>';
+      var td=document.createElement('td');var b=document.createElement('button');
+      b.textContent='Remove';b.className='plain';
+      b.onclick=function(){data.items=data.items.filter(function(x){return x.id!==it.id;});save(data);render();};
+      td.appendChild(b);tr.appendChild(td);tb.appendChild(tr);
+    });
+    var refund=Math.max(0,data.dep-tot);
+    var extra=tot>data.dep?tot-data.dep:0;
+    document.getElementById('sd-out').innerHTML='<strong>Refund to tenant: '+money(refund)+'</strong>'
+      +(extra>0?'<br><span class="small">Deductions exceed the deposit by '+money(extra)+'.</span>':'');
+    document.getElementById('sd-dep').value=data.dep;
+    document.getElementById('sd-tenant').value=data.tenant||'';
+  }
+  document.getElementById('sd-add').onclick=function(){
+    var desc=prompt('Deduction description (e.g. Carpet cleaning):');
+    if(desc===null)return;
+    var amt=parseFloat(prompt('Amount for "'+desc+'":',''));
+    if(isNaN(amt)||amt<0){alert('Enter a valid amount.');return;}
+    data.items.push({id:'d'+Date.now().toString(36),desc:desc,amt:amt});
+    save(data);render();
+  };
+  document.getElementById('sd-dep').addEventListener('input',function(e){data.dep=parseFloat(e.target.value)||0;save(data);render();});
+  document.getElementById('sd-tenant').addEventListener('input',function(e){data.tenant=e.target.value;save(data);});
+  document.getElementById('sd-print').onclick=function(){window.print();};
+  render();
+})();
+</script>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

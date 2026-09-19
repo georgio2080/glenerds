@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Glenerds Staging — Internal</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: #141413; color: #e8e6e3; margin: 0; padding: 2rem 1rem; }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin: 0 0 .25rem; }
+  p.sub { color: #a3a099; margin: 0 0 1.5rem; font-size: .95rem; }
+  .notice { background: #1f1e1c; border: 1px solid #3a382f; border-radius: 10px; padding: 1rem 1.25rem; font-size: .9rem; color: #a3a099; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: .92rem; }
+  th, td { text-align: left; padding: .6rem .75rem; border-bottom: 1px solid #2a2926; }
+  th { color: #a3a099; font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+  a { color: #7db9f0; }
+  .status { display: inline-block; padding: .15rem .6rem; border-radius: 999px; font-size: .78rem; font-weight: 600; }
+  .staged { background: #2c2a1e; color: #e3c76b; }
+  .testing { background: #1e2c3a; color: #7db9f0; }
+  .ready { background: #1e3a2a; color: #7de0a3; }
+  .uploaded { background: #2a2a2e; color: #a3a099; }
+  footer { margin-top: 2.5rem; font-size: .8rem; color: #6e6c66; }
+  footer a { color: #6e6c66; }
+  .pill { display: inline-block; padding: .15rem .6rem; border-radius: 999px; font-size: .78rem; font-weight: 600; border: 0; cursor: pointer; font-family: inherit; }
+  .pill.pending { background: #2a2a2e; color: #a3a099; }
+  .pill.inreview { background: #2c2a1e; color: #e3c76b; }
+  .pill.passed { background: #1e3a2a; color: #7de0a3; }
+  #pill-modal { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,.6); }
+  #pill-modal .box { background: #1f1e1c; border: 1px solid #3a382f; border-radius: 10px; max-width: 26rem; margin: 20% auto; padding: 1.25rem 1.5rem; color: #e8e6e1; font-size: .92rem; line-height: 1.5; }
+  #pill-modal .box b { display: block; margin-bottom: .5rem; }
+  #pill-modal .close { margin-top: 1rem; background: #2a2a2e; color: #e8e6e1; border: 0; border-radius: 8px; padding: .4rem .9rem; cursor: pointer; font-size: .85rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Glenerds Staging</h1>
+  <p class="sub">Internal build queue — not linked publicly, not in the sitemap, not indexed. Apps live here for live testing until their Gumroad draft is created.</p>
+
+  <div class="notice">9 apps in the pipeline. Finished builds get live-tested here, then move to Gumroad drafts whenever the 24-hour creation window allows.</div>
+
+  <!--
+  APP QUEUE — add one row per staged app:
+  -->
+  <table>
+    <thead><tr><th>App</th><th>Status</th><th>AI Checked</th><th>Published</th><th>Staged</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><a href="./subaudit/">SubAudit — Subscription Audit Dashboard</a></td>
+        <td><span class="status ready">Ready</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>Free app + 8 gallery images + bundle ZIP; awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./packtrack/">PackTrack — Moving Box Inventory Indexer</a></td>
+        <td><span class="status ready">Ready</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>Free app + 8 gallery images + bundle ZIP; awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./turnovercheck/">TurnoverCheck — Turnover Checklist &amp; Damage Log</a></td>
+        <td><span class="status ready">Ready</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>Free app + 8 gallery images + bundle ZIP; awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./moveinproof/">MoveInProof — Move-In Damage Logger</a></td>
+        <td><span class="status ready">Ready</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>Free app + 8 gallery images + bundle ZIP; awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./splitfair/">SplitFair — Roommate Utility Split Calculator</a></td>
+        <td><span class="status ready">Ready</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>Free app + 8 gallery images + bundle ZIP; awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./ticketmath/">TicketMath — Event Ticket Tier &amp; Revenue Projector</a></td>
+        <td><span class="status ready">Ready</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>Free app + 8 gallery images + bundle ZIP; awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./w9track/">W9Track — Contractor W-9 &amp; 1099 Tracker</a></td>
+        <td><span class="status ready">Ready</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>Free app + 8 gallery images + bundle ZIP; awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./zonesync/">ZoneSync — Remote Team Time-Zone Overlap</a></td>
+        <td><span class="status ready">Ready</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>Free app + 8 gallery images + bundle ZIP; awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./quotecraft/">QuoteCraft — Service Quote &amp; Proposal Builder</a></td>
+        <td><span class="status ready">Ready</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>100% done — QA + 3 outside-AI review rounds clean, SEO done, 8 gallery images pass, parent sign-off 2026-09-19. Awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./habittrack/">HabitTrack — Free Habit Tracker with Streaks</a></td>
+        <td><span class="status passed">Passed</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>45/45 Chromium QA checks pass, 2 outside-AI review rounds (all findings fixed/verified), SEO-first listing, 8 gallery images pass. Awaiting parent sign-off + Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./macrotrack/">MacroTrack — Free TDEE &amp; Macro Calculator</a></td>
+        <td><span class="status passed">Passed</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>100% done — build + Chromium QA clean, 2 outside-AI review rounds (round 2 zero issues), SEO-first listing, 8 gallery images pass, parent sign-off 2026-09-19. Awaiting Gumroad draft window</td>
+      </tr>
+      <tr>
+        <td><a href="./gradeplan/">GradePlan — Free Final Grade Calculator &amp; GPA Calculator</a></td>
+        <td><span class="status passed">Passed</span></td>
+        <td><button class="pill passed" data-check="ai">Passed</button></td>
+        <td><button class="pill pending" data-check="published">No</button></td>
+        <td>2026-09-19</td>
+        <td>Free app + 8 gallery images + bundle ZIP; 20/20 Chromium QA checks pass, 2 outside-AI rounds done (round 1: 2 findings, both verified non-issues; round 2 zero issues). Awaiting parent sign-off + Gumroad draft window</td>
+      </tr>
+    </tbody>
+  </table>
+  <!--
+  Statuses: staged → testing → ready → uploaded
+  -->
+
+  <footer>by <a href="https://glenerds.gumroad.com">Glenerds</a> — internal only</footer>
+</main>
+<div id="pill-modal"><div class="box"><b id="pill-title"></b><span id="pill-text"></span><br><button class="close" onclick="document.getElementById('pill-modal').style.display='none'">Close</button></div></div>
+<script>
+document.querySelectorAll('button.pill').forEach(function(b){
+  b.addEventListener('click', function(){
+    var app = b.closest('tr').querySelector('td a').textContent;
+    var kind = b.dataset.check;
+    var state = b.classList.contains('passed') ? 'passed' : (b.classList.contains('inreview') ? 'inreview' : 'pending');
+    var title = '', text = '';
+    if (kind === 'ai') {
+      title = app + ' — outside-AI checks';
+      text = state === 'passed'
+        ? 'Yes — 100% done. All outside-AI checks passed with zero open issues: bug testing clean, SEO title done, SEO description done, all 8 gallery images pass. Parent sign-off recorded.'
+        : state === 'inreview'
+        ? 'ChatGPT-directed functional testing is running (started 2026-09-19). Still queued after it: code review, SEO title check, SEO description check, gallery image review.'
+        : 'Outside-AI checks have not started for this app yet.';
+    } else if (kind === 'published') {
+      title = app + ' — published to Gumroad?';
+      text = state === 'passed'
+        ? 'Yes — the Gumroad listing is published (only ever on your explicit word).'
+        : 'No — not published. Drafts are created as UNPUBLISHED and stay that way until you explicitly say to publish.';
+    }
+    document.getElementById('pill-title').textContent = title;
+    document.getElementById('pill-text').textContent = text;
+    document.getElementById('pill-modal').style.display = 'block';
+  });
+});
+document.getElementById('pill-modal').addEventListener('click', function(e){
+  if (e.target === this) this.style.display = 'none';
+});
+</script>
+</body>
+</html>

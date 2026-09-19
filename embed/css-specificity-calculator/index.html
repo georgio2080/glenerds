@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free CSS Specificity Calculator | Glenerds</title>
+<meta name="description" content="Free CSS specificity calculator: paste any selector and see its specificity score explained, with examples. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/css-specificity-calculator/">
+<meta name="robots" content="noindex">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+<link rel="stylesheet" href="../../style.css">
+<style>
+.embed-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.7rem .25rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.embed-head strong{font-size:1.05rem}
+.embed-head .theme-toggle{margin-left:0;padding:.25rem .55rem;font-size:.78rem}
+.wrap{max-width:720px}
+.toolbox{margin:0 0 1rem}
+.attrib{text-align:center;margin:1rem 0 1.5rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="embed-head"><strong>CSS Specificity Calculator</strong><span><a href="https://glenerds.gumroad.com" style="font-size:.85rem;font-weight:600;margin-right:.6rem">Store</a><button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">◐</button></span></div>
+<div class="toolbox" role="region" aria-label="CSS specificity calculator">
+
+<label>CSS selector: <input type="text" id="cs-in" placeholder="e.g. #nav .menu li.active a:hover" style="width:70%" aria-label="CSS selector"></label>
+<button id="cs-go">Calculate</button>
+<div id="cs-out" style="margin-top:1rem"></div>
+<p class="small">Try: <button class="plain" data-ex="ul#nav li.active a">example 1</button>
+<button class="plain" data-ex="body.home .post h2.title">example 2</button>
+<button class="plain" data-ex="#header #logo img">example 3</button></p>
+<p class="small">Counts follow the CSS spec: IDs beat classes beat elements. <code>:not()</code> adds its argument&rsquo;s specificity; <code>:is()</code> takes its most specific argument.</p>
+</div>
+<p class="small attrib">Powered by <a href="https://glenerds.netlify.app/tools/css-specificity-calculator/" target="_blank" rel="noopener">Glenerds</a> &mdash; <a href="https://glenerds.netlify.app/tools/css-specificity-calculator/" target="_blank" rel="noopener">open the full free tool</a> &mdash; <a href="https://glenerds.gumroad.com/l/css-element-inspector-chrome" target="_blank" rel="noopener">Want the full offline version? Get CSS Element Inspector &mdash; $9 one-time</a> &mdash; <a href="../../site-map/index.html">Site map</a></p>
+</div>
+<script>
+(function(){
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function splitTopLevel(sel){
+    var parts=[],depth=0,cur='';
+    for(var i=0;i<sel.length;i++){var ch=sel[i];
+      if(ch==='(')depth++;if(ch===')')depth--;
+      if(ch===','&&depth===0){parts.push(cur);cur='';}else cur+=ch;}
+    parts.push(cur);return parts;
+  }
+  function specOf(sel){
+    var a=0,b=0,c=0,s=sel;
+    s=s.replace(/:not\(([^()]*)\)/g,function(m,inner){var sp=specOf(inner);a+=sp[0];b+=sp[1];c+=sp[2];return ' ';});
+    s=s.replace(/:(is|where)\(([^()]*)\)/g,function(m,pseudo,inner){
+      if(pseudo==='where')return ' ';
+      var best=[0,0,0];
+      splitTopLevel(inner).forEach(function(arg){var sp=specOf(arg);
+        if(sp[0]>best[0]||(sp[0]===best[0]&&sp[1]>best[1])||(sp[0]===best[0]&&sp[1]===best[1]&&sp[2]>best[2]))best=sp;});
+      a+=best[0];b+=best[1];c+=best[2];return ' ';});
+    var ids=s.match(/#[A-Za-z0-9_-]+/g);if(ids)a+=ids.length;
+    var cls=s.match(/\.[A-Za-z0-9_-]+/g);if(cls)b+=cls.length;
+    var attrs=s.match(/\[[^\]]+\]/g);if(attrs)b+=attrs.length;
+    var pseudoC=s.match(/:(?!:)[A-Za-z-]+(\([^)]*\))?/g);if(pseudoC)b+=pseudoC.length;
+    var pseudoE=s.match(/::[A-Za-z-]+/g);if(pseudoE)c+=pseudoE.length;
+    var els=s.replace(/#[A-Za-z0-9_-]+/g,' ').replace(/\.[A-Za-z0-9_-]+/g,' ')
+      .replace(/\[[^\]]+\]/g,' ').replace(/::?[A-Za-z-]+(\([^)]*\))?/g,' ')
+      .replace(/[\s>+~]+/g,' ').trim().split(' ').filter(function(x){return x&&x!=='*';});
+    c+=els.length;
+    return [a,b,c];
+  }
+  function bar(v,max){var n=Math.min(12,Math.round(v/(max||1)*12));var s='';for(var i=0;i<12;i++)s+=i<n?'\u2588':'\u2591';return s;}
+  function calc(){
+    var sel=document.getElementById('cs-in').value.trim();
+    if(!sel){document.getElementById('cs-out').innerHTML='<p class="small">Enter a selector above.</p>';return;}
+    var sp=specOf(sel),mx=Math.max(sp[0],sp[1],sp[2],1);
+    var html='<p style="font-size:1.4rem"><strong>Specificity: '+sp[0]+','+sp[1]+','+sp[2]+'</strong></p>'
+      +'<table><tbody>'
+      +'<tr><td>ID selectors <code>#id</code></td><td>'+sp[0]+'</td><td><code>'+bar(sp[0],mx)+'</code></td></tr>'
+      +'<tr><td>Classes, attributes, pseudo-classes <code>.c [x] :hover</code></td><td>'+sp[1]+'</td><td><code>'+bar(sp[1],mx)+'</code></td></tr>'
+      +'<tr><td>Elements, pseudo-elements <code>div ::before</code></td><td>'+sp[2]+'</td><td><code>'+bar(sp[2],mx)+'</code></td></tr>'
+      +'</tbody></table>'
+      +'<p class="small">Higher columns win: any ID beats any number of classes; any class beats any number of elements. Equal scores &rarr; the later rule in source order wins.</p>';
+    document.getElementById('cs-out').innerHTML=html;
+  }
+  document.getElementById('cs-go').onclick=calc;
+  document.getElementById('cs-in').addEventListener('input',calc);
+  var ex=document.querySelectorAll('[data-ex]');
+  ex.forEach(function(b){b.addEventListener('click',function(){document.getElementById('cs-in').value=b.getAttribute('data-ex');calc();});});
+  document.getElementById('cs-in').value='ul#nav li.active a';calc();
+})();
+</script>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

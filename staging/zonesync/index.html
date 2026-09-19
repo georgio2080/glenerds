@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Time Zone Overlap Calculator for Remote Teams (ZoneSync)</title>
+<meta name="description" content="Find the best meeting times for your distributed team with a free offline time zone overlap calculator and 24-hour heatmap. Works fully offline.">
+<script>
+// Apply saved theme (or OS preference) before first paint to avoid a flash.
+(function () {
+  try {
+    var stored = localStorage.getItem('zonesync-theme');
+    var theme = stored === 'dark' || stored === 'light' ? stored :
+      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #1b1b1e;
+  --muted: #5f5f66;
+  --card: #f4f4f6;
+  --border: #d8d8de;
+  --accent-rgb: 13, 110, 102;
+  --accent: rgb(var(--accent-rgb));
+  --accent-ink: #ffffff;
+  --gold: #b45309;
+  --gold-bg: #fef3c7;
+  --danger: #b91c1c;
+  --input-bg: #ffffff;
+  --radius: 10px;
+}
+[data-theme="dark"] {
+  --bg: #121214;
+  --fg: #f2f2f4;
+  --muted: #a7a7b0;
+  --card: #1c1c20;
+  --border: #3a3a42;
+  --accent-rgb: 45, 212, 191;
+  --accent: rgb(var(--accent-rgb));
+  --accent-ink: #062a27;
+  --gold: #fbbf24;
+  --gold-bg: #3a2a08;
+  --danger: #f87171;
+  --input-bg: #1c1c20;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px 48px; }
+header.top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 20px 0 8px;
+}
+header.top h1 { margin: 0; font-size: 1.6rem; letter-spacing: -0.01em; }
+header.top p { margin: 4px 0 0; color: var(--muted); font-size: 0.95rem; }
+button, select, input {
+  font: inherit; color: var(--fg);
+}
+button {
+  min-height: 44px; padding: 10px 18px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--card); cursor: pointer;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+button.danger { color: var(--danger); border-color: var(--danger); }
+button:hover { filter: brightness(0.96); }
+button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 2px;
+}
+section.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; margin-top: 18px;
+}
+section.card h2 { margin: 0 0 12px; font-size: 1.15rem; }
+.field { margin-bottom: 12px; }
+.field label { display: block; font-weight: 600; margin-bottom: 6px; }
+.field .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; display: block; margin-top: 4px; }
+select, input[type="text"], input[type="number"], input[type="date"], input[type="time"] {
+  min-height: 44px; padding: 8px 12px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--input-bg); width: 100%; max-width: 420px;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+.form-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; font-size: 0.92rem; }
+th { background: rgba(127,127,140,0.12); }
+.heatmap-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+#members-list, #plan-results { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.heatmap { min-width: 900px; table-layout: fixed; }
+table.heatmap th, table.heatmap td { text-align: center; padding: 6px 2px; font-size: 0.8rem; }
+table.heatmap th.rowhead, table.heatmap td.rowhead {
+  text-align: left; padding: 8px 10px; font-size: 0.92rem;
+  position: sticky; left: 0; background: var(--card); min-width: 130px; max-width: 180px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+table.heatmap thead th.rowhead { background: var(--card); z-index: 1; }
+td.hcell { height: 40px; min-width: 30px; }
+td.hcell.golden { box-shadow: inset 0 0 0 2px var(--gold); }
+th.hcol { min-width: 30px; }
+th.hcol.golden { background: var(--gold-bg); color: var(--gold); }
+tr.summaryrow td, tr.summaryrow th { font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.chip {
+  display: inline-block; padding: 10px 16px; border-radius: 999px;
+  background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold);
+  font-weight: 700; min-height: 44px;
+}
+.status { margin-top: 12px; color: var(--muted); font-size: 0.92rem; }
+.status.ok { color: var(--accent); font-weight: 600; }
+.status.err { color: var(--danger); font-weight: 600; }
+.pill { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 600; }
+.pill.in { background: rgba(var(--accent-rgb), 0.18); color: var(--accent); border: 1px solid var(--accent); }
+.pill.out { background: rgba(127,127,140,0.15); color: var(--muted); border: 1px solid var(--muted); }
+.actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
+footer.site { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.9rem; }
+footer.site a { color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>ZoneSync</h1>
+      <p>Remote team time-zone overlap, at a glance. Everything runs offline in this file.</p>
+    </div>
+    <button type="button" id="theme-toggle" aria-label="Toggle dark mode">Dark mode</button>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="viewer-h">
+      <h2 id="viewer-h">Your view</h2>
+      <div class="field">
+        <label for="viewer-tz">Viewer time zone</label>
+        <select id="viewer-tz"></select>
+        <span class="hint">All heatmap columns are hours in this time zone.</span>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="team-h">
+      <h2 id="team-h">Team members</h2>
+      <form id="member-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="m-name">Name</label>
+            <input type="text" id="m-name" maxlength="50" autocomplete="off" placeholder="e.g. Ava">
+          </div>
+          <div class="field">
+            <label for="m-tz">Time zone</label>
+            <select id="m-tz"></select>
+          </div>
+          <div class="field">
+            <label for="m-start">Work start (local hour)</label>
+            <input type="number" id="m-start" min="0" max="23" step="1" value="9">
+          </div>
+          <div class="field">
+            <label for="m-end">Work end (local hour)</label>
+            <input type="number" id="m-end" min="0" max="23" step="1" value="17">
+            <span class="hint">Use 24-hour hours. Overnight shifts work too, e.g. 22 to 6. The end hour itself is not counted as working.</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="primary" id="member-submit">Add member</button>
+          <button type="button" id="member-cancel" hidden>Cancel edit</button>
+        </div>
+      </form>
+      <div id="members-list" style="margin-top:16px;"></div>
+    </section>
+
+    <section class="card" aria-labelledby="heat-h">
+      <h2 id="heat-h">Overlap heatmap</h2>
+      <p class="status" id="heatmap-note" style="margin-top:0;"></p>
+      <div class="heatmap-wrap">
+        <table class="heatmap" id="heatmap" aria-label="24-hour work overlap heatmap"></table>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="golden-h">
+      <h2 id="golden-h">Golden hours</h2>
+      <div id="golden" aria-live="polite"></div>
+    </section>
+
+    <section class="card" aria-labelledby="plan-h">
+      <h2 id="plan-h">Meeting planner</h2>
+      <form id="plan-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="p-date">Date (viewer time zone)</label>
+            <input type="date" id="p-date">
+          </div>
+          <div class="field">
+            <label for="p-time">Time (viewer time zone)</label>
+            <input type="time" id="p-time" value="14:00">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="primary">Show local times</button>
+        </div>
+      </form>
+      <div id="plan-results" style="margin-top:16px;"></div>
+    </section>
+
+    <section class="card" aria-labelledby="data-h">
+      <h2 id="data-h">Data</h2>
+      <div class="actions-row">
+        <button type="button" id="btn-export">Export JSON</button>
+        <button type="button" id="btn-import">Import JSON</button>
+        <input type="file" id="file-import" accept=".json,application/json" class="sr-only" aria-label="Choose a ZoneSync JSON file to import">
+        <button type="button" id="btn-demo">Load demo team</button>
+        <button type="button" class="danger" id="btn-clear">Clear all</button>
+      </div>
+      <p class="status" id="data-status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer class="site">
+    <a href="https://glenerds.gumroad.com">by Glenerds</a>
+  </footer>
+</div>
+<script>
+(function () {
+'use strict';
+
+/* ---------------- constants ---------------- */
+var STORAGE_KEY = 'zonesync-state-v1';
+var THEME_KEY = 'zonesync-theme';
+var MAX_NAME_LEN = 50;
+
+var FALLBACK_ZONES = [
+  'UTC',
+  'Pacific/Honolulu', 'America/Anchorage', 'America/Los_Angeles', 'America/Denver',
+  'America/Chicago', 'America/New_York', 'America/Halifax', 'America/Toronto',
+  'America/Vancouver', 'America/Mexico_City', 'America/Sao_Paulo', 'America/Buenos_Aires',
+  'Atlantic/Azores', 'Europe/Lisbon', 'Europe/London', 'Europe/Paris', 'Europe/Berlin',
+  'Europe/Rome', 'Europe/Madrid', 'Europe/Amsterdam', 'Europe/Zurich', 'Europe/Stockholm',
+  'Europe/Warsaw', 'Europe/Athens', 'Europe/Istanbul', 'Europe/Moscow',
+  'Africa/Cairo', 'Africa/Lagos', 'Africa/Johannesburg',
+  'Asia/Dubai', 'Asia/Karachi', 'Asia/Kolkata', 'Asia/Dhaka', 'Asia/Jakarta',
+  'Asia/Bangkok', 'Asia/Singapore', 'Asia/Hong_Kong', 'Asia/Shanghai',
+  'Asia/Tokyo', 'Asia/Seoul', 'Australia/Perth', 'Australia/Sydney', 'Pacific/Auckland'
+];
+
+var DEMO_MEMBERS = [
+  { name: 'Ava', tz: 'America/New_York', start: 9, end: 17 },
+  { name: 'Liam', tz: 'Europe/London', start: 9, end: 17 },
+  { name: 'Mia', tz: 'Europe/Berlin', start: 9, end: 17 },
+  { name: 'Kenji', tz: 'Asia/Tokyo', start: 15, end: 23 }
+];
+
+/* ---------------- time zone list (allowlist) ---------------- */
+function availableZones() {
+  var list = null;
+  try {
+    if (typeof Intl.supportedValuesOf === 'function') {
+      var l = Intl.supportedValuesOf('timeZone');
+      if (l && l.length) list = l.slice();
+    }
+  } catch (e) { /* use fallback */ }
+  if (!list || !list.length) list = FALLBACK_ZONES.slice();
+  /* Some ICU builds omit UTC from supportedValuesOf; it must always be selectable. */
+  if (list.indexOf('UTC') === -1) list.push('UTC');
+  return list.sort();
+}
+var ZONES = availableZones();
+var ZONE_SET = {};
+ZONES.forEach(function (z) { ZONE_SET[z] = true; });
+function validZone(z) { return typeof z === 'string' && !!ZONE_SET[z]; }
+function defaultViewerZone() {
+  try {
+    var r = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (validZone(r)) return r;
+  } catch (e) {}
+  return 'UTC';
+}
+
+/* ---------------- theme ---------------- */
+var themeBtn = document.getElementById('theme-toggle');
+function currentTheme() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+}
+function paintThemeButton() {
+  themeBtn.textContent = currentTheme() === 'dark' ? 'Light mode' : 'Dark mode';
+}
+themeBtn.addEventListener('click', function () {
+  var next = currentTheme() === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  paintThemeButton();
+  renderHeatmap();
+});
+paintThemeButton();
+
+/* ---------------- state ---------------- */
+function toHourInt(v) {
+  if (v === '' || v === null || v === undefined) return null;
+  var n = Number(typeof v === 'string' ? v.trim() : v);
+  if (!Number.isInteger(n) || n < 0 || n > 23) return null;
+  return n;
+}
+function sanitizeMember(m) {
+  if (!m || typeof m !== 'object') return null;
+  var name = typeof m.name === 'string' ? m.name.trim().slice(0, MAX_NAME_LEN) : '';
+  if (!name) return null;
+  if (!validZone(m.tz)) return null;
+  var start = toHourInt(m.start);
+  var end = toHourInt(m.end);
+  if (start === null || end === null) return null;
+  return { name: name, tz: m.tz, start: start, end: end };
+}
+function loadState() {
+  var fallback = { viewerTz: defaultViewerZone(), members: [] };
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return fallback;
+    var data = JSON.parse(raw);
+    var out = { viewerTz: fallback.viewerTz, members: [] };
+    if (data && validZone(data.viewerTz)) out.viewerTz = data.viewerTz;
+    if (data && Array.isArray(data.members)) {
+      data.members.forEach(function (m) {
+        var s = sanitizeMember(m);
+        if (s) out.members.push(s);
+      });
+    }
+    return out;
+  } catch (e) { return fallback; }
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+var state = loadState();
+var editingIndex = -1;
+
+/* ---------------- DST-safe time math ----------------
+   All conversions go through Intl.DateTimeFormat with an explicit timeZone
+   on real Date instants. No hand-rolled UTC offsets anywhere. */
+var fmtCache = {};
+function tzFormatter(tz) {
+  if (!fmtCache[tz]) {
+    fmtCache[tz] = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz, hourCycle: 'h23',
+      year: 'numeric', month: 'numeric', day: 'numeric',
+      hour: 'numeric', minute: 'numeric', second: 'numeric'
+    });
+  }
+  return fmtCache[tz];
+}
+function tzParts(date, tz) {
+  var parts = tzFormatter(tz).formatToParts(date);
+  var o = {};
+  for (var i = 0; i < parts.length; i++) o[parts[i].type] = parts[i].value;
+  return {
+    year: +o.year, month: +o.month, day: +o.day,
+    hour: +o.hour, minute: +o.minute
+  };
+}
+/* Wall-clock time (y/mo/d h:mi) in tz -> UTC instant. Iterates
+   U = W - off(U) to convergence so DST transitions resolve against the
+   real tz database. W (the wall time read as UTC) stays fixed. */
+function zonedToUtc(y, mo, d, h, mi, tz) {
+  var W = Date.UTC(y, mo - 1, d, h, mi || 0, 0);
+  var u = W;
+  for (var i = 0; i < 3; i++) {
+    var p = tzParts(new Date(u), tz);
+    var off = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, 0) - u;
+    var next = W - off;
+    if (next === u) return u;
+    u = next;
+  }
+  return u;
+}
+function viewerToday() {
+  var p = tzParts(new Date(), state.viewerTz);
+  return { y: p.year, m: p.month, d: p.day };
+}
+function memberHourAtViewerHour(member, h, today) {
+  var utc = zonedToUtc(today.y, today.m, today.d, h, 0, state.viewerTz);
+  return tzParts(new Date(utc), member.tz).hour;
+}
+/* Half-open [start, end); wraps past midnight for overnight shifts. */
+function inWorkHours(h, start, end) {
+  if (start === end) return false;
+  if (start < end) return h >= start && h < end;
+  return h >= start || h < end;
+}
+function workingAt(member, h, today) {
+  return inWorkHours(memberHourAtViewerHour(member, h, today), member.start, member.end);
+}
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+/* ---------------- DOM helpers (no innerHTML anywhere) ---------------- */
+function el(tag, text, cls) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined && text !== null) e.textContent = text;
+  return e;
+}
+function clear(node) {
+  while (node.firstChild) node.removeChild(node.firstChild);
+}
+
+/* ---------------- element refs ---------------- */
+var viewerSel = document.getElementById('viewer-tz');
+var form = document.getElementById('member-form');
+var nameInput = document.getElementById('m-name');
+var tzInput = document.getElementById('m-tz');
+var startInput = document.getElementById('m-start');
+var endInput = document.getElementById('m-end');
+var submitBtn = document.getElementById('member-submit');
+var cancelBtn = document.getElementById('member-cancel');
+var membersList = document.getElementById('members-list');
+var heatmapTable = document.getElementById('heatmap');
+var heatmapNote = document.getElementById('heatmap-note');
+var goldenDiv = document.getElementById('golden');
+var planForm = document.getElementById('plan-form');
+var pDate = document.getElementById('p-date');
+var pTime = document.getElementById('p-time');
+var planResults = document.getElementById('plan-results');
+var dataStatus = document.getElementById('data-status');
+var fileInput = document.getElementById('file-import');
+
+function setDataStatus(msg, cls) {
+  dataStatus.textContent = msg;
+  dataStatus.className = 'status' + (cls ? ' ' + cls : '');
+}
+
+/* ---------------- selects ---------------- */
+function fillZoneSelect(sel, current) {
+  clear(sel);
+  ZONES.forEach(function (z) {
+    var o = document.createElement('option');
+    o.value = z;
+    o.textContent = z;
+    if (z === current) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+viewerSel.addEventListener('change', function () {
+  if (validZone(viewerSel.value)) {
+    state.viewerTz = viewerSel.value;
+    saveState();
+    renderAll();
+  }
+});
+
+/* ---------------- members table ---------------- */
+function renderMembers() {
+  clear(membersList);
+  if (!state.members.length) {
+    membersList.appendChild(el('p', 'No team members yet. Add one above, or load the demo team.', 'status'));
+    return;
+  }
+  var table = el('table');
+  table.setAttribute('aria-label', 'Team members');
+  var thead = el('thead');
+  var hr = el('tr');
+  ['Name', 'Time zone', 'Work hours (local)', 'Actions'].forEach(function (t) {
+    var th = el('th', t);
+    th.setAttribute('scope', 'col');
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr);
+  table.appendChild(thead);
+  var tbody = el('tbody');
+  state.members.forEach(function (m, i) {
+    var tr = el('tr');
+    var th = el('th', m.name);
+    th.setAttribute('scope', 'row');
+    tr.appendChild(th);
+    tr.appendChild(el('td', m.tz));
+    tr.appendChild(el('td', pad2(m.start) + ':00\u2013' + pad2(m.end) + ':00'));
+    var act = el('td');
+    var eb = el('button', 'Edit');
+    eb.type = 'button';
+    eb.setAttribute('aria-label', 'Edit ' + m.name);
+    eb.addEventListener('click', function () { startEdit(i); });
+    var db = el('button', 'Delete');
+    db.type = 'button';
+    db.setAttribute('aria-label', 'Delete ' + m.name);
+    db.addEventListener('click', function () {
+      state.members.splice(i, 1);
+      if (editingIndex === i) cancelEdit();
+      else if (editingIndex > i) editingIndex--;
+      saveState();
+      renderAll();
+    });
+    act.appendChild(eb);
+    act.appendChild(document.createTextNode(' '));
+    act.appendChild(db);
+    tr.appendChild(act);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  membersList.appendChild(table);
+}
+
+/* ---------------- heatmap ---------------- */
+function accentBase() {
+  return currentTheme() === 'dark' ? '45, 212, 191' : '13, 110, 102';
+}
+function renderHeatmap() {
+  clear(heatmapTable);
+  var n = state.members.length;
+  if (!n) {
+    heatmapNote.textContent = 'Add team members to see the overlap heatmap.';
+    renderGolden([]);
+    return;
+  }
+  var today = viewerToday();
+  heatmapNote.textContent = 'Hours are in ' + state.viewerTz + '. Filled cells mean the member is within work hours. Hover a cell for the member\u2019s local hour.';
+  var grid = [];
+  var counts = [];
+  for (var h = 0; h < 24; h++) counts.push(0);
+  state.members.forEach(function (m) {
+    var row = [];
+    for (var hh = 0; hh < 24; hh++) {
+      var w = workingAt(m, hh, today);
+      row.push(w);
+      if (w) counts[hh]++;
+    }
+    grid.push(row);
+  });
+  var thead = el('thead');
+  var hr = el('tr');
+  var corner = el('th', 'Member');
+  corner.setAttribute('scope', 'col');
+  corner.className = 'rowhead';
+  hr.appendChild(corner);
+  for (var h2 = 0; h2 < 24; h2++) {
+    var thc = el('th', pad2(h2));
+    thc.setAttribute('scope', 'col');
+    thc.className = 'hcol' + (counts[h2] === n ? ' golden' : '');
+    hr.appendChild(thc);
+  }
+  thead.appendChild(hr);
+  heatmapTable.appendChild(thead);
+  var tbody = el('tbody');
+  var base = accentBase();
+  state.members.forEach(function (m, mi) {
+    var tr = el('tr');
+    var rh = el('th', m.name);
+    rh.setAttribute('scope', 'row');
+    rh.className = 'rowhead';
+    tr.appendChild(rh);
+    for (var h3 = 0; h3 < 24; h3++) {
+      var td = el('td');
+      td.className = 'hcell' + (counts[h3] === n ? ' golden' : '');
+      var localH = memberHourAtViewerHour(m, h3, today);
+      td.title = m.name + ': ' + pad2(localH) + ':00 local \u2014 ' +
+        (grid[mi][h3] ? 'in work hours' : 'off hours');
+      if (grid[mi][h3]) {
+        var alpha = (0.25 + 0.65 * (counts[h3] / n)).toFixed(2);
+        td.style.backgroundColor = 'rgba(' + base + ', ' + alpha + ')';
+      }
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  });
+  var sr = el('tr');
+  sr.className = 'summaryrow';
+  var srh = el('th', 'Working');
+  srh.setAttribute('scope', 'row');
+  srh.className = 'rowhead';
+  sr.appendChild(srh);
+  for (var h4 = 0; h4 < 24; h4++) {
+    var sc = el('td', String(counts[h4]));
+    sc.className = 'hcell' + (counts[h4] === n ? ' golden' : '');
+    if (counts[h4] > 0) {
+      sc.style.backgroundColor = 'rgba(' + base + ', ' + (0.9 * counts[h4] / n).toFixed(2) + ')';
+    }
+    sr.appendChild(sc);
+  }
+  tbody.appendChild(sr);
+  heatmapTable.appendChild(tbody);
+  var goldenHours = [];
+  for (var h5 = 0; h5 < 24; h5++) if (counts[h5] === n) goldenHours.push(h5);
+  renderGolden(goldenHours);
+}
+
+/* ---------------- golden hours ---------------- */
+function rangesOf(hours) {
+  var out = [];
+  var start = null, prev = null;
+  hours.forEach(function (h) {
+    if (start === null) { start = h; prev = h; }
+    else if (h === prev + 1) { prev = h; }
+    else { out.push([start, prev + 1]); start = h; prev = h; }
+  });
+  if (start !== null) out.push([start, prev + 1]);
+  return out;
+}
+function renderGolden(goldenHours) {
+  clear(goldenDiv);
+  if (!state.members.length) {
+    goldenDiv.appendChild(el('p', 'Add team members to find golden hours.', 'status'));
+    return;
+  }
+  if (!goldenHours.length) {
+    goldenDiv.appendChild(el('p', 'No golden hours \u2014 there is no hour when the whole team overlaps.', 'status'));
+    goldenDiv.appendChild(el('p', 'Tip: shift someone\u2019s work hours, or accept partial overlap and pick the hours with the highest count in the heatmap.', 'status'));
+    return;
+  }
+  goldenDiv.appendChild(el('p', 'Best meeting windows (' + state.viewerTz + '):', 'status'));
+  var chips = el('div', null, 'chips');
+  rangesOf(goldenHours).forEach(function (r) {
+    chips.appendChild(el('span', pad2(r[0]) + ':00\u2013' + pad2(r[1] % 24) + ':00', 'chip'));
+  });
+  goldenDiv.appendChild(chips);
+}
+
+/* ---------------- member form (add / edit) ---------------- */
+function startEdit(i) {
+  editingIndex = i;
+  var m = state.members[i];
+  nameInput.value = m.name;
+  tzInput.value = m.tz;
+  startInput.value = m.start;
+  endInput.value = m.end;
+  submitBtn.textContent = 'Save member';
+  cancelBtn.hidden = false;
+  nameInput.focus();
+}
+function cancelEdit() {
+  editingIndex = -1;
+  form.reset();
+  startInput.value = '9';
+  endInput.value = '17';
+  submitBtn.textContent = 'Add member';
+  cancelBtn.hidden = true;
+}
+cancelBtn.addEventListener('click', cancelEdit);
+form.addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  var m = sanitizeMember({
+    name: nameInput.value, tz: tzInput.value,
+    start: startInput.value, end: endInput.value
+  });
+  if (!m) {
+    setDataStatus('Could not save: check the name, time zone, and hours (0\u201323).', 'err');
+    return;
+  }
+  if (m.start === m.end) {
+    setDataStatus('Work start and end are both ' + pad2(m.start) + ':00 \u2014 that would be a zero-hour shift. ' +
+      'Pick different hours (overnight shifts like 22 to 6 are fine).', 'err');
+    return;
+  }
+  var lower = m.name.toLowerCase();
+  for (var di = 0; di < state.members.length; di++) {
+    if (di !== editingIndex && state.members[di].name.toLowerCase() === lower) {
+      setDataStatus('A team member named "' + m.name + '" already exists. Use a different name.', 'err');
+      return;
+    }
+  }
+  if (editingIndex >= 0) state.members[editingIndex] = m;
+  else state.members.push(m);
+  saveState();
+  cancelEdit();
+  renderAll();
+  setDataStatus('', '');
+});
+
+/* ---------------- meeting planner ---------------- */
+function viewerTodayISO() {
+  var t = viewerToday();
+  return t.y + '-' + pad2(t.m) + '-' + pad2(t.d);
+}
+var planGenerated = false;
+function renderPlan() {
+  clear(planResults);
+  var dm = /^(\d{4})-(\d{2})-(\d{2})$/.exec(pDate.value || '');
+  var tm = /^(\d{2}):(\d{2})$/.exec(pTime.value || '');
+  if (!dm || !tm || +tm[1] > 23 || +tm[2] > 59) {
+    planResults.appendChild(el('p', 'Pick a valid date and time.', 'status err'));
+    return;
+  }
+  if (!state.members.length) {
+    planResults.appendChild(el('p', 'Add team members first.', 'status'));
+    return;
+  }
+  var utc = zonedToUtc(+dm[1], +dm[2], +dm[3], +tm[1], +tm[2], state.viewerTz);
+  var table = el('table');
+  table.setAttribute('aria-label', 'Per-member local meeting times');
+  var thead = el('thead');
+  var hr = el('tr');
+  ['Member', 'Local time', 'Status'].forEach(function (t) {
+    var th = el('th', t);
+    th.setAttribute('scope', 'col');
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr);
+  table.appendChild(thead);
+  var tbody = el('tbody');
+  state.members.forEach(function (m) {
+    var p = tzParts(new Date(utc), m.tz);
+    var tr = el('tr');
+    var th = el('th', m.name);
+    th.setAttribute('scope', 'row');
+    tr.appendChild(th);
+    tr.appendChild(el('td',
+      p.year + '-' + pad2(p.month) + '-' + pad2(p.day) + ' ' +
+      pad2(p.hour) + ':' + pad2(p.minute) + ' (' + m.tz + ')'));
+    var inH = inWorkHours(p.hour, m.start, m.end);
+    var pill = el('span', inH ? 'In work hours' : 'Outside work hours',
+      'pill ' + (inH ? 'in' : 'out'));
+    var td = el('td');
+    td.appendChild(pill);
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  planResults.appendChild(table);
+  planGenerated = true;
+}
+planForm.addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  renderPlan();
+});
+
+/* ---------------- data: export / import / demo / clear ---------------- */
+document.getElementById('btn-export').addEventListener('click', function () {
+  var blob = new Blob(
+    [JSON.stringify({ app: 'zonesync', version: 1, viewerTz: state.viewerTz, members: state.members }, null, 2)],
+    { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'zonesync-export.json';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  setDataStatus('Exported ' + state.members.length + ' member(s).', 'ok');
+});
+document.getElementById('btn-import').addEventListener('click', function () { fileInput.click(); });
+fileInput.addEventListener('change', function () {
+  var f = fileInput.files && fileInput.files[0];
+  if (!f) return;
+  var reader = new FileReader();
+  reader.onload = function () {
+    var ok = 0, bad = 0;
+    try {
+      var data = JSON.parse(reader.result);
+      var list = data && Array.isArray(data.members) ? data.members : null;
+      if (!list) throw new Error('bad shape');
+      list.forEach(function (m) {
+        var s = sanitizeMember(m);
+        if (s) { state.members.push(s); ok++; } else { bad++; }
+      });
+      if (data && validZone(data.viewerTz)) {
+        state.viewerTz = data.viewerTz;
+        viewerSel.value = state.viewerTz;
+      }
+      saveState();
+      cancelEdit();
+      renderAll();
+      setDataStatus('Imported ' + ok + ' member(s)' +
+        (bad ? ', skipped ' + bad + ' invalid ' + (bad === 1 ? 'entry' : 'entries') + '.' : '.'),
+        bad ? 'err' : 'ok');
+    } catch (e) {
+      setDataStatus('Import failed: not a valid ZoneSync JSON file.', 'err');
+    }
+    fileInput.value = '';
+  };
+  reader.readAsText(f);
+});
+document.getElementById('btn-demo').addEventListener('click', function () {
+  if (state.members.length && !window.confirm('Replace your current team with the demo team? This cannot be undone.')) return;
+  state.members = DEMO_MEMBERS.map(function (m) {
+    return { name: m.name, tz: m.tz, start: m.start, end: m.end };
+  });
+  saveState();
+  cancelEdit();
+  renderAll();
+  setDataStatus('Demo team loaded (New York, London, Berlin, Tokyo).', 'ok');
+});
+document.getElementById('btn-clear').addEventListener('click', function () {
+  if (window.confirm('Remove all team members? This cannot be undone.')) {
+    state.members = [];
+    saveState();
+    cancelEdit();
+    renderAll();
+    setDataStatus('All members cleared.', 'ok');
+  }
+});
+
+/* ---------------- init ---------------- */
+function renderAll() {
+  renderMembers();
+  renderHeatmap();
+  if (planGenerated) renderPlan();
+}
+fillZoneSelect(viewerSel, state.viewerTz);
+fillZoneSelect(tzInput, state.viewerTz);
+pDate.value = viewerTodayISO();
+renderAll();
+
+})();
+</script>
+</body>
+</html>

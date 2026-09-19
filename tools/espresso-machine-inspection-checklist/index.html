@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Used Espresso Machine Inspection Checklist | Glenerds</title>
+<meta name="description" content="Free used espresso machine inspection checklist: work through key inspection points, tally issues, and estimate repair costs before you buy. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/espresso-machine-inspection-checklist/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Used Espresso Machine Inspection Checklist | Glenerds">
+<meta property="og:description" content="Free used espresso machine inspection checklist: work through key inspection points, tally issues, and estimate repair costs before you buy. Offline, no account.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/espresso-machine-inspection-checklist/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Should I bring a technician to the inspection?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For machines over a few thousand dollars, yes \u2014 a paid pre-purchase inspection is cheap insurance. Use this checklist to screen machines first, so you only pay a technician for the ones worth a closer look."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the most expensive thing to go wrong?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Boiler and heat-exchanger work, followed by pumps and control boards. That is why the checklist starts at the boiler: a bad boiler can exceed the machine\u2019s value."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are the repair ranges accurate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "They are ballparks for budgeting and negotiation, varying by brand and region. Treat them as \u201corder of magnitude\u201d numbers, not quotes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does this cover home machines too?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The inspection logic applies to any pump-driven machine, but the checklist is tuned for commercial units \u2014 groups, steam boilers, and the price points where mistakes get expensive."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What about brand-specific weak points?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "That is the paid upgrade. CremaCheck adds brand-specific checklists for La Marzocco, Synesso, Nuova Simonelli, and Victoria Arduino, with weighted risk scoring and a printable report \u2014 $29 one-time, offline."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Espresso Inspection Checklist</p>
+<main>
+<div class="hero">
+<h1>Free Used Espresso Machine Inspection Checklist</h1>
+<p class="lead">Buying a used commercial espresso machine? A bad one is a five-figure mistake. Work through the
+inspection points that matter &mdash; boiler, group heads, steam, pump, electrics &mdash; mark each pass,
+flag, or fail, and get an issue tally with a rough repair-cost exposure range. Designed for use at the
+seller's location, offline, on your phone. Free, no account.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Espresso machine inspection checklist">
+
+<div id="es-list"></div>
+<p><strong id="es-tally"></strong><br><span id="es-cost" class="small"></span></p>
+<label>Notes: <input type="text" id="es-notes" style="width:70%" placeholder="Seller claims, serial number, asking price..." aria-label="Inspection notes"></label><br>
+<button id="es-print">Print checklist</button>
+<button id="es-reset" class="plain">Reset</button>
+<p class="small">Repair ranges are rough ballparks for budgeting &mdash; get a technician quote before negotiating.</p>
+</div>
+<p class="small" style="margin-top:1rem"><strong>Inspecting a specific brand?</strong> <a href="../../products/cremacheck/index.html">CremaCheck</a>'s brand checklists score the machine's risk for you.</p>
+<p class="small">Free tool by <a href="../../index.html">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+
+<div class="toolbox">
+<h3 style="margin-top:0">Free vs. full version</h3>
+<table><tbody>
+<tr><td><strong>Free tool on this page</strong></td><td><strong>CremaCheck &mdash; $29 one-time</strong></td></tr>
+<tr><td>One generic checklist for any machine</td><td>Brand-specific checklists: La Marzocco, Synesso, Nuova Simonelli, Victoria Arduino</td></tr>
+<tr><td>Simple repair-cost tally</td><td>Weighted risk scoring with a clear low / medium / high verdict and printable report</td></tr>
+</tbody></table>
+<p><a class="btn" href="https://glenerds.gumroad.com/l/cremacheck">Get CremaCheck &mdash; $29 one-time</a></p>
+<p class="small">No subscription. No account. The full tool runs offline in your browser, just like this free one.</p>
+</div>
+
+
+
+
+
+<script>
+(function(){
+  var KEY='glenerds-espresso-v1';
+  var ITEMS=[
+    ['Boiler & heating','Pressure holds steady at temperature, no leaks around boiler fittings',120,400],
+    ['Boiler & heating','Heats to temperature in a reasonable time, no error codes',80,250],
+    ['Group head(s)','Water flows evenly from all groups, no channeling or sputtering',60,200],
+    ['Group head(s)','Gaskets and shower screens intact, not crusted or torn',20,80],
+    ['Steam & hot water','Steam wand produces dry steam, no leaks at the valve',40,150],
+    ['Steam & hot water','Hot water tap flows cleanly, boiler auto-refills',40,150],
+    ['Grinder (if included)','Burrs not visibly worn, grinds consistently, motor runs smooth',60,300],
+    ['Pump','Pump runs quietly and builds pressure to ~9 bar, no loud knocking',80,350],
+    ['Electrics','All switches, PID/display, and lights work; no burnt smell',50,250],
+    ['Electrics','Power cord and plug undamaged, machine properly grounded',30,120],
+    ['Body & frame','No major dents, rust, or water damage under the drip tray',0,200],
+    ['General','Seller can show it pulling a real shot, not just powering on',0,0]
+  ];
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
+  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  var data=load();
+  function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
+  function render(){
+    var wrap=document.getElementById('es-list');wrap.innerHTML='';
+    var flags=0,fails=0,lo=0,hi=0,done=0;
+    ITEMS.forEach(function(it,i){
+      var st=data[i]||'';
+      if(st==='flag'){flags++;lo+=it[2];hi+=it[3];done++;}
+      if(st==='fail'){fails++;lo+=it[2];hi+=it[3];done++;}
+      if(st==='pass'){done++;}
+      var div=document.createElement('div');
+      div.style.cssText='border-bottom:1px solid var(--border);padding:.5rem 0;';
+      div.innerHTML='<strong>'+it[0]+':</strong> '+it[1]
+        +'<br><span class="small">Typical repair: '+money(it[2])+'&ndash;'+money(it[3])+'</span><br>';
+      ['pass','flag','fail'].forEach(function(s){
+        var lab=document.createElement('label');lab.style.marginRight='1rem';
+        var r=document.createElement('input');r.type='radio';r.name='es'+i;r.value=s;
+        if(st===s)r.checked=true;
+        r.onchange=function(){data[i]=s;save(data);render();};
+        lab.appendChild(r);lab.appendChild(document.createTextNode(' '+s.charAt(0).toUpperCase()+s.slice(1)));
+        div.appendChild(lab);
+      });
+      wrap.appendChild(div);
+    });
+    document.getElementById('es-tally').textContent=
+      'Checked '+done+'/'+ITEMS.length+' — '+flags+' flagged, '+fails+' failed';
+    document.getElementById('es-cost').textContent=
+      (flags+fails)>0?('Rough repair exposure: '+money(lo)+' – '+money(hi)+' (midpoints of flagged items)'):'No issues flagged yet.';
+    document.getElementById('es-notes').value=data.notes||'';
+  }
+  document.getElementById('es-notes').addEventListener('input',function(e){data.notes=e.target.value;save(data);});
+  document.getElementById('es-print').onclick=function(){window.print();};
+  document.getElementById('es-reset').onclick=function(){if(confirm('Reset the whole checklist?')){data={};save(data);render();}};
+  render();
+})();
+</script>
+<section class="block prose">
+
+<h2 class="sec">How to inspect a used espresso machine</h2>
+<p>Always see the machine run a real shot &mdash; powering on proves almost nothing. Work the checklist
+top to bottom: boiler behavior first (leaks and heat-up tell you the most), then water flow through
+each group, steam quality, the pump under load, and finally electrics and cosmetics. Mark anything
+that is not right as a flag or fail; the tally at the bottom converts your findings into a rough
+repair-cost range you can take into negotiation.</p>
+<h2 class="sec">What the price should tell you</h2>
+<p>A used commercial machine at 30&ndash;40% of new is normal; below 20%, assume hidden work. Add your
+rough repair exposure to the asking price &mdash; that sum is the real price. If it lands near the
+cost of a new machine with a warranty, walk away. And never skip the serial number: it lets you (or
+a technician) check service history and whether the machine was reported stolen.</p>
+<h2 class="sec">Worked example</h2>
+<p>Flag two issues on a used 2-group: boiler pressure problems (typical repair $120&ndash;$400) and uneven
+group flow ($60&ndash;$200). The tally reads 2 flagged with a rough repair exposure of
+<strong>$180&ndash;$600</strong> &mdash; real numbers to take into the negotiation, or a reason to walk away.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>Should I bring a technician to the inspection?</dt>
+<dd>For machines over a few thousand dollars, yes &mdash; a paid pre-purchase inspection is cheap
+insurance. Use this checklist to screen machines first, so you only pay a technician for the ones
+worth a closer look.</dd>
+<dt>What is the most expensive thing to go wrong?</dt>
+<dd>Boiler and heat-exchanger work, followed by pumps and control boards. That is why the checklist
+starts at the boiler: a bad boiler can exceed the machine&rsquo;s value.</dd>
+<dt>Are the repair ranges accurate?</dt>
+<dd>They are ballparks for budgeting and negotiation, varying by brand and region. Treat them as
+&ldquo;order of magnitude&rdquo; numbers, not quotes.</dd>
+<dt>Does this cover home machines too?</dt>
+<dd>The inspection logic applies to any pump-driven machine, but the checklist is tuned for commercial
+units &mdash; groups, steam boilers, and the price points where mistakes get expensive.</dd>
+<dt>What about brand-specific weak points?</dt>
+<dd>That is the paid upgrade. <strong>CremaCheck</strong> adds brand-specific checklists for La
+Marzocco, Synesso, Nuova Simonelli, and Victoria Arduino, with weighted risk scoring and a printable
+report &mdash; $29 one-time, offline.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>CremaCheck &mdash; $29 one-time</h3><p>Brand-specific checklists, a scored low/medium/high risk verdict, and a printable inspection report.</p><a class="btn" href="../../products/cremacheck/index.html">Learn more</a></div>
+<div class="card"><h3>Free Used Boat Inspection Checklist</h3><p>The same pass/flag/fail inspection method, tuned for boats.</p><a class="btn" href="../used-boat-inspection-checklist/index.html">Open the free tool</a></div>
+</div>
+</section>
+
+
+<div class="cta-band">
+<h2>Need the full version?</h2>
+<p><strong>CremaCheck</strong> is the offline inspection tool for used commercial espresso machine buyers: brand-specific checklists, a scored risk verdict, repair-cost estimates, and a printable report. $29 one-time, no subscription.</p>
+<a class="btn" href="https://glenerds.gumroad.com/l/cremacheck">Get CremaCheck &mdash; $29 one-time</a>
+<p class="small"><a href="../../products/cremacheck/index.html">Learn more about CremaCheck</a>
+&middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

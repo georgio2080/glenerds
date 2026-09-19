@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuoteCraft — Local Service Quote Builder</title>
+<meta name="description" content="QuoteCraft: build itemized, professional service quotes on-site from your phone. Offline, private, exact-to-the-cent math.">
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --ink:#1b1e24; --muted:#5b6270;
+  --line:#d9dde4; --accent:#1a6fd4; --accent-ink:#ffffff;
+  --danger:#c0392b; --ok:#1e7e34; --input-bg:#ffffff;
+  --radius:10px; --tap:44px;
+}
+html[data-theme="dark"]{
+  --bg:#14171c; --surface:#1e232a; --ink:#eef1f5; --muted:#a9b1bd;
+  --line:#333b46; --accent:#5aa2f0; --accent-ink:#0d1218;
+  --danger:#f0745e; --ok:#5fd07e; --input-bg:#262c35;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{
+  margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.45; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px 32px}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:8px}
+header.top h1{font-size:1.25rem;margin:0}
+button{font:inherit;cursor:pointer;min-height:var(--tap);padding:10px 16px;border-radius:var(--radius);
+  border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+button:hover{filter:brightness(0.97)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button.danger{color:var(--danger);border-color:var(--danger);background:transparent}
+button.ghost{background:transparent}
+button.small{min-height:40px;padding:6px 12px;font-size:.9rem}
+button:disabled{opacity:.5;cursor:not-allowed}
+nav.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+.card h2{margin:0 0 10px;font-size:1.05rem}
+.field{margin-bottom:12px}
+.field label{display:block;font-weight:600;margin-bottom:5px;font-size:.92rem}
+.field .hint{font-size:.82rem;color:var(--muted);margin-top:4px}
+input[type=text],input[type=tel],input[type=email],input[type=number],input[type=date],
+select,textarea{
+  width:100%;font:inherit;min-height:var(--tap);padding:10px 12px;border-radius:var(--radius);
+  border:1px solid var(--line);background:var(--input-bg);color:var(--ink)}
+textarea{resize:vertical;min-height:88px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)}
+.checkrow{display:flex;align-items:center;gap:10px;min-height:var(--tap)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+table{border-collapse:collapse;width:100%;font-size:.95rem;position:relative}
+caption{text-align:left;font-weight:600;padding:6px 0}
+th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:middle}
+th{font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.totals{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin:14px 0}
+.totals h2{margin:0 0 8px;font-size:1rem}
+.totals table{font-size:1rem}
+.totals td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.totals .grand td{font-weight:700;font-size:1.15rem;border-top:2px solid var(--ink)}
+.footnote{font-size:.82rem;color:var(--muted);margin-top:10px}
+.status{font-weight:600;padding:3px 10px;border-radius:999px;font-size:.82rem;border:1px solid var(--line);white-space:nowrap}
+.status.Draft{color:var(--muted)} .status.Sent{color:var(--accent)}
+.status.Accepted{color:var(--ok)} .status.Declined{color:var(--danger)}
+.empty{color:var(--muted);padding:18px 0;text-align:center}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.err{color:var(--danger);font-size:.9rem;margin-top:6px;min-height:1.2em}
+.notice{border:1px solid var(--line);border-left:4px solid var(--accent);padding:10px 12px;border-radius:8px;margin-bottom:14px;background:var(--surface)}
+footer.site{margin-top:26px;padding-top:12px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:.85rem}
+footer.site a{color:var(--muted)}
+/* ---------- screen-only / print-only plumbing ---------- */
+#print-view{display:none}
+@media print{
+  .screen-only{display:none !important}
+  #print-view{display:block !important}
+  body{background:#fff;color:#000}
+  #print-view{font-family:Georgia,"Times New Roman",serif;color:#000}
+  #print-view h1{font-size:1.5rem;margin:0 0 2px}
+  #print-view .qmeta{color:#333;font-size:.9rem}
+  #print-view .blocks{display:flex;justify-content:space-between;gap:24px;margin:18px 0;flex-wrap:wrap}
+  #print-view table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.95rem}
+  #print-view th,#print-view td{border:1px solid #000;padding:8px;text-align:left}
+  #print-view th.num,#print-view td.num{text-align:right}
+  #print-view .ptotals{margin-left:auto;width:60%;max-width:320px}
+  #print-view .ptotals td:last-child{text-align:right}
+  #print-view .grand td{font-weight:bold}
+  #print-view .terms{white-space:pre-wrap;margin-top:14px;font-size:.92rem}
+  #print-view .sig{margin-top:48px;display:flex;gap:32px}
+  #print-view .sig div{flex:1;border-top:1px solid #000;padding-top:6px;font-size:.85rem}
+}
+@media (max-width:560px){
+  .row3{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap screen-only">
+  <header class="top">
+    <h1>QuoteCraft</h1>
+    <button id="theme-toggle" type="button" aria-pressed="false">Dark mode: off</button>
+  </header>
+
+  <div id="storage-notice" class="notice" hidden></div>
+
+  <nav class="tabs" aria-label="Sections">
+    <button type="button" id="tab-quotes" aria-selected="true">Quotes</button>
+    <button type="button" id="tab-business" aria-selected="false">Business</button>
+    <button type="button" id="tab-data" aria-selected="false">Data</button>
+  </nav>
+
+  <!-- ============ QUOTES LIST ============ -->
+  <section id="view-list" aria-label="Quotes list">
+    <div class="actions" style="margin-bottom:12px">
+      <button type="button" id="btn-new-quote" class="primary">New quote</button>
+    </div>
+    <div class="card">
+      <h2>Quotes</h2>
+      <div style="overflow-x:auto">
+      <table id="quotes-table">
+        <caption class="sr-only">Saved quotes</caption>
+        <thead><tr>
+          <th scope="col">Number</th><th scope="col">Date</th><th scope="col">Customer</th>
+          <th scope="col">Status</th><th scope="col" class="num">Total</th>
+          <th scope="col"><span class="sr-only">Actions</span></th>
+        </tr></thead>
+        <tbody id="quotes-tbody"></tbody>
+      </table>
+      </div>
+      <div id="quotes-empty" class="empty" hidden>No quotes yet. Tap “New quote” to build your first estimate.</div>
+    </div>
+  </section>
+
+  <!-- ============ QUOTE EDITOR ============ -->
+  <section id="view-edit" aria-label="Quote editor" hidden>
+    <div class="actions" style="margin-bottom:12px">
+      <button type="button" id="btn-back-list" class="ghost">&larr; Back</button>
+      <span id="edit-quote-title" style="font-weight:700"></span>
+    </div>
+
+    <div class="card">
+      <h2>Customer</h2>
+      <div class="field">
+        <label for="f-cust-name">Customer name</label>
+        <input type="text" id="f-cust-name" maxlength="120" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="f-cust-contact">Address / phone (optional)</label>
+        <input type="text" id="f-cust-contact" maxlength="240" autocomplete="off">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="f-quote-date">Quote date</label>
+          <input type="date" id="f-quote-date">
+        </div>
+        <div class="field">
+          <label for="f-valid-until">Valid until</label>
+          <input type="date" id="f-valid-until">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-status">Status</label>
+        <select id="f-status">
+          <option>Draft</option><option>Sent</option><option>Accepted</option><option>Declined</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Line items</h2>
+      <div style="overflow-x:auto">
+      <table id="items-table">
+        <caption class="sr-only">Quote line items</caption>
+        <thead><tr>
+          <th scope="col">Description</th><th scope="col" class="num">Qty</th>
+          <th scope="col" class="num">Unit price</th><th scope="col">Taxable</th>
+          <th scope="col" class="num">Line total</th><th scope="col"><span class="sr-only">Actions</span></th>
+        </tr></thead>
+        <tbody id="items-tbody"></tbody>
+      </table>
+      </div>
+      <div id="items-empty" class="empty" hidden>No line items yet.</div>
+      <h3 style="font-size:.95rem;margin:12px 0 8px">Add item</h3>
+      <div class="field">
+        <label for="ni-desc">Description</label>
+        <input type="text" id="ni-desc" maxlength="200" autocomplete="off">
+      </div>
+      <div class="row3">
+        <div class="field">
+          <label for="ni-qty">Quantity</label>
+          <input type="number" id="ni-qty" min="0" step="any" inputmode="decimal" placeholder="1">
+        </div>
+        <div class="field">
+          <label for="ni-price">Unit price ($)</label>
+          <input type="number" id="ni-price" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+        </div>
+        <div class="field">
+          <label class="sr-only" for="ni-taxable">Taxable</label>
+          <div class="checkrow">
+            <input type="checkbox" id="ni-taxable" checked>
+            <label for="ni-taxable" style="font-weight:400">Taxable</label>
+          </div>
+        </div>
+      </div>
+      <div class="err" id="ni-err" role="alert"></div>
+      <div class="actions">
+        <button type="button" id="btn-add-item" class="primary">Add item</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Discount &amp; tax</h2>
+      <div class="row2">
+        <div class="field">
+          <label for="f-disc-type">Discount type</label>
+          <select id="f-disc-type">
+            <option value="none">None</option>
+            <option value="percent">Percent (%)</option>
+            <option value="flat">Flat ($)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-disc-value">Discount value</label>
+          <input type="number" id="f-disc-value" min="0" step="any" inputmode="decimal" value="0">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-tax-rate">Tax rate (%)</label>
+        <input type="number" id="f-tax-rate" min="0" max="100" step="any" inputmode="decimal" value="0">
+      </div>
+    </div>
+
+    <div class="totals" aria-live="polite" aria-label="Quote totals" id="totals-panel">
+      <h2>Totals</h2>
+      <table>
+        <tbody id="totals-tbody"></tbody>
+      </table>
+      <p class="footnote">Exact-to-the-cent: every amount is computed in whole cents (integers) — no floating-point drift.
+        <strong>Tax-after-discount rule:</strong> tax applies only to taxable lines, after the discount.
+        The discount is split between taxable and non-taxable lines in proportion to each side&rsquo;s share of the
+        subtotal; tax = (taxable subtotal &minus; its share of the discount) &times; tax rate, rounded to the cent.</p>
+    </div>
+
+    <div class="card">
+      <h2>Terms / notes</h2>
+      <div class="field">
+        <label for="f-terms">Terms or notes (prints on the quote)</label>
+        <textarea id="f-terms" maxlength="2000"></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="btn-print" class="primary">Print quote</button>
+      <button type="button" id="btn-delete-quote" class="danger">Delete quote</button>
+    </div>
+  </section>
+
+  <!-- ============ BUSINESS ============ -->
+  <section id="view-business" aria-label="Business profile" hidden>
+    <div class="card">
+      <h2>Business profile</h2>
+      <p class="hint" style="margin-top:-6px">This branding prints on every customer quote.</p>
+      <div class="field">
+        <label for="b-name">Business name</label>
+        <input type="text" id="b-name" maxlength="120" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="b-phone">Phone</label>
+        <input type="tel" id="b-phone" maxlength="40" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="b-email">Email</label>
+        <input type="email" id="b-email" maxlength="120" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="b-tagline">Tagline</label>
+        <input type="text" id="b-tagline" maxlength="200" autocomplete="off">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DATA ============ -->
+  <section id="view-data" aria-label="Data management" hidden>
+    <div class="card">
+      <h2>Backup &amp; restore</h2>
+      <div class="actions">
+        <button type="button" id="btn-export">Export JSON</button>
+        <button type="button" id="btn-import">Import JSON</button>
+        <input type="file" id="file-import" accept="application/json,.json" class="sr-only" aria-label="Choose JSON backup file">
+      </div>
+      <p class="footnote">Import replaces everything and is confirm-gated. Every record is sanitized; invalid records are skipped.</p>
+    </div>
+    <div class="card">
+      <h2>Demo &amp; reset</h2>
+      <div class="actions">
+        <button type="button" id="btn-demo">Load demo data</button>
+        <button type="button" id="btn-clear" class="danger">Clear all data</button>
+      </div>
+      <p class="footnote">Demo adds a sample business profile plus two sample quotes (one with a percent discount and mixed taxable items). Clear removes everything and is confirm-gated.</p>
+    </div>
+  </section>
+
+  <footer class="site">by <a href="https://glenerds.gumroad.com" rel="noopener">Glenerds</a></footer>
+</div>
+
+<!-- ============ PRINT VIEW (customer document) ============ -->
+<div id="print-view" aria-hidden="true"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   QuoteCraft — single-file offline quote builder.
+   Everything is original code. Zero external requests.
+   Money: all amounts are integer cents. No float drift.
+   DOM built only via createElement / textContent / .value.
+   ============================================================ */
+(function(){
+"use strict";
+
+/* ---------- helpers ---------- */
+function el(tag, attrs, text){
+  var n = document.createElement(tag);
+  if(attrs) for(var k in attrs){
+    if(k === "class") n.className = attrs[k];
+    else if(k === "for") n.htmlFor = attrs[k];
+    else n.setAttribute(k, attrs[k]);
+  }
+  if(text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,10);
+}
+var moneyFmt = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"});
+function fmt(cents){ return moneyFmt.format(cents/100); }
+/* dollars (string/number) -> integer cents; null if not a finite number */
+function toCents(v){
+  if(typeof v === "string"){ v = v.replace(/[$,\s]/g,""); }
+  var n = Number(v);
+  if(!Number.isFinite(n)) return null;
+  return Math.round(n*100);
+}
+function todayISO(){
+  var d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function qnum(n){ return "Q-"+String(n).padStart(4,"0"); }
+
+/* ---------- storage ---------- */
+var LS_KEY = "quotecraft.data.v1";
+var storageOK = true;
+function lsGet(){
+  try{ return window.localStorage.getItem(LS_KEY); }
+  catch(e){ storageOK = false; return null; }
+}
+function lsSet(v){
+  try{ window.localStorage.setItem(LS_KEY, v); }
+  catch(e){ storageOK = false; }
+}
+var memFallback = null;
+function save(){
+  var s = JSON.stringify(state);
+  if(storageOK){ lsSet(s); if(!storageOK) memFallback = s; }
+  else { memFallback = s; }
+}
+function loadRaw(){
+  var s = lsGet();
+  if(s === null || s === undefined){ s = memFallback; }
+  return s;
+}
+
+/* ---------- state ---------- */
+var STATUSES = ["Draft","Sent","Accepted","Declined"];
+var state = { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNum:1, editedByUser:false };
+
+/* ---------- money math (integer cents) ---------- */
+function calcTotals(q){
+  var items = q.items || [];
+  var lines = items.map(function(it){
+    /* qty may be fractional; unit price is whole cents */
+    var cents = Math.round(it.qty * it.unitCents);
+    return { taxable: it.taxable, cents: cents };
+  });
+  var subtotal = 0, taxableBase = 0;
+  lines.forEach(function(l){ subtotal += l.cents; if(l.taxable) taxableBase += l.cents; });
+  var discount = 0;
+  if(q.discountType === "percent"){
+    discount = Math.round(subtotal * q.discountValue / 100);
+  }else if(q.discountType === "flat"){
+    discount = toCents(q.discountValue) || 0;
+  }
+  if(discount > subtotal) discount = subtotal;
+  if(discount < 0) discount = 0;
+  /* tax-after-discount rule: discount is pro-rated across taxable vs
+     non-taxable lines in proportion to their share of the subtotal */
+  var taxableDiscount = 0;
+  if(subtotal > 0 && taxableBase > 0){
+    taxableDiscount = Math.round(discount * taxableBase / subtotal);
+  }
+  var taxableAfter = taxableBase - taxableDiscount;
+  var rate = Number(q.taxRate);
+  if(!Number.isFinite(rate) || rate < 0) rate = 0;
+  if(rate > 100) rate = 100;
+  var tax = Math.round(taxableAfter * rate / 100);
+  return {
+    subtotal: subtotal,
+    discount: discount,
+    taxableSubtotal: taxableBase,
+    tax: tax,
+    total: subtotal - discount + tax
+  };
+}
+
+/* ---------- sanitization (import + demo) ---------- */
+var MAX = { text:120, contact:240, tagline:200, desc:200, terms:2000 };
+function cleanText(v, cap){
+  if(typeof v !== "string") return "";
+  return v.slice(0, cap);
+}
+function cleanQty(v){
+  var n = Number(v);
+  if(!Number.isFinite(n) || n < 0) return null;
+  return Math.min(n, 1000000);
+}
+function cleanUnitCents(v, alreadyCents){
+  if(alreadyCents){
+    /* stored/exported format: integer cents already — validate, do NOT re-convert */
+    var n = Number(v);
+    if(!Number.isFinite(n) || n < 0) return null;
+    return Math.min(Math.round(n), 100000000);
+  }
+  var c = toCents(v);
+  if(c === null || c < 0) return null;
+  return Math.min(c, 100000000);
+}
+function cleanItem(raw){
+  if(!raw || typeof raw !== "object") return null;
+  var desc = cleanText(raw.desc, MAX.desc);
+  var qty = cleanQty(raw.qty);
+  var unitCents;
+  if(raw.unitCents !== undefined){
+    unitCents = cleanUnitCents(raw.unitCents, true);
+  }else{
+    unitCents = cleanUnitCents(raw.unitPrice, false);
+  }
+  if(!desc || qty === null || unitCents === null) return null;
+  return { id: typeof raw.id === "string" ? raw.id.slice(0,64) : uid(),
+           desc: desc, qty: qty, unitCents: unitCents,
+           taxable: raw.taxable !== false };
+}
+function cleanQuote(raw, usedNums){
+  if(!raw || typeof raw !== "object") return null;
+  var items = [];
+  if(Array.isArray(raw.items)){
+    for(var i=0;i<raw.items.length && items.length<500;i++){
+      var it = cleanItem(raw.items[i]);
+      if(it) items.push(it);
+    }
+  }
+  var num = Number(raw.num);
+  if(!Number.isInteger(num) || num < 1 || num > 999999 || usedNums.has(num)) return null;
+  var status = STATUSES.indexOf(raw.status) >= 0 ? raw.status : "Draft";
+  var dt = typeof raw.discountType === "string" ? raw.discountType : "none";
+  if(dt !== "percent" && dt !== "flat") dt = "none";
+  var dv = Number(raw.discountValue);
+  if(!Number.isFinite(dv) || dv < 0) dv = 0;
+  var tr = Number(raw.taxRate);
+  if(!Number.isFinite(tr) || tr < 0) tr = 0;
+  if(tr > 100) tr = 100;
+  var date = typeof raw.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw.date) ? raw.date : todayISO();
+  var validUntil = typeof raw.validUntil === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw.validUntil) ? raw.validUntil : "";
+  usedNums.add(num);
+  return {
+    id: typeof raw.id === "string" ? raw.id.slice(0,64) : uid(),
+    num: num,
+    date: date,
+    validUntil: validUntil,
+    customer: cleanText(raw.customer, MAX.text),
+    contact: cleanText(raw.contact, MAX.contact),
+    status: status,
+    items: items,
+    discountType: dt,
+    discountValue: dv,
+    taxRate: tr,
+    terms: cleanText(raw.terms, MAX.terms)
+  };
+}
+function sanitizeState(raw){
+  /* Returns {business, quotes, nextNum, skipped} or null if nothing usable. */
+  if(!raw || typeof raw !== "object") return null;
+  var skipped = 0;
+  var b = raw.business && typeof raw.business === "object" ? raw.business : {};
+  var business = {
+    name: cleanText(b.name, MAX.text),
+    phone: cleanText(b.phone, 40),
+    email: cleanText(b.email, MAX.text),
+    tagline: cleanText(b.tagline, MAX.tagline)
+  };
+  var used = new Set();
+  var quotes = [];
+  if(Array.isArray(raw.quotes)){
+    for(var i=0;i<raw.quotes.length;i++){
+      var q = cleanQuote(raw.quotes[i], used);
+      if(q) quotes.push(q); else skipped++;
+    }
+  }else{ skipped++; }
+  var nextNum = Number(raw.nextNum);
+  if(!Number.isInteger(nextNum) || nextNum < 1) nextNum = 1;
+  used.forEach(function(n){ if(n >= nextNum) nextNum = n+1; });
+  return { business: business, quotes: quotes, nextNum: nextNum, skipped: skipped };
+}
+
+/* ---------- load ---------- */
+function initState(){
+  var s = loadRaw();
+  if(s){
+    try{
+      var parsed = JSON.parse(s);
+      var clean = sanitizeState(parsed);
+      if(clean){ state = clean; return; }
+    }catch(e){ /* fall through to fresh state */ }
+  }
+}
+
+/* ---------- rendering ---------- */
+var cur = { view:"list", quoteId:null };
+
+function showView(name){
+  cur.view = name;
+  var tabFor = { list:"tab-quotes", edit:"tab-quotes", business:"tab-business", data:"tab-data" };
+  ["list","edit","business","data"].forEach(function(v){
+    document.getElementById("view-"+v).hidden = (v !== name);
+  });
+  ["tab-quotes","tab-business","tab-data"].forEach(function(id){
+    document.getElementById(id).setAttribute("aria-selected", tabFor[name] === id ? "true" : "false");
+  });
+}
+function getQuote(id){
+  for(var i=0;i<state.quotes.length;i++) if(state.quotes[i].id===id) return state.quotes[i];
+  return null;
+}
+function openQuote(id){
+  cur.quoteId = id;
+  var q = getQuote(id);
+  if(!q){ showView("list"); return; }
+  document.getElementById("edit-quote-title").textContent = qnum(q.num);
+  document.getElementById("f-cust-name").value = q.customer;
+  document.getElementById("f-cust-contact").value = q.contact;
+  document.getElementById("f-quote-date").value = q.date;
+  document.getElementById("f-valid-until").value = q.validUntil;
+  document.getElementById("f-status").value = q.status;
+  document.getElementById("f-disc-type").value = q.discountType;
+  document.getElementById("f-disc-value").value = q.discountValue;
+  document.getElementById("f-tax-rate").value = q.taxRate;
+  document.getElementById("f-terms").value = q.terms;
+  renderItems(q);
+  renderTotals(q);
+  showView("edit");
+}
+function statusBadge(st){
+  var s = el("span",{class:"status "+st}, st);
+  return s;
+}
+function renderList(){
+  var tb = document.getElementById("quotes-tbody");
+  while(tb.firstChild) tb.removeChild(tb.firstChild);
+  var qs = state.quotes.slice().sort(function(a,b){ return b.num - a.num; });
+  document.getElementById("quotes-empty").hidden = qs.length > 0;
+  qs.forEach(function(q){
+    var t = calcTotals(q);
+    var tr = el("tr");
+    var tdNum = el("td",null,qnum(q.num)); tdNum.style.fontWeight="600";
+    tr.appendChild(tdNum);
+    tr.appendChild(el("td",null,q.date));
+    tr.appendChild(el("td",null,q.customer || "—"));
+    var tdSt = el("td"); tdSt.appendChild(statusBadge(q.status)); tr.appendChild(tdSt);
+    tr.appendChild(el("td",{class:"num"},fmt(t.total)));
+    var tdA = el("td");
+    var bOpen = el("button",{type:"button",class:"small"},"Open");
+    bOpen.setAttribute("aria-label","Open quote "+qnum(q.num));
+    bOpen.addEventListener("click", function(){ openQuote(q.id); });
+    tdA.appendChild(bOpen);
+    tr.appendChild(tdA);
+    tb.appendChild(tr);
+  });
+}
+function renderItems(q){
+  var tb = document.getElementById("items-tbody");
+  while(tb.firstChild) tb.removeChild(tb.firstChild);
+  document.getElementById("items-empty").hidden = q.items.length > 0;
+  q.items.forEach(function(it){
+    var tr = el("tr");
+    tr.appendChild(el("td",null,it.desc));
+    tr.appendChild(el("td",{class:"num"},String(it.qty)));
+    tr.appendChild(el("td",{class:"num"},fmt(it.unitCents)));
+    tr.appendChild(el("td",null,it.taxable ? "Yes" : "No"));
+    tr.appendChild(el("td",{class:"num"},fmt(Math.round(it.qty*it.unitCents))));
+    var tdA = el("td");
+    var bE = el("button",{type:"button",class:"small"},"Edit");
+    bE.setAttribute("aria-label","Edit item "+it.desc);
+    bE.addEventListener("click", function(){
+      document.getElementById("ni-desc").value = it.desc;
+      document.getElementById("ni-qty").value = it.qty;
+      document.getElementById("ni-price").value = (it.unitCents/100).toFixed(2);
+      document.getElementById("ni-taxable").checked = it.taxable;
+      document.getElementById("btn-add-item").textContent = "Save item";
+      document.getElementById("btn-add-item").dataset.editId = it.id;
+      document.getElementById("ni-desc").focus();
+    });
+    var bD = el("button",{type:"button",class:"small danger"},"Delete");
+    bD.setAttribute("aria-label","Delete item "+it.desc);
+    bD.addEventListener("click", function(){
+      q.items = q.items.filter(function(x){ return x.id !== it.id; });
+      save(); renderItems(q); renderTotals(q);
+    });
+    tdA.appendChild(bE); tdA.appendChild(document.createTextNode(" ")); tdA.appendChild(bD);
+    tr.appendChild(tdA);
+    tb.appendChild(tr);
+  });
+}
+function totalsRow(label, value, isGrand){
+  var tr = el("tr", isGrand ? {class:"grand"} : null);
+  tr.appendChild(el("td",null,label));
+  var td = el("td",null,value);
+  tr.appendChild(td);
+  return tr;
+}
+function renderTotals(q){
+  var t = calcTotals(q);
+  var tb = document.getElementById("totals-tbody");
+  while(tb.firstChild) tb.removeChild(tb.firstChild);
+  tb.appendChild(totalsRow("Subtotal", fmt(t.subtotal)));
+  tb.appendChild(totalsRow("Discount", "−"+fmt(t.discount)));
+  tb.appendChild(totalsRow("Taxable subtotal", fmt(t.taxableSubtotal)));
+  tb.appendChild(totalsRow("Tax", fmt(t.tax)));
+  tb.appendChild(totalsRow("Grand total", fmt(t.total), true));
+}
+
+/* ---------- print view (customer document; NO Glenerds footer) ---------- */
+function buildPrintView(q){
+  var pv = document.getElementById("print-view");
+  while(pv.firstChild) pv.removeChild(pv.firstChild);
+  var b = state.business;
+  pv.appendChild(el("h1",null,b.name || "Quote"));
+  if(b.tagline) pv.appendChild(el("div",{class:"qmeta"},b.tagline));
+  var contactLine = [b.phone, b.email].filter(Boolean).join("  •  ");
+  if(contactLine) pv.appendChild(el("div",{class:"qmeta"},contactLine));
+  var blocks = el("div",{class:"blocks"});
+  var cust = el("div");
+  cust.appendChild(el("div",null,"Bill to:"));
+  var cname = el("strong"); cname.textContent = q.customer || "(no name)"; cust.appendChild(cname);
+  if(q.contact) cust.appendChild(el("div",null,q.contact));
+  blocks.appendChild(cust);
+  var meta = el("div");
+  meta.appendChild(el("div",null,"Quote "+qnum(q.num)));
+  meta.appendChild(el("div",null,"Date: "+q.date));
+  if(q.validUntil) meta.appendChild(el("div",null,"Valid until: "+q.validUntil));
+  blocks.appendChild(meta);
+  pv.appendChild(blocks);
+  var table = el("table");
+  var thead = el("thead");
+  var hr = el("tr");
+  [["Description",""],["Qty","num"],["Unit price","num"],["Line total","num"]].forEach(function(c){
+    var th = el("th", c[1] ? {class:"num",scope:"col"} : {scope:"col"}, c[0]);
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr); table.appendChild(thead);
+  var tbody = el("tbody");
+  q.items.forEach(function(it){
+    var tr = el("tr");
+    tr.appendChild(el("td",null,it.desc));
+    tr.appendChild(el("td",{class:"num"},String(it.qty)));
+    tr.appendChild(el("td",{class:"num"},fmt(it.unitCents)));
+    tr.appendChild(el("td",{class:"num"},fmt(Math.round(it.qty*it.unitCents))));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  pv.appendChild(table);
+  var t = calcTotals(q);
+  var pt = el("table",{class:"ptotals"});
+  var ptb = el("tbody");
+  ptb.appendChild(totalsRow("Subtotal", fmt(t.subtotal)));
+  ptb.appendChild(totalsRow("Discount", "−"+fmt(t.discount)));
+  ptb.appendChild(totalsRow("Tax", fmt(t.tax)));
+  ptb.appendChild(totalsRow("Grand total", fmt(t.total), true));
+  pt.appendChild(ptb);
+  pv.appendChild(pt);
+  if(q.terms) pv.appendChild(el("div",{class:"terms"},q.terms));
+  var sig = el("div",{class:"sig"});
+  sig.appendChild(el("div",null,"Customer signature / date"));
+  sig.appendChild(el("div",null,"Authorized by / date"));
+  pv.appendChild(sig);
+}
+
+/* ---------- demo data ---------- */
+function loadDemo(){
+  state.business = { name:"Ridgeview Home Services", phone:"(812) 555-0147",
+    email:"quotes@ridgeview.example", tagline:"Honest work, fair prices — licensed & insured." };
+  state.quotes = [];
+  var q1 = {
+    id: uid(), num: 1, date: todayISO(), validUntil: "",
+    customer: "Maya Chen", contact: "42 Maple Ave, Bloomington, IN • (812) 555-0119",
+    status: "Sent",
+    items: [
+      { id: uid(), desc: "Replace kitchen faucet (labor)", qty: 2.5, unitCents: 7500, taxable: false },
+      { id: uid(), desc: "Moen faucet — customer supplied", qty: 1, unitCents: 0, taxable: false },
+      { id: uid(), desc: "Supply lines + shutoff valves", qty: 2, unitCents: 2499, taxable: true }
+    ],
+    discountType: "percent", discountValue: 10, taxRate: 7, terms: "Payment due on completion. 30-day labor warranty."
+  };
+  var q2 = {
+    id: uid(), num: 2, date: todayISO(), validUntil: "",
+    customer: "Dan Okafor", contact: "(812) 555-0162",
+    status: "Draft",
+    items: [
+      { id: uid(), desc: "Ceiling fan installation (labor)", qty: 1, unitCents: 12000, taxable: false }
+    ],
+    discountType: "none", discountValue: 0, taxRate: 0, terms: ""
+  };
+  state.quotes = [q1, q2];
+  state.nextNum = 3;
+  save();
+  renderAll();
+}
+
+/* ---------- import / export ---------- */
+function exportJSON(){
+  var blob = new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  var a = el("a",{href:URL.createObjectURL(blob),download:"quotecraft-backup-"+todayISO()+".json"});
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function importJSON(file){
+  var rd = new FileReader();
+  rd.onload = function(){
+    try{
+      var parsed = JSON.parse(String(rd.result));
+      var clean = sanitizeState(parsed);
+      if(!clean || (clean.quotes.length===0 && clean.skipped>0 && !clean.business.name)){
+        alert("No valid QuoteCraft records found in that file. Nothing was changed.");
+        return;
+      }
+      if(!confirm("Replace ALL current data with this backup? ("+clean.quotes.length+" quotes, "+clean.skipped+" records skipped)")) return;
+      state = clean;
+      state.nextNum = Math.max(clean.nextNum, 1);
+      cur.quoteId = null;
+      save(); renderAll(); showView("list");
+      alert("Import complete: "+clean.quotes.length+" quotes restored ("+clean.skipped+" skipped).");
+    }catch(e){ alert("Could not read that file as JSON. Nothing was changed."); }
+  };
+  rd.readAsText(file);
+}
+
+/* ---------- theme ---------- */
+var THEME_KEY = "quotecraft.theme.v1";
+function setTheme(mode){
+  document.documentElement.setAttribute("data-theme", mode);
+  var btn = document.getElementById("theme-toggle");
+  btn.textContent = "Dark mode: " + (mode === "dark" ? "on" : "off");
+  btn.setAttribute("aria-pressed", mode === "dark" ? "true" : "false");
+  try{ window.localStorage.setItem(THEME_KEY, mode); }catch(e){}
+}
+function initTheme(){
+  var saved = null;
+  try{ saved = window.localStorage.getItem(THEME_KEY); }catch(e){}
+  if(saved === "dark" || saved === "light") setTheme(saved);
+  else setTheme(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}
+
+/* ---------- editor field binding ---------- */
+function bindEditor(){
+  var q = getQuote(cur.quoteId);
+  if(!q) return;
+  q.customer = cleanText(document.getElementById("f-cust-name").value, MAX.text);
+  q.contact = cleanText(document.getElementById("f-cust-contact").value, MAX.contact);
+  var d = document.getElementById("f-quote-date").value;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(d)) q.date = d;
+  var vu = document.getElementById("f-valid-until").value;
+  q.validUntil = /^\d{4}-\d{2}-\d{2}$/.test(vu) ? vu : "";
+  var st = document.getElementById("f-status").value;
+  if(STATUSES.indexOf(st) >= 0) q.status = st;
+  var dt = document.getElementById("f-disc-type").value;
+  q.discountType = (dt === "percent" || dt === "flat") ? dt : "none";
+  var dv = Number(document.getElementById("f-disc-value").value);
+  q.discountValue = Number.isFinite(dv) && dv >= 0 ? dv : 0;
+  var tr = Number(document.getElementById("f-tax-rate").value);
+  q.taxRate = Number.isFinite(tr) && tr >= 0 ? Math.min(tr,100) : 0;
+  q.terms = cleanText(document.getElementById("f-terms").value, MAX.terms);
+  save();
+  renderTotals(q);
+}
+function addOrSaveItem(){
+  var q = getQuote(cur.quoteId);
+  if(!q) return;
+  var err = document.getElementById("ni-err");
+  err.textContent = "";
+  var desc = document.getElementById("ni-desc").value.trim();
+  var qtyN = Number(document.getElementById("ni-qty").value);
+  var priceC = toCents(document.getElementById("ni-price").value);
+  if(!desc){ err.textContent = "Description is required."; return; }
+  if(desc.length > MAX.desc){ err.textContent = "Description is too long (200 max)."; return; }
+  if(!Number.isFinite(qtyN) || qtyN < 0){ err.textContent = "Quantity must be 0 or more."; return; }
+  if(priceC === null || priceC < 0){ err.textContent = "Unit price must be 0 or more."; return; }
+  var taxable = document.getElementById("ni-taxable").checked;
+  var btn = document.getElementById("btn-add-item");
+  var editId = btn.dataset.editId;
+  if(editId){
+    var it = null;
+    q.items.forEach(function(x){ if(x.id===editId) it = x; });
+    if(it){ it.desc = desc; it.qty = qtyN; it.unitCents = priceC; it.taxable = taxable; }
+    delete btn.dataset.editId;
+    btn.textContent = "Add item";
+  }else{
+    q.items.push({ id: uid(), desc: desc, qty: qtyN, unitCents: priceC, taxable: taxable });
+  }
+  document.getElementById("ni-desc").value = "";
+  document.getElementById("ni-qty").value = "";
+  document.getElementById("ni-price").value = "";
+  document.getElementById("ni-taxable").checked = true;
+  save(); renderItems(q); renderTotals(q);
+}
+
+/* ---------- misc ---------- */
+function newQuote(){
+  var q = {
+    id: uid(), num: state.nextNum++, date: todayISO(), validUntil: "",
+    customer: "", contact: "", status: "Draft", items: [],
+    discountType: "none", discountValue: 0, taxRate: 0, terms: ""
+  };
+  state.quotes.push(q);
+  save(); renderList();
+  openQuote(q.id);
+}
+function renderAll(){
+  renderList();
+  var b = state.business;
+  document.getElementById("b-name").value = b.name;
+  document.getElementById("b-phone").value = b.phone;
+  document.getElementById("b-email").value = b.email;
+  document.getElementById("b-tagline").value = b.tagline;
+  if(cur.view === "edit" && cur.quoteId){
+    var q = getQuote(cur.quoteId);
+    if(q) openQuote(q.id); else { cur.quoteId = null; showView("list"); }
+  }
+}
+
+/* ---------- events ---------- */
+function bind(){
+  document.getElementById("theme-toggle").addEventListener("click", function(){
+    setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+  var tabs = [["tab-quotes","list"],["tab-business","business"],["tab-data","data"]];
+  tabs.forEach(function(p){
+    document.getElementById(p[0]).addEventListener("click", function(){ showView(p[1]); });
+  });
+  document.getElementById("btn-new-quote").addEventListener("click", newQuote);
+  document.getElementById("btn-back-list").addEventListener("click", function(){
+    bindEditor(); renderList(); showView("list");
+  });
+  ["f-cust-name","f-cust-contact","f-quote-date","f-valid-until","f-status",
+   "f-disc-type","f-disc-value","f-tax-rate","f-terms"].forEach(function(id){
+    var n = document.getElementById(id);
+    n.addEventListener("change", bindEditor);
+    n.addEventListener("input", bindEditor);
+  });
+  document.getElementById("btn-add-item").addEventListener("click", addOrSaveItem);
+  document.getElementById("btn-delete-quote").addEventListener("click", function(){
+    var q = getQuote(cur.quoteId);
+    if(!q) return;
+    if(!confirm("Delete quote "+qnum(q.num)+"? This cannot be undone.")) return;
+    state.quotes = state.quotes.filter(function(x){ return x.id !== q.id; });
+    cur.quoteId = null;
+    save(); renderList(); showView("list");
+  });
+  document.getElementById("btn-print").addEventListener("click", function(){
+    bindEditor();
+    var q = getQuote(cur.quoteId);
+    if(!q) return;
+    buildPrintView(q);
+    window.print();
+  });
+  ["b-name","b-phone","b-email","b-tagline"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", function(){
+      var b = state.business;
+      b.name = cleanText(document.getElementById("b-name").value, MAX.text);
+      b.phone = cleanText(document.getElementById("b-phone").value, 40);
+      b.email = cleanText(document.getElementById("b-email").value, MAX.text);
+      b.tagline = cleanText(document.getElementById("b-tagline").value, MAX.tagline);
+      save();
+    });
+  });
+  document.getElementById("btn-export").addEventListener("click", exportJSON);
+  document.getElementById("btn-import").addEventListener("click", function(){
+    document.getElementById("file-import").click();
+  });
+  document.getElementById("file-import").addEventListener("change", function(e){
+    if(e.target.files && e.target.files[0]) importJSON(e.target.files[0]);
+    e.target.value = "";
+  });
+  document.getElementById("btn-demo").addEventListener("click", function(){
+    if(state.quotes.length && !confirm("Replace current data with demo data?")) return;
+    loadDemo();
+  });
+  document.getElementById("btn-clear").addEventListener("click", function(){
+    if(!confirm("Delete ALL data — every quote and your business profile?")) return;
+    state = { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNum:1 };
+    cur.quoteId = null;
+    save(); renderAll(); showView("list");
+  });
+}
+
+/* ---------- init ---------- */
+initTheme();
+initState();
+bind();
+renderAll();
+if(!storageOK){
+  var n = document.getElementById("storage-notice");
+  n.hidden = false;
+  n.textContent = "Browser storage is unavailable — your data will be kept only until this tab closes.";
+}
+showView("list");
+})();
+</script>
+</body>
+</html>

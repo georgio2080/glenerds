@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free TDEE Calculator & Macro Calculator — See Every Step of the Math (MacroTrack)</title>
+<meta name="description" content="Free TDEE calculator with BMR, target calories and protein/carb/fat macros. Shows every formula step, works fully offline, no account, no ads.">
+<script>
+// Apply saved theme (or OS preference) before first paint to avoid a flash.
+(function () {
+  try {
+    var stored = localStorage.getItem('macrotrack-theme');
+    var theme = stored === 'dark' || stored === 'light' ? stored :
+      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #181a18;
+  --muted: #5c665c;
+  --card: #f3f7f3;
+  --border: #d9e2d9;
+  --accent-rgb: 22, 130, 60;
+  --accent: rgb(var(--accent-rgb));
+  --accent-ink: #ffffff;
+  --accent-soft: #e3f2e8;
+  --protein: #2563eb;
+  --carbs: #d97706;
+  --fat: #9333ea;
+  --danger: #b91c1c;
+  --input-bg: #ffffff;
+  --radius: 10px;
+}
+[data-theme="dark"] {
+  --bg: #101410;
+  --fg: #eef3ee;
+  --muted: #a3b0a3;
+  --card: #1a201a;
+  --border: #333d33;
+  --accent-rgb: 74, 222, 128;
+  --accent: rgb(var(--accent-rgb));
+  --accent-ink: #052e16;
+  --accent-soft: #14291a;
+  --protein: #7aa8ff;
+  --carbs: #fbbf24;
+  --fat: #c084fc;
+  --danger: #f87171;
+  --input-bg: #1a201a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px 48px; }
+header.top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px; padding: 22px 0 6px;
+}
+header.top h1 { margin: 0; font-size: 1.65rem; letter-spacing: -0.01em; }
+header.top .sub { margin: 6px 0 0; color: var(--muted); font-size: 0.95rem; max-width: 640px; }
+button, select, input { font: inherit; color: var(--fg); }
+button {
+  min-height: 44px; padding: 10px 18px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--card); cursor: pointer;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+button:hover { filter: brightness(0.96); }
+button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, input[type="range"]:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 2px;
+}
+.theme-btn { min-height: 40px; padding: 8px 14px; white-space: nowrap; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+@media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+section.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; margin: 0;
+}
+section.card h2 { margin: 0 0 12px; font-size: 1.15rem; }
+section.card h3 { margin: 18px 0 8px; font-size: 1rem; }
+.field { margin-bottom: 14px; }
+.field > label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.95rem; }
+.field .hint { font-weight: 400; color: var(--muted); font-size: 0.85rem; display: block; margin-top: 4px; }
+input[type="number"], select {
+  width: 100%; padding: 10px 12px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--input-bg); min-height: 44px;
+}
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.seg { display: flex; gap: 8px; flex-wrap: wrap; }
+.seg button { flex: 1 1 auto; min-width: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.err { color: var(--danger); font-size: 0.88rem; margin-top: 4px; display: none; }
+.err.show { display: block; }
+.bignums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 4px 0 6px; }
+@media (max-width: 520px) { .bignums { grid-template-columns: 1fr; } }
+.bignum {
+  background: var(--input-bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px; text-align: center;
+}
+.bignum .v { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.bignum .l { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+.bignum.hero { border-color: var(--accent); }
+.bignum.hero .v { color: var(--accent); }
+.macro { margin: 10px 0; }
+.macro .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.macro .name { font-weight: 700; }
+.macro .grams { font-size: 1.25rem; font-weight: 700; }
+.macro .bar { height: 10px; border-radius: 6px; background: var(--border); margin-top: 6px; overflow: hidden; }
+.macro .bar > div { height: 100%; border-radius: 6px; }
+.macro .pct { color: var(--muted); font-size: 0.85rem; }
+.work { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9rem; }
+.work .step { background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin: 10px 0; overflow-x: auto; }
+.work .step .t { font-weight: 700; font-family: inherit; margin-bottom: 6px; }
+.work .formula-name { font-weight: 700; }
+.notice {
+  border: 1px solid var(--accent); background: var(--accent-soft);
+  border-radius: var(--radius); padding: 12px 14px; margin: 10px 0; font-size: 0.92rem;
+}
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+footer.attrib { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.88rem; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+footer.attrib a { color: var(--accent); }
+.disclaimer { color: var(--muted); font-size: 0.85rem; margin-top: 16px; }
+#print-head { display: none; }
+@media print {
+  header.top .theme-btn, .actions, footer.attrib, #inputs-card, .no-print { display: none !important; }
+  #print-head { display: block; margin-bottom: 12px; }
+  body { background: #fff; color: #000; }
+  section.card { break-inside: avoid; background: #fff; border-color: #999; }
+  .wrap { max-width: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="print-head">
+    <h1>MacroTrack — TDEE &amp; Macro Results</h1>
+    <p>Free offline calculator by Glenerds</p>
+  </div>
+  <header class="top">
+    <div>
+      <h1>MacroTrack</h1>
+      <p class="sub">Free TDEE &amp; macro calculator. Every formula shown, every step visible — your data never leaves this page.</p>
+    </div>
+    <button class="theme-btn" id="theme-btn" type="button" aria-label="Toggle dark mode">🌙 Dark</button>
+  </header>
+
+  <div class="grid">
+    <section class="card" id="inputs-card" aria-labelledby="inputs-h">
+      <h2 id="inputs-h">Your details</h2>
+
+      <div class="field">
+        <label>Units</label>
+        <div class="seg" role="group" aria-label="Unit system">
+          <button type="button" id="u-imp" aria-pressed="true">Imperial (lb, ft/in)</button>
+          <button type="button" id="u-met" aria-pressed="false">Metric (kg, cm)</button>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="age">Age <span class="hint">years</span></label>
+          <input type="number" id="age" inputmode="numeric" min="10" max="120" step="1" value="30">
+          <div class="err" id="age-err">Enter an age between 10 and 120.</div>
+        </div>
+        <div class="field">
+          <label>Sex</label>
+          <div class="seg" role="group" aria-label="Sex">
+            <button type="button" id="s-m" aria-pressed="true">Male</button>
+            <button type="button" id="s-f" aria-pressed="false">Female</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field" id="h-imp">
+        <label>Height <span class="hint">feet + inches</span></label>
+        <div class="row2">
+          <input type="number" id="h-ft" inputmode="numeric" min="2" max="8" step="1" value="5" aria-label="Height feet">
+          <input type="number" id="h-in" inputmode="decimal" min="0" max="11.99" step="0.5" value="10" aria-label="Height inches">
+        </div>
+        <div class="err" id="h-err">Enter a height between 3 ft and 8 ft.</div>
+      </div>
+      <div class="field" id="h-met" hidden>
+        <label for="h-cm">Height <span class="hint">centimeters</span></label>
+        <input type="number" id="h-cm" inputmode="decimal" min="90" max="250" step="0.5" value="178">
+        <div class="err" id="h-cm-err">Enter a height between 90 and 250 cm.</div>
+      </div>
+
+      <div class="field" id="w-imp">
+        <label for="w-lb">Weight <span class="hint">pounds</span></label>
+        <input type="number" id="w-lb" inputmode="decimal" min="40" max="1100" step="0.5" value="180">
+        <div class="err" id="w-err">Enter a weight between 40 and 1100 lb.</div>
+      </div>
+      <div class="field" id="w-met" hidden>
+        <label for="w-kg">Weight <span class="hint">kilograms</span></label>
+        <input type="number" id="w-kg" inputmode="decimal" min="18" max="500" step="0.5" value="82">
+        <div class="err" id="w-kg-err">Enter a weight between 18 and 500 kg.</div>
+      </div>
+
+      <div class="field">
+        <label for="bf">Body fat % <span class="hint">optional — needed for Katch-McArdle</span></label>
+        <input type="number" id="bf" inputmode="decimal" min="1" max="70" step="0.5" placeholder="e.g. 18">
+        <div class="err" id="bf-err">Enter a body fat % between 1 and 70, or leave blank.</div>
+      </div>
+
+      <div class="field">
+        <label for="activity">Activity level</label>
+        <select id="activity">
+          <option value="1.2">Sedentary — little or no exercise</option>
+          <option value="1.375">Lightly active — light exercise 1–3 days/week</option>
+          <option value="1.55" selected>Moderately active — moderate exercise 3–5 days/week</option>
+          <option value="1.725">Very active — hard exercise 6–7 days/week</option>
+          <option value="1.9">Extra active — very hard exercise + physical job</option>
+        </select>
+      </div>
+
+      <h3>Goal</h3>
+      <div class="field">
+        <div class="seg" role="group" aria-label="Goal">
+          <button type="button" id="g-cut" aria-pressed="true">Cut −20%</button>
+          <button type="button" id="g-main" aria-pressed="false">Maintain</button>
+          <button type="button" id="g-bulk" aria-pressed="false">Lean bulk +10%</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="goal-slider">Fine-tune: <span id="goal-pct-label">−20%</span> <span class="hint">calorie adjustment vs TDEE</span></label>
+        <input type="range" id="goal-slider" min="-30" max="20" step="1" value="-20">
+      </div>
+
+      <h3>Formula</h3>
+      <div class="field">
+        <div class="seg" role="group" aria-label="BMR formula">
+          <button type="button" id="f-mifflin" aria-pressed="true">Mifflin-St Jeor</button>
+          <button type="button" id="f-hb" aria-pressed="false">Harris-Benedict</button>
+          <button type="button" id="f-katch" aria-pressed="false">Katch-McArdle</button>
+        </div>
+        <span class="hint">Mifflin-St Jeor is the default — most validated for modern populations. Katch-McArdle uses lean body mass and needs your body fat %.</span>
+      </div>
+
+      <h3>Macro split</h3>
+      <div class="field">
+        <div class="seg" role="group" aria-label="Macro split">
+          <button type="button" id="m-bal" aria-pressed="true">Balanced 30/40/30</button>
+          <button type="button" id="m-hp" aria-pressed="false">High protein 35/35/30</button>
+          <button type="button" id="m-lc" aria-pressed="false">Lower carb 30/25/45</button>
+        </div>
+        <span class="hint">Protein / carbs / fat as % of calories. Protein &amp; carbs = 4 kcal/g, fat = 9 kcal/g.</span>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="reset-btn">Reset to defaults</button>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="results-h" aria-live="polite">
+      <h2 id="results-h">Your numbers</h2>
+      <div id="km-notice" class="notice" hidden>
+        Katch-McArdle needs your body fat % to compute lean body mass — enter it on the left, or pick another formula.
+      </div>
+      <div class="bignums">
+        <div class="bignum"><div class="v" id="o-bmr">–</div><div class="l">BMR (kcal/day)</div></div>
+        <div class="bignum"><div class="v" id="o-tdee">–</div><div class="l">TDEE (kcal/day)</div></div>
+        <div class="bignum hero"><div class="v" id="o-target">–</div><div class="l" id="o-target-label">Target (kcal/day)</div></div>
+      </div>
+      <div id="pace" class="notice" hidden></div>
+
+      <h3>Daily macros</h3>
+      <div class="macro">
+        <div class="top"><span class="name" style="color:var(--protein)">Protein</span><span><span class="grams" id="o-p-g">–</span> <span class="pct" id="o-p-p"></span></span></div>
+        <div class="bar"><div id="o-p-bar" style="background:var(--protein);width:0%"></div></div>
+      </div>
+      <div class="macro">
+        <div class="top"><span class="name" style="color:var(--carbs)">Carbs</span><span><span class="grams" id="o-c-g">–</span> <span class="pct" id="o-c-p"></span></span></div>
+        <div class="bar"><div id="o-c-bar" style="background:var(--carbs);width:0%"></div></div>
+      </div>
+      <div class="macro">
+        <div class="top"><span class="name" style="color:var(--fat)">Fat</span><span><span class="grams" id="o-f-g">–</span> <span class="pct" id="o-f-p"></span></span></div>
+        <div class="bar"><div id="o-f-bar" style="background:var(--fat);width:0%"></div></div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="primary" id="print-btn">🖨️ Print / save results</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="card work" id="work-card" style="margin-top:16px" aria-labelledby="work-h">
+    <h2 id="work-h">Show your work</h2>
+    <p style="font-family:inherit;font-size:0.92rem;color:var(--muted)">No black box. Here is the exact formula and every number substituted, so you can check it yourself.</p>
+    <div id="work-steps"></div>
+  </section>
+
+  <p class="disclaimer">Estimates only — formulas are population averages and can't account for medical conditions, medications, or individual variation. For weight loss, muscle gain, or any health concern, talk to a doctor or registered dietitian.</p>
+
+  <footer class="attrib">
+    <span>MacroTrack — free offline TDEE &amp; macro calculator. No trackers, no ads, no account.</span>
+    <span><a href="https://glenerds.gumroad.com">by Glenerds</a></span>
+  </footer>
+</div>
+<script>
+(function () {
+  'use strict';
+  var LS_KEY = 'macrotrack-state-v1';
+  var $ = function (id) { return document.getElementById(id); };
+
+  var DEFAULTS = {
+    units: 'imp', age: 30, sex: 'm',
+    weightKg: 81.65, heightCm: 177.8, bodyFat: null,
+    activity: 1.55, goalPct: -20, formula: 'mifflin', macro: 'bal'
+  };
+
+  function loadState() {
+    var s = {};
+    for (var k in DEFAULTS) s[k] = DEFAULTS[k];
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (raw) {
+        var p = JSON.parse(raw);
+        for (var k2 in DEFAULTS) if (p[k2] !== undefined && p[k2] !== null) s[k2] = p[k2];
+      }
+    } catch (e) { /* corrupted storage: fall back to defaults */ }
+    return s;
+  }
+  var S = loadState();
+  function save() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {}
+  }
+
+  // ---- theme ----
+  var themeBtn = $('theme-btn');
+  function paintTheme() {
+    var t = document.documentElement.getAttribute('data-theme') || 'light';
+    themeBtn.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+  }
+  themeBtn.addEventListener('click', function () {
+    var cur = document.documentElement.getAttribute('data-theme') || 'light';
+    var next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('macrotrack-theme', next); } catch (e) {}
+    paintTheme();
+  });
+  paintTheme();
+
+  // ---- segmented control helper ----
+  function seg(ids, get, set) {
+    ids.forEach(function (id) {
+      var el = $(id);
+      el.setAttribute('aria-pressed', get() === id ? 'true' : 'false');
+      el.addEventListener('click', function () {
+        set(id);
+        ids.forEach(function (id2) { $(id2).setAttribute('aria-pressed', id2 === id ? 'true' : 'false'); });
+        save(); compute();
+      });
+    });
+  }
+  seg(['u-imp', 'u-met'], function () { return S.units === 'imp' ? 'u-imp' : 'u-met'; }, function (id) {
+    S.units = id === 'u-imp' ? 'imp' : 'met';
+    paintUnits();
+  });
+  seg(['s-m', 's-f'], function () { return S.sex === 'm' ? 's-m' : 's-f'; }, function (id) {
+    S.sex = id === 's-m' ? 'm' : 'f';
+  });
+  seg(['g-cut', 'g-main', 'g-bulk'], function () {
+    return S.goalPct === -20 ? 'g-cut' : (S.goalPct === 0 ? 'g-main' : (S.goalPct === 10 ? 'g-bulk' : 'g-cut'));
+  }, function (id) {
+    S.goalPct = id === 'g-cut' ? -20 : (id === 'g-main' ? 0 : 10);
+    $('goal-slider').value = S.goalPct;
+    paintGoalLabel();
+  });
+  seg(['f-mifflin', 'f-hb', 'f-katch'], function () { return 'f-' + S.formula; }, function (id) {
+    S.formula = id.slice(2);
+  });
+  seg(['m-bal', 'm-hp', 'm-lc'], function () { return 'm-' + S.macro; }, function (id) {
+    S.macro = id.slice(2);
+  });
+
+  // ---- units ----
+  var LB = 0.45359237, IN = 2.54;
+  function paintUnits() {
+    var imp = S.units === 'imp';
+    $('h-imp').hidden = !imp; $('w-imp').hidden = !imp;
+    $('h-met').hidden = imp; $('w-met').hidden = imp;
+    if (imp) {
+      var totalIn = S.heightCm / IN;
+      var ft = Math.floor(totalIn / 12);
+      var inch = Math.round((totalIn - ft * 12) * 2) / 2;
+      if (inch === 12) { ft += 1; inch = 0; }
+      $('h-ft').value = ft; $('h-in').value = inch;
+      $('w-lb').value = Math.round(S.weightKg / LB * 2) / 2;
+    } else {
+      $('h-cm').value = Math.round(S.heightCm * 2) / 2;
+      $('w-kg').value = Math.round(S.weightKg * 2) / 2;
+    }
+  }
+
+  function readInputs() {
+    var ok = true;
+    function num(id, errId, min, max, allowBlank) {
+      var el = $(id), raw = el.value.trim();
+      var err = $(errId);
+      if (raw === '' && allowBlank) { err.classList.remove('show'); return null; }
+      var v = parseFloat(raw);
+      if (!isFinite(v) || v < min || v > max) { err.classList.add('show'); ok = false; return NaN; }
+      err.classList.remove('show');
+      return v;
+    }
+    var age = num('age', 'age-err', 10, 120);
+    var bf = num('bf', 'bf-err', 1, 70, true);
+    var hCm, wKg;
+    if (S.units === 'imp') {
+      var ft = num('h-ft', 'h-err', 2, 8), inch = num('h-in', 'h-err', 0, 11.99);
+      var lb = num('w-lb', 'w-err', 40, 1100);
+      if (isFinite(ft) && isFinite(inch)) hCm = (ft * 12 + inch) * IN;
+      else { hCm = NaN; }
+      if (isFinite(ft) && isFinite(inch) && (ft * 12 + inch < 36 || ft * 12 + inch > 96)) { $('h-err').classList.add('show'); ok = false; }
+      wKg = isFinite(lb) ? lb * LB : NaN;
+    } else {
+      hCm = num('h-cm', 'h-cm-err', 90, 250);
+      wKg = num('w-kg', 'w-kg-err', 18, 500);
+    }
+    return { ok: ok, age: age, bodyFat: bf, heightCm: hCm, weightKg: wKg };
+  }
+
+  function persistFromInputs(r) {
+    if (!r.ok) return;
+    S.age = r.age; S.weightKg = r.weightKg; S.heightCm = r.heightCm;
+    S.bodyFat = r.bodyFat;
+    S.activity = parseFloat($('activity').value);
+    S.goalPct = parseInt($('goal-slider').value, 10);
+    save();
+  }
+
+  $('activity').addEventListener('change', function () { persistFromInputs(readInputs()); compute(); });
+  $('goal-slider').addEventListener('input', function () {
+    S.goalPct = parseInt($('goal-slider').value, 10);
+    // keep preset buttons in sync when the slider matches one
+    [['g-cut', -20], ['g-main', 0], ['g-bulk', 10]].forEach(function (p) {
+      $(p[0]).setAttribute('aria-pressed', S.goalPct === p[1] ? 'true' : 'false');
+    });
+    paintGoalLabel(); save(); compute();
+  });
+  function paintGoalLabel() {
+    var p = S.goalPct;
+    $('goal-pct-label').textContent = (p > 0 ? '+' : '') + p + '%';
+    var lbl = p < 0 ? 'Target (cut ' + p + '%)' : (p > 0 ? 'Target (bulk +' + p + '%)' : 'Target (maintain)');
+    $('o-target-label').textContent = lbl + ' (kcal/day)';
+  }
+
+  ['age', 'h-ft', 'h-in', 'h-cm', 'w-lb', 'w-kg', 'bf'].forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      var r = readInputs();
+      persistFromInputs(r);
+      compute();
+    });
+  });
+
+  $('print-btn').addEventListener('click', function () { window.print(); });
+  $('reset-btn').addEventListener('click', function () {
+    S = JSON.parse(JSON.stringify(DEFAULTS));
+    try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    syncInputs(); paintUnits(); paintGoalLabel(); reseg(); save(); compute();
+  });
+  function reseg() {
+    var map = {
+      'u-imp': S.units === 'imp', 'u-met': S.units === 'met',
+      's-m': S.sex === 'm', 's-f': S.sex === 'f',
+      'g-cut': S.goalPct === -20, 'g-main': S.goalPct === 0, 'g-bulk': S.goalPct === 10,
+      'f-mifflin': S.formula === 'mifflin', 'f-hb': S.formula === 'hb', 'f-katch': S.formula === 'katch',
+      'm-bal': S.macro === 'bal', 'm-hp': S.macro === 'hp', 'm-lc': S.macro === 'lc'
+    };
+    for (var id in map) $(id).setAttribute('aria-pressed', map[id] ? 'true' : 'false');
+    $('activity').value = String(S.activity);
+    $('goal-slider').value = S.goalPct;
+  }
+  function syncInputs() {
+    $('age').value = S.age;
+    $('bf').value = S.bodyFat === null ? '' : S.bodyFat;
+    $('activity').value = String(S.activity);
+    $('goal-slider').value = S.goalPct;
+    reseg();
+  }
+
+  // ---- formulas (public math) ----
+  var FORMULAS = {
+    mifflin: { name: 'Mifflin-St Jeor (1990)' },
+    hb: { name: 'Harris-Benedict, revised (1984)' },
+    katch: { name: 'Katch-McArdle (2006)' }
+  };
+  var MACROS = {
+    bal: { p: 30, c: 40, f: 30, label: 'Balanced 30/40/30' },
+    hp: { p: 35, c: 35, f: 30, label: 'High protein 35/35/30' },
+    lc: { p: 30, c: 25, f: 45, label: 'Lower carb 30/25/45' }
+  };
+  var ACT_LABELS = { '1.2': 'Sedentary', '1.375': 'Lightly active', '1.55': 'Moderately active', '1.725': 'Very active', '1.9': 'Extra active' };
+
+  function r1(x) { return Math.round(x * 10) / 10; }
+  function fmt(x) { return Math.round(x).toLocaleString('en-US'); }
+
+  function bmrMifflin(w, h, a, sex) {
+    // w kg, h cm, a years
+    return sex === 'm'
+      ? { v: 10 * w + 6.25 * h - 5 * a + 5, expr: '10 × ' + r1(w) + ' + 6.25 × ' + r1(h) + ' − 5 × ' + a + ' + 5' }
+      : { v: 10 * w + 6.25 * h - 5 * a - 161, expr: '10 × ' + r1(w) + ' + 6.25 × ' + r1(h) + ' − 5 × ' + a + ' − 161' };
+  }
+  function bmrHB(w, h, a, sex) {
+    return sex === 'm'
+      ? { v: 88.362 + 13.397 * w + 4.799 * h - 5.677 * a,
+          expr: '88.362 + 13.397 × ' + r1(w) + ' + 4.799 × ' + r1(h) + ' − 5.677 × ' + a }
+      : { v: 447.593 + 9.247 * w + 3.098 * h - 4.330 * a,
+          expr: '447.593 + 9.247 × ' + r1(w) + ' + 3.098 × ' + r1(h) + ' − 4.330 × ' + a };
+  }
+  function bmrKatch(w, bf) {
+    var lbm = w * (1 - bf / 100);
+    return { v: 370 + 21.6 * lbm,
+      expr: '370 + 21.6 × ' + r1(lbm),
+      extra: 'Lean body mass = ' + r1(w) + ' kg × (1 − ' + bf + '%) = ' + r1(lbm) + ' kg' };
+  }
+
+  function compute() {
+    var r = readInputs();
+    var stepsEl = $('work-steps');
+    if (!r.ok || !isFinite(r.age) || !isFinite(r.weightKg) || !isFinite(r.heightCm)) {
+      ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
+      ['p', 'c', 'f'].forEach(function (m) {
+        $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
+        $('o-' + m + '-bar').style.width = '0%';
+      });
+      $('pace').hidden = true;
+      stepsEl.innerHTML = '<div class="notice">Fix the highlighted fields above to see your numbers.</div>';
+      return;
+    }
+    var b;
+    if (S.formula === 'mifflin') b = bmrMifflin(r.weightKg, r.heightCm, r.age, S.sex);
+    else if (S.formula === 'hb') b = bmrHB(r.weightKg, r.heightCm, r.age, S.sex);
+    else {
+      if (r.bodyFat === null || !isFinite(r.bodyFat)) {
+        $('km-notice').hidden = false;
+        ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
+        stepsEl.innerHTML = '<div class="notice">Katch-McArdle needs body fat % — enter it above or choose another formula.</div>';
+        return;
+      }
+      b = bmrKatch(r.weightKg, r.bodyFat);
+    }
+    $('km-notice').hidden = true;
+
+    var bmr = b.v;
+    var act = S.activity;
+    var tdee = bmr * act;
+    var target = tdee * (1 + S.goalPct / 100);
+    var mp = MACROS[S.macro];
+    var pG = target * mp.p / 100 / 4;
+    var cG = target * mp.c / 100 / 4;
+    var fG = target * mp.f / 100 / 9;
+
+    $('o-bmr').textContent = fmt(bmr);
+    $('o-tdee').textContent = fmt(tdee);
+    $('o-target').textContent = fmt(target);
+    paintGoalLabel();
+    $('o-p-g').textContent = fmt(pG) + ' g'; $('o-p-p').textContent = '(' + mp.p + '%)';
+    $('o-c-g').textContent = fmt(cG) + ' g'; $('o-c-p').textContent = '(' + mp.c + '%)';
+    $('o-f-g').textContent = fmt(fG) + ' g'; $('o-f-p').textContent = '(' + mp.f + '%)';
+    $('o-p-bar').style.width = mp.p + '%';
+    $('o-c-bar').style.width = mp.c + '%';
+    $('o-f-bar').style.width = mp.f + '%';
+
+    // weekly pace estimate: ~7700 kcal per kg of body weight change
+    var paceEl = $('pace');
+    if (S.goalPct !== 0) {
+      var weeklyKg = Math.abs(target - tdee) * 7 / 7700;
+      var weeklyVal = S.units === 'imp' ? weeklyKg * 2.20462 : weeklyKg;
+      var unit = S.units === 'imp' ? 'lb' : 'kg';
+      paceEl.hidden = false;
+      paceEl.textContent = 'At this target you\u2019d average \u2248 ' + (Math.round(weeklyVal * 100) / 100) +
+        ' ' + unit + ' per week ' + (S.goalPct < 0 ? 'lost' : 'gained') +
+        ' (rule of thumb: ~7,700 kcal per kg of body weight, about 2.2 lb).';
+    } else paceEl.hidden = true;
+
+    // show your work
+    var h = '';
+    h += '<div class="step"><div class="t">1 · BMR — <span class="formula-name">' + FORMULAS[S.formula].name + '</span></div>';
+    if (b.extra) h += esc(b.extra) + '<br>';
+    h += 'BMR = ' + esc(b.expr) + '<br>= <strong>' + fmt(bmr) + ' kcal/day</strong></div>';
+    h += '<div class="step"><div class="t">2 · TDEE — BMR × activity (' + ACT_LABELS[String(act)] + ', ×' + act + ')</div>';
+    h += 'TDEE = ' + fmt(bmr) + ' × ' + act + '<br>= <strong>' + fmt(tdee) + ' kcal/day</strong></div>';
+    var gp = S.goalPct;
+    var goalWord = gp < 0 ? 'cut' : (gp > 0 ? 'surplus' : 'maintenance');
+    h += '<div class="step"><div class="t">3 · Target — TDEE ' + (gp >= 0 ? '+' : '') + gp + '% (' + goalWord + ')</div>';
+    h += 'Target = ' + fmt(tdee) + ' × ' + (1 + gp / 100).toFixed(2) + '<br>= <strong>' + fmt(target) + ' kcal/day</strong></div>';
+    h += '<div class="step"><div class="t">4 · Macros — ' + mp.label + ' of target calories</div>';
+    h += 'Protein = ' + fmt(target) + ' × ' + mp.p + '% ÷ 4 kcal/g = <strong>' + fmt(pG) + ' g</strong><br>';
+    h += 'Carbs = ' + fmt(target) + ' × ' + mp.c + '% ÷ 4 kcal/g = <strong>' + fmt(cG) + ' g</strong><br>';
+    h += 'Fat = ' + fmt(target) + ' × ' + mp.f + '% ÷ 9 kcal/g = <strong>' + fmt(fG) + ' g</strong></div>';
+    stepsEl.innerHTML = h;
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // ---- init ----
+  syncInputs();
+  paintUnits();
+  paintGoalLabel();
+  compute();
+})();
+</script>
+</body>
+</html>

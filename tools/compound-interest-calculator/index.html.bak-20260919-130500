@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Compound Interest Calculator &mdash; Inflation, Fees &amp; Tax Adjustments | Glenerds</title>
+<meta name="description" content="Free compound interest calculator: monthly contributions, annual raises, inflation adjustment, fee and tax drag, scenario comparison, and a reverse goal solver. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/compound-interest-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Compound Interest Calculator &mdash; Inflation, Fees &amp; Tax Adjustments | Glenerds">
+<meta property="og:description" content="Free compound interest calculator: monthly contributions, annual raises, inflation adjustment, fee and tax drag, scenario comparison, and a reverse goal solver. Offline, no account.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/compound-interest-calculator/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<style>
+.toolbox .seg{display:inline-flex;border:2px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 1rem}
+.toolbox .seg button{border:none;background:transparent;color:var(--muted);font-weight:700;padding:.5rem 1.2rem;cursor:pointer;margin:0;border-radius:0}
+.toolbox .seg button.on{background:var(--accent);color:var(--accent-fg)}
+.ci-result{font-size:2.1rem;font-weight:800;margin:.4rem 0}
+.ci-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin:1rem 0}
+.ci-stat{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.7rem .9rem}
+.ci-stat .k{font-size:.8rem;color:var(--muted)}
+.ci-stat .v{font-weight:800;font-size:1.1rem}
+.dep-row{display:flex;gap:.5rem;align-items:center;margin:.3rem 0;flex-wrap:wrap}
+#ci-chart{width:100%;display:block}
+.legend{font-size:.85rem;color:var(--muted);margin:.5rem 0}
+.swatch{display:inline-block;width:.85em;height:.85em;border-radius:2px;margin-right:.3em}
+tr.best td{background:var(--code);font-weight:700}
+.ci-note{font-size:.85rem;color:var(--muted)}
+fieldset.ci-group{border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;margin:1rem 0}
+fieldset.ci-group legend{font-weight:700;padding:0 .4rem}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I model monthly contributions that grow with my annual raises?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Switch to Advanced mode and set \u201cAnnual contribution increase %\u201d. A 3% setting raises your monthly contribution 3% every year \u2014 the contribution in year y equals your base monthly amount times (1 + increase)^(y\u22121) \u2014 which tracks a real career far better than a flat contribution."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does \u201cshow in today\u2019s dollars\u201d do?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It divides every result by (1 + inflation)^years so you see buying power instead of a fantasy number. At 3% inflation, $1,000,000 thirty years from now buys what about $412,000 buys today."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the real cost of waiting a few years to start investing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Save your plan as a scenario, then save a second one with five fewer years and compare them side by side. The gap is usually large because the earliest contributions compound the longest \u2014 starting at 25 instead of 30 is often worth more than doubling your monthly contribution later."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a lump sum better than monthly contributions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mathematically, money invested earlier wins, so a lump sum you hold today usually beats dribbling it in. In practice most people invest future income, which only arrives monthly. Model both: put the lump sum in \u201cInitial investment\u201d with $0 monthly, save it as a scenario, then flip the inputs and compare."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much do I need to invest each month to reach $1 million?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use Advanced mode\u2019s reverse solver: enter $1,000,000 and your time horizon. At an 8% average return with no starting balance, 25 years takes about $1,052 per month \u2014 the solver finds it by bisection, testing monthly amounts until the projection lands exactly on your target."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much do fund fees and taxes really cost me?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "They come straight off your return before compounding: effective return = stated return \u2212 expense ratio \u2212 tax drag. On a $500/month, 30-year plan at 8%, a 1% annual fee alone erases about $135,000 \u2014 roughly 18% of the final balance."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Compound Interest Calculator</p>
+<main>
+<div class="hero">
+<h1>Free Compound Interest Calculator</h1>
+<p class="lead">How much will your money actually become? Most compound interest calculators hand you one
+fantasy number. This one shows the number &mdash; then shows what it is really worth: adjusted for
+inflation into today&rsquo;s dollars, reduced by fund fees and tax drag, and modeled on contributions
+that grow with your raises instead of staying flat for 30 years.</p>
+<p class="lead">Start in <strong>Simple mode</strong> with four numbers, or flip to <strong>Advanced</strong>
+for compounding frequency, one-time deposits, side-by-side scenario comparisons, a reverse goal solver
+(&ldquo;I need $1M in 25 years &mdash; how much per month?&rdquo;), and a withdrawal phase that shows how
+long the money lasts. Everything runs offline in your browser &mdash; no account, no email, nothing you
+type ever leaves your device.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Compound interest calculator">
+<div class="seg" role="tablist" aria-label="Calculator mode">
+<button id="ci-mode-simple" class="on" role="tab" aria-selected="true" aria-controls="ci-inputs ci-results" tabindex="0">Simple</button><button id="ci-mode-adv" role="tab" aria-selected="false" aria-controls="ci-adv-a ci-adv-b" tabindex="-1">Advanced</button>
+</div>
+
+<div id="ci-inputs">
+<label>Initial investment ($): <input type="number" id="ci-initial" value="10000" min="0" step="100" style="width:8rem"></label>
+<label>Monthly contribution ($): <input type="number" id="ci-monthly" value="500" min="0" step="10" style="width:7rem"></label>
+<label>Years: <input type="number" id="ci-years" value="30" min="1" max="60" step="1" style="width:4.5rem"></label>
+<label>Expected annual return (%): <input type="number" id="ci-rate" value="8" min="0" max="30" step="0.1" style="width:5rem"></label>
+</div>
+
+<div class="adv-only" id="ci-adv-a" role="tabpanel" aria-labelledby="ci-mode-adv" style="display:none">
+<fieldset class="ci-group"><legend>Growth details</legend>
+<label>Compounding:
+<select id="ci-freq">
+<option value="1">Annually</option><option value="4">Quarterly</option>
+<option value="12" selected>Monthly</option><option value="365">Daily</option>
+</select></label>
+<label>Annual contribution increase (%): <input type="number" id="ci-increase" value="0" min="0" max="20" step="0.5" style="width:5rem" title="Your monthly contribution grows by this much each year (raise modeling)"></label><br>
+<label>Expense-ratio fee drag (%/yr): <input type="number" id="ci-fee" value="0" min="0" max="5" step="0.05" style="width:5rem"></label>
+<label>Annual tax drag (%/yr): <input type="number" id="ci-tax" value="0" min="0" max="10" step="0.1" style="width:5rem"></label><br>
+<label>Inflation (%/yr): <input type="number" id="ci-infl" value="3" min="0" max="15" step="0.1" style="width:5rem"></label>
+<label><input type="checkbox" id="ci-real"> Show results in today&rsquo;s dollars</label>
+</fieldset>
+
+<fieldset class="ci-group"><legend>One-time deposits</legend>
+<div id="ci-deposits"></div>
+<button id="ci-add-dep" class="plain" type="button">+ Add a one-time deposit</button>
+<p class="ci-note">Deposits land at the start of the year you pick (a windfall, bonus, or inheritance).</p>
+</fieldset>
+
+<fieldset class="ci-group"><legend>Reverse solver &mdash; start from a target</legend>
+<label><input type="checkbox" id="ci-rev-toggle"> I have a target amount instead</label>
+<div id="ci-rev-box" style="display:none;margin-top:.5rem">
+<label>Target amount ($): <input type="number" id="ci-target" value="1000000" min="1" step="1000" style="width:9rem"></label>
+<label>Years to get there: <input type="number" id="ci-rev-years" value="25" min="1" max="60" step="1" style="width:4.5rem"></label>
+<div id="ci-rev-out" style="margin-top:.5rem"></div>
+<p class="ci-note">Uses your return, fee, tax, compounding, and contribution-increase settings above, with your initial investment kept as entered. With &ldquo;show in today&rsquo;s dollars&rdquo; on, the target is treated as buying power.</p>
+</div>
+</fieldset>
+
+<fieldset class="ci-group"><legend>Withdrawal phase (optional)</legend>
+<label><input type="checkbox" id="ci-wd-toggle"> After investing, withdraw monthly</label>
+<div id="ci-wd-box" style="display:none;margin-top:.5rem">
+<label>Monthly withdrawal ($): <input type="number" id="ci-wd-amt" value="3000" min="1" step="50" style="width:7rem"></label>
+<div id="ci-wd-out" style="margin-top:.5rem"></div>
+<p class="ci-note">Withdrawals come out at the start of each month; the remaining balance keeps growing.</p>
+</div>
+</fieldset>
+</div>
+
+<div id="ci-results" style="margin-top:1rem">
+<p class="ci-note" id="ci-real-note" style="display:none">Showing today&rsquo;s dollars (inflation-adjusted).</p>
+<div class="ci-result" id="ci-final" aria-live="polite" aria-atomic="true">&mdash;</div>
+<div class="ci-grid">
+<div class="ci-stat"><div class="k">You put in</div><div class="v" id="ci-contrib">&mdash;</div></div>
+<div class="ci-stat"><div class="k">Growth earned</div><div class="v" id="ci-growth">&mdash;</div></div>
+<div class="ci-stat"><div class="k">Growth share</div><div class="v" id="ci-share">&mdash;</div></div>
+</div>
+<div class="legend"><span class="swatch" style="background:var(--muted)"></span>Your contributions
+<span class="swatch" style="background:var(--accent);margin-left:1rem"></span>Growth from compounding</div>
+<canvas id="ci-chart" role="img" aria-label="Chart of balance growth over time"></canvas>
+<div id="ci-milestones" style="margin-top:.75rem" aria-live="polite"></div>
+</div>
+
+<div class="adv-only" id="ci-adv-b" role="tabpanel" aria-labelledby="ci-mode-adv" style="display:none">
+<fieldset class="ci-group"><legend>Scenario comparison</legend>
+<label>Scenario name: <input type="text" id="ci-scen-name" placeholder="e.g. Start now vs wait 5 years" style="width:16rem"></label>
+<button id="ci-scen-save" type="button">Save current as scenario</button>
+<div id="ci-scen-table"></div>
+<p class="ci-note">Save up to 4 scenarios &mdash; change the inputs, save again, and compare side by side. Best final value is highlighted.</p>
+</fieldset>
+
+<fieldset class="ci-group"><legend>Year by year</legend>
+<div style="overflow-x:auto"><div id="ci-table"></div></div>
+</fieldset>
+
+<fieldset class="ci-group"><legend>Save / load</legend>
+<button id="ci-export" type="button">Download settings (JSON)</button>
+<label style="margin-left:.5rem">Load settings: <input type="file" id="ci-import" accept=".json,application/json"></label>
+</fieldset>
+</div>
+<p class="small">Free tool by <a href="https://glenerds.gumroad.com">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+</div>
+
+<div class="cta-band">
+<h2>Turning the plan into action?</h2>
+<p>A projection is only useful if you track the reality. <a href="../net-worth-tracker/index.html">Net Worth Tracker</a>
+(free) shows whether your actual net worth is following the curve, and the
+<a href="../savings-challenge/index.html">52-Week Savings Challenge</a> (free) builds the monthly-contribution
+habit this calculator assumes. Both run offline, like everything here.</p>
+<p><a class="btn" href="https://glenerds.gumroad.com">Browse the Glenerds store</a></p>
+<p class="small">Free tools above &middot; paid one-time toolkits in the <a href="https://glenerds.gumroad.com">store</a> &mdash; no subscriptions, ever.</p>
+</div>
+
+<section class="block prose">
+<h2 class="sec">How to use the compound interest calculator</h2>
+<p>Simple mode needs four numbers: what you are starting with, what you will add each month, how many
+years you will let it grow, and the average annual return you expect. The result updates instantly &mdash;
+final balance, how much of it you contributed versus how much compounding earned, and a chart of the
+growth curve with milestone markers.</p>
+<p>Advanced mode adds the inputs that separate a toy from a planning tool: compounding frequency, an
+annual increase to your contributions (so a 3% raise grows your investing too), one-time deposits for
+windfalls, an expense-ratio fee drag, an annual tax drag, and inflation adjustment into today&rsquo;s
+dollars. You can also save up to four scenarios to compare side by side, solve backwards from a target
+amount, and add a withdrawal phase to see how long the money lasts once you start spending it.</p>
+
+<h2 class="sec">Worked example</h2>
+<p>$500 a month at an 8% average return for 30 years, starting from zero: you contribute
+<strong>$180,000</strong>, compounding adds <strong>$565,180</strong>, and the final balance is
+<strong>$745,180</strong>. Now add a 1% expense ratio &mdash; the kind of fee many actively managed funds
+charge &mdash; and the same plan ends at $609,985. The fee quietly costs <strong>$135,194</strong>, about
+18% of the final balance. Tick &ldquo;show in today&rsquo;s dollars&rdquo; at 3% inflation and that
+$745,180 is roughly <strong>$307,000</strong> of buying power. Same plan, three very different numbers
+&mdash; which is exactly why the adjustments exist.</p>
+
+<h2 class="sec">How the math works</h2>
+<p>No black box. Your <strong>effective annual return</strong> is your expected return minus the
+expense-ratio fee drag minus the annual tax drag, floored at zero &mdash; fees and taxes are modeled as a
+straight reduction of the return before compounding starts. That effective return is treated as a
+<strong>nominal APR at your selected compounding frequency</strong>: the monthly rate is
+<strong>r = (1 + r<sub>eff</sub>/p)^(p/12) &minus; 1</strong>, where p is compounding periods per year.
+With monthly compounding this is exactly r<sub>eff</sub>/12 &mdash; the same convention NerdWallet,
+Bankrate, and Investor.gov use, so identical inputs give identical answers.</p>
+<p>Each simulated month, the balance grows first and then your contribution is added at the end of the
+month. Yearly contribution increases apply from year two onward; one-time deposits land at the start of
+their year and start earning immediately. Today&rsquo;s-dollars mode divides results by (1 + inflation)^t.
+In the withdrawal phase, withdrawals come out at the start of each month and the remaining balance keeps
+growing at the same monthly rate.</p>
+
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>How do I model monthly contributions that grow with my annual raises?</dt>
+<dd>Switch to Advanced mode and set <strong>Annual contribution increase %</strong>. A 3% setting raises
+your monthly contribution 3% every year &mdash; the contribution in year y equals your base monthly amount
+times (1 + increase)^(y&minus;1) &mdash; which tracks a real career far better than a flat contribution
+held constant for 30 years.</dd>
+<dt>What does &ldquo;show in today&rsquo;s dollars&rdquo; actually do?</dt>
+<dd>It divides every result by (1 + inflation)^years so you see buying power instead of a fantasy number.
+At 3% inflation, $1,000,000 thirty years from now buys what about $412,000 buys today. Nominal dollars
+impress; today&rsquo;s dollars plan.</dd>
+<dt>What is the real cost of waiting a few years to start investing?</dt>
+<dd>Save your plan as a scenario, then save a second one with five fewer years and compare them side by
+side. The gap is usually large, because the earliest contributions compound the longest &mdash; starting at
+25 instead of 30 is often worth more than doubling your monthly contribution later.</dd>
+<dt>Is a lump sum better than monthly contributions?</dt>
+<dd>Mathematically, money invested earlier wins, so a lump sum you hold today usually beats dribbling it in.
+In practice most people invest future income, which only arrives monthly. Model both: put the lump sum in
+&ldquo;Initial investment&rdquo; with $0 monthly, save it as a scenario, then flip the inputs and compare.</dd>
+<dt>How much do I need to invest each month to reach $1 million?</dt>
+<dd>Use Advanced mode&rsquo;s reverse solver: enter $1,000,000 and your time horizon. At an 8% average
+return with no starting balance, 25 years takes about $1,052 per month &mdash; the solver finds it by
+bisection, testing monthly amounts until the projection lands exactly on your target.</dd>
+<dt>How much do fund fees and taxes really cost me?</dt>
+<dd>They come straight off your return before compounding: effective return = stated return &minus; expense
+ratio &minus; tax drag. On a $500/month, 30-year plan at 8%, a 1% annual fee alone erases about $135,000
+&mdash; roughly 18% of the final balance.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>Free Net Worth Tracker</h3><p>List what you own and what you owe; your net worth updates live, privately on your device.</p><a class="btn" href="../net-worth-tracker/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free 52-Week Savings Challenge Calculator</h3><p>Build the monthly-contribution habit this calculator assumes, one week at a time.</p><a class="btn" href="../savings-challenge/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Craft Pricing Calculator</h3><p>Turn materials, labor, and fees into suggested handmade prices with a profit verdict.</p><a class="btn" href="../craft-pricing-calculator/index.html">Open the free tool</a></div>
+</div>
+</section>
+
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+'use strict';
+function $(id){return document.getElementById(id);}
+function num(id,d){var v=parseFloat($(id).value);return isFinite(v)?v:d;}
+function money(n){if(!isFinite(n))return '\u2014';var s=n<0?'\u2212$':'$';n=Math.abs(Math.round(n));return s+n.toLocaleString('en-US');}
+function moneyC(n){if(!isFinite(n))return '\u2014';return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function pct(n){return (n*100).toFixed(1)+'%';}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function fmtA(n){if(n>=1e6){var v=n/1e6;return '$'+(v>=10?v.toFixed(1):v.toFixed(2))+'M';}if(n>=1e3){var v2=n/1e3;return '$'+(v2>=100?v2.toFixed(0):v2.toFixed(1))+'k';}return '$'+Math.round(n);}
+
+var LSKEY='glenerds-cic-v1';
+var scenarios=[];
+var lastSim=null,lastOpts=null,advOn=false;
+
+function readDeposits(){
+  var out=[];
+  document.querySelectorAll('#ci-deposits .dep-row').forEach(function(r){
+    var a=parseFloat(r.querySelector('.dep-amt').value),y=parseInt(r.querySelector('.dep-yr').value,10);
+    if(isFinite(a)&&a>0&&isFinite(y)&&y>=1)out.push([a,Math.min(60,y)]);
+  });
+  return out;
+}
+function readOpts(){
+  return {
+    initial:Math.max(0,num('ci-initial',0)),
+    monthly:Math.max(0,num('ci-monthly',0)),
+    years:Math.min(60,Math.max(1,Math.round(num('ci-years',30)))),
+    ret:Math.max(0,num('ci-rate',8)/100),
+    p:parseInt($('ci-freq').value,10)||12,
+    inc:Math.max(0,num('ci-increase',0)/100),
+    onetimes:readDeposits(),
+    fee:Math.max(0,num('ci-fee',0)/100),
+    tax:Math.max(0,num('ci-tax',0)/100),
+    infl:Math.max(0,num('ci-infl',3)/100),
+    real:$('ci-real').checked
+  };
+}
+/* Core model: the input return is a nominal APR at the selected compounding
+   frequency p: monthly rate r_m = (1+r_eff/p)^(p/12)-1, where
+   r_eff = return - fee - tax (floored at 0). With monthly compounding this is
+   exactly r_eff/12, matching NerdWallet/Bankrate/Investor.gov. Each month the
+   balance grows first, then the contribution is added at month-end (ordinary
+   annuity). One-time deposits land at the start of their year. Yearly
+   contribution increases apply from year 2 on. */
+function simulate(o){
+  var r_eff=Math.max(0,(o.ret||0)-(o.fee||0)-(o.tax||0));
+  var p=o.p||12;
+  var r_m=Math.pow(1+r_eff/p,p/12)-1;
+  var bal=o.initial||0,contrib=0,growth=0,ccum=0;
+  var yearly=[],months=[],ot={};
+  (o.onetimes||[]).forEach(function(d){
+    var yr=Math.max(1,Math.min(o.years,Math.round(d[1])));
+    if(d[0]>0)ot[yr]=(ot[yr]||0)+d[0];
+  });
+  for(var y=1;y<=o.years;y++){
+    var start=bal,yc=0,yg=0;
+    var mc=(o.monthly||0)*Math.pow(1+(o.inc||0),y-1);
+    for(var m=0;m<12;m++){
+      if(m===0&&ot[y]){bal+=ot[y];yc+=ot[y];ccum+=ot[y];}
+      var g=bal*r_m;bal+=g;yg+=g;
+      bal+=mc;yc+=mc;ccum+=mc;
+      months.push({m:(y-1)*12+m+1,bal:bal,ccum:ccum});
+    }
+    contrib+=yc;growth+=yg;
+    yearly.push({y:y,start:start,contrib:yc,growth:yg,end:bal,ccum:ccum});
+  }
+  return {final:bal,contrib:contrib,growth:growth,yearly:yearly,months:months,r_m:r_m,r_eff:r_eff};
+}
+function defl(v,t,o){return (o.real&&o.infl>0)?v/Math.pow(1+o.infl,t):v;}
+function milestones(o,sim){
+  var th=[100000,500000,1000000],found={},out=[];
+  sim.months.forEach(function(pt){
+    th.forEach(function(t){
+      if(!(t in found)&&defl(pt.bal,pt.m/12,o)>=t)found[t]=pt.m;
+    });
+  });
+  th.forEach(function(t){
+    if(t in found){var mo=found[t],y=Math.ceil(mo/12);out.push({t:t,mo:mo,text:'year '+y+', month '+(mo-(y-1)*12)});}
+  });
+  return out;
+}
+function solveMonthly(o,target){
+  function simWith(m){var oo={};for(var k in o)oo[k]=o[k];oo.monthly=m;return simulate(oo).final;}
+  function f(m){return simWith(m)-target;}
+  if(f(0)>=0)return 0;
+  var lo=0,hi=1,g=0;
+  while(f(hi)<0&&g<80){hi*=2;g++;}
+  for(var i=0;i<60;i++){var mid=(lo+hi)/2;if(f(mid)<0)lo=mid;else hi=mid;}
+  return (lo+hi)/2;
+}
+function lumpFor(o,target){
+  var r_m=simulate(o).r_m,n=o.years*12;
+  var b={};for(var k in o)b[k]=o[k];b.monthly=0;
+  var have=simulate(b).final;
+  return Math.max(0,(target-have)/Math.pow(1+r_m,n));
+}
+function withdraw(o,sim,amt){
+  if(!(amt>0))return null;
+  var bal=sim.final,mo=0;
+  while(bal>0&&mo<720){bal-=amt;mo++;if(bal<=0){bal=0;break;}bal*=(1+sim.r_m);}
+  return {months:mo,remaining:bal,depleted:bal<=0};
+}
+function durText(mo){var y=Math.floor(mo/12),m=mo%12;return y+' year'+(y===1?'':'s')+(m?' '+m+' month'+(m===1?'':'s'):'');}
+
+function drawChart(o,sim){
+  var cv=$('ci-chart');if(!cv||!cv.clientWidth)return;
+  var dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=300;
+  cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';
+  var ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  var cs=getComputedStyle(document.documentElement);
+  var fg=(cs.getPropertyValue('--fg')||'#000').trim(),muted=(cs.getPropertyValue('--muted')||'#666').trim(),
+      accent=(cs.getPropertyValue('--accent')||'#0f6c3f').trim(),border=(cs.getPropertyValue('--border')||'#ddd').trim();
+  var N=o.years,padL=58,padR=12,padT=14,padB=26;
+  var iw=W-padL-padR,ih=H-padT-padB;
+  var xs=[0],tot=[defl(o.initial,0,o)],cc=[0];
+  sim.yearly.forEach(function(r){xs.push(r.y);tot.push(defl(r.end,r.y,o));cc.push(defl(r.ccum,r.y,o));});
+  var yMax=Math.max.apply(null,tot)*1.06;if(!(yMax>0))yMax=1;
+  function X(i){return padL+iw*(xs[i]/N);}
+  function Y(v){return padT+ih*(1-v/yMax);}
+  ctx.font='11px system-ui,sans-serif';
+  for(var gi=0;gi<=4;gi++){
+    var gv=yMax*gi/4,gy=Y(gv);
+    ctx.strokeStyle=border;ctx.beginPath();ctx.moveTo(padL,gy);ctx.lineTo(W-padR,gy);ctx.stroke();
+    ctx.fillStyle=muted;ctx.textAlign='right';ctx.fillText(fmtA(gv),padL-6,gy+4);
+  }
+  var step=Math.max(1,Math.ceil(N/6));
+  ctx.textAlign='center';
+  for(var xi=0;xi<=N;xi+=step){ctx.fillStyle=muted;ctx.fillText('Yr '+xi,X(xi),H-8);}
+  function area(vals,color){
+    ctx.beginPath();ctx.moveTo(X(0),Y(vals[0]));
+    for(var i=1;i<vals.length;i++)ctx.lineTo(X(i),Y(vals[i]));
+    ctx.lineTo(X(vals.length-1),Y(0));ctx.lineTo(X(0),Y(0));ctx.closePath();
+    ctx.globalAlpha=0.35;ctx.fillStyle=color;ctx.fill();ctx.globalAlpha=1;
+    ctx.beginPath();ctx.moveTo(X(0),Y(vals[0]));
+    for(var j=1;j<vals.length;j++)ctx.lineTo(X(j),Y(vals[j]));
+    ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+  }
+  area(cc,muted);
+  ctx.beginPath();ctx.moveTo(X(0),Y(tot[0]));
+  for(var k=1;k<tot.length;k++)ctx.lineTo(X(k),Y(tot[k]));
+  ctx.lineTo(X(tot.length-1),Y(cc[cc.length-1]));
+  for(var k2=cc.length-1;k2>=0;k2--)ctx.lineTo(X(k2),Y(cc[k2]));
+  ctx.closePath();ctx.globalAlpha=0.35;ctx.fillStyle=accent;ctx.fill();ctx.globalAlpha=1;
+  ctx.beginPath();ctx.moveTo(X(0),Y(tot[0]));
+  for(var k3=1;k3<tot.length;k3++)ctx.lineTo(X(k3),Y(tot[k3]));
+  ctx.strokeStyle=accent;ctx.lineWidth=2;ctx.stroke();
+  var ms=milestones(o,sim);
+  ctx.textAlign='left';
+  ms.forEach(function(x){
+    var mx=padL+iw*((x.mo/12)/N);
+    ctx.strokeStyle=muted;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(mx,padT);ctx.lineTo(mx,padT+ih);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=fg;ctx.fillText(fmtA(x.t),mx+4,padT+12);
+  });
+}
+
+function renderTable(o,sim){
+  var h='<table><thead><tr><th>Year</th><th>Start</th><th>Contributions</th><th>Growth</th><th>End</th></tr></thead><tbody>';
+  sim.yearly.forEach(function(r){
+    h+='<tr><td>'+r.y+'</td><td>'+money(defl(r.start,r.y-1,o))+'</td><td>'+money(defl(r.contrib,r.y,o))+'</td><td>'+money(defl(r.growth,r.y,o))+'</td><td>'+money(defl(r.end,r.y,o))+'</td></tr>';
+  });
+  $('ci-table').innerHTML=h+'</tbody></table>';
+}
+function renderReverse(o){
+  var box=$('ci-rev-box');
+  if(!$('ci-rev-toggle').checked){box.style.display='none';return;}
+  box.style.display='block';
+  var target=Math.max(1,num('ci-target',1000000));
+  var yrs=Math.min(60,Math.max(1,Math.round(num('ci-rev-years',25))));
+  var oo={};for(var k in o)oo[k]=o[k];oo.years=yrs;
+  var realT=o.real&&o.infl>0;
+  var tNom=realT?target*Math.pow(1+o.infl,oo.years):target;
+  var need=solveMonthly(oo,tNom);
+  var lump=lumpFor(oo,tNom);
+  $('ci-rev-out').innerHTML='<p style="font-size:1.15rem"><strong>Required: '+moneyC(need)+'/month'+(realT?' (in today\u2019s dollars)':'')+'</strong></p>'+
+    '<p class="ci-note">Or a one-time lump sum of '+money(lump)+' today with no monthly contributions.</p>';
+}
+function renderWd(o,sim){
+  var box=$('ci-wd-box');
+  if(!$('ci-wd-toggle').checked){box.style.display='none';return;}
+  box.style.display='block';
+  var amt=num('ci-wd-amt',3000),r=withdraw(o,sim,amt);
+  $('ci-wd-out').innerHTML=!r?'<p class="ci-note">Enter a withdrawal amount above $0.</p>'
+    :(r.depleted?'<p style="font-size:1.15rem"><strong>'+money(amt)+'/month lasts '+durText(r.months)+'</strong></p>'
+    :'<p style="font-size:1.15rem"><strong>Still '+money(r.remaining)+' left after 60 years</strong></p><p class="ci-note">Your withdrawals never catch up with growth at this rate.</p>');
+}
+function renderScenarios(){
+  var el=$('ci-scen-table');
+  if(!scenarios.length){el.innerHTML='<p class="ci-note">No scenarios saved yet.</p>';return;}
+  function disp(s){var f=(s.real&&s.infl>0)?1/Math.pow(1+s.infl,s.years||1):1;
+    return {final:s.final*f,contrib:s.contrib*f,growth:s.growth*f,real:!!(s.real&&s.infl>0)};}
+  var best=0,bestV=-Infinity;
+  scenarios.forEach(function(s,i){var v=disp(s).final;if(v>bestV){bestV=v;best=i;}});
+  var anyReal=scenarios.some(function(s){return s.real&&s.infl>0;});
+  var h='<table><thead><tr><th>Scenario</th><th>Final value'+(anyReal?'*':'')+'</th><th>Contributions</th><th>Growth</th><th></th></tr></thead><tbody>';
+  scenarios.forEach(function(s,i){
+    var d=disp(s);
+    h+='<tr'+(i===best?' class="best"':'')+'><td>'+esc(s.name)+'</td><td>'+money(d.final)+'</td><td>'+money(d.contrib)+'</td><td>'+money(d.growth)+'</td><td><button type="button" class="plain" data-i="'+i+'">Delete</button></td></tr>';
+  });
+  el.innerHTML=h+'</tbody></table>'+(anyReal?'<p class="ci-note">*Scenarios saved with &ldquo;today&rsquo;s dollars&rdquo; on are shown inflation-adjusted.</p>':'');
+  el.querySelectorAll('button').forEach(function(b){
+    b.onclick=function(){scenarios.splice(parseInt(b.getAttribute('data-i'),10),1);renderScenarios();};
+  });
+}
+
+function render(){
+  var o=readOpts(),sim=simulate(o);
+  lastSim=sim;lastOpts=o;
+  var showReal=o.real&&o.infl>0;
+  $('ci-real-note').style.display=showReal?'block':'none';
+  $('ci-final').textContent=money(defl(sim.final,o.years,o));
+  $('ci-contrib').textContent=money(defl(sim.contrib,o.years,o));
+  $('ci-growth').textContent=money(defl(sim.growth,o.years,o));
+  $('ci-share').textContent=sim.final>0?pct(sim.growth/sim.final):'\u2014';
+  var ms=milestones(o,sim);
+  $('ci-milestones').innerHTML=ms.length
+    ?'<p><strong>Milestones:</strong> '+ms.map(function(x){return money(x.t)+' in '+x.text;}).join(' &middot; ')+'</p>'
+    :'<p class="ci-note">No $100k / $500k / $1M milestone is reached within this time horizon.</p>';
+  drawChart(o,sim);
+  if(advOn){renderTable(o,sim);renderReverse(o);renderWd(o,sim);}
+  save();
+}
+
+function addDepRow(amt,yr){
+  var div=document.createElement('div');div.className='dep-row';
+  div.innerHTML='<label>Amount ($): <input type="number" class="dep-amt" min="0" step="100" style="width:7rem" value="'+(amt===''?'':amt)+'"></label>'+
+    '<label>Year: <input type="number" class="dep-yr" min="1" max="60" step="1" style="width:4rem" value="'+(yr||1)+'"></label>'+
+    '<button type="button" class="plain dep-del">Remove</button>';
+  div.querySelector('.dep-del').onclick=function(){div.remove();render();};
+  div.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('input',render);inp.addEventListener('change',render);
+  });
+  $('ci-deposits').appendChild(div);
+}
+function setMode(adv){
+  advOn=adv;
+  $('ci-mode-simple').className=adv?'':'on';
+  $('ci-mode-adv').className=adv?'on':'';
+  $('ci-mode-simple').setAttribute('aria-selected',adv?'false':'true');
+  $('ci-mode-adv').setAttribute('aria-selected',adv?'true':'false');
+  $('ci-mode-simple').tabIndex=adv?-1:0;
+  $('ci-mode-adv').tabIndex=adv?0:-1;
+  document.querySelectorAll('.adv-only').forEach(function(el){el.style.display=adv?'block':'none';});
+  render();
+}
+function tabKey(e){
+  var k=e.key,id=e.currentTarget.id,next=null;
+  if(k==='ArrowRight'||k==='ArrowDown')next=$(id==='ci-mode-simple'?'ci-mode-adv':'ci-mode-simple');
+  else if(k==='ArrowLeft'||k==='ArrowUp')next=$(id==='ci-mode-adv'?'ci-mode-simple':'ci-mode-adv');
+  else if(k==='Home')next=$('ci-mode-simple');
+  else if(k==='End')next=$('ci-mode-adv');
+  else return;
+  e.preventDefault();next.focus();next.click();
+}
+$('ci-mode-simple').addEventListener('keydown',tabKey);
+$('ci-mode-adv').addEventListener('keydown',tabKey);
+function readUI(){
+  return {adv:advOn,
+    revToggle:$('ci-rev-toggle').checked,revTarget:num('ci-target',1000000),
+    revYears:Math.min(60,Math.max(1,Math.round(num('ci-rev-years',25)))),
+    wdToggle:$('ci-wd-toggle').checked,wdAmt:num('ci-wd-amt',3000),
+    scenarios:scenarios.map(function(s){return {name:s.name,final:s.final,contrib:s.contrib,growth:s.growth,
+      years:s.years||0,real:!!s.real,infl:s.infl||0};})};
+}
+function applyUI(u){
+  if(!u||typeof u!=='object')return;
+  if(u.revToggle!==undefined)$('ci-rev-toggle').checked=!!u.revToggle;
+  if(u.revTarget!==undefined)$('ci-target').value=u.revTarget;
+  if(u.revYears!==undefined)$('ci-rev-years').value=u.revYears;
+  if(u.wdToggle!==undefined)$('ci-wd-toggle').checked=!!u.wdToggle;
+  if(u.wdAmt!==undefined)$('ci-wd-amt').value=u.wdAmt;
+  if(Array.isArray(u.scenarios)){
+    scenarios=u.scenarios.filter(function(s){return s&&isFinite(s.final);}).slice(0,4).map(function(s){
+      return {name:String(s.name||'Scenario'),final:+s.final,contrib:+s.contrib||0,growth:+s.growth||0,
+        years:+s.years||0,real:!!s.real,infl:+s.infl||0};
+    });
+    renderScenarios();
+  }
+}
+function applyOpts(o){
+  if(!o||typeof o!=='object')return;
+  function set(id,v){if(v!==undefined&&v!==null&&$(id))$(id).value=v;}
+  set('ci-initial',o.initial);set('ci-monthly',o.monthly);set('ci-years',o.years);set('ci-rate',(o.ret||0)*100);
+  if(o.p)$('ci-freq').value=String(o.p);
+  set('ci-increase',(o.inc||0)*100);set('ci-fee',(o.fee||0)*100);set('ci-tax',(o.tax||0)*100);set('ci-infl',(o.infl||0)*100);
+  if(o.real!==undefined)$('ci-real').checked=!!o.real;
+  $('ci-deposits').innerHTML='';
+  (o.onetimes||[]).forEach(function(d){addDepRow(d[0],d[1]);});
+  render();
+}
+function save(){
+  try{localStorage.setItem(LSKEY,JSON.stringify({o:readOpts(),ui:readUI()}));}catch(e){}
+}
+
+$('ci-mode-simple').onclick=function(){setMode(false);};
+$('ci-mode-adv').onclick=function(){setMode(true);};
+$('ci-add-dep').onclick=function(){addDepRow('',1);};
+$('ci-rev-toggle').addEventListener('change',render);
+$('ci-wd-toggle').addEventListener('change',render);
+['ci-initial','ci-monthly','ci-years','ci-rate','ci-freq','ci-increase','ci-fee','ci-tax','ci-infl','ci-real','ci-target','ci-rev-years','ci-wd-amt'].forEach(function(id){
+  var el=$(id);if(el){el.addEventListener('input',render);el.addEventListener('change',render);}
+});
+$('ci-scen-save').onclick=function(){
+  if(scenarios.length>=4){alert('You can save up to 4 scenarios. Delete one to add another.');return;}
+  var name=$('ci-scen-name').value.trim()||('Scenario '+(scenarios.length+1));
+  scenarios.push({name:name,final:lastSim.final,contrib:lastSim.contrib,growth:lastSim.growth,
+    years:lastOpts.years,real:lastOpts.real,infl:lastOpts.infl});
+  $('ci-scen-name').value='';
+  renderScenarios();
+};
+$('ci-export').onclick=function(){
+  var blob=new Blob([JSON.stringify({v:1,o:readOpts(),ui:readUI()},null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='compound-interest-settings.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+};
+$('ci-import').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){try{
+    var d=JSON.parse(r.result);
+    var o=(d&&typeof d==='object'&&d.o)?d.o:d;
+    applyOpts(o);
+    if(d&&typeof d==='object'&&d.ui)applyUI(d.ui);
+    render();
+  }catch(err){alert('Could not read that settings file.');}};
+  r.readAsText(f);e.target.value='';
+});
+
+var startAdv=false;
+try{var d=JSON.parse(localStorage.getItem(LSKEY));if(d&&d.o){applyOpts(d.o);if(d.ui)applyUI(d.ui);startAdv=d.ui?!!d.ui.adv:!!d.adv;}}catch(e){}
+setMode(startAdv);
+$('theme-toggle').addEventListener('click',function(){setTimeout(function(){if(lastSim&&lastOpts)drawChart(lastOpts,lastSim);},60);});
+var rT;window.addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(function(){if(lastSim&&lastOpts)drawChart(lastOpts,lastSim);},150);});
+})();
+</script>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

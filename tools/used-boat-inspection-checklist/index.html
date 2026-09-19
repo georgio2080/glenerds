@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Used Boat Inspection Checklist | Glenerds</title>
+<meta name="description" content="Free used boat inspection checklist: work through hull, engine, and trailer inspection points, tally issues, and estimate repair costs. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/used-boat-inspection-checklist/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Used Boat Inspection Checklist | Glenerds">
+<meta property="og:description" content="Free used boat inspection checklist: work through hull, engine, and trailer inspection points, tally issues, and estimate repair costs. Offline, no account.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/used-boat-inspection-checklist/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Should I hire a marine surveyor?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For anything beyond a cheap jon boat, yes \u2014 lenders and insurers often require it anyway. Use this checklist to screen boats first so you only pay for surveys on real contenders."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the most expensive surprise?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Engine rebuilds and transom/hull structural work. Both can exceed the value of an older boat, which is why they sit at the top of the checklist."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a tap test?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tapping the hull and listening: sharp taps mean solid laminate, dull thuds mean delamination or rot underneath. It takes two minutes and finds what eyes miss."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How important is the trailer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Very. A bad trailer turns every launch into a gamble and costs real money to replace. Inspect it like part of the boat, because it is."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What about boat-type-specific checklists?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HullCheck covers outboard, sterndrive/inboard, sailboat, and pontoon with dedicated checklists, weighted risk scoring, repair estimates, the effective total next to the asking price, and a printable report \u2014 $29 one-time, offline."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Boat Inspection Checklist</p>
+<main>
+<div class="hero">
+<h1>Free Used Boat Pre-Purchase Inspection Checklist</h1>
+<p class="lead">A used boat hides its problems well &mdash; until you own them. Work this pre-purchase checklist
+dockside: hull and deck, transom, engine, fuel, steering, electrics, trailer, and paperwork, each marked
+pass, flag, or fail, with a rough repair-cost exposure tally. Runs offline on your phone at the dock. Free,
+no account.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Used boat inspection checklist">
+
+<div id="bt-list"></div>
+<p><strong id="bt-tally"></strong><br><span id="bt-cost" class="small"></span></p>
+<label>Notes: <input type="text" id="bt-notes" style="width:70%" placeholder="HIN, hours, asking price, seller claims..." aria-label="Inspection notes"></label><br>
+<button id="bt-print">Print checklist</button>
+<button id="bt-reset" class="plain">Reset</button>
+<p class="small">Repair ranges are rough ballparks for budgeting &mdash; a marine surveyor gives the real numbers.</p>
+</div>
+<p class="small" style="margin-top:1rem"><strong>Want checklists tuned to the boat type?</strong> <a href="../../products/hullcheck/index.html">HullCheck</a> scores the risk for you.</p>
+<p class="small">Free tool by <a href="../../index.html">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+
+<div class="toolbox">
+<h3 style="margin-top:0">Free vs. full version</h3>
+<table><tbody>
+<tr><td><strong>Free tool on this page</strong></td><td><strong>HullCheck &mdash; $29 one-time</strong></td></tr>
+<tr><td>One generic checklist for any boat</td><td>Four boat-type-specific checklists</td></tr>
+<tr><td>Simple repair-cost tally</td><td>Weighted risk scoring with repair estimates and a printable pre-purchase report</td></tr>
+</tbody></table>
+<p><a class="btn" href="https://glenerds.gumroad.com/l/hullcheck">Get HullCheck &mdash; $29 one-time</a></p>
+<p class="small">No subscription. No account. The full tool runs offline in your browser, just like this free one.</p>
+</div>
+
+
+
+
+
+<script>
+(function(){
+  var KEY='glenerds-boat-v1';
+  var ITEMS=[
+    ['Hull & deck','No soft spots, cracks, or delamination on hull and deck (tap test)',300,3000],
+    ['Hull & deck','No blistering below the waterline beyond minor cosmetic spots',200,1500],
+    ['Transom','Transom solid with no flex or rot around motor mounts',400,2500],
+    ['Engine','Starts cold without excessive smoke or hard cranking',200,4000],
+    ['Engine','Steady idle and smooth throttle response, no overheating',150,2000],
+    ['Engine','Compression in spec across all cylinders (ask for numbers)',300,3500],
+    ['Fuel system','Tank, lines, and primer bulb leak-free; fuel smells fresh, not varnished',50,600],
+    ['Steering & controls','Steering moves freely lock to lock, throttle/shift engage cleanly',100,800],
+    ['Electrical','Bilge pump, nav lights, blower, and gauges all work',50,500],
+    ['Electrical','Battery holds charge; wiring not corroded or jury-rigged',40,400],
+    ['Trailer','Frame not rusted through; bunks/rollers support the hull',100,1200],
+    ['Trailer','Bearings, tires, lights, and winch serviceable',80,500],
+    ['Safety gear','Required safety equipment present and serviceable',0,300],
+    ['Paperwork','Title/HIN matches the hull plate; no liens; registration current',0,0]
+  ];
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
+  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  var data=load();
+  function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
+  function render(){
+    var wrap=document.getElementById('bt-list');wrap.innerHTML='';
+    var flags=0,fails=0,lo=0,hi=0,done=0;
+    ITEMS.forEach(function(it,i){
+      var st=data[i]||'';
+      if(st==='flag'){flags++;lo+=it[2];hi+=it[3];done++;}
+      if(st==='fail'){fails++;lo+=it[2];hi+=it[3];done++;}
+      if(st==='pass'){done++;}
+      var div=document.createElement('div');
+      div.style.cssText='border-bottom:1px solid var(--border);padding:.5rem 0;';
+      div.innerHTML='<strong>'+it[0]+':</strong> '+it[1]
+        +'<br><span class="small">Typical repair: '+money(it[2])+'&ndash;'+money(it[3])+'</span><br>';
+      ['pass','flag','fail'].forEach(function(s){
+        var lab=document.createElement('label');lab.style.marginRight='1rem';
+        var r=document.createElement('input');r.type='radio';r.name='bt'+i;r.value=s;
+        if(st===s)r.checked=true;
+        r.onchange=function(){data[i]=s;save(data);render();};
+        lab.appendChild(r);lab.appendChild(document.createTextNode(' '+s.charAt(0).toUpperCase()+s.slice(1)));
+        div.appendChild(lab);
+      });
+      wrap.appendChild(div);
+    });
+    document.getElementById('bt-tally').textContent=
+      'Checked '+done+'/'+ITEMS.length+' — '+flags+' flagged, '+fails+' failed';
+    document.getElementById('bt-cost').textContent=
+      (flags+fails)>0?('Rough repair exposure: '+money(lo)+' – '+money(hi)):'No issues flagged yet.';
+    document.getElementById('bt-notes').value=data.notes||'';
+  }
+  document.getElementById('bt-notes').addEventListener('input',function(e){data.notes=e.target.value;save(data);});
+  document.getElementById('bt-print').onclick=function(){window.print();};
+  document.getElementById('bt-reset').onclick=function(){if(confirm('Reset the whole checklist?')){data={};save(data);render();}};
+  render();
+})();
+</script>
+<section class="block prose">
+
+<h2 class="sec">How to inspect a used boat</h2>
+<p>Do it in this order: paperwork first (a boat you cannot legally own is not a deal at any price),
+then hull and transom, then engine cold-start, then systems and trailer. The tap test &mdash; a
+plastic mallet or screwdriver handle tapped along the hull listening for dull, dead spots &mdash;
+finds delamination no photo will show. Mark each item pass, flag, or fail as you go; the tally
+converts flags into a rough repair-cost range for the negotiation.</p>
+<h2 class="sec">The real price of a used boat</h2>
+<p>Asking price plus repair exposure equals the boat&rsquo;s true cost &mdash; run that number before
+falling in love. A $5,000 boat needing $4,000 of engine work is a $9,000 boat with extra steps, and
+a $9,000 boat in good shape is cheaper. Trailers deserve the same math: a rotten trailer can strand
+the &ldquo;deal&rdquo; in the seller&rsquo;s driveway. When the true cost approaches a newer
+boat&rsquo;s price, buy the newer boat.</p>
+<h2 class="sec">Worked example</h2>
+<p>Flag soft deck spots (typical repair $300&ndash;$3,000) and transom flex ($400&ndash;$2,500). The tally reads
+2 flagged with a rough repair exposure of <strong>$700&ndash;$5,500</strong> &mdash; enough to justify hiring
+a surveyor, or to make a lower offer with the numbers in hand.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>Should I hire a marine surveyor?</dt>
+<dd>For anything beyond a cheap jon boat, yes &mdash; lenders and insurers often require it anyway.
+Use this checklist to screen boats first so you only pay for surveys on real contenders.</dd>
+<dt>What is the most expensive surprise?</dt>
+<dd>Engine rebuilds and transom/hull structural work. Both can exceed the value of an older boat,
+which is why they sit at the top of the checklist.</dd>
+<dt>What is a tap test?</dt>
+<dd>Tapping the hull and listening: sharp taps mean solid laminate, dull thuds mean delamination or
+rot underneath. It takes two minutes and finds what eyes miss.</dd>
+<dt>How important is the trailer?</dt>
+<dd>Very. A bad trailer turns every launch into a gamble and costs real money to replace. Inspect it
+like part of the boat, because it is.</dd>
+<dt>What about boat-type-specific checklists?</dt>
+<dd><strong>HullCheck</strong> covers outboard, sterndrive/inboard, sailboat, and pontoon with
+dedicated checklists, weighted risk scoring, repair estimates, the effective total next to the
+asking price, and a printable report &mdash; $29 one-time, offline.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>HullCheck &mdash; $29 one-time</h3><p>Four boat-type-specific checklists with weighted risk scoring and repair estimates.</p><a class="btn" href="../../products/hullcheck/index.html">Learn more</a></div>
+<div class="card"><h3>Free Espresso Machine Inspection Checklist</h3><p>The same inspection discipline, tuned for espresso machines.</p><a class="btn" href="../espresso-machine-inspection-checklist/index.html">Open the free tool</a></div>
+</div>
+</section>
+
+
+<div class="cta-band">
+<h2>Need the full version?</h2>
+<p><strong>HullCheck</strong> is the offline inspection tool for used-boat buyers: four boat-type-specific checklists, weighted risk scoring, repair-cost estimates, and a printable inspection report. $29 one-time, no subscription.</p>
+<a class="btn" href="https://glenerds.gumroad.com/l/hullcheck">Get HullCheck &mdash; $29 one-time</a>
+<p class="small"><a href="../../products/hullcheck/index.html">Learn more about HullCheck</a>
+&middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

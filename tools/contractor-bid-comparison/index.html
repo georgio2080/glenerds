@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Contractor Bid Comparison Worksheet | Glenerds</title>
+<meta name="description" content="Free contractor bid comparison worksheet: line up two contractor bids side by side, flag price gaps, and spot missing scope. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/contractor-bid-comparison/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Contractor Bid Comparison Worksheet | Glenerds">
+<meta property="og:description" content="Free contractor bid comparison worksheet: line up two contractor bids side by side, flag price gaps, and spot missing scope. Offline, no account.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/contractor-bid-comparison/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why only two bids?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The free worksheet covers the classic head-to-head. Most investors collect three bids, which is where the paid tool takes over."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if the bids use completely different line items?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Normalize them: break both bids into the same item list (the phases of the job), splitting lump sums where you have to. Comparison is only meaningful on matching scope."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I just take the lowest total?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not without reading the gaps. The lowest total with three \u201conly one bid\u201d flags is often the most expensive bid once the missing scope gets added back as change orders."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a reasonable gap between bids?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ten to fifteen percent on a line item is normal market variance. Past 20%, something structural differs \u2014 materials, assumptions, or missing work."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What about a third bid, or judging bids against my ARV?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "FlipBid Reconciler normalizes up to 3 bids into one scope matrix, flags price gaps and scope holes automatically, and projects profit against your ARV with a negotiation-ready report \u2014 $29 one-time, offline."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Bid Comparison Worksheet</p>
+<main>
+<div class="hero">
+<h1>Free Contractor Bid Comparison Worksheet</h1>
+<p class="lead">Two contractor bids, two different formats, no honest way to compare them &mdash; until now. Line up
+two bids item by item in this free worksheet: it flags every line where the prices diverge by more than 15%
+and calls out anything only one contractor bid. Free, offline, no account; your project numbers stay on your
+device.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="Contractor bid comparison worksheet">
+
+<label>Contractor A: <input type="text" id="cb-na" placeholder="e.g. Smith Remodeling" aria-label="Contractor A name"></label>
+<label>Contractor B: <input type="text" id="cb-nb" placeholder="e.g. Jones &amp; Co" aria-label="Contractor B name"></label>
+<button id="cb-add">Add line item</button>
+<table><thead><tr><th>Item</th><th id="cb-ha">Bid A</th><th id="cb-hb">Bid B</th><th>Gap</th><th></th></tr></thead>
+<tbody id="cb-rows"></tbody></table>
+<p id="cb-totals" style="font-size:1.1rem"></p>
+<p class="small">A gap over 15% gets flagged &mdash; that is the line item to question on the call. Everything stays in your browser.</p>
+</div>
+<p class="small" style="margin-top:1rem"><strong>Adding a third bid, or judging bids against your ARV?</strong> <a href="../../products/flipbid-reconciler/index.html">FlipBid Reconciler</a> normalizes up to 3 bids and projects profit against your deal.</p>
+<p class="small">Free tool by <a href="../../index.html">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+
+<div class="toolbox">
+<h3 style="margin-top:0">Free vs. full version</h3>
+<table><tbody>
+<tr><td><strong>Free tool on this page</strong></td><td><strong>FlipBid Reconciler &mdash; $29 one-time</strong></td></tr>
+<tr><td>2 bids, line-item comparison</td><td>Up to 3 bids normalized into one scope-of-work matrix</td></tr>
+<tr><td>You spot what's missing yourself</td><td>Automatic scope-hole detection: items a contractor didn't bid at all</td></tr>
+<tr><td>Totals only</td><td>Negotiation-ready variance report with talking points and projected profit vs. ARV</td></tr>
+</tbody></table>
+<p><a class="btn" href="https://glenerds.gumroad.com/l/flipbid-reconciler">Get FlipBid Reconciler &mdash; $29 one-time</a></p>
+<p class="small">No subscription. No account. The full tool runs offline in your browser, just like this free one.</p>
+</div>
+
+
+
+
+
+<script>
+(function(){
+  var KEY='glenerds-bidcomp-v1';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY))||{na:'',nb:'',items:[]}}catch(e){return{na:'',nb:'',items:[]}}}
+  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  var data=load();
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function money(n){return n==null||isNaN(n)?'—':'$'+Number(n).toLocaleString('en-US',{maximumFractionDigits:0});}
+  function render(){
+    var tb=document.getElementById('cb-rows');tb.innerHTML='';
+    var ta=0,tb2=0;
+    document.getElementById('cb-ha').textContent='Bid A'+(data.na?' — '+data.na:'');
+    document.getElementById('cb-hb').textContent='Bid B'+(data.nb?' — '+data.nb:'');
+    data.items.forEach(function(it){
+      ta+=it.a||0;tb2+=it.b||0;
+      var gap='';
+      if(it.a&&it.b){var p=Math.abs(it.a-it.b)/Math.max(it.a,it.b)*100;
+        gap=p.toFixed(0)+'%'+(p>15?' ⚠':'');}
+      else if(it.a||it.b){gap='only one bid';}
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td>'+esc(it.desc||'(no description)')+'</td><td>'+money(it.a)+'</td><td>'+money(it.b)+'</td><td>'+gap+'</td>';
+      var td=document.createElement('td');var b=document.createElement('button');
+      b.textContent='Remove';b.className='plain';
+      b.onclick=function(){data.items=data.items.filter(function(x){return x.id!==it.id;});save(data);render();};
+      td.appendChild(b);tr.appendChild(td);tb.appendChild(tr);
+    });
+    document.getElementById('cb-totals').innerHTML=
+      '<strong>Total A: '+money(ta)+'</strong> &nbsp;|&nbsp; <strong>Total B: '+money(tb2)+'</strong>';
+    document.getElementById('cb-na').value=data.na||'';
+    document.getElementById('cb-nb').value=data.nb||'';
+  }
+  document.getElementById('cb-add').onclick=function(){
+    var desc=prompt('Line item description (e.g. Kitchen demo):');
+    if(desc===null)return;
+    var a=parseFloat(prompt('Contractor A price for "'+desc+'" (blank if not bid):',''));
+    var b=parseFloat(prompt('Contractor B price for "'+desc+'" (blank if not bid):',''));
+    data.items.push({id:'i'+Date.now().toString(36),desc:desc,a:isNaN(a)?null:a,b:isNaN(b)?null:b});
+    save(data);render();
+  };
+  document.getElementById('cb-na').addEventListener('input',function(e){data.na=e.target.value;save(data);render();});
+  document.getElementById('cb-nb').addEventListener('input',function(e){data.nb=e.target.value;save(data);render();});
+  render();
+})();
+</script>
+<section class="block prose">
+
+<h2 class="sec">How to compare contractor bids</h2>
+<p>Add each line item both contractors bid &mdash; demolition, electrical, plumbing, drywall, and so
+on &mdash; with each contractor&rsquo;s price. The worksheet lines them up side by side, computes
+the percentage gap per item, and flags anything diverging more than 15%. An item priced by only one
+contractor is flagged too: that is either missing scope or scope the other contractor buried
+elsewhere. Totals at the bottom keep the big picture in view.</p>
+<h2 class="sec">What the gaps are telling you</h2>
+<p>A big gap on one line rarely means one contractor is dishonest &mdash; it usually means they are
+not bidding the same thing. Different material grades, different assumptions about existing
+conditions, or one contractor missing the item entirely. The flagged lines are your negotiation
+script: ask each contractor to explain that specific number. Bids that survive those questions are
+bids you can trust.</p>
+<h2 class="sec">Worked example</h2>
+<p>Kitchen demo: Contractor A bids $1,200, Contractor B bids $1,800. The gap is 33%, so the worksheet flags it
+with a warning. One line &mdash; "permit fees" &mdash; appears only in Bid A and is marked <strong>only one
+bid</strong>, so you know to ask Bidder B why it's missing instead of discovering it mid-project.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>Why only two bids?</dt>
+<dd>The free worksheet covers the classic head-to-head. Most investors collect three bids, which is
+where the paid tool takes over.</dd>
+<dt>What if the bids use completely different line items?</dt>
+<dd>Normalize them: break both bids into the same item list (the phases of the job), splitting lump
+sums where you have to. Comparison is only meaningful on matching scope.</dd>
+<dt>Should I just take the lowest total?</dt>
+<dd>Not without reading the gaps. The lowest total with three &ldquo;only one bid&rdquo; flags is
+often the most expensive bid once the missing scope gets added back as change orders.</dd>
+<dt>What is a reasonable gap between bids?</dt>
+<dd>Ten to fifteen percent on a line item is normal market variance. Past 20%, something structural
+differs &mdash; materials, assumptions, or missing work.</dd>
+<dt>What about a third bid, or judging bids against my ARV?</dt>
+<dd><strong>FlipBid Reconciler</strong> normalizes up to 3 bids into one scope matrix, flags price
+gaps and scope holes automatically, and projects profit against your ARV with a negotiation-ready
+report &mdash; $29 one-time, offline.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>FlipBid Reconciler &mdash; $29 one-time</h3><p>Normalizes up to 3 bids into one scope matrix with a negotiation-ready variance report.</p><a class="btn" href="../../products/flipbid-reconciler/index.html">Learn more</a></div>
+<div class="card"><h3>Free HOA Special Assessment Calculator</h3><p>Rehabbing a condo? Estimate what a special assessment would cost you.</p><a class="btn" href="../hoa-special-assessment-calculator/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Moving Cost Calculator</h3><p>Post-renovation move? Budget it first.</p><a class="btn" href="../moving-cost-calculator/index.html">Open the free tool</a></div>
+<div class="card"><h3>ServiceTitan Alternative</h3><p>An honest comparison: when the one-time offline tool wins, and when the subscription alternative is the better call.</p><a class="btn" href="../../alternatives/servicetitan-alternative/index.html">Read the comparison</a></div>
+</div>
+</section>
+
+
+<div class="cta-band">
+<h2>Need the full version?</h2>
+<p><strong>FlipBid Reconciler</strong> normalizes up to 3 contractor bids into one scope-of-work matrix, flags price gaps and missing items, and builds a negotiation-ready variance report with profit vs. ARV. $29 one-time, no subscription.</p>
+<a class="btn" href="https://glenerds.gumroad.com/l/flipbid-reconciler">Get FlipBid Reconciler &mdash; $29 one-time</a>
+<p class="small"><a href="../../products/flipbid-reconciler/index.html">Learn more about FlipBid Reconciler</a>
+&middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

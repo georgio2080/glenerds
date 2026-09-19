@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free CSS Specificity Calculator | Glenerds</title>
+<meta name="description" content="Free CSS specificity calculator: paste any selector and see its specificity score explained, with examples. Offline, no account.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/css-specificity-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free CSS Specificity Calculator | Glenerds">
+<meta property="og:description" content="Free CSS specificity calculator: paste any selector and see its specificity score explained, with examples. Offline, no account.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/css-specificity-calculator/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does the universal selector count?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No \u2014 * adds zero to specificity, as do combinators like > and whitespace. They structure the selector without scoring."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What about !important?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It sits outside the scoring system and beats everything except another !important later in source order (or with higher specificity). Avoid it in favor of better selectors."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do :not() and :is() score?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": ":not() adds the specificity of its argument; :is() takes its most specific argument; :where() always scores zero. The calculator handles all three."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do frameworks seem to ignore my styles?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually because the framework\u2019s selector outscores yours \u2014 e.g. two classes beating your one. Paste both selectors above and compare the numbers before reaching for hacks."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if I want to inspect real elements, not just selectors?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CSSHover is the Chrome extension for that: hover any element on any page, click to lock it, and copy its unique selector, all computed styles, Tailwind conversions, and detected font \u2014 $9 one-time."
+      }
+    }
+  ]
+}
+</script>
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../index.html">Glenerds</a>
+<nav class="main">
+<a href="../../index.html">Home</a>
+<a href="../../index.html#free-tools">Free Tools</a>
+<a href="../../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; CSS Specificity Calculator</p>
+<main>
+<div class="hero">
+<h1>Free CSS Specificity Calculator &mdash; Why Won&rsquo;t This Style Apply?</h1>
+<p class="lead">Why won't this CSS rule apply? Paste any selector and this free calculator counts its specificity
+&mdash; IDs, classes, attributes, pseudo-classes, and elements &mdash; and shows you exactly why one rule
+beats another. No sign-up, runs offline, built for working developers debugging real stylesheets.</p>
+</div>
+
+<div class="toolbox" role="region" aria-label="CSS specificity calculator">
+
+<label>CSS selector: <input type="text" id="cs-in" placeholder="e.g. #nav .menu li.active a:hover" style="width:70%" aria-label="CSS selector"></label>
+<button id="cs-go">Calculate</button>
+<div id="cs-out" style="margin-top:1rem"></div>
+<p class="small">Try: <button class="plain" data-ex="ul#nav li.active a">example 1</button>
+<button class="plain" data-ex="body.home .post h2.title">example 2</button>
+<button class="plain" data-ex="#header #logo img">example 3</button></p>
+<p class="small">Counts follow the CSS spec: IDs beat classes beat elements. <code>:not()</code> adds its argument&rsquo;s specificity; <code>:is()</code> takes its most specific argument.</p>
+</div>
+<p class="small" style="margin-top:1rem"><strong>Want this on real pages instead of pasted selectors?</strong> The <a href="../../products/css-element-inspector-chrome/index.html">CSS Element Inspector</a> runs in Chrome, on the page you're actually debugging.</p>
+<p class="small">Free tool by <a href="../../index.html">Glenerds</a> &mdash; runs entirely in your browser; nothing you enter is sent anywhere.</p>
+
+<div class="toolbox">
+<h3 style="margin-top:0">Free vs. full version</h3>
+<table><tbody>
+<tr><td><strong>Free tool on this page</strong></td><td><strong>CSS Element Inspector &mdash; $9 one-time</strong></td></tr>
+<tr><td>Scores selectors you paste in</td><td>Inspects real elements on any live page (Chrome extension)</td></tr>
+<tr><td>Specificity math only</td><td>Hover any element to inspect it, click to lock, copy the CSS, unique selectors, and Tailwind classes</td></tr>
+</tbody></table>
+<p><a class="btn" href="https://glenerds.gumroad.com/l/css-element-inspector-chrome">Get CSS Element Inspector &mdash; $9 one-time</a></p>
+<p class="small">No subscription. No account. The full tool runs offline in your browser, just like this free one.</p>
+</div>
+
+
+
+
+
+<script>
+(function(){
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function splitTopLevel(sel){
+    var parts=[],depth=0,cur='';
+    for(var i=0;i<sel.length;i++){var ch=sel[i];
+      if(ch==='(')depth++;if(ch===')')depth--;
+      if(ch===','&&depth===0){parts.push(cur);cur='';}else cur+=ch;}
+    parts.push(cur);return parts;
+  }
+  function specOf(sel){
+    var a=0,b=0,c=0,s=sel;
+    s=s.replace(/:not\(([^()]*)\)/g,function(m,inner){var sp=specOf(inner);a+=sp[0];b+=sp[1];c+=sp[2];return ' ';});
+    s=s.replace(/:(is|where)\(([^()]*)\)/g,function(m,pseudo,inner){
+      if(pseudo==='where')return ' ';
+      var best=[0,0,0];
+      splitTopLevel(inner).forEach(function(arg){var sp=specOf(arg);
+        if(sp[0]>best[0]||(sp[0]===best[0]&&sp[1]>best[1])||(sp[0]===best[0]&&sp[1]===best[1]&&sp[2]>best[2]))best=sp;});
+      a+=best[0];b+=best[1];c+=best[2];return ' ';});
+    var ids=s.match(/#[A-Za-z0-9_-]+/g);if(ids)a+=ids.length;
+    var cls=s.match(/\.[A-Za-z0-9_-]+/g);if(cls)b+=cls.length;
+    var attrs=s.match(/\[[^\]]+\]/g);if(attrs)b+=attrs.length;
+    var pseudoC=s.match(/:(?!:)[A-Za-z-]+(\([^)]*\))?/g);if(pseudoC)b+=pseudoC.length;
+    var pseudoE=s.match(/::[A-Za-z-]+/g);if(pseudoE)c+=pseudoE.length;
+    var els=s.replace(/#[A-Za-z0-9_-]+/g,' ').replace(/\.[A-Za-z0-9_-]+/g,' ')
+      .replace(/\[[^\]]+\]/g,' ').replace(/::?[A-Za-z-]+(\([^)]*\))?/g,' ')
+      .replace(/[\s>+~]+/g,' ').trim().split(' ').filter(function(x){return x&&x!=='*';});
+    c+=els.length;
+    return [a,b,c];
+  }
+  function bar(v,max){var n=Math.min(12,Math.round(v/(max||1)*12));var s='';for(var i=0;i<12;i++)s+=i<n?'\u2588':'\u2591';return s;}
+  function calc(){
+    var sel=document.getElementById('cs-in').value.trim();
+    if(!sel){document.getElementById('cs-out').innerHTML='<p class="small">Enter a selector above.</p>';return;}
+    var sp=specOf(sel),mx=Math.max(sp[0],sp[1],sp[2],1);
+    var html='<p style="font-size:1.4rem"><strong>Specificity: '+sp[0]+','+sp[1]+','+sp[2]+'</strong></p>'
+      +'<table><tbody>'
+      +'<tr><td>ID selectors <code>#id</code></td><td>'+sp[0]+'</td><td><code>'+bar(sp[0],mx)+'</code></td></tr>'
+      +'<tr><td>Classes, attributes, pseudo-classes <code>.c [x] :hover</code></td><td>'+sp[1]+'</td><td><code>'+bar(sp[1],mx)+'</code></td></tr>'
+      +'<tr><td>Elements, pseudo-elements <code>div ::before</code></td><td>'+sp[2]+'</td><td><code>'+bar(sp[2],mx)+'</code></td></tr>'
+      +'</tbody></table>'
+      +'<p class="small">Higher columns win: any ID beats any number of classes; any class beats any number of elements. Equal scores &rarr; the later rule in source order wins.</p>';
+    document.getElementById('cs-out').innerHTML=html;
+  }
+  document.getElementById('cs-go').onclick=calc;
+  document.getElementById('cs-in').addEventListener('input',calc);
+  var ex=document.querySelectorAll('[data-ex]');
+  ex.forEach(function(b){b.addEventListener('click',function(){document.getElementById('cs-in').value=b.getAttribute('data-ex');calc();});});
+  document.getElementById('cs-in').value='ul#nav li.active a';calc();
+})();
+</script>
+<section class="block prose">
+
+<h2 class="sec">How specificity works</h2>
+<p>Every selector gets a three-part score: <strong>IDs</strong>, then <strong>classes, attributes,
+and pseudo-classes</strong>, then <strong>elements and pseudo-elements</strong>. Compare left to
+right &mdash; a single ID outranks any number of classes, and a single class outranks any number of
+elements. When two rules tie, the one that appears later in your CSS wins. That is the whole game,
+and most &ldquo;why won&rsquo;t this apply&rdquo; mysteries are just a score you have not counted.</p>
+<h2 class="sec">Writing selectors that do not fight you</h2>
+<p>The practical takeaway: keep scores low and flat. Reach for classes instead of IDs for styling,
+avoid nesting five levels deep to &ldquo;be specific,&rdquo; and treat <code>!important</code> as a
+fire alarm &mdash; it means the scoring got away from you somewhere upstream. When you inherit a
+stylesheet full of <code>#app #content div.wrapper ul li a</code>, paste the worst offenders into the
+calculator above and you will see exactly which ones are bullying the rest.</p>
+<h2 class="sec">Worked example</h2>
+<p><code>#nav .menu li.active</code> scores <strong>(1, 2, 1)</strong>: one ID, two classes, one element.
+<code>ul li a:hover</code> scores <strong>(0, 1, 3)</strong>: no IDs, one pseudo-class, three elements.
+In a conflict between the two, the first selector wins &mdash; no <code>!important</code> needed, and now you
+know exactly why.</p>
+<h2 class="sec">Frequently asked questions</h2>
+<dl class="faq">
+<dt>Does the universal selector count?</dt>
+<dd>No &mdash; <code>*</code> adds zero to specificity, as do combinators like <code>&gt;</code> and
+whitespace. They structure the selector without scoring.</dd>
+<dt>What about <code>!important</code>?</dt>
+<dd>It sits outside the scoring system and beats everything except another <code>!important</code>
+later in source order (or with higher specificity). Avoid it in favor of better selectors.</dd>
+<dt>How do <code>:not()</code> and <code>:is()</code> score?</dt>
+<dd><code>:not()</code> adds the specificity of its argument; <code>:is()</code> takes its most
+specific argument; <code>:where()</code> always scores zero. The calculator handles all three.</dd>
+<dt>Why do frameworks seem to ignore my styles?</dt>
+<dd>Usually because the framework&rsquo;s selector outscores yours &mdash; e.g. two classes beating
+your one. Paste both selectors above and compare the numbers before reaching for hacks.</dd>
+<dt>What if I want to inspect real elements, not just selectors?</dt>
+<dd><strong>CSSHover</strong> is the Chrome extension for that: hover any element on any page, click
+to lock it, and copy its unique selector, all computed styles, Tailwind conversions, and detected
+font &mdash; $9 one-time.</dd>
+</dl>
+</section>
+
+<section class="block">
+<h2 class="sec">Related tools</h2>
+<div class="grid">
+<div class="card"><h3>CSS Element Inspector &mdash; $9 one-time</h3><p>A Chrome extension: hover any element to inspect it, click to lock, copy CSS and selectors.</p><a class="btn" href="../../products/css-element-inspector-chrome/index.html">Learn more</a></div>
+</div>
+</section>
+
+
+<div class="cta-band">
+<h2>Need the full version?</h2>
+<p><strong>CSSHover</strong> is the Chrome extension for web designers and developers: hover any element to inspect it, click to lock, and copy CSS, unique selectors, Tailwind classes, and fonts in one click. $9 one-time, no subscription.</p>
+<a class="btn" href="https://glenerds.gumroad.com/l/css-element-inspector-chrome">Get CSSHover &mdash; $9 one-time</a>
+<p class="small"><a href="../../products/css-element-inspector-chrome/index.html">Learn more about CSSHover</a>
+&middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
+</div>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>
