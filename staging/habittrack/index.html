@@ -1473,7 +1473,7 @@ function importFile(file){
               si = header.indexOf("status"), ni = header.indexOf("note"),
               ii = header.indexOf("habit_id");
         if(hi === -1 || di === -1 || si === -1) throw new Error("CSV needs habit_name, date, status columns");
-        const byId = {};
+        const byId = Object.create(null); // null-prototype: crafted habit_id="__proto__"/"constructor"/"toString" reads undefined, not Object.prototype (prevents orphan "undefined" entries)
         state.habits.forEach(h => { byId[h.id] = h; });
         let merged = 0, skipped = 0, ambiguous = 0;
         for(let r = 1; r < rows.length; r++){
