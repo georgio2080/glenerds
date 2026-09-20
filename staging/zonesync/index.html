@@ -648,7 +648,8 @@ function renderOverlap() {
   var shown = wins.slice(0, 8);
   shown.forEach(function (w) {
     var li = el('li', null, 'overlap-item' + (w.count === n ? ' all' : ''));
-    li.appendChild(el('span', fmtHour(w.start) + ' \u2013 ' + fmtHour(w.end), 'overlap-time'));
+    var endLabel = (w.end === 24) ? '12 AM (midnight)' : fmtHour(w.end);
+    li.appendChild(el('span', fmtHour(w.start) + ' \u2013 ' + endLabel, 'overlap-time'));
     li.appendChild(el('span', w.count === n ? 'Everyone free' : w.count + ' of ' + n + ' free', 'overlap-count' + (w.count === n ? ' gold' : '')));
     overlapList.appendChild(li);
   });
@@ -836,7 +837,7 @@ fileInput.addEventListener('change', function () {
         fileInput.value = '';
         return;
       }
-      var seen = {};
+      var seen = Object.create(null);
       state.members.forEach(function (m) { seen[m.name.toLowerCase()] = true; });
       var room = MAX_MEMBERS - state.members.length;
       if (list) list.forEach(function (m) {
