@@ -136,3 +136,36 @@ contractor card — both re-run against correct state and PASS.)
   clearing a W-9 asks for confirmation.
 - **Corporation wording qualified**: exempt notes now read "generally exempt ...
   (exceptions: attorney and medical/health-care payments)".
+
+## 2026-09-20 — gallery regenerated for threshold/copy fixes, ZIP rebuilt
+- Regenerated 1-dashboard, 3-dark-mode, 4-mobile, 6-1099-rule, 7-contractors-list
+  (new explainer + corp-note copy; element-level captures, no sticky-header artifacts).
+- Rebuilt 0-cover.png (year-aware line now "$600 for 2025-, $2,000 for 2026,
+  inflation-adjusted from 2027") and cover-square-1200.png (was badly stale,
+  $600-era data). 2-flags and 5-add-contractor kept (still accurate).
+- Rebuilt w9track-bundle.zip (11 files); bundled index.html byte-identical to source.
+
+## 2026-09-20 — Gemini API review adjudicated; 2 real fixes
+- **Threshold law officially verified** (6 independent CPA/tax-firm sources):
+  OBBBA signed 2025-07-04; 1099-NEC/MISC threshold $600 -> $2,000 effective
+  2026-01-01 (2026 tax year); inflation-adjusted annually from 2027. App
+  behavior matches; the "verified against IRS/official guidance" note stands.
+- **Adjudicated all 4 Gemini findings**: (1) W-9 preset/date validation — FALSE,
+  submit handler sets `c.w9` from the form select BEFORE validating the date
+  (regression test "preset W-9 Yes + blank date blocked" confirms); (2) import
+  ID collision — non-actionable, payments carry no contractor-ID references and
+  `openPanels` is transient in-memory UI state, never persisted; (3) W-9 metadata
+  on rebucketed clones — CORRECT semantics (W-9 on file persists across tax
+  years; matches the interactive payment-routing clone), kept; (4) negative
+  localStorage-poisoned amounts — REAL, fixed (see below).
+- **Fix 1 — storage hardening**: `loadStore()` now scrubs every contractor's
+  payments through `sanitizePayment()` (drops negative amounts, bad dates) and
+  normalizes inconsistent W-9 flags; scrubbed stores are purged back to
+  localStorage immediately. `ytd()` also ignores negative amounts as
+  defense-in-depth. Verified: 8/8 new tests (poison scrub, ytd hardening,
+  purge persistence).
+- **Fix 2 — import**: no longer leaves an empty contractor shell in the source
+  year when every payment rebuckets to another tax year (contractors with
+  genuinely zero payments still import). Import message now counts accurately
+  ("Imported 1 contractor. 1 payment was moved...").
+- Full suite: 34/34 + 8/8 = 42/42 passing. ZIP rebuilt (11 files, byte-verified).

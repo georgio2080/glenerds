@@ -329,6 +329,25 @@ function loadStore(){
       var parsed = JSON.parse(raw);
       if(parsed && typeof parsed === "object" && parsed.years && typeof parsed.years === "object"){
         store.years = parsed.years;
+        // Scrub hand-edited localStorage: the UI and import paths already
+        // reject negative amounts, bad dates, and inconsistent W-9 flags,
+        // but raw localStorage edits bypass them. Drop anything invalid here
+        // so totals can never be poisoned (Gemini API review 2026-09-20).
+        Object.keys(store.years).forEach(function(y){
+          var yr = store.years[y];
+          if(!yr || !Array.isArray(yr.contractors)) return;
+          yr.contractors.forEach(function(c){
+            if(!c || typeof c !== "object") return;
+            if(!Array.isArray(c.payments)) c.payments = [];
+            var before = c.payments.length;
+            c.payments = c.payments.filter(function(p){
+              return sanitizePayment(p) !== null;
+            });
+            if(c.payments.length !== before) store._dirty = true;
+            if(c.w9 !== true){ if(c.w9 !== false || c.w9Date) store._dirty = true; c.w9 = false; c.w9Date = ""; }
+            else if(typeof c.w9Date !== "string" || !validDate(c.w9Date)){ if(c.w9Date) store._dirty = true; c.w9Date = ""; }
+          });
+        });
       }
     }
   }catch(e){ /* corrupt -> start fresh */ }
@@ -342,6 +361,7 @@ function saveStore(){
   }
 }
 var store = loadStore();
+if(store._dirty){ delete store._dirty; saveStore(); } // purge scrubbed poison so it isn't re-read next load
 
 function yearData(y){
   if(!store.years[y]) store.years[y] = { contractors: [] };
@@ -373,7 +393,7 @@ function validDate(s){
 function ytd(c, yr){
   var y = yr || currentYear;
   return (c.payments || []).reduce(function(t,p){
-    if(!p || !isFinite(p.amount)) return t;
+    if(!p || !isFinite(p.amount) || p.amount < 0) return t;
     if(typeof p.date === "string" && p.date.slice(0,4) !== y) return t; // totals stay correct even if a stray payment sits in the wrong year bucket
     return t + p.amount;
   }, 0);
@@ -888,8 +908,14 @@ document.getElementById("importFile").addEventListener("change", function(ev){
             (byYear[py] = byYear[py] || []).push(p);
           });
           sc.payments = byYear[y] || [];
-          var s = mergeContractor(y, sc);
-          if(s === "ok") ok++; else if(s === "dupe") dupes++; else skipped++;
+          // If every payment was rebucketed to another tax year, don't leave
+          // an empty contractor shell behind in the source year. A contractor
+          // with genuinely no payments still imports normally.
+          var movedOut = Object.keys(byYear).some(function(py){ return py !== y; });
+          if(sc.payments.length || !movedOut){
+            var s = mergeContractor(y, sc);
+            if(s === "ok") ok++; else if(s === "dupe") dupes++; else skipped++;
+          }
           Object.keys(byYear).forEach(function(py){
             if(py === y || !validYear(py)) return;
             var clone = { id: sc.id, name: sc.name, business: sc.business, contact: sc.contact,
