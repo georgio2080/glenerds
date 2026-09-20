@@ -2,9 +2,9 @@
 
 If fire, flood, or theft hit tomorrow, could you list everything you own for
 your insurance claim — with purchase values, serial numbers, and photos? Most
-people can't, and that gap costs them thousands at claim time. HomeInventory
-fixes it: catalog your belongings room by room, then print a claim-ready
-insurance report in minutes.
+people can't — and scrambling to reconstruct that list after a loss is exactly
+what slows claims down. HomeInventory fixes it: catalog your belongings room
+by room, then print a clean, print-friendly claim report in minutes.
 
 An offline, single-file web app. No account, no subscription, no internet
 needed — open `index.html` in any browser (even from `file://`) and it just
@@ -19,7 +19,7 @@ works. Your data never leaves this device.
   downscaled to keep storage small).
 - **Per-room and grand totals** — every total is computed live and shown in
   dollars, so you always know your total documented value.
-- **Claim-ready report** — room-by-room table with item, category, serial #,
+- **Print-friendly claim report** — room-by-room table with item, category, serial #,
   purchase date, and value, plus a grand total. Print / Save as PDF prints
   only the report — hand it straight to your adjuster.
 - **Search and room filter** — find items by name, serial, note, category, or
@@ -33,7 +33,7 @@ works. Your data never leaves this device.
 ## Why it's different
 
 - **100% offline** — works with no internet, from a single HTML file.
-- **No account, no subscription** — one-time purchase, yours forever.
+- **No account, no subscription** — free forever.
 - **Private by design** — no analytics, no network requests, no cookies.
 
 ## Files
@@ -49,10 +49,9 @@ discreet "by Glenerds" attribution in the footer.
 ## By Glenerds
 
 Made by [Glenerds](https://glenerds.github.io/glenerds/) — practical offline
-tools that respect your privacy. Related tools: [RenoTrack](https://glenerds.github.io/glenerds/)
-(home renovation budget tracker) and the [Rent Receipt Generator](https://glenerds.github.io/glenerds/)
-(printable landlord receipts).
+tools that respect your privacy. See the whole collection in the
+[Glenerds store](https://glenerds.gumroad.com).
 
 ---
 
-© Glenerds. Sold as a one-time purchase — yours forever, no subscription.
+© Glenerds. Free tool — no account, no subscription.

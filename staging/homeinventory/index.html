@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a73e8'/%3E%3Ctext x='32' y='44' font-size='30' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E%E2%8C%82%3C/text%3E%3C/svg%3E">
-<title>Free Home Inventory for Insurance Claims: Room-by-Room Tracker (HomeInventory)</title>
-<meta name="description" content="Lost or damaged belongings? Document every item room by room — values, serials, photos — and print a claim-ready insurance report in minutes. Free, 100% offline, no account, no ads: your data never leaves this device.">
+<title>Home Inventory for Insurance Claims — Free Offline Tracker (HomeInventory)</title>
+<meta name="description" content="Free home inventory app for insurance claims: document every item room by room — values, serials, photos — and print a clean claim report in minutes. 100% offline, no account, no ads: your data never leaves this device.">
 <script>
 /* Pre-theme: set data-theme before first paint to avoid flash */
 (function(){try{
@@ -445,10 +445,10 @@ $("itemPhoto").addEventListener("change",function(){
       pendingPhoto=cv.toDataURL("image/jpeg",0.7);
       notice("itemNotice","Photo attached.","ok");
     };
-    img.onerror=function(){notice("itemNotice","Could not read that image file.");};
+    img.onerror=function(){notice("itemNotice","Could not read that image file — please choose a different image.");$("itemPhoto").value="";};
     img.src=rd.result;
   };
-  rd.onerror=function(){notice("itemNotice","Could not read that image file.");};
+  rd.onerror=function(){notice("itemNotice","Could not read that image file — please choose a different image.");$("itemPhoto").value="";};
   rd.readAsDataURL(f);
 });
 
@@ -537,7 +537,7 @@ function renderReport(){
     var items=state.items.filter(function(it){return it.roomId===r.id;});
     if(!items.length)return;
     var rt=t[r.id]||{count:0,total:0};
-    html+='<div class="report-room"><h3><span>'+esc(r.name)+' <span style="color:var(--muted);font-weight:400;font-size:.85rem">('+rt.count+' items)</span></span><span class="sub">'+money(rt.total)+'</span></h3>'
+    html+='<div class="report-room"><h3><span>'+esc(r.name)+' <span style="color:var(--muted);font-weight:400;font-size:.85rem">('+rt.count+' item'+(rt.count===1?"":"s")+')</span></span><span class="sub">'+money(rt.total)+'</span></h3>'
       +'<div class="table-wrap"><table class="rep"><thead><tr><th>Item</th><th>Category</th><th>Serial #</th><th>Purchased</th><th class="num">Value</th></tr></thead><tbody>';
     items.forEach(function(it){
       html+='<tr><td>'+esc(it.name)+'</td><td>'+esc(it.category)+'</td><td>'+(it.serial?esc(it.serial):'&mdash;')+'</td><td>'+(it.purchaseDate?esc(it.purchaseDate):'&mdash;')+'</td><td class="num">'+money(it.value)+'</td></tr>';
