@@ -684,6 +684,7 @@ function startEdit(i) {
 function cancelEdit() {
   editingIndex = -1;
   form.reset();
+  tzInput.value = state.viewerTz;
   startInput.value = '9';
   endInput.value = '17';
   submitBtn.textContent = 'Add member';
