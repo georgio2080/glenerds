@@ -931,10 +931,14 @@ function loadState(){
     state = { habits: habits, log: sanitizeLog(d.log, ids) };
   }catch(e){
     state = { habits: [], log: {} }; // corrupt storage -> safe defaults, no crash
+    try{ toast("Saved data was corrupted and couldn't be read — starting fresh."); }catch(_){}
   }
 }
+let saveWarned = false; // warn once per session if persistence fails, so data loss is never silent
 function saveState(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){ /* storage full/blocked: keep running in-memory */ }
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){ /* storage full/blocked: keep running in-memory */
+    if(!saveWarned){ saveWarned = true; try{ toast("Couldn't save — browser storage is full or blocked. Changes only last for this session."); }catch(_){} }
+  }
 }
 
 /* ============ date utils (timezone-safe: local calendar dates only, never UTC) ============ */
@@ -983,7 +987,8 @@ function sanitizeHabit(h){
   const color = (typeof h.color === "string" && (COLORS.indexOf(h.color) !== -1 || /^#[0-9a-fA-F]{6}$/.test(h.color))) ? h.color : COLORS[0];
   const icon = (typeof h.icon === "string" && ICONS.indexOf(h.icon) !== -1) ? h.icon : ICONS[0];
   const allowPartial = h.allowPartial === undefined ? true : !!h.allowPartial;
-  const created = (typeof h.created === "string" && isValidDateKey(h.created)) ? h.created : todayKey();
+  let created = (typeof h.created === "string" && isValidDateKey(h.created)) ? h.created : todayKey();
+  if(created > todayKey()) created = todayKey(); // created can never be in the future; clamp crafted imports
   return { id: id, name: name, type: type, weekdays: weekdays, color: color, icon: icon, allowPartial: allowPartial, created: created };
 }
 const I_FLAME = '<svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-flame"/></svg>';
@@ -1181,7 +1186,7 @@ function heatmapHtml(h, days){
     let cls = "cell", title = fmtDay(k), bg = "";
     if(scheduled){
       const s = entryStatus(h.id, k);
-      if(s === "done"){ cls += " partial"; bg = ' style="background:' + esc(h.color) + '"'; title += " — done"; }
+      if(s === "done"){ bg = ' style="background:' + esc(h.color) + '"'; title += " — done"; } // full-strength: done is distinct from partial
       else if(s === "partial"){ cls += " partial"; bg = ' style="background:' + esc(h.color) + '"'; title += " — partial"; }
       else if(s === "skip"){ cls += " skip"; title += " — rest day"; }
       else if(d < end){ cls += " missed"; title += " — missed"; }
@@ -1427,7 +1432,7 @@ function importFile(file){
   const reader = new FileReader();
   reader.onload = () => {
     try{
-      const text = String(reader.result || "");
+      const text = String(reader.result || "").replace(/^\uFEFF/, ""); // strip UTF-8 BOM (Excel) so header matching works
       if(/\.json$/i.test(file.name) || text.trim().charAt(0) === "{"){
         const d = JSON.parse(text);
         if(!d || !Array.isArray(d.habits) || !d.log || typeof d.log !== "object") throw new Error("not a HabitTrack backup");
