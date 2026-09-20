@@ -9,7 +9,7 @@ printed quote with your business name on it.
 - `index.html` — the complete app. Single file, works offline.
   Open it in any modern browser (double-click, or File → Open). No install,
   no account, no internet needed.
-- `gallery/` — 9 images (cover + 8 screenshots showing the app in action).
+- `gallery/` — 9 images (cover + 7 screenshots showing the app in action + 1200x1200 square thumbnail).
 
 ## Features
 - Quotes list with auto-incrementing numbers (Q-0001, Q-0002…) that never reuse
