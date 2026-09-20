@@ -1081,7 +1081,7 @@ function initToolbar() {
   document.getElementById("clear-btn").addEventListener("click", () => {
     if (!window.confirm("Delete ALL boxes and items? Export a backup first if you need it.")) return;
     state = { boxes: [], customRooms: [], nextNumber: 101 };
-    save(); renderAll(); runSearch();
+    save(); renderAll(); refreshRoomSelect(); runSearch();
     document.getElementById("nb-number").value = state.nextNumber;
   });
   document.getElementById("search-clear").addEventListener("click", () => {

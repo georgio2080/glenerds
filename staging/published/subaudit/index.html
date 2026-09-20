@@ -1004,7 +1004,8 @@ function importJSONFile(file) {
     catch (e) { dataMessage("That file is not valid JSON.", true); return; }
     var arr = Array.isArray(parsed) ? parsed : parsed.subs;
     if (!Array.isArray(arr)) { dataMessage("No subscription list found in that file.", true); return; }
-    var clean = [], skipped = 0, seen = {};
+    if (arr.length > 5000) { dataMessage("That file has " + arr.length + " records — imports are capped at 5000. Nothing was changed.", true); return; }
+    var clean = [], skipped = 0, seen = Object.create(null);
     for (var i = 0; i < arr.length; i++) {
       var s = sanitizeSub(arr[i]);
       if (!s || seen[s.id]) { skipped++; continue; }
