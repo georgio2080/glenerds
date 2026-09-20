@@ -2,7 +2,7 @@
 
 ## Title
 
-Home Renovation Budget Tracker — Remodel Cost Planner & Contractor Quote Comparison (Offline, No Subscription)
+Free Home Renovation Budget Tracker: Remodel Cost Planner & Quote Comparison (Offline)
 
 ## URL slug suggestion
 

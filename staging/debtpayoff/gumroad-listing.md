@@ -1,7 +1,7 @@
 # Gumroad listing draft — DebtPayoff
 
 ## Title
-Debt Payoff Planner — Snowball vs Avalanche Calculator (Free, Offline)
+Free Debt Payoff Planner: Snowball vs Avalanche Calculator
 
 ## Permalink
 `debt-payoff-planner-snowball-avalanche`

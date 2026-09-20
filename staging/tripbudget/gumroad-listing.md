@@ -2,7 +2,7 @@
 
 ## Product title
 
-Trip Budget Planner — Vacation Budget Planner & Travel Expense Tracker (Offline, No Subscription)
+Free Trip Budget Planner: Travel Expense Tracker with Currency Conversion (Offline)
 
 ## URL slug suggestion
 

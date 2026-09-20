@@ -1,7 +1,7 @@
 # Gumroad listing draft — HomeInventory
 
 ## Title
-Home Inventory for Insurance Claims — Room-by-Room Tracker, Offline
+Free Home Inventory for Insurance Claims: Room-by-Room Tracker
 
 ## Permalink
 `home-inventory-insurance-claims-tracker`

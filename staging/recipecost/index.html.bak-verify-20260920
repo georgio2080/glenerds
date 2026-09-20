@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232e7d32'/%3E%3Ctext x='32' y='44' font-size='28' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9C%BF%3C/text%3E%3C/svg%3E">
-<title>Vegetable Garden Planting Calendar by Zone — Frost Dates & Seed Starting Schedule | GardenCal</title>
-<meta name="description" content="Free-forever offline garden planting calendar: pick your USDA zone and get seed-starting, transplant, direct-sow and fall planting dates for 36 vegetables and herbs. No account, no subscription.">
+<meta name="description" content="RecipeCost — free offline recipe cost calculator for home bakers. Cost every ingredient, get per-serving cost, and price with your target profit margin. No signup, works offline.">
+<title>Recipe Cost Calculator for Home Bakers — Ingredient Costing & Pricing | RecipeCost</title>
 <style>
+/* ===== GLENERDS DESIGN SYSTEM (inlined) ===== */
 /* ==========================================================================
    GLENERDS DESIGN SYSTEM v1.0
    --------------------------------------------------------------------------
@@ -421,7 +421,6 @@
   border-bottom: 1px solid var(--g-border-strong);
   white-space: nowrap;
 }
-.g-table .num { text-align: right; }
 .g-table td {
   padding: 10px;
   border-bottom: 1px solid var(--g-border);
@@ -542,32 +541,19 @@ a:focus-visible {
 .g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
 .g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
-.gc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
-.gc-month { border: 1px solid var(--g-border); border-radius: var(--g-radius-md); padding: 1rem; background: var(--g-surface); }
-.gc-month h3 { margin: 0 0 .5rem; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
-.gc-month.now-month { border-color: var(--g-accent); box-shadow: 0 0 0 1px var(--g-accent); }
-.gc-event { display: flex; gap: .5rem; align-items: baseline; padding: .3rem 0; border-top: 1px dashed var(--g-border); font-size: .92rem; }
-.gc-event:first-of-type { border-top: 0; }
-.gc-badge { flex: none; font-size: .72rem; font-weight: 700; padding: .12rem .45rem; border-radius: 999px; white-space: nowrap; }
-.b-in { background: #7c5cff22; color: #a78bfa; }
-.b-tr { background: #22c55e22; color: #4ade80; }
-.b-ds { background: #f59e0b22; color: #fbbf24; }
-.b-hv { background: #ef444422; color: #f87171; }
-.b-fl { background: #38bdf822; color: #38bdf8; }
-[data-theme="light"] .b-in { color: #6d28d9; } [data-theme="light"] .b-tr { color: #15803d; }
-[data-theme="light"] .b-ds { color: #b45309; } [data-theme="light"] .b-hv { color: #b91c1c; }
-[data-theme="light"] .b-fl { color: #0369a1; }
-.gc-frost { display: flex; gap: 1rem; flex-wrap: wrap; margin: .75rem 0; }
-.gc-frost .kpi { flex: 1 1 200px; }
-.gc-crops { columns: 2; column-gap: 1.5rem; }
-@media (max-width: 640px) { .gc-crops { columns: 1; } }
-.gc-crop-check { display: flex; gap: .5rem; align-items: center; padding: .22rem 0; break-inside: avoid; font-size: .92rem; }
-.gc-note { font-size: .85rem; color: var(--g-text-muted); }
-@media print {
-  .no-print, .g-tabs, footer, .g-theme-toggle { display: none !important; }
-  .gc-grid { grid-template-columns: 1fr 1fr; }
-  body { background: #fff; }
-}
+/* ===== APP OVERRIDES (tokens only, no g- restyle) ===== */
+.g-table-wrap { overflow-x: auto; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.g-result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; margin-top: 1rem; }
+.kpi { background: var(--g-surface-2); border: 1px solid var(--g-border); border-radius: 10px; padding: .7rem .9rem; }
+.kpi .k { font-size: .75rem; color: var(--g-muted); text-transform: uppercase; letter-spacing: .04em; }
+.kpi .v { font-size: 1.25rem; font-weight: 700; margin-top: .15rem; font-variant-numeric: tabular-nums; }
+.kpi .v.good { color: #16a34a; } [data-theme="dark"] .kpi .v.good { color: #7de0a3; }
+.kpi .v.warn { color: #d97706; } [data-theme="dark"] .kpi .v.warn { color: #e3c76b; }
+.line-row { display: grid; grid-template-columns: 1fr 90px 110px auto auto; gap: .5rem; align-items: end; margin-bottom: .5rem; }
+@media (max-width: 640px) { .line-row { grid-template-columns: 1fr 72px 96px auto; } .line-row .hide-sm { display: none; } }
+.approx-flag { color: #d97706; font-size: .78rem; } [data-theme="dark"] .approx-flag { color: #e3c76b; }
+@media print { .no-print { display: none !important; } body { background: #fff; } }
 </style>
 <script>
 /* Pre-paint theme init — shared glenerds-theme key */
@@ -798,356 +784,579 @@ h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catc
   </symbol>
 </svg>
 
-<header class="g-header no-print">
-  <div class="g-wrap" style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
-    <div>
-      <h1 class="g-display" style="margin:0">Garden planting calendar</h1>
-      <p class="g-tagline">Seed-starting, transplant & harvest dates for your zone. Offline, no account, no subscription.</p>
-    </div>
-    <button class="g-btn g-btn-ghost g-theme-toggle" onclick="gToggleTheme()" aria-label="Toggle dark mode">◐ Theme</button>
+<div class="g-wrap">
+
+<header class="g-header">
+  <div class="g-brand">
+    <span class="g-appicon g-appicon-sm" style="--g-ai1:#22c55e;--g-ai2:#84cc16">
+      <svg class="g-icon" aria-hidden="true"><use href="#g-i-calc"/></svg>
+    </span>
+    <h1 class="g-brand-name">RecipeCost</h1>
   </div>
+  <button class="g-theme-toggle no-print" onclick="gToggleTheme()" aria-label="Toggle dark mode">
+    <svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon"/></svg><span>Theme</span>
+  </button>
 </header>
+<p class="g-tagline">Recipe cost calculator for home bakers — know exactly what each batch costs and price it with confidence.</p>
 
-<main class="g-wrap">
-  <section class="g-card no-print" aria-label="Your zone">
-    <h2 class="g-title">Your zone</h2>
-    <div class="g-grid-3">
+<div class="g-tabs no-print" role="tablist" aria-label="Sections">
+  <button class="g-tab" role="tab" id="tab-ing" aria-selected="true" onclick="showTab('ing')">Ingredients</button>
+  <button class="g-tab" role="tab" id="tab-rec" aria-selected="false" onclick="showTab('rec')">Recipes</button>
+</div>
+
+<!-- ================= INGREDIENTS ================= -->
+<section id="panel-ing" role="tabpanel" aria-labelledby="tab-ing">
+  <div class="g-card">
+    <p class="g-title">Ingredient library</p>
+    <p class="g-desc">Enter what you paid per package. RecipeCost works out the cost per gram, ml, or piece automatically.</p>
+    <div class="g-grid-2">
       <div class="g-field">
-        <label class="g-label" for="gc-zone">USDA hardiness zone</label>
-        <select class="g-input" id="gc-zone" onchange="setZone(this.value)"></select>
+        <label class="g-label" for="ing-name">Ingredient name</label>
+        <input class="g-input" id="ing-name" type="text" placeholder="All-purpose flour" autocomplete="off">
       </div>
       <div class="g-field">
-        <label class="g-label" for="gc-last">Last spring frost <span class="g-hint" style="display:inline">(optional — overrides zone average)</span></label>
-        <input class="g-input" id="gc-last" type="text" inputmode="numeric" placeholder="MM/DD" onchange="setCustom(this)">
+        <label class="g-label" for="ing-price">Package price ($)</label>
+        <input class="g-input" id="ing-price" type="number" min="0" step="0.01" placeholder="4.99">
       </div>
       <div class="g-field">
-        <label class="g-label" for="gc-first">First fall frost <span class="g-hint" style="display:inline">(optional)</span></label>
-        <input class="g-input" id="gc-first" type="text" inputmode="numeric" placeholder="MM/DD" onchange="setCustom(this)">
+        <label class="g-label" for="ing-qty">Package size</label>
+        <input class="g-input" id="ing-qty" type="number" min="0" step="any" placeholder="5000">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-unit">Package unit</label>
+        <select class="g-input" id="ing-unit"></select>
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-gpc">Grams per cup <span class="g-hint" style="display:inline">(optional — for cup↔gram conversion)</span></label>
+        <input class="g-input" id="ing-gpc" type="number" min="0" step="any" placeholder="e.g. 120 for flour">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-gpe">Grams per piece <span class="g-hint" style="display:inline">(optional — for count items like eggs)</span></label>
+        <input class="g-input" id="ing-gpe" type="number" min="0" step="any" placeholder="e.g. 50 for an egg">
+      </div>
+      <div class="g-field" style="align-self:end">
+        <div class="g-btn-row">
+          <button class="g-btn g-btn-primary" id="ing-add" onclick="addIngredient()">Add ingredient</button>
+          <button class="g-btn g-btn-secondary" onclick="clearIngForm()">Clear</button>
+        </div>
       </div>
     </div>
-    <div class="gc-frost" id="gc-frost"></div>
-    <p class="gc-note">Zone frost dates are long-term averages — check your local cooperative extension for the most accurate dates for your town. Entering your own dates above overrides them.</p>
-    <details>
-      <summary style="cursor:pointer;font-weight:600">Choose crops (<span id="gc-count"></span> selected)</summary>
-      <div class="gc-crops" id="gc-crops" style="margin-top:.75rem"></div>
-    </details>
-  </section>
-
-  <div class="g-tabs no-print" role="tablist" aria-label="Calendar views">
-    <button class="g-tab" role="tab" id="tab-month" aria-selected="true" onclick="showTab('month')">Month-by-month</button>
-    <button class="g-tab" role="tab" id="tab-crop" aria-selected="false" onclick="showTab('crop')">Crop schedule</button>
+    <p class="g-error" id="ing-err"></p>
   </div>
 
-  <section id="panel-month" role="tabpanel" aria-labelledby="tab-month">
-    <div class="g-card" id="gc-now"></div>
-    <div class="gc-grid" id="gc-months"></div>
-  </section>
-
-  <section id="panel-crop" role="tabpanel" aria-labelledby="tab-crop" hidden>
-    <div class="g-card" style="overflow-x:auto">
-      <table class="g-table" style="min-width:640px">
-        <thead><tr><th>Crop</th><th class="num">Start indoors</th><th class="num">Transplant</th><th class="num">Direct sow</th><th class="num">Harvest ≈</th><th class="num">Fall sow</th></tr></thead>
-        <tbody id="gc-tbody"></tbody>
-      </table>
+  <div class="g-card">
+    <p class="g-title">Your ingredients <span class="g-badge g-badge-neutral" id="ing-count">0</span></p>
+    <div class="g-table-wrap"><table class="g-table" id="ing-table">
+      <thead><tr><th>Ingredient</th><th class="num">Package</th><th class="num">Unit cost</th><th class="no-print"></th></tr></thead>
+      <tbody id="ing-tbody"></tbody>
+    </table></div>
+    <div class="g-empty" id="ing-empty">
+      <p class="g-title">No ingredients yet</p>
+      <p class="g-desc">Add the ingredients you buy — with package size and price — and costing takes care of itself.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="g-card no-print">
-    <h2 class="g-title">Backup & print</h2>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-      <button class="g-btn g-btn-secondary" onclick="window.print()">Print / PDF</button>
-      <button class="g-btn g-btn-secondary" onclick="exportData()">Export data</button>
-      <label class="g-btn g-btn-secondary" style="cursor:pointer">Import data<input type="file" accept=".json,application/json" hidden onchange="importData(this)"></label>
+<!-- ================= RECIPES ================= -->
+<section id="panel-rec" role="tabpanel" aria-labelledby="tab-rec" hidden>
+  <div class="g-card no-print">
+    <div class="g-field">
+      <label class="g-label" for="rec-select">Recipe</label>
+      <div class="g-btn-row">
+        <select class="g-input" id="rec-select" onchange="selectRecipe(this.value)" style="flex:1"></select>
+        <button class="g-btn g-btn-primary" onclick="newRecipe()">New</button>
+        <button class="g-btn g-btn-danger" onclick="deleteRecipe()">Delete</button>
+      </div>
     </div>
-    <p class="gc-note" id="gc-err" role="alert"></p>
-  </section>
-</main>
+  </div>
 
-<footer class="g-footer no-print">
-  <div class="g-wrap"><p class="g-attrib">by <a href="https://glenerds.gumroad.com">Glenerds</a></p></div>
+  <div id="rec-editor">
+    <div class="g-card">
+      <p class="g-title">Recipe details</p>
+      <div class="g-grid-3">
+        <div class="g-field">
+          <label class="g-label" for="rec-name">Recipe name</label>
+          <input class="g-input" id="rec-name" type="text" placeholder="Chocolate chip cookies" oninput="recField('name', this.value)">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-yield">Batch yield (pieces / servings)</label>
+          <input class="g-input" id="rec-yield" type="number" min="0" step="any" placeholder="24" oninput="recField('yieldQty', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-yieldunit">Yield unit</label>
+          <input class="g-input" id="rec-yieldunit" type="text" placeholder="cookies" value="pieces" oninput="recField('yieldUnit', this.value)">
+        </div>
+      </div>
+    </div>
+
+    <div class="g-card">
+      <p class="g-title">Ingredients in this recipe</p>
+      <div id="lines"></div>
+      <div class="g-btn-row no-print">
+        <button class="g-btn g-btn-secondary" onclick="addLine()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-plus"/></svg> Add ingredient line</button>
+      </div>
+      <p class="g-error" id="line-err"></p>
+    </div>
+
+    <div class="g-card">
+      <p class="g-title">Labor, packaging &amp; overhead</p>
+      <div class="g-grid-2">
+        <div class="g-field">
+          <label class="g-label" for="rec-hours">Your hours on this batch</label>
+          <input class="g-input" id="rec-hours" type="number" min="0" step="any" placeholder="1.5" oninput="recField('laborHours', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-rate">Hourly rate ($)</label>
+          <input class="g-input" id="rec-rate" type="number" min="0" step="any" placeholder="20" oninput="recField('laborRate', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-pack">Packaging cost per piece ($)</label>
+          <input class="g-input" id="rec-pack" type="number" min="0" step="any" placeholder="0.25" oninput="recField('packagingPerUnit', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-oh">Overhead % <span class="g-hint" style="display:inline">(electricity, wear, fees)</span></label>
+          <input class="g-input" id="rec-oh" type="number" min="0" step="any" placeholder="10" oninput="recField('overheadPct', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-margin">Target profit margin %</label>
+          <input class="g-input" id="rec-margin" type="number" min="0" max="95" step="any" placeholder="50" oninput="recField('targetMarginPct', num(this.value))">
+          <p class="g-hint">Margin = profit ÷ selling price. 50% margin means half the price is profit.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-card" id="summary-card">
+      <p class="g-title">Cost &amp; pricing summary</p>
+      <div class="g-result-grid" id="summary-grid"></div>
+      <div class="g-math" id="summary-math" style="margin-top:1rem"></div>
+      <div class="g-btn-row no-print" style="margin-top:1rem">
+        <button class="g-btn g-btn-secondary" onclick="window.print()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-download"/></svg> Print / save PDF</button>
+        <button class="g-btn g-btn-ghost" onclick="exportData()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-share"/></svg> Export data</button>
+        <button class="g-btn g-btn-ghost" onclick="document.getElementById('import-file').click()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-upload"/></svg> Import data</button>
+        <input type="file" id="import-file" accept="application/json" hidden onchange="importData(this)">
+      </div>
+      <p class="g-error" id="rec-err"></p>
+    </div>
+  </div>
+  <div class="g-empty" id="rec-empty" hidden>
+    <p class="g-title">No recipes yet</p>
+    <p class="g-desc">Create your first recipe, add ingredient lines from your library, and see the true cost per piece.</p>
+    <div class="g-btn-row"><button class="g-btn g-btn-primary" onclick="newRecipe()">New recipe</button></div>
+  </div>
+</section>
+
+<footer class="g-footer">
+  Free offline tool <a href="https://glenerds.gumroad.com">by Glenerds</a> — no signup, no tracking, your data never leaves this device.
 </footer>
-
+</div>
 <script>
-var STORE_KEY = 'gardencal.v1';
+"use strict";
+/* ================= RecipeCost — offline recipe costing for home bakers ================= */
+var STORE_KEY = 'recipecost.v1';
 
-/* ---------- data ---------- */
-/* Average frost dates per USDA zone (month, day). Long-term approximations. */
-var ZONES = {
-  '3':  { last: [5, 21], first: [9, 10] },
-  '4':  { last: [5, 10], first: [9, 21] },
-  '5':  { last: [4, 30], first: [10, 10] },
-  '6':  { last: [4, 20], first: [10, 20] },
-  '7':  { last: [4, 10], first: [10, 30] },
-  '8':  { last: [3, 28], first: [11, 10] },
-  '9':  { last: [2, 28], first: [11, 30] },
-  '10': { last: [1, 31], first: [12, 15] }
-};
-/*
- * Crop fields (weeks relative to last spring frost L, first fall frost F):
- * in  = start indoors this many weeks before L
- * tr  = transplant this many weeks after L (negative = before)
- * ds  = [weeks before L, weeks after L] direct-sow window
- * mat = days to maturity (for harvest estimate)
- * fall= sow for fall this many weeks before F
- * fallOnly = planted in fall for next-year harvest (garlic)
- */
-var CROPS = [
-  { id: 'tomato', n: 'Tomatoes', in: 6, tr: 2, mat: 75, note: 'Harden off seedlings a week before transplanting.' },
-  { id: 'pepper', n: 'Peppers (sweet & hot)', in: 8, tr: 3, mat: 75, note: 'Need warm soil; wait until nights stay above 50°F.' },
-  { id: 'eggplant', n: 'Eggplant', in: 8, tr: 3, mat: 80 },
-  { id: 'broccoli', n: 'Broccoli', in: 6, tr: 2, ds: [-4, 2], mat: 70, fall: 12 },
-  { id: 'cabbage', n: 'Cabbage', in: 6, tr: 3, ds: [-4, 2], mat: 75, fall: 12 },
-  { id: 'cauliflower', n: 'Cauliflower', in: 6, tr: 2, mat: 65, fall: 12 },
-  { id: 'kale', n: 'Kale', in: 5, tr: 3, ds: [-4, 4], mat: 60, fall: 10, note: 'Sweetens after a light frost.' },
-  { id: 'lettuce', n: 'Lettuce', in: 4, tr: 2, ds: [-4, 6], mat: 50, fall: 8, note: 'Sow every 2 weeks for continuous harvest.' },
-  { id: 'spinach', n: 'Spinach', ds: [-6, 4], mat: 45, fall: 8 },
-  { id: 'arugula', n: 'Arugula', ds: [-4, 4], mat: 40, fall: 8 },
-  { id: 'carrot', n: 'Carrots', ds: [-4, 8], mat: 70, fall: 12, note: 'Keep soil evenly moist until germination.' },
-  { id: 'beet', n: 'Beets', ds: [-4, 6], mat: 60, fall: 10 },
-  { id: 'radish', n: 'Radishes', ds: [-4, 8], mat: 30, fall: 8, note: 'Fastest crop — great for filling gaps.' },
-  { id: 'turnip', n: 'Turnips', ds: [-4, 6], mat: 55, fall: 10 },
-  { id: 'pea', n: 'Peas', ds: [-6, 2], mat: 65, fall: 12, note: 'Inoculate seed for better nitrogen fixing.' },
-  { id: 'bean', n: 'Green beans', ds: [1, 8], mat: 55, fall: 12, note: 'Sow every 2–3 weeks for succession.' },
-  { id: 'cucumber', n: 'Cucumbers', in: 3, tr: 2, ds: [2, 6], mat: 60, fall: 14 },
-  { id: 'zsquash', n: 'Summer squash / zucchini', in: 3, tr: 2, ds: [2, 6], mat: 55, fall: 14 },
-  { id: 'wsquash', n: 'Winter squash', in: 3, tr: 2, ds: [2, 4], mat: 95 },
-  { id: 'pumpkin', n: 'Pumpkins', ds: [2, 4], mat: 110, note: 'Need the full season — don\'t plant late.' },
-  { id: 'corn', n: 'Sweet corn', ds: [2, 6], mat: 80, note: 'Plant in blocks, not rows, for pollination.' },
-  { id: 'potato', n: 'Potatoes', ds: [-4, 2], mat: 90, note: 'Plant certified seed potatoes, 4" deep.' },
-  { id: 'sweetpot', n: 'Sweet potatoes', tr: 3, mat: 110, note: 'Plant slips, not seeds, in warm soil.' },
-  { id: 'onion', n: 'Onions', in: 10, tr: -4, ds: [-6, -2], mat: 100, note: 'Sets go out earliest; seeds need the head start indoors.' },
-  { id: 'garlic', n: 'Garlic', fallOnly: true, mat: 240, note: 'Plant cloves in fall, harvest next summer.' },
-  { id: 'leek', n: 'Leeks', in: 10, tr: 0, mat: 120 },
-  { id: 'celery', n: 'Celery', in: 10, tr: 2, mat: 110, note: 'Slow to germinate — keep warm and moist.' },
-  { id: 'basil', n: 'Basil', in: 6, tr: 2, ds: [2, 4], mat: 70, note: 'Pinch flower buds to keep leaves coming.' },
-  { id: 'parsley', n: 'Parsley', in: 8, tr: 2, ds: [0, 2], mat: 75 },
-  { id: 'cilantro', n: 'Cilantro', ds: [-2, 6], mat: 50, fall: 8, note: 'Bolts in heat — sow in cool weather.' },
-  { id: 'dill', n: 'Dill', ds: [0, 6], mat: 60 },
-  { id: 'chard', n: 'Swiss chard', ds: [-2, 6], mat: 55, fall: 10 },
-  { id: 'collard', n: 'Collards', in: 5, tr: 3, ds: [-2, 4], mat: 70, fall: 10 },
-  { id: 'brussels', n: 'Brussels sprouts', in: 8, tr: 3, mat: 100, fall: 14, note: 'Best as a fall crop in most zones.' },
-  { id: 'melon', n: 'Melons', in: 4, tr: 3, ds: [3, 5], mat: 85 },
-  { id: 'okra', n: 'Okra', ds: [3, 6], mat: 60, note: 'Loves heat — don\'t rush it.' }
+/* ---------- units ---------- */
+var MASS = { g: 1, kg: 1000, oz: 28.349523125, lb: 453.59237 };
+var VOL  = { ml: 1, l: 1000, tsp: 4.92892159375, tbsp: 14.78676478125, cup: 236.5882365 };
+var EACH = { each: 1, pc: 1, pcs: 1, piece: 1, pieces: 1 };
+var UNIT_GROUPS = [
+  { label: 'Weight', units: ['g', 'kg', 'oz', 'lb'] },
+  { label: 'Volume', units: ['ml', 'l', 'tsp', 'tbsp', 'cup'] },
+  { label: 'Count',  units: ['each'] }
 ];
-
-/* ---------- date helpers ---------- */
-var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-var MON_S = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-function frostDate(md) { /* [m,d] -> Date this year */
-  var y = new Date().getFullYear();
-  return new Date(y, md[0] - 1, md[1]);
+function unitDim(u) {
+  u = String(u).toLowerCase();
+  if (MASS[u] !== undefined) return 'mass';
+  if (VOL[u] !== undefined) return 'vol';
+  return 'each';
 }
-function addD(d, days) { var x = new Date(d); x.setDate(x.getDate() + days); return x; }
-function fmtD(d) { return d ? MON_S[d.getMonth()] + ' ' + d.getDate() : '—'; }
-function fmtRange(a, b) { return a && b ? fmtD(a) + ' – ' + fmtD(b) : a ? fmtD(a) : '—'; }
+function toBase(qty, unit) { /* grams | ml | count */
+  var u = String(unit).toLowerCase(), d = unitDim(u);
+  if (d === 'mass') return qty * MASS[u];
+  if (d === 'vol') return qty * VOL[u];
+  return qty;
+}
+function fmtMoney(n) {
+  if (!isFinite(n)) return '—';
+  return (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2);
+}
+function num(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
 function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
   });
 }
-function parseMD(v) {
-  var m = /^\s*(\d{1,2})[\/\-](\d{1,2})\s*$/.exec(v || '');
-  if (!m) return null;
-  var mo = +m[1], d = +m[2];
-  if (mo < 1 || mo > 12 || d < 1) return null;
-  var dim = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][mo - 1];
-  if (d > dim) return null;
-  return [mo, d];
-}
+function uid() { return 'x' + Math.random().toString(36).slice(2, 10); }
 
 /* ---------- state ---------- */
-var STORE_KEY2 = STORE_KEY; /* alias for clarity */
-var state = { zone: '6', customLast: null, customFirst: null, crops: {}, view: 'month' };
+var state = { ingredients: [], recipes: [] };
 function load() {
   try {
     var raw = localStorage.getItem(STORE_KEY);
-    if (raw) { var d = JSON.parse(raw); if (d && d.zone && ZONES[d.zone]) state = d; }
-  } catch (e) {}
-  normalizeCrops();
+    if (raw) {
+      var d = JSON.parse(raw);
+      if (d && Array.isArray(d.ingredients) && Array.isArray(d.recipes)) state = d;
+    }
+  } catch (e) { /* corrupted storage -> start fresh */ state = { ingredients: [], recipes: [] }; }
+  sanitizeState();
+  if (!state.ingredients.length && !state.recipes.length) seed();
 }
-function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
-function normalizeCrops() {
-  if (!state.crops) state.crops = {};
-  CROPS.forEach(function (c) { if (state.crops[c.id] === undefined) state.crops[c.id] = true; });
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
 }
-function frostDates() {
-  var z = ZONES[state.zone] || ZONES['6'];
-  return {
-    last: state.customLast ? frostDate(state.customLast) : frostDate(z.last),
-    first: state.customFirst ? frostDate(state.customFirst) : frostDate(z.first),
-    custom: !!(state.customLast || state.customFirst)
-  };
+/* Harden against hand-edited / corrupted data (import file or localStorage):
+   guarantees the shapes recipeTotals/renderLines/renderIngredients assume. */
+function sanitizeState() {
+  if (!Array.isArray(state.ingredients)) state.ingredients = [];
+  if (!Array.isArray(state.recipes)) state.recipes = [];
+  state.ingredients = state.ingredients.filter(function (i) { return i && typeof i === 'object'; });
+  state.recipes = state.recipes.filter(function (r) { return r && typeof r === 'object'; });
+  var NUMS = ['yieldQty', 'laborHours', 'laborRate', 'packagingPerUnit', 'overheadPct', 'targetMarginPct'];
+  state.ingredients.forEach(function (i) {
+    if (!i.id) i.id = uid();
+    i.pkgQty = num(i.pkgQty); i.pkgPrice = num(i.pkgPrice);
+    if (i.pkgQty < 0) i.pkgQty = 0; if (i.pkgPrice < 0) i.pkgPrice = 0;
+  });
+  state.recipes.forEach(function (r) {
+    if (!r.id) r.id = uid();
+    if (!Array.isArray(r.lines)) r.lines = [];
+    NUMS.forEach(function (f) { r[f] = Math.max(0, num(r[f])); });
+    r.lines = r.lines.filter(function (ln) { return ln && typeof ln === 'object'; });
+    r.lines.forEach(function (ln) { ln.qty = Math.max(0, num(ln.qty)); });
+  });
+}
+function seed() {
+  state.ingredients = [
+    { id: uid(), name: 'All-purpose flour', pkgQty: 5000, pkgUnit: 'g', pkgPrice: 4.99, gPerCup: 120 },
+    { id: uid(), name: 'Granulated sugar', pkgQty: 4000, pkgUnit: 'g', pkgPrice: 3.89, gPerCup: 200 },
+    { id: uid(), name: 'Unsalted butter', pkgQty: 16, pkgUnit: 'oz', pkgPrice: 4.49, gPerCup: 227 },
+    { id: uid(), name: 'Large eggs', pkgQty: 12, pkgUnit: 'each', pkgPrice: 3.29, gPerCup: 0, gPerEach: 50 }
+  ];
 }
 
-/* ---------- schedule computation ---------- */
-/* Returns per-crop: {crop, indoor, transplant, dsA, dsB, harvest, fallSow} (Dates or null) */
-function cropSchedule(c, L, F) {
-  var s = { crop: c, indoor: null, transplant: null, dsA: null, dsB: null, harvest: null, fallSow: null };
-  if (c.fallOnly) {
-    s.fallSow = addD(F, -6 * 7);
-    s.harvest = addD(s.fallSow, c.mat || 240);
-    return s;
+/* ---------- ingredient costing ---------- */
+function pkgBaseQty(ing) { return toBase(ing.pkgQty, ing.pkgUnit); }
+function unitCost(ing) { /* cost per gram / ml / each */
+  var b = pkgBaseQty(ing);
+  if (!(b > 0)) return 0;
+  return ing.pkgPrice / b;
+}
+function unitCostLabel(ing) {
+  var d = unitDim(ing.pkgUnit);
+  return d === 'mass' ? 'per gram' : d === 'vol' ? 'per ml' : 'each';
+}
+/* cost of qty+unit of ingredient ing. Returns {cost, approx} */
+function lineCost(ing, qty, unit) {
+  if (!(qty > 0)) return { cost: 0, approx: false };
+  var pd = unitDim(ing.pkgUnit), ld = unitDim(unit);
+  var uc = unitCost(ing);
+  if (pd === ld) return { cost: toBase(qty, unit) / pkgBaseQty(ing) * ing.pkgPrice, approx: false };
+  var gpc = num(ing.gPerCup), gpe = num(ing.gPerEach);
+  /* count <-> weight via grams-per-piece */
+  if (pd === 'each' && ld === 'mass') {
+    if (!(gpe > 0)) return { cost: 0, approx: false, err: 'needs grams-per-piece' };
+    return { cost: toBase(qty, unit) * (ing.pkgPrice / (ing.pkgQty * gpe)), approx: false };
   }
-  if (c.in != null) s.indoor = addD(L, -c.in * 7);
-  if (c.tr != null) s.transplant = addD(L, c.tr * 7);
-  if (c.ds) { s.dsA = addD(L, c.ds[0] * 7); s.dsB = addD(L, c.ds[1] * 7); }
-  var plantD = s.transplant || s.dsA;
-  if (plantD && c.mat) s.harvest = addD(plantD, c.mat);
-  if (c.fall != null) s.fallSow = addD(F, -c.fall * 7);
-  return s;
+  if (pd === 'mass' && ld === 'each') {
+    if (!(gpe > 0)) return { cost: 0, approx: false, err: 'needs grams-per-piece' };
+    return { cost: qty * gpe * uc, approx: false };
+  }
+  if (pd === 'each' || ld === 'each') return { cost: 0, approx: false, err: 'cannot convert' };
+  /* mass <-> volume via grams-per-cup */
+  var cups;
+  if (ld === 'vol') cups = toBase(qty, unit) / VOL.cup;
+  else {
+    if (!(gpc > 0)) return { cost: 0, approx: false, err: 'needs grams-per-cup' };
+    cups = toBase(qty, unit) / gpc;
+  }
+  var approx = !(gpc > 0);
+  if (pd === 'mass') return { cost: cups * (gpc > 0 ? gpc : VOL.cup) * uc, approx: approx };
+  return { cost: cups * VOL.cup * uc, approx: approx };
 }
-function activeCrops() { return CROPS.filter(function (c) { return state.crops[c.id]; }); }
+function lineCostHTML(ing, ln) {
+  var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+  if (lc.err) return '<span class="approx-flag" title="' + esc(lc.err) + ' — add it on the Ingredients tab">needs conversion</span>';
+  return fmtMoney(lc.cost) + (lc.approx ? ' <span class="approx-flag" title="Used water-density fallback — add grams-per-cup for accuracy">≈</span>' : '');
+}
 
-/* ---------- controls ---------- */
-function fillZoneSelect() {
-  var sel = document.getElementById('gc-zone');
-  Object.keys(ZONES).forEach(function (z) {
-    var o = document.createElement('option');
-    o.value = z; o.textContent = 'Zone ' + z;
-    if (z === state.zone) o.selected = true;
-    sel.appendChild(o);
-  });
-}
-function setZone(z) { state.zone = z; save(); renderAll(); }
-function setCustom(input) {
-  var v = parseMD(input.value);
-  if (input.value && !v) { gcErr('Use MM/DD format, e.g. 04/20.'); return; }
-  if (input.id === 'gc-last') state.customLast = v;
-  else state.customFirst = v;
-  gcErr(''); save(); renderAll();
-}
-function gcErr(msg) { document.getElementById('gc-err').textContent = msg || ''; }
-function toggleCrop(id) {
-  state.crops[id] = !state.crops[id]; save();
-  updateCropCount(); renderMonth(); renderCropTable();
-}
-function updateCropCount() {
-  var n = 0;
-  CROPS.forEach(function (c) { if (state.crops[c.id]) n++; });
-  document.getElementById('gc-count').textContent = n;
-}
-function renderCropPicker() {
-  var host = document.getElementById('gc-crops');
-  host.innerHTML = '';
-  CROPS.forEach(function (c) {
-    var lab = document.createElement('label');
-    lab.className = 'gc-crop-check';
-    var cb = document.createElement('input');
-    cb.type = 'checkbox'; cb.checked = !!state.crops[c.id];
-    cb.onchange = function () { toggleCrop(c.id); };
-    lab.appendChild(cb);
-    lab.appendChild(document.createTextNode(c.n));
-    host.appendChild(lab);
-  });
-  updateCropCount();
-}
+/* ---------- tabs ---------- */
 function showTab(which) {
-  state.view = which; save();
-  var m = which === 'month';
-  document.getElementById('panel-month').hidden = !m;
-  document.getElementById('panel-crop').hidden = m;
-  document.getElementById('tab-month').setAttribute('aria-selected', m ? 'true' : 'false');
-  document.getElementById('tab-crop').setAttribute('aria-selected', m ? 'false' : 'true');
+  var ing = which === 'ing';
+  document.getElementById('panel-ing').hidden = !ing;
+  document.getElementById('panel-rec').hidden = ing;
+  document.getElementById('tab-ing').setAttribute('aria-selected', ing ? 'true' : 'false');
+  document.getElementById('tab-rec').setAttribute('aria-selected', ing ? 'false' : 'true');
 }
 
-/* ---------- month view ---------- */
-var BADGES = {
-  indoor: ['b-in', 'Start indoors'], transplant: ['b-tr', 'Transplant'],
-  ds: ['b-ds', 'Direct sow'], harvest: ['b-hv', 'Harvest ≈'], fall: ['b-fl', 'Fall sow']
-};
-function renderMonth() {
-  var fr = frostDates(), L = fr.last, F = fr.first;
-  document.getElementById('gc-frost').innerHTML =
-    '<div class="kpi"><div class="k">Last spring frost' + (fr.custom ? ' (custom)' : ' (zone avg)') + '</div><div class="v">' + fmtD(L) + '</div></div>' +
-    '<div class="kpi"><div class="k">First fall frost' + (fr.custom ? ' (custom)' : ' (zone avg)') + '</div><div class="v">' + fmtD(F) + '</div></div>';
-  var sched = activeCrops().map(function (c) { return cropSchedule(c, L, F); });
-  /* bucket events by month */
-  var months = [];
-  for (var m = 0; m < 12; m++) months.push([]);
-  function addEv(date, type, label, crop) {
-    if (!date) return;
-    months[date.getMonth()].push({ d: date.getDate(), type: type, label: label, crop: crop });
+/* ---------- ingredients UI ---------- */
+function fillUnitSelect() {
+  var sel = document.getElementById('ing-unit');
+  sel.innerHTML = '';
+  UNIT_GROUPS.forEach(function (g) {
+    var og = document.createElement('optgroup'); og.label = g.label;
+    g.units.forEach(function (u) {
+      var o = document.createElement('option'); o.value = u; o.textContent = u; og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+}
+var editingIngId = null;
+function ingErr(msg) {
+  var el = document.getElementById('ing-err');
+  el.textContent = msg || ''; el.classList.toggle('show', !!msg);
+}
+function addIngredient() {
+  var name = document.getElementById('ing-name').value.trim();
+  var price = num(document.getElementById('ing-price').value);
+  var qty = num(document.getElementById('ing-qty').value);
+  var unit = document.getElementById('ing-unit').value;
+  var gpc = num(document.getElementById('ing-gpc').value);
+  var gpe = num(document.getElementById('ing-gpe').value);
+  if (!name) return ingErr('Give the ingredient a name.');
+  if (!(price >= 0) || !(qty > 0)) return ingErr('Enter a package price and a package size greater than zero.');
+  ingErr('');
+  if (editingIngId) {
+    var ing = state.ingredients.find(function (i) { return i.id === editingIngId; });
+    if (ing) { ing.name = name; ing.pkgPrice = price; ing.pkgQty = qty; ing.pkgUnit = unit; ing.gPerCup = gpc; ing.gPerEach = gpe; }
+    editingIngId = null;
+    document.getElementById('ing-add').textContent = 'Add ingredient';
+  } else {
+    state.ingredients.push({ id: uid(), name: name, pkgPrice: price, pkgQty: qty, pkgUnit: unit, gPerCup: gpc, gPerEach: gpe });
   }
-  sched.forEach(function (s) {
-    var c = s.crop;
-    addEv(s.indoor, 'indoor', fmtD(s.indoor), c.n);
-    addEv(s.transplant, 'transplant', fmtD(s.transplant), c.n);
-    if (s.dsA) addEv(s.dsA, 'ds', fmtRange(s.dsA, s.dsB), c.n);
-    if (s.harvest && !c.fallOnly) addEv(s.harvest, 'harvest', fmtD(s.harvest), c.n);
-    if (s.fallSow) addEv(s.fallSow, 'fall', fmtD(s.fallSow) + (c.fallOnly ? ' (for next year)' : ''), c.n);
-  });
-  months.forEach(function (evs) { evs.sort(function (a, b) { return a.d - b.d; }); });
-  var nowM = new Date().getMonth();
-  /* "right now" card */
-  var now = months[nowM];
-  document.getElementById('gc-now').innerHTML =
-    '<h2 class="g-title">Right now — ' + MONTHS[nowM] + '</h2>' +
-    (now.length ? now.map(evHTML).join('') :
-      '<p class="gc-note">Nothing scheduled this month. Plan ahead or tend what\'s growing.</p>');
-  /* month grid */
-  var host = document.getElementById('gc-months');
-  host.innerHTML = '';
-  months.forEach(function (evs, m) {
-    var card = document.createElement('div');
-    card.className = 'gc-month' + (m === nowM ? ' now-month' : '');
-    card.innerHTML = '<h3>' + MONTHS[m] + (m === nowM ? ' <span class="gc-badge b-tr">now</span>' : '') + '</h3>' +
-      (evs.length ? evs.map(evHTML).join('') : '<p class="gc-note">—</p>');
-    host.appendChild(card);
-  });
+  save(); clearIngForm(); renderIngredients(); renderRecipeSelect();
 }
-function evHTML(e) {
-  var b = BADGES[e.type];
-  return '<div class="gc-event"><span class="gc-badge ' + b[0] + '">' + b[1] + '</span>' +
-    '<span><strong>' + esc(e.crop) + '</strong> <span class="gc-note">' + esc(e.label) + '</span></span></div>';
+function clearIngForm() {
+  ['ing-name', 'ing-price', 'ing-qty', 'ing-gpc', 'ing-gpe'].forEach(function (id) { document.getElementById(id).value = ''; });
+  editingIngId = null; document.getElementById('ing-add').textContent = 'Add ingredient'; ingErr('');
 }
-
-/* ---------- crop table ---------- */
-function renderCropTable() {
-  var fr = frostDates(), L = fr.last, F = fr.first;
-  var tb = document.getElementById('gc-tbody');
+function editIngredient(id) {
+  var ing = state.ingredients.find(function (i) { return i.id === id; });
+  if (!ing) return;
+  document.getElementById('ing-name').value = ing.name;
+  document.getElementById('ing-price').value = ing.pkgPrice;
+  document.getElementById('ing-qty').value = ing.pkgQty;
+  document.getElementById('ing-unit').value = ing.pkgUnit;
+  document.getElementById('ing-gpc').value = ing.gPerCup || '';
+  document.getElementById('ing-gpe').value = ing.gPerEach || '';
+  editingIngId = id;
+  document.getElementById('ing-add').textContent = 'Save changes';
+  document.getElementById('ing-name').focus();
+}
+function deleteIngredient(id) {
+  var used = state.recipes.some(function (r) { return r.lines.some(function (l) { return l.ingId === id; }); });
+  if (used && !confirm('This ingredient is used in a recipe. Delete it anyway?')) return;
+  state.ingredients = state.ingredients.filter(function (i) { return i.id !== id; });
+  state.recipes.forEach(function (r) { r.lines = r.lines.filter(function (l) { return l.ingId !== id; }); });
+  save(); renderIngredients(); renderRecipe();
+}
+function renderIngredients() {
+  var tb = document.getElementById('ing-tbody');
   tb.innerHTML = '';
-  activeCrops().forEach(function (c) {
-    var s = cropSchedule(c, L, F);
+  document.getElementById('ing-count').textContent = state.ingredients.length;
+  document.getElementById('ing-empty').style.display = state.ingredients.length ? 'none' : '';
+  state.ingredients.forEach(function (ing) {
     var tr = document.createElement('tr');
-    tr.innerHTML = '<td><strong>' + esc(c.n) + '</strong>' + (c.note ? '<br><span class="gc-note">' + esc(c.note) + '</span>' : '') + '</td>' +
-      '<td class="num">' + (s.indoor ? fmtD(s.indoor) : '—') + '</td>' +
-      '<td class="num">' + (s.transplant ? fmtD(s.transplant) : '—') + '</td>' +
-      '<td class="num">' + fmtRange(s.dsA, s.dsB) + '</td>' +
-      '<td class="num">' + (s.harvest ? fmtD(s.harvest) : '—') + '</td>' +
-      '<td class="num">' + (s.fallSow ? fmtD(s.fallSow) : '—') + '</td>';
+    var uc = unitCost(ing);
+    var ucTxt = uc < 0.01 ? '$' + uc.toFixed(4) : fmtMoney(uc);
+    tr.innerHTML =
+      '<td>' + esc(ing.name) + '</td>' +
+      '<td class="num">' + esc(String(ing.pkgQty)) + ' ' + esc(ing.pkgUnit) + ' @ ' + fmtMoney(ing.pkgPrice) + '</td>' +
+      '<td class="num">' + ucTxt + ' ' + unitCostLabel(ing) + '</td>' +
+      '<td class="num no-print"><button class="g-btn g-btn-ghost g-btn-sm" onclick="editIngredient(\'' + ing.id + '\')">Edit</button> ' +
+      '<button class="g-btn g-btn-ghost g-btn-sm" onclick="deleteIngredient(\'' + ing.id + '\')">Delete</button></td>';
     tb.appendChild(tr);
   });
 }
 
-function renderAll() {
-  renderCropPicker();
-  renderMonth();
-  renderCropTable();
+/* ---------- recipes ---------- */
+var currentRecipeId = null;
+function blankRecipe() {
+  return { id: uid(), name: '', yieldQty: 0, yieldUnit: 'pieces', lines: [],
+           laborHours: 0, laborRate: 0, packagingPerUnit: 0, overheadPct: 10, targetMarginPct: 50 };
+}
+function cur() { return state.recipes.find(function (r) { return r.id === currentRecipeId; }); }
+function renderRecipeSelect() {
+  var sel = document.getElementById('rec-select');
+  sel.innerHTML = '';
+  state.recipes.forEach(function (r) {
+    var o = document.createElement('option');
+    o.value = r.id; o.textContent = r.name || '(unnamed recipe)';
+    if (r.id === currentRecipeId) o.selected = true;
+    sel.appendChild(o);
+  });
+  var has = state.recipes.length > 0;
+  document.getElementById('rec-editor').hidden = !has;
+  document.getElementById('rec-empty').hidden = has;
+}
+function newRecipe() {
+  var r = blankRecipe();
+  state.recipes.push(r); currentRecipeId = r.id;
+  save(); renderRecipeSelect(); renderRecipe();
+  document.getElementById('rec-name').focus();
+}
+function selectRecipe(id) { currentRecipeId = id; renderRecipe(); }
+function deleteRecipe() {
+  var r = cur(); if (!r) return;
+  if (!confirm('Delete "' + (r.name || 'this recipe') + '"?')) return;
+  state.recipes = state.recipes.filter(function (x) { return x.id !== r.id; });
+  currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+  save(); renderRecipeSelect(); renderRecipe();
+}
+function recField(field, val) {
+  var r = cur(); if (!r) return;
+  if (field !== 'name' && field !== 'yieldUnit') val = Math.max(0, val); /* typed negatives bypass min="0" */
+  r[field] = val; save(); renderSummary();
+}
+function lineField(idx, field, val) {
+  var r = cur(); if (!r || !r.lines[idx]) return;
+  if (field === 'qty') val = Math.max(0, val); /* typed negatives bypass min="0" */
+  r.lines[idx][field] = val; save();
+  /* update this line's cost in place — never rebuild the row while typing */
+  var cell = document.getElementById('linecost-' + idx);
+  if (cell) {
+    var ing = state.ingredients.find(function (i) { return i.id === r.lines[idx].ingId; });
+    cell.innerHTML = lineCostHTML(ing, r.lines[idx]);
+  }
+  renderSummary();
+}
+function addLine() {
+  var r = cur(); if (!r) return;
+  if (!state.ingredients.length) {
+    var e = document.getElementById('line-err');
+    e.textContent = 'Add ingredients to your library first (Ingredients tab).';
+    e.classList.add('show'); return;
+  }
+  r.lines.push({ ingId: state.ingredients[0].id, qty: 0, unit: state.ingredients[0].pkgUnit });
+  save(); renderLines(); renderSummary();
+}
+function removeLine(idx) {
+  var r = cur(); if (!r) return;
+  r.lines.splice(idx, 1); save(); renderLines(); renderSummary();
+}
+function lineUnitOptions(selected) {
+  var html = '';
+  UNIT_GROUPS.forEach(function (g) {
+    html += '<optgroup label="' + g.label + '">';
+    g.units.forEach(function (u) {
+      html += '<option value="' + u + '"' + (u === selected ? ' selected' : '') + '>' + u + '</option>';
+    });
+    html += '</optgroup>';
+  });
+  return html;
+}
+function renderLines() {
+  var r = cur(), host = document.getElementById('lines');
+  host.innerHTML = '';
+  document.getElementById('line-err').classList.remove('show');
+  if (!r) return;
+  r.lines.forEach(function (ln, idx) {
+    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+    var row = document.createElement('div');
+    row.className = 'line-row';
+    var opts = state.ingredients.map(function (i) {
+      return '<option value="' + i.id + '"' + (i.id === ln.ingId ? ' selected' : '') + '>' + esc(i.name) + '</option>';
+    }).join('');
+    var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+    var costTxt = lineCostHTML(ing, ln);
+    row.innerHTML =
+      '<div class="g-field" style="margin:0"><select class="g-input" onchange="lineField(' + idx + ',\'ingId\',this.value)">' + opts + '</select></div>' +
+      '<div class="g-field" style="margin:0"><input class="g-input" type="number" min="0" step="any" placeholder="Qty" value="' + esc(String(ln.qty || '')) + '" oninput="lineField(' + idx + ',\'qty\',num(this.value))"></div>' +
+      '<div class="g-field" style="margin:0"><select class="g-input" onchange="lineField(' + idx + ',\'unit\',this.value)">' + lineUnitOptions(ln.unit) + '</select></div>' +
+      '<div class="num hide-sm" id="linecost-' + idx + '" style="font-variant-numeric:tabular-nums">' + costTxt + '</div>' +
+      '<div class="no-print"><button class="g-btn g-btn-ghost g-btn-sm" onclick="removeLine(' + idx + ')" aria-label="Remove line">✕</button></div>';
+    host.appendChild(row);
+  });
+}
+
+/* ---------- summary ---------- */
+function recipeTotals(r) {
+  var ingTotal = 0, approx = false, errors = 0;
+  r.lines.forEach(function (ln) {
+    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+    if (!ing) return;
+    var lc = lineCost(ing, num(ln.qty), ln.unit);
+    if (lc.err) errors++;
+    ingTotal += lc.cost;
+    if (lc.approx) approx = true;
+  });
+  var labor = num(r.laborHours) * num(r.laborRate);
+  var pack = num(r.packagingPerUnit) * num(r.yieldQty);
+  var subtotal = ingTotal + labor + pack;
+  var overhead = subtotal * num(r.overheadPct) / 100;
+  var total = subtotal + overhead;
+  var y = num(r.yieldQty);
+  var perUnit = y > 0 ? total / y : 0;
+  var margin = num(r.targetMarginPct);
+  var price = (margin < 100 && margin >= 0 && y > 0) ? perUnit / (1 - margin / 100) : 0;
+  return { ingTotal: ingTotal, labor: labor, pack: pack, overhead: overhead, total: total,
+           perUnit: perUnit, price: price, profitUnit: price - perUnit,
+           profitBatch: (price - perUnit) * y, approx: approx, errors: errors };
+}
+function renderSummary() {
+  var r = cur(); if (!r) return;
+  var t = recipeTotals(r);
+  var y = num(r.yieldQty);
+  var foodPct = (t.price > 0 && y > 0) ? (t.ingTotal / (t.price * y) * 100) : 0;
+  function kpi(label, val, cls) {
+    return '<div class="kpi"><div class="k">' + label + '</div><div class="v' + (cls ? ' ' + cls : '') + '">' + val + '</div></div>';
+  }
+  var priceCls = t.price > 0 ? 'good' : '';
+  document.getElementById('summary-grid').innerHTML =
+    kpi('Total batch cost', fmtMoney(t.total)) +
+    kpi('Cost per ' + esc(r.yieldUnit || 'piece'), fmtMoney(t.perUnit)) +
+    kpi('Suggested price', t.price > 0 ? fmtMoney(t.price) : '—', priceCls) +
+    kpi('Profit per ' + esc(r.yieldUnit || 'piece'), t.price > 0 ? fmtMoney(t.profitUnit) : '—') +
+    kpi('Profit per batch', t.price > 0 ? fmtMoney(t.profitBatch) : '—') +
+    kpi('Food cost %', t.price > 0 ? foodPct.toFixed(1) + '%' : '—', foodPct > 35 ? 'warn' : '');
+  var math =
+    'Ingredients ' + fmtMoney(t.ingTotal) + ' + labor ' + fmtMoney(t.labor) +
+    ' + packaging ' + fmtMoney(t.pack) + ' + overhead ' + fmtMoney(t.overhead) +
+    ' = ' + fmtMoney(t.total) + ' total' +
+    (y > 0 ? ' ÷ ' + y + ' = ' + fmtMoney(t.perUnit) + ' per ' + esc(r.yieldUnit || 'piece') : '') +
+    (t.price > 0 ? ' → price at ' + num(r.targetMarginPct) + '% margin: ' +
+      fmtMoney(t.perUnit) + ' ÷ (1 − ' + (num(r.targetMarginPct) / 100).toFixed(2) + ') = ' + fmtMoney(t.price) : '');
+  if (t.approx) math += ' · <span class="approx-flag">≈ some lines used water-density fallback — add grams-per-cup on the Ingredients tab for exact costs</span>';
+  if (t.errors) math += ' · <span class="approx-flag">' + t.errors + ' line(s) need a grams-per-cup value to cost</span>';
+  document.getElementById('summary-math').innerHTML = math;
+}
+function renderRecipe() {
+  var r = cur();
+  renderRecipeSelect();
+  if (!r) { renderSummary && null; return; }
+  document.getElementById('rec-name').value = r.name || '';
+  document.getElementById('rec-yield').value = r.yieldQty || '';
+  document.getElementById('rec-yieldunit').value = r.yieldUnit || 'pieces';
+  document.getElementById('rec-hours').value = r.laborHours || '';
+  document.getElementById('rec-rate').value = r.laborRate || '';
+  document.getElementById('rec-pack').value = r.packagingPerUnit || '';
+  document.getElementById('rec-oh').value = r.overheadPct;
+  document.getElementById('rec-margin').value = r.targetMarginPct;
+  renderLines(); renderSummary();
 }
 
 /* ---------- export / import ---------- */
-function download(name, text) {
-  var blob = new Blob([text], { type: 'application/json' });
+function download(name, text, type) {
+  var blob = new Blob([text], { type: type || 'application/json' });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click();
   setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
-function exportData() { download('gardencal-backup.json', JSON.stringify(state, null, 2)); }
+function exportData() { download('recipecost-backup.json', JSON.stringify(state, null, 2)); }
 function importData(input) {
   var f = input.files && input.files[0]; if (!f) return;
   var rd = new FileReader();
   rd.onload = function () {
     try {
       var d = JSON.parse(rd.result);
-      if (!d || !d.zone || !ZONES[d.zone]) throw new Error('bad file');
-      state = d; normalizeCrops(); save();
-      document.getElementById('gc-zone').value = state.zone;
-      document.getElementById('gc-last').value = state.customLast ? state.customLast.join('/') : '';
-      document.getElementById('gc-first').value = state.customFirst ? state.customFirst.join('/') : '';
-      showTab(state.view === 'crop' ? 'crop' : 'month');
-      renderAll(); gcErr('');
-    } catch (e) { gcErr('Could not import that file — it is not a GardenCal backup.'); }
+      if (!d || !Array.isArray(d.ingredients) || !Array.isArray(d.recipes)) throw new Error('bad file');
+      state = d; sanitizeState();
+      currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+      save(); renderIngredients(); renderRecipe();
+    } catch (e) {
+      var el = document.getElementById('rec-err');
+      el.textContent = 'Could not import that file — it is not a RecipeCost backup.';
+      el.classList.add('show');
+    }
     input.value = '';
   };
   rd.readAsText(f);
@@ -1156,11 +1365,10 @@ function importData(input) {
 /* ---------- init ---------- */
 document.addEventListener('DOMContentLoaded', function () {
   load();
-  fillZoneSelect();
-  document.getElementById('gc-last').value = state.customLast ? state.customLast.join('/') : '';
-  document.getElementById('gc-first').value = state.customFirst ? state.customFirst.join('/') : '';
-  showTab(state.view === 'crop' ? 'crop' : 'month');
-  renderAll();
+  fillUnitSelect();
+  renderIngredients();
+  currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+  renderRecipe();
 });
 </script>
 </body>
