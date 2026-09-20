@@ -924,7 +924,7 @@ function renderContractors(){
     var delBtn = el("button", "Delete", "small danger");
     delBtn.type = "button";
     delBtn.addEventListener("click", function(){
-      if(window.confirm("Delete " + c.name + " and all their payments?")){
+      if(window.confirm("Delete " + c.name + " from tax year " + currentYear + " and all their " + currentYear + " payments?")){
         var arr = yearData(currentYear).contractors;
         arr.splice(arr.indexOf(c), 1);
         delete openPanels[c.id];
