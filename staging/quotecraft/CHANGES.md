@@ -160,3 +160,28 @@ Backup: `index.html.bak-2026-09-19-r2`.
 - **ZIP rebuilt:** quotecraft-bundle.zip regenerated with the new cover; excludes
   local .bak working files (was 15 entries incl. .bak files, now 13 clean entries).
   index.html in ZIP byte-matches the live source.
+
+## 2026-09-20 (outside-AI browser QA findings — parent fixes)
+- **FIX 4 — Stale quotes list on tab switch (real defect, low-medium severity):**
+  the "Quotes" tab handler called `showView("list")` without `renderList()`, so
+  the list showed stale customer/total after edits until the editor "Back" button
+  or a page reload. The tab handler now calls `renderList()` when switching to
+  the list view (matches the Back-button path). Retested: list shows $124.00
+  after editing $80.00 -> $124.00 and returning via the Quotes tab.
+- **FIX 5 — Discount cap feedback (very low):** percent discounts over 100% and
+  flat discounts over the subtotal were silently capped (total $0.00, no negative),
+  while tax>100 showed "Tax rate can't be more than 100%." bindEditor now shows
+  "Discount percent can't be more than 100%." / "Discount can't be more than the
+  subtotal." and clamps the input value, mirroring the tax pattern.
+- **FIX 6 — Strict ISO date validation (very low):** the `/^\d{4}-\d{2}-\d{2}$/`
+  check accepted impossible calendar dates like "2026-13-99" from crafted imports.
+  New `isDateISO()` helper validates month 01-12 and day ranges incl. leap years;
+  used at all 4 date sites (import sanitize + editor write-back). Bad dates fall
+  back to today (import) or restore the stored date (editor).
+- **FIX 7 — Totals label clarity (very low):** the "Taxable subtotal" row showed
+  pre-discount taxable lines while tax is computed on the post-discount base.
+  Relabeled "Taxable subtotal (before discount)"; behavior unchanged, footnote
+  still documents the tax-after-discount rule.
+- **Regression retest:** full Playwright harness 11/11 PASS on the fixed source;
+  targeted fix suite 8/8 PASS (tab refresh, both discount messages + clamps,
+  import/editor date rejection, zero JS errors).

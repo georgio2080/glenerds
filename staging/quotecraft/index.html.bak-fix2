@@ -500,13 +500,6 @@ function todayISO(){
   var d = new Date();
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 }
-/* strict ISO date check: rejects impossible months/days like 2026-13-99 (crafted imports) */
-function isDateISO(s){
-  if(typeof s !== "string" || !/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(s)) return false;
-  var p = s.split("-"), y = +p[0], m = +p[1], d = +p[2];
-  var dim = [31, (y%4===0 && y%100!==0) || y%400===0 ? 29 : 28, 31,30,31,30,31,31,30,31,30,31][m-1];
-  return d <= dim;
-}
 function qnum(n){ return "Q-"+String(n).padStart(4,"0"); }
 
 /* ---------- storage ---------- */
@@ -634,8 +627,8 @@ function cleanQuote(raw, usedNums){
   var tr = Number(raw.taxRate);
   if(!Number.isFinite(tr) || tr < 0) tr = 0;
   if(tr > 100) tr = 100;
-  var date = isDateISO(raw.date) ? raw.date : todayISO();
-  var validUntil = isDateISO(raw.validUntil) ? raw.validUntil : "";
+  var date = typeof raw.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw.date) ? raw.date : todayISO();
+  var validUntil = typeof raw.validUntil === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw.validUntil) ? raw.validUntil : "";
   usedNums.add(num);
   return {
     id: typeof raw.id === "string" ? raw.id.slice(0,64) : uid(),
@@ -807,7 +800,7 @@ function renderTotals(q){
   while(tb.firstChild) tb.removeChild(tb.firstChild);
   tb.appendChild(totalsRow("Subtotal", fmt(t.subtotal)));
   tb.appendChild(totalsRow("Discount", "−"+fmt(t.discount)));
-  tb.appendChild(totalsRow("Taxable subtotal (before discount)", fmt(t.taxableSubtotal)));
+  tb.appendChild(totalsRow("Taxable subtotal", fmt(t.taxableSubtotal)));
   tb.appendChild(totalsRow("Tax", fmt(t.tax)));
   tb.appendChild(totalsRow("Grand total", fmt(t.total), true));
 }
@@ -952,10 +945,10 @@ function bindEditor(){
   q.contact = cleanText(document.getElementById("f-cust-contact").value, MAX.contact);
   var dEl = document.getElementById("f-quote-date");
   var d = dEl.value;
-  if(isDateISO(d)) q.date = d;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(d)) q.date = d;
   else dEl.value = q.date;
   var vu = document.getElementById("f-valid-until").value;
-  q.validUntil = isDateISO(vu) ? vu : "";
+  q.validUntil = /^\d{4}-\d{2}-\d{2}$/.test(vu) ? vu : "";
   var st = document.getElementById("f-status").value;
   if(STATUSES.indexOf(st) >= 0) q.status = st;
   var dt = document.getElementById("f-disc-type").value;
@@ -970,20 +963,6 @@ function bindEditor(){
     q.discountValue = 0;
   }else{
     q.discountValue = Number.isFinite(dv) && dv >= 0 ? dv : 0;
-  }
-  /* feedback when the discount is capped (mirrors the tax>100 message) */
-  if(q.discountType === "percent" && q.discountValue > 100){
-    dtErr.textContent += (dtErr.textContent ? " " : "") + "Discount percent can't be more than 100%.";
-    dvEl.value = "100";
-    q.discountValue = 100;
-  }else if(q.discountType === "flat"){
-    var subC = 0;
-    (q.items || []).forEach(function(it){ subC += Math.round(it.qty * it.unitCents); });
-    if(toCents(q.discountValue) > subC){
-      dtErr.textContent += (dtErr.textContent ? " " : "") + "Discount can't be more than the subtotal.";
-      q.discountValue = subC / 100;
-      dvEl.value = (subC / 100).toFixed(2);
-    }
   }
   var trEl = document.getElementById("f-tax-rate");
   var tr = Number(trEl.value);
@@ -1071,7 +1050,7 @@ function bind(){
   });
   var tabs = [["tab-quotes","list"],["tab-business","business"],["tab-data","data"]];
   tabs.forEach(function(p){
-    document.getElementById(p[0]).addEventListener("click", function(){ if(p[1]==="list") renderList(); showView(p[1]); });
+    document.getElementById(p[0]).addEventListener("click", function(){ showView(p[1]); });
   });
   document.getElementById("btn-new-quote").addEventListener("click", newQuote);
   document.getElementById("btn-back-list").addEventListener("click", function(){
