@@ -169,3 +169,18 @@ contractor card — both re-run against correct state and PASS.)
   genuinely zero payments still import). Import message now counts accurately
   ("Imported 1 contractor. 1 payment was moved...").
 - Full suite: 34/34 + 8/8 = 42/42 passing. ZIP rebuilt (11 files, byte-verified).
+
+## 2026-09-20 — second Gemini API review; 1 real UX fix
+- Second full-source review (final build). Of 7 findings: 6 rejected —
+  threshold logic explicitly confirmed correct by the reviewer itself;
+  w9 coercion matches import sanitizer (no legacy booleans exist);
+  saveStore quota path already warns the user explicitly (rollback would be
+  worse UX); import ID-collision claim fabricated (payments never looked up
+  by contractor id); zero innerHTML, no XSS; fractional-cent rounding is
+  standard currency behavior, not a bug.
+- **Fix — cross-year payment notice visibility**: when a payment dated in
+  another tax year auto-switches the view, the explanatory message lived in
+  the Data section below the fold while the contractor seemingly vanished.
+  `setDataMsg` now takes an optional scroll flag; the cross-year routing
+  path passes it, smooth-scrolling the explanation into view.
+- Regression: 34/34 + 8/8 = 42/42 passing. ZIP rebuilt (11 files, byte-verified).

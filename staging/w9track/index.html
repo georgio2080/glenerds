@@ -819,7 +819,7 @@ function paymentsPanel(c){
       tc.payments.push(pay);
       currentYear = dateYear; persistYear();
       saveStore(); renderYearSelect(); renderAll();
-      setDataMsg("Payment dated " + dateStr + " was recorded under tax year " + dateYear + " — 1099s are filed by payment date.", false);
+      setDataMsg("Payment dated " + dateStr + " was recorded under tax year " + dateYear + " — 1099s are filed by payment date.", false, true);
       return;
     }
     c.payments.push(pay);
@@ -851,10 +851,14 @@ document.getElementById("addContractorForm").addEventListener("submit", function
 });
 
 /* ================= Data: export / import / demo / clear ================= */
-function setDataMsg(msg, isErr){
+function setDataMsg(msg, isErr, scroll){
   var m = document.getElementById("dataMsg");
   m.textContent = msg;
   m.className = "status-msg" + (isErr ? " error" : " ok");
+  // The cross-year payment notice fires while the user is looking at the
+  // contractor list; bring the explanation into view so the year switch
+  // doesn't look like the contractor vanished (Gemini API review 2026-09-20).
+  if(scroll && m.scrollIntoView) m.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 document.getElementById("exportBtn").addEventListener("click", function(){
   var blob = new Blob([JSON.stringify({ app: "w9track", version: 1, years: store.years }, null, 2)],
