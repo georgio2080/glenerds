@@ -125,8 +125,25 @@ footer.site a{color:var(--primary)}
 .disclaimer{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);border-radius:10px;
   padding:10px 14px;font-size:.82rem;margin-top:14px}
 .empty{color:var(--muted);font-style:italic;padding:12px 0}
+.viz-title{margin:0 0 12px;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.viz-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;min-width:0}
+.bar-label{flex:0 0 104px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.88rem;font-weight:600}
+.bar-track{flex:1;min-width:0;background:var(--bar);border-radius:999px;height:18px;overflow:hidden}
+.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--primary2));transition:width .35s ease}
+.bar-val{flex:0 0 auto;min-width:72px;text-align:right;font-size:.85rem;font-weight:700;color:var(--primary)}
+.donut-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.donut{width:150px;height:150px;flex:0 0 150px}
+.donut text{font-family:inherit}
+.legend{flex:1;min-width:150px;display:grid;gap:7px;font-size:.85rem}
+.legend-row{display:flex;align-items:center;gap:8px;min-width:0}
+.legend-swatch{width:12px;height:12px;flex:0 0 12px;border-radius:4px}
+.legend-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.legend-val{font-weight:700;white-space:nowrap}
 @media(max-width:640px){
   .grid2{grid-template-columns:1fr}
+  .viz-grid{grid-template-columns:1fr}
+  .bar-label{flex-basis:88px}
   .hero h1{font-size:1.15rem}
   .item-card{flex-wrap:wrap}
   .item-actions{flex-direction:row;width:100%}
@@ -136,7 +153,7 @@ footer.site a{color:var(--primary)}
 /* Print: only the claim report prints */
 @media print{
   body{background:#fff;color:#000}
-  .hero,.demo-bar,#sec-rooms,#sec-add,#sec-items,#sec-data,footer.site,.toolbar .btn,.no-print{display:none!important}
+  .hero,.demo-bar,#sec-rooms,#sec-add,#sec-items,#sec-charts,#sec-data,footer.site,.toolbar .btn,.no-print{display:none!important}
   main{max-width:none;padding:0}
   .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
   table.rep th{background:#eee!important;color:#000}
@@ -209,6 +226,20 @@ footer.site a{color:var(--primary)}
     <div><select id="filterRoom" aria-label="Filter by room"><option value="">All rooms</option></select></div>
   </div>
   <div id="itemList"></div>
+</section>
+
+<section class="card no-print" id="sec-charts" aria-labelledby="h-charts">
+  <div class="card-head"><div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V7M18 17v-8"/></svg></div><h2 id="h-charts">Value overview</h2></div>
+  <div class="viz-grid">
+    <div>
+      <h3 class="viz-title">Value by room</h3>
+      <div id="roomChart"></div>
+    </div>
+    <div>
+      <h3 class="viz-title">Value by category</h3>
+      <div class="donut-wrap"><div id="catDonut"></div><div class="legend" id="catLegend"></div></div>
+    </div>
+  </div>
 </section>
 
 <section class="card" id="sec-report" aria-labelledby="h-report">
@@ -500,6 +531,57 @@ function renderReport(){
 }
 $("printBtn").addEventListener("click",function(){window.print();});
 
+/* ---------- visuals ---------- */
+var CAT_COLORS={"Electronics":"#6366f1","Furniture":"#f59e0b","Appliances":"#0ea5e9",
+  "Jewelry":"#ec4899","Clothing":"#8b5cf6","Kitchenware":"#10b981",
+  "Tools":"#f97316","Documents":"#64748b","Other":"#a3a3a3"};
+function catTotals(){var t={};state.items.forEach(function(it){
+  var c=(typeof it.category==="string"&&CAT_COLORS[it.category])?it.category:"Other";
+  t[c]=(t[c]||0)+(Number(it.value)||0);});return t;}
+function renderRoomBars(){
+  var t=roomTotals(),rows=[],max=0;
+  state.rooms.forEach(function(r){
+    var rt=t[r.id]||{count:0,total:0};
+    if(rt.total>max)max=rt.total;
+    rows.push({name:r.name,total:rt.total,count:rt.count});});
+  rows.sort(function(a,b){return b.total-a.total;});
+  if(!rows.length||max<=0){
+    $("roomChart").innerHTML='<p class="empty">Add rooms and items to see the value breakdown.</p>';return;}
+  var html="";
+  rows.forEach(function(rw){
+    var pct=rw.total>0?Math.max(2,rw.total/max*100):0;
+    html+='<div class="bar-row" title="'+esc(rw.name)+": "+money(rw.total)+' ('+rw.count+' item'+(rw.count===1?"":"s")+')">'
+      +'<div class="bar-label">'+esc(rw.name)+'</div>'
+      +'<div class="bar-track"><div class="bar-fill" style="width:'+pct.toFixed(1)+'%"></div></div>'
+      +'<div class="bar-val">'+money(rw.total)+'</div></div>';});
+  $("roomChart").innerHTML=html;
+}
+function renderCatDonut(){
+  var t=catTotals(),total=grandTotal();
+  var entries=Object.keys(t).filter(function(c){return t[c]>0;})
+    .sort(function(a,b){return t[b]-t[a];});
+  if(!entries.length||total<=0){
+    $("catDonut").innerHTML="";$("catLegend").innerHTML='<p class="empty">Add items to see the category breakdown.</p>';return;}
+  var segs="",leg="",start=0;
+  entries.forEach(function(c){
+    var pct=t[c]/total*100,color=CAT_COLORS[c];
+    segs+='<circle cx="60" cy="60" r="45" fill="none" stroke="'+color+'" stroke-width="24"'
+      +' pathLength="100" stroke-dasharray="'+pct.toFixed(2)+' '+(100-pct).toFixed(2)+'"'
+      +' stroke-dashoffset="'+(-start).toFixed(2)+'"><title>'+esc(c)+": "+money(t[c])+'</title></circle>';
+    start+=pct;
+    leg+='<div class="legend-row"><span class="legend-swatch" style="background:'+color+'"></span>'
+      +'<span class="legend-name">'+esc(c)+'</span>'
+      +'<span class="legend-val">'+money(t[c])+'</span></div>';});
+  $("catDonut").innerHTML='<svg class="donut" viewBox="0 0 120 120" role="img" aria-label="Value by category">'
+    +'<g transform="rotate(-90 60 60)">'
+    +'<circle cx="60" cy="60" r="45" fill="none" stroke="var(--bar)" stroke-width="24"/>'
+    +segs+'</g>'
+    +'<text x="60" y="58" text-anchor="middle" style="fill:var(--text);font-size:15px;font-weight:700">'+money(total)+'</text>'
+    +'<text x="60" y="74" text-anchor="middle" style="fill:var(--muted);font-size:10px">total value</text></svg>';
+  $("catLegend").innerHTML=leg;
+}
+function renderCharts(){renderRoomBars();renderCatDonut();}
+
 /* ---------- data ---------- */
 $("exportBtn").addEventListener("click",function(){
   var blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
@@ -560,7 +642,7 @@ $("clearBtn").addEventListener("click",function(){
   }
 });
 
-function renderAll(){renderRooms();renderItems();renderReport();}
+function renderAll(){renderRooms();renderItems();renderReport();renderCharts();}
 renderAll();
 })();
 </script>
