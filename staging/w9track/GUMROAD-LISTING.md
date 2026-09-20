@@ -25,7 +25,7 @@ w-9 tracker, 1099, contractor management, small business, tax organizer, freelan
 
 📋 Free Contractor W-9 Tracker & 1099 Payment Log
 
-Paying independent contractors? Stop scrambling at tax season. W9Track helps you track every contractor, know exactly whose W-9 you have on file, log payments through the year — and get flagged the moment someone crosses the IRS Form 1099-NEC threshold ($600 for 2025 and earlier, $2,000 for 2026+). Runs as a single HTML file in any browser — no install, no internet, no account.
+Paying independent contractors? Stop scrambling at tax season. W9Track helps you track every contractor, know exactly whose W-9 you have on file, log payments through the year — and get flagged the moment someone crosses the IRS Form 1099-NEC threshold ($600 for 2025 and earlier, $2,000 for 2026, inflation-adjusted from 2027). Runs as a single HTML file in any browser — no install, no internet, no account.
 
 💸 100% FREE — no upsells, no subscription, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
@@ -36,7 +36,7 @@ Paying independent contractors? Stop scrambling at tax season. W9Track helps you
 • 💵 Payment log — per-contractor entries with year-to-date totals
 • 🚩 Automatic 1099 threshold flags — red when a contractor without a W-9 hits the threshold for the selected tax year ("Needs 1099"), amber when approaching it
 • 🏢 Corporation handling — corps marked generally exempt from 1099 reporting
-• 📖 Plain-English 1099 threshold explainer built in (thresholds follow the tax year: $600 for 2025 and earlier, $2,000 for 2026+)
+• 📖 Plain-English 1099 threshold explainer built in (thresholds follow the tax year: $600 for 2025 and earlier, $2,000 for 2026, inflation-adjusted from 2027)
 
 📦 WHAT YOU GET
 • W9Track as a single HTML file — double-click to open in any browser

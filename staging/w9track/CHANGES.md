@@ -116,3 +116,23 @@ contractor card — both re-run against correct state and PASS.)
 - **$0 payments rejected** (amount must be greater than $0).
 - ChatGPT/Grok "contractor rename" reports root-caused to test-harness contamination
   (parallel browser QA sessions share one Chromium profile/localStorage) — not an app bug.
+
+## 2026-09-20 — threshold law verified; tax-year correctness fixes
+- **Threshold policy corrected against IRS/official guidance**: 2025 and earlier $600;
+  2026 $2,000 (One Big Beautiful Bill Act, 2025); **2027+ is inflation-adjusted
+  annually** — W9Track now flags at the $2,000 base for 2027+ and the dashboard shows
+  an explicit "confirm the current inflation-adjusted amount" note. Removed the
+  unverified "P.L. 119-21" citation. App copy, meta description, and Gumroad listing
+  updated ("$600 for 2025 and earlier, $2,000 for 2026, inflation-adjusted from 2027").
+- **Payment date/year mismatches now auto-route**: adding a payment dated in a different
+  tax year records it under its actual tax year (1099s are filed by payment date) and
+  switches the view there, instead of asking to file it under the wrong year.
+- **Import re-buckets payments by payment date**: imported payments whose date year
+  differs from their year bucket are moved to the correct tax year and reported.
+  `ytd()` also filters payments by date year as defense-in-depth.
+- **Import now requires `data.version === 1`** in addition to `data.app === "w9track"`.
+- **W-9 quick-toggle no longer stamps today's date silently**: "Mark W-9 received" now
+  opens the edit form with W-9 preset to Yes, requiring an explicit received date;
+  clearing a W-9 asks for confirmation.
+- **Corporation wording qualified**: exempt notes now read "generally exempt ...
+  (exceptions: attorney and medical/health-care payments)".
