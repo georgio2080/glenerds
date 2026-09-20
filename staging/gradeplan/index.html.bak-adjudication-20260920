@@ -899,7 +899,7 @@ themeBtn.addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==
 
 /* ---------- tabs ---------- */
 const tabBtns=[...document.querySelectorAll('.g-tab')];
-function showTab(name,skipSave){tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.setAttribute('aria-selected',on);document.getElementById('tab-'+b.dataset.tab).hidden=!on;});if(!skipSave)save();}
+function showTab(name){tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.setAttribute('aria-selected',on);document.getElementById('tab-'+b.dataset.tab).hidden=!on;});save();}
 tabBtns.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 
 /* ---------- helpers ---------- */
@@ -959,12 +959,12 @@ function cRow(name,wt,sc){
 function calcCourse(){
   showErr('c-err','');
   const rows=[...cRows.querySelectorAll('.rowline')];
-  let tw=0,ts=0,lines=[],ok=false,skipped=0;const barData=[];
+  let tw=0,ts=0,lines=[],ok=false;const barData=[];
   for(const r of rows){
     const ins=r.querySelectorAll('input');
     const name=(ins[0].value||'Category').trim()||'Category';
     const w=num(ins[1].value),s=num(ins[2].value);
-    if(isNaN(w)||isNaN(s)){if(ins[0].value.trim()!==''||ins[1].value!==''||ins[2].value!=='')skipped++;continue;}
+    if(isNaN(w)||isNaN(s))continue;
     if(w<0||w>100)return showErr('c-err','Weights must be between 0 and 100.'),$ ('c-res').classList.remove('show');
     if(s<0||s>100)return showErr('c-err','Scores must be between 0 and 100.'),$ ('c-res').classList.remove('show');
     ok=true;tw+=w;ts+=w*s;lines.push('  '+name+': '+w+'% × '+s+'% = '+r2(w*s));barData.push({n:name,s:s});
@@ -973,7 +973,7 @@ function calcCourse(){
   if(tw===0)return showErr('c-err','Total weight is 0 — add weights to your categories.'),$ ('c-res').classList.remove('show');
   const avg=ts/tw;
   $('c-big').textContent=r2(avg)+'%';
-  $('c-note').textContent=(tw===100?'Weights total exactly 100%.':'Weights total '+r2(tw)+'% — scaled to 100% automatically.')+(skipped?' '+skipped+' incomplete categor'+(skipped===1?'y':'ies')+' not counted.':'');
+  $('c-note').textContent=tw===100?'Weights total exactly 100%.':'Weights total '+r2(tw)+'% — scaled to 100% automatically.';
   $('c-work').textContent='grade = Σ(weight × score) ÷ Σ(weight)\n'+lines.join('\n')+'\n= '+r2(ts)+' ÷ '+r2(tw)+' = '+r2(avg)+'%';
   let cbars='';
   for(const b of barData){const pct=Math.max(0,Math.min(100,b.s));cbars+='<div class="g-bar-row"><span class="g-bar-name">'+esc(b.n)+'</span><span class="g-bar-track"><span class="g-bar-fill '+barCls(pct)+'" style="width:'+r2(pct)+'%"></span></span><span class="g-bar-val">'+r2(b.s)+'%</span></div>';}
@@ -1005,24 +1005,24 @@ function calcGpa(){
   showErr('g-err','');
   const rows=[...gRows.querySelectorAll('.rowline')];
   const weighted=gW.checked;
-  let tc=0,tqp=0,lines=[],ok=false,skipped=0;const gBarData=[];
+  let tc=0,tqp=0,lines=[],ok=false;const gBarData=[];
   for(const r of rows){
     const t=r.querySelector('input[type=text]').value.trim()||'Course';
     const cr=num(r.querySelector('input[type=number]').value);
     const gr=r.querySelector('select').value;
     const hon=r.querySelector('input[type=checkbox]').checked;
-    if(isNaN(cr)){if(r.querySelector('input[type=text]').value.trim()!==''||r.querySelector('input[type=number]').value!=='')skipped++;continue;}
+    if(isNaN(cr))continue;
     if(cr===0)continue; /* 0-credit / audit courses don't affect GPA */
     if(cr<0||cr>12)return showErr('g-err','Credits must be between 0 and 12.'),$ ('g-res').classList.remove('show');
-    const pts=POINTS[gr]+(weighted&&hon&&gr!=='F'?1.0:0);
+    const pts=POINTS[gr]+(weighted&&hon?1.0:0);
     ok=true;tc+=cr;tqp+=pts*cr;
-    lines.push('  '+t+': '+gr+' → '+r2(POINTS[gr])+(weighted&&hon&&gr!=='F'?' +1.0 (H/AP)':'')+' × '+cr+' cr = '+r2(pts*cr)+' pts');
+    lines.push('  '+t+': '+gr+' → '+r2(POINTS[gr])+(weighted&&hon?' +1.0 (H/AP)':'')+' × '+cr+' cr = '+r2(pts*cr)+' pts');
     gBarData.push({t:t,pts:pts,gr:gr});
   }
   if(!ok)return $('g-res').classList.remove('show');
   const gpa=tqp/tc;
   $('g-big').textContent='GPA '+r2(gpa);
-  $('g-note').textContent=r2(tc)+' total credits · '+r2(tqp)+' quality points · '+(weighted?'weighted 4.0 scale (+1.0 Honors/AP)':'unweighted 4.0 scale')+(skipped?' · '+skipped+' incomplete course'+(skipped===1?'':'s')+' not counted':'');
+  $('g-note').textContent=r2(tc)+' total credits · '+r2(tqp)+' quality points · '+(weighted?'weighted 4.0 scale (+1.0 Honors/AP)':'unweighted 4.0 scale');
   $('g-work').textContent='GPA = Σ(grade points × credits) ÷ Σ(credits)\n'+lines.join('\n')+'\n= '+r2(tqp)+' ÷ '+r2(tc)+' = '+r2(gpa);
   const maxScale=weighted?5:4;
   let gbars='';
@@ -1050,7 +1050,7 @@ function save(){
     localStorage.setItem(LSKEY,JSON.stringify(data));
   }catch(e){}
 }
-function validNumStr(v,min,max){if(typeof v!=='string')return false;if(v==='')return true;if(!/^\d+(\.\d+)?$/.test(v.trim()))return false;const n=parseFloat(v);return isFinite(n)&&n>=min&&n<=max;}
+function validNumStr(v,min,max){if(typeof v!=='string')return false;const n=parseFloat(v);return v===''||(isFinite(n)&&n>=min&&n<=max);}
 function load(){
   let d=null;
   try{d=JSON.parse(localStorage.getItem(LSKEY));}catch(e){return;}
@@ -1060,7 +1060,7 @@ function load(){
     if(Array.isArray(d.c)){cRows.innerHTML='';for(const r of d.c.slice(0,30)){if(!Array.isArray(r)||r.length!==3)continue;const[n,w,s]=r;if(typeof n!=='string'||n.length>40||!validNumStr(w,0,100)||!validNumStr(s,0,100))continue;cRows.appendChild(cRow(n,w,s));}}
     if(Array.isArray(d.g)){gRows.innerHTML='';for(const r of d.g.slice(0,30)){if(!Array.isArray(r)||r.length!==4)continue;const[n,cr,gr,hon]=r;if(typeof n!=='string'||n.length>40||!POINTS.hasOwnProperty(gr)||typeof hon!=='boolean')continue;if(!validNumStr(cr,0,12))continue;gRows.appendChild(gRow(n,cr,gr,hon));}}
     if(typeof d.gw==='boolean')gW.checked=d.gw;
-    if(typeof d.tab==='string'&&['final','course','gpa'].includes(d.tab))showTab(d.tab,true);
+    if(typeof d.tab==='string'&&['final','course','gpa'].includes(d.tab))showTab(d.tab);
   }catch(e){}
 }
 
