@@ -3,8 +3,8 @@
 import os, html, re
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-# Canonical deploy URL (Netlify). Used for sitemap, canonical tags, and OG URLs.
-SITE_URL = "https://glenerds.netlify.app"
+# Canonical deploy URL (GitHub Pages). Used for sitemap, canonical tags, and OG URLs.
+SITE_URL = "https://glenerds.github.io/glenerds"
 STORE_URL = "https://glenerds.gumroad.com"
 
 # Dark-mode theme pattern (shared by every generated page, matching the hand-written

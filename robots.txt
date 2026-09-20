@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /staging/
-Sitemap: https://glenerds.netlify.app/sitemap.xml
+Sitemap: https://glenerds.github.io/glenerds/sitemap.xml
