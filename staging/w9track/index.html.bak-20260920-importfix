@@ -158,7 +158,6 @@ html[data-theme="dark"] .stat:nth-child(4)::before{background-color:#252a55; bac
 .pill.ok{color:var(--green); border-color:var(--green); background:var(--green-bg)}
 .pill.missing{color:var(--amber); border-color:var(--amber); background:var(--amber-bg)}
 .pill.bad{color:var(--red); border-color:var(--red); background:var(--red-bg)}
-.pill.neutral{color:var(--muted); border-color:var(--muted); background:transparent}
 .cactions{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
 .exempt-note{color:var(--muted); font-size:.88rem; margin-top:6px}
 .payments{margin-top:10px; border-top:1px dashed var(--border); padding-top:8px; overflow-x:auto}
@@ -276,7 +275,7 @@ footer.site a{color:var(--accent)}
       <button id="clearBtn" type="button" class="danger">Clear all data</button>
     </div>
     <p id="dataMsg" class="status-msg" role="status"></p>
-    <p class="cmeta">Import merges a W9Track JSON file into your data: new contractors are added, new payments are added to matching contractors, and exact duplicates are skipped &mdash; re-importing the same file changes nothing. Everything is validated and sanitized: text is length-capped, amounts must be finite numbers &ge; 0, dates must be valid YYYY-MM-DD, and years must be 2000&ndash;2099. Bad records are skipped and reported.</p>
+    <p class="cmeta">Import validates and sanitizes everything: text is length-capped, amounts must be finite numbers &ge; 0, dates must be valid YYYY-MM-DD, and years must be 2000&ndash;2099. Bad records are skipped and reported.</p>
   </section>
 
   <section aria-labelledby="yrHead" class="card">
@@ -442,6 +441,13 @@ function sanitizeContractor(c){
     payments: payments
   };
 }
+function sameRecord(a, b){
+  function core(x){
+    return { name: x.name, business: x.business, contact: x.contact, entity: x.entity,
+             w9: x.w9, w9Date: x.w9Date, notes: x.notes, payments: x.payments };
+  }
+  return JSON.stringify(core(a)) === JSON.stringify(core(b));
+}
 function validYear(y){ return /^(20\d{2})$/.test(y) && Number(y) >= 2000 && Number(y) <= 2099; }
 
 /* ================= State ================= */
@@ -558,11 +564,7 @@ var openPanels = {}; // contractor id -> true
 
 function w9Pill(c){
   var cls, txt;
-  // Corps are generally 1099-exempt: never flag them "W-9 missing" as if it
-  // were a problem (ChatGPT QA 2026-09-20) — the dashboard counts already
-  // exclude them; the card pill now matches.
-  if(c.entity === "corp" && !c.w9){ cls = "pill neutral"; txt = "1099-exempt"; }
-  else if(c.w9){ cls = "pill ok"; txt = "W-9 on file" + (c.w9Date ? " · " + c.w9Date : ""); }
+  if(c.w9){ cls = "pill ok"; txt = "W-9 on file" + (c.w9Date ? " · " + c.w9Date : ""); }
   else { cls = "pill missing"; txt = "W-9 missing"; }
   return el("span", txt, cls);
 }
@@ -570,10 +572,7 @@ function w9Pill(c){
 function flagPill(c){
   var t = ytd(c);
   var lim = limitsFor(currentYear);
-  // Filing-requirement signal, independent of W-9 status: the pill must not
-  // vanish once the W-9 arrives (ChatGPT QA 2026-09-20). W-9 collection is
-  // tracked separately by w9Pill and the dashboard flags section.
-  if(t < lim.amber || c.entity === "corp") return null;
+  if(c.w9 || t < lim.amber || c.entity === "corp") return null;
   var isRed = t >= lim.red;
   return el("span", isRed ? "Needs 1099" : "Approaching " + wholeDollars(lim.red), "pill " + (isRed ? "bad" : "missing"));
 }
@@ -695,10 +694,7 @@ function openEdit(card, c, opts){
   var dLab = document.createElement("label");
   dLab.setAttribute("for", "eW9d" + c.id); dLab.textContent = "W-9 date received";
   var dInp = document.createElement("input");
-  dInp.id = "eW9d" + c.id; dInp.type = "date";
-  // "Mark W-9 received" presets w9 with no stored date: prefill today so the
-  // user isn't forced to pick the date by hand (ChatGPT QA 2026-09-20).
-  dInp.value = c.w9Date || ((w9Preset && !c.w9) ? todayISO() : "");
+  dInp.id = "eW9d" + c.id; dInp.type = "date"; dInp.value = c.w9Date || "";
   form.appendChild(dLab); form.appendChild(dInp);
   var nLab = document.createElement("label");
   nLab.setAttribute("for", "eNotes" + c.id); nLab.textContent = "Notes";
@@ -877,25 +873,13 @@ document.getElementById("exportBtn").addEventListener("click", function(){
 document.getElementById("importBtn").addEventListener("click", function(){
   document.getElementById("importFile").click();
 });
-function samePayment(a, b){
-  return a.date === b.date && a.amount === b.amount && a.memo === b.memo;
-}
 function mergeContractor(yearKey, sc){
   var target = yearData(yearKey).contractors;
   for(var i = 0; i < target.length; i++){
     if(target[i].id === sc.id){
-      // Same identity: merge, adding only payments not already present.
-      // Re-importing an export is therefore idempotent — nothing duplicates.
-      // Existing scalar fields are never overwritten by an import.
-      var added = 0, j, k, p, exists;
-      for(j = 0; j < sc.payments.length; j++){
-        p = sc.payments[j]; exists = false;
-        for(k = 0; k < target[i].payments.length; k++){
-          if(samePayment(target[i].payments[k], p)){ exists = true; break; }
-        }
-        if(!exists && target[i].payments.length < MAX_PAYMENTS){ target[i].payments.push(p); added++; }
-      }
-      return added ? "merged" : "dupe";
+      if(sameRecord(target[i], sc)) return "dupe"; // exact duplicate: skip, don't double-import
+      sc.id = uid();
+      break;
     }
   }
   if(target.length < MAX_CONTRACTORS){ target.push(sc); return "ok"; }
@@ -906,7 +890,7 @@ document.getElementById("importFile").addEventListener("change", function(ev){
   if(!file) return;
   var reader = new FileReader();
   reader.onload = function(){
-    var ok = 0, skipped = 0, dupes = 0, merged = 0;
+    var ok = 0, skipped = 0, dupes = 0;
     try{
       var data = JSON.parse(reader.result);
       if(!data || data.app !== "w9track" || data.version !== 1 || typeof data.years !== "object") throw new Error("bad");
@@ -934,29 +918,7 @@ document.getElementById("importFile").addEventListener("change", function(ev){
           var movedOut = Object.keys(byYear).some(function(py){ return py !== y; });
           if(sc.payments.length || !movedOut){
             var s = mergeContractor(y, sc);
-            if(s === "ok") ok++; else if(s === "merged") merged++; else if(s === "dupe") dupes++; else skipped++;
-            // True move, not copy: strip the rebucketed payments from the
-            // source year's stored record so one payment never lives in two
-            // tax years at once. (A fresh "ok" record only ever held byYear[y],
-            // so only merged/dupe records need the strip.)
-            if(s === "merged" || s === "dupe"){
-              var movedPays = [];
-              Object.keys(byYear).forEach(function(py){ if(py !== y) movedPays = movedPays.concat(byYear[py]); });
-              if(movedPays.length){
-                var tc = yearData(y).contractors;
-                for(var ti = 0; ti < tc.length; ti++){
-                  if(tc[ti].id === sc.id){
-                    tc[ti].payments = tc[ti].payments.filter(function(ep){
-                      for(var mi = 0; mi < movedPays.length; mi++){
-                        if(samePayment(ep, movedPays[mi])) return false;
-                      }
-                      return true;
-                    });
-                    break;
-                  }
-                }
-              }
-            }
+            if(s === "ok") ok++; else if(s === "dupe") dupes++; else skipped++;
           }
           Object.keys(byYear).forEach(function(py){
             if(py === y || !validYear(py)) return;
@@ -965,7 +927,6 @@ document.getElementById("importFile").addEventListener("change", function(ev){
                           payments: byYear[py] };
             var s2 = mergeContractor(py, clone);
             if(s2 === "ok"){ ok++; moved += byYear[py].length; }
-            else if(s2 === "merged"){ merged++; moved += byYear[py].length; }
             else if(s2 === "dupe") dupes++;
             else skipped++;
             if(years.indexOf(py) < 0) years.push(py);
@@ -979,8 +940,7 @@ document.getElementById("importFile").addEventListener("change", function(ev){
     }catch(e){ setDataMsg("Import failed: file is not valid W9Track JSON.", true); ev.target.value = ""; return; }
     saveStore(); renderYearSelect(); renderAll();
     setDataMsg("Imported " + ok + " contractor" + (ok === 1 ? "" : "s") +
-      (merged ? ", added payments to " + merged + " existing contractor" + (merged === 1 ? "" : "s") + "." : ".") +
-      (dupes ? " Skipped " + dupes + " duplicate" + (dupes === 1 ? "" : "s") + "." : "") +
+      (dupes ? ", skipped " + dupes + " duplicate" + (dupes === 1 ? "" : "s") + "." : ".") +
       (moved ? " " + moved + " payment" + (moved === 1 ? " was" : "s were") + " moved to " + (moved === 1 ? "its" : "their") + " correct tax year by payment date." : "") +
       (skipped ? " " + skipped + " invalid record" + (skipped === 1 ? "" : "s") + " skipped." : ""), false);
     ev.target.value = "";
