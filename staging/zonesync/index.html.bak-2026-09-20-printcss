@@ -213,15 +213,6 @@ footer.site a { color: var(--muted); }
   .logo { width: 44px; height: 44px; }
   section.card { padding: 16px; }
 }
-@media print {
-  :root { color-scheme: light; }
-  body { background: #fff !important; color: #111 !important; }
-  .wrap { max-width: none; }
-  form, button { display: none !important; }
-  thead th { position: static !important; }
-  section.card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
-  a { color: #111; text-decoration: none; }
-}
 </style>
 </head>
 <body>
