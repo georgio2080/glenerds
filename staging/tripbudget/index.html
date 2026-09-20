@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TripBudget — Trip Budget Planner</title>
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface2:#eef0f4; --text:#1c2230; --muted:#64707f;
+  --border:#dde2e9; --accent:#2563eb; --accent-ink:#ffffff; --accent-soft:#e3ecff;
+  --good:#16803c; --good-soft:#e2f4e8; --warn:#b45309; --warn-soft:#fdf0dd;
+  --bad:#c0392b; --bad-soft:#fbe7e4; --bar:#2563eb; --bar-bg:#e6eaf1;
+  --radius:12px; --shadow:0 1px 4px rgba(20,30,50,.08);
+}
+html[data-theme="dark"]{
+  --bg:#11151d; --surface:#1a2030; --surface2:#232b40; --text:#eef1f6; --muted:#9aa6b8;
+  --border:#2c3550; --accent:#5b8def; --accent-ink:#0b1220; --accent-soft:#22324f;
+  --good:#4ade80; --good-soft:#173b28; --warn:#fbbf24; --warn-soft:#3d2f14;
+  --bad:#f87171; --bad-soft:#3d1d1a; --bar:#5b8def; --bar-bg:#2c3550;
+  --shadow:0 1px 4px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+header.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+header.top h1{font-size:1.15rem;margin:0;display:flex;align-items:center;gap:.45rem}
+header.top h1 svg{width:24px;height:24px}
+.top-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;width:100%}
+.spacer{flex:1}
+button{font:inherit;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:8px;padding:.45rem .8rem}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-weight:600}
+button.danger{color:var(--bad);border-color:var(--bad)}
+button.icon{padding:.4rem;line-height:0}
+button.icon svg{width:18px;height:18px;vertical-align:middle}
+input,select,textarea{font:inherit;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.45rem .6rem;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.25rem}
+.field{margin-bottom:.7rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+main{max-width:960px;margin:0 auto;padding:1rem}
+nav.tabs{display:flex;gap:.4rem;margin:0 0 1rem;flex-wrap:wrap}
+nav.tabs button{border-radius:999px;border:1px solid var(--border);background:var(--surface);padding:.5rem 1rem;font-weight:600}
+nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;margin-bottom:1rem}
+.card h2{margin:.1rem 0 .8rem;font-size:1.05rem}
+.grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem}
+.stat{background:var(--surface2);border-radius:10px;padding:.7rem .9rem}
+.stat .k{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.stat .v{font-size:1.35rem;font-weight:700;margin-top:.15rem}
+.stat .v.bad{color:var(--bad)} .stat .v.warn{color:var(--warn)} .stat .v.good{color:var(--good)}
+.progress{height:10px;background:var(--bar-bg);border-radius:999px;overflow:hidden;margin:.4rem 0}
+.progress>i{display:block;height:100%;background:var(--bar);border-radius:999px;transition:width .2s}
+.progress.over>i{background:var(--bad)}
+.cat-row{display:grid;grid-template-columns:1.2fr .9fr 1fr auto;gap:.6rem;align-items:center;padding:.55rem 0;border-top:1px solid var(--border)}
+.cat-row .nm{display:flex;align-items:center;gap:.5rem;font-weight:600}
+.cat-row .nm svg{width:20px;height:20px;flex:none}
+.cat-row input{width:100%}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:.5rem .4rem;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge{display:inline-block;font-size:.75rem;font-weight:700;border-radius:999px;padding:.15rem .55rem}
+.badge.over{background:var(--bad-soft);color:var(--bad)}
+.badge.ok{background:var(--good-soft);color:var(--good)}
+.badge.soon{background:var(--warn-soft);color:var(--warn)}
+.day-row{border-top:1px solid var(--border);padding:.6rem 0}
+.day-row .hd .d svg{width:20px;height:20px;flex:none;vertical-align:-4px}
+.day-row details svg{width:16px;height:16px;vertical-align:-3px}
+.day-row .hd{display:flex;justify-content:space-between;gap:.5rem;align-items:baseline;margin-bottom:.35rem}
+.day-row .hd .d{font-weight:700}
+.empty{color:var(--muted);text-align:center;padding:2rem 1rem}
+footer.app{max-width:960px;margin:1.5rem auto 2.5rem;padding:0 1rem;color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+footer.app a{color:var(--accent)}
+.tripbar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.tripbar select{width:auto;min-width:180px;font-weight:600}
+.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.toolbar .spacer{flex:1}
+details summary{cursor:pointer;font-weight:600;padding:.4rem 0}
+.note{font-size:.85rem;color:var(--muted)}
+.savings-out{background:var(--accent-soft);border-radius:10px;padding:.9rem 1rem;font-size:1.05rem;font-weight:600;margin-top:.7rem}
+#print-only{display:none}
+@media (max-width:560px){
+  .form-grid{grid-template-columns:1fr}
+  .cat-row{grid-template-columns:1fr;gap:.3rem}
+  .cat-row .bar-cell{order:3}
+  header.top h1{font-size:1rem}
+  main{padding:.7rem}
+  table{font-size:.85rem}
+}
+@media print{
+  header.top,nav.tabs,.toolbar,footer.app,.no-print{display:none!important}
+  body{background:#fff;color:#000}
+  .card{box-shadow:none;border:1px solid #999;break-inside:avoid}
+  #print-only{display:block}
+  #print-only h1{font-size:1.4rem;margin:0 0 .3rem}
+  #print-only .sub{color:#333;margin-bottom:1rem}
+  main{max-width:none;padding:0}
+  .progress{background:#ddd}
+  .progress>i{background:#333}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>TripBudget</h1>
+    <span class="spacer"></span>
+    <button id="themeToggle" class="icon" title="Toggle dark / light mode" aria-label="Toggle dark mode">
+      <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+  <div class="top-row tripbar">
+    <select id="tripSelect" aria-label="Select trip"></select>
+    <button id="newTripBtn" class="primary">+ New trip</button>
+    <button id="editTripBtn">Trip settings</button>
+    <button id="deleteTripBtn" class="danger">Delete</button>
+    <span class="spacer"></span>
+    <button id="exportBtn">Export JSON</button>
+    <button id="importBtn">Import JSON</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none">
+  </div>
+</header>
+<main id="app">
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="dashboard" aria-selected="true">Dashboard</button>
+    <button role="tab" data-tab="planner" aria-selected="false">Planner</button>
+    <button role="tab" data-tab="expenses" aria-selected="false">Expenses</button>
+    <button role="tab" data-tab="daily" aria-selected="false">Daily view</button>
+  </nav>
+  <div id="emptyState" class="card empty" style="display:none">
+    <h2>No trips yet</h2>
+    <p>Create your first trip to start planning a budget, tracking savings, and logging expenses.</p>
+    <button class="primary" id="emptyNewBtn">+ Create my first trip</button>
+  </div>
+  <section id="tab-dashboard" class="tabpane"></section>
+  <section id="tab-planner" class="tabpane" style="display:none"></section>
+  <section id="tab-expenses" class="tabpane" style="display:none"></section>
+  <section id="tab-daily" class="tabpane" style="display:none"></section>
+</main>
+<footer class="app">
+  <span>TripBudget — plan before you go, track while you're there. All data stays on this device.</span>
+  <span>by <a href="https://glenerds.gumroad.com" rel="noopener">Glenerds</a></span>
+</footer>
+<div id="print-only"></div>
+
+<div id="tripModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;padding:1rem">
+  <div class="card" style="max-width:520px;width:100%;margin:0;max-height:90vh;overflow:auto">
+    <h2 id="tripModalTitle">New trip</h2>
+    <div class="field"><label for="fDest">Destination</label><input id="fDest" placeholder="e.g. Japan"></div>
+    <div class="form-grid">
+      <div class="field"><label for="fStart">Start date</label><input id="fStart" type="date"></div>
+      <div class="field"><label for="fEnd">End date</label><input id="fEnd" type="date"></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label for="fHomeCur">Home currency</label><select id="fHomeCur"></select></div>
+      <div class="field"><label for="fTripCur">Trip currency</label><select id="fTripCur"></select></div>
+    </div>
+    <div class="field"><label for="fRate">Exchange rate <span class="note" id="rateHint"></span></label>
+      <input id="fRate" type="number" min="0" step="any" placeholder="e.g. 1.08">
+      <div class="note">You enter the rate yourself — no internet needed. Check your bank or a recent receipt.</div>
+    </div>
+    <div class="field"><label for="fBudget">Total trip budget (home currency)</label><input id="fBudget" type="number" min="0" step="0.01" placeholder="e.g. 3500"></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end">
+      <button id="tripCancel">Cancel</button>
+      <button id="tripSave" class="primary">Save trip</button>
+    </div>
+  </div>
+</div>
+
+<div id="expenseModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;padding:1rem">
+  <div class="card" style="max-width:520px;width:100%;margin:0;max-height:90vh;overflow:auto">
+    <h2 id="expenseModalTitle">Log expense</h2>
+    <div class="form-grid">
+      <div class="field"><label for="eDate">Date</label><input id="eDate" type="date"></div>
+      <div class="field"><label for="eCat">Category</label><select id="eCat"></select></div>
+    </div>
+    <div class="field"><label for="eAmount">Amount <span class="note" id="eCurHint"></span></label><input id="eAmount" type="number" min="0" step="0.01" placeholder="0.00"></div>
+    <div class="field"><label for="eNote">Note (optional)</label><input id="eNote" placeholder="e.g. Ramen in Osaka"></div>
+    <div class="field no-print"><label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" id="eHomeCur" style="width:auto"> Amount is in home currency instead</label></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end">
+      <button id="expenseCancel">Cancel</button>
+      <button id="expenseSave" class="primary">Save expense</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* TripBudget — fully offline trip budget planner. All state in localStorage. */
+/* Money is stored as integer cents in the HOME currency for exact math. */
+
+const STORE_KEY = "tripbudget-v1";
+const THEME_KEY = "tripbudget-theme";
+
+const CATEGORIES = [
+  {id:"flights",   name:"Flights",            icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5L3 11l1.5-4.5L11 8l3.5-5.5c.6-1 2-1.2 2.8-.4l1.1 1.1c.8.8.6 2.2-.4 2.8L12.5 9l1.5 6.5L9.5 14l-2 5-2.5-.5 3-6z" transform="rotate(15 12 12)"/></svg>'},
+  {id:"lodging",   name:"Lodging",            icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>'},
+  {id:"food",      name:"Food & Drink",       icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2"/><path d="M8 2v20M17 2c-2 0-3 2.5-3 6 0 2.5 1 4 3 4v10"/><path d="M17 2v10"/></svg>'},
+  {id:"transport", name:"Local Transport",    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="13" rx="2"/><path d="M4 10h16M8 20l-2 2M16 20l2 2"/><circle cx="8.5" cy="13.5" r=".8" fill="currentColor"/><circle cx="15.5" cy="13.5" r=".8" fill="currentColor"/></svg>'},
+  {id:"activities",name:"Activities & Tours", icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>'},
+  {id:"shopping",  name:"Shopping",           icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h15l-1.7 7.5a2 2 0 0 1-2 1.5H8.7a2 2 0 0 1-2-1.5L4 4H2"/><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/></svg>'},
+  {id:"insurance", name:"Travel Insurance",   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>'},
+  {id:"other",     name:"Other",              icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.8.3-.9 1-.9 1.7"/><circle cx="12" cy="17" r=".8" fill="currentColor"/></svg>'}
+];
+const CURR_SYMBOLS = {USD:"$",EUR:"€",GBP:"£",JPY:"¥",CAD:"$",AUD:"$",NZD:"$",CHF:"CHF ",CNY:"¥",HKD:"HK$",SGD:"S$",KRW:"₩",INR:"₹",MXN:"MX$",BRL:"R$",SEK:"kr ",NOK:"kr ",DKK:"kr ",PLN:"zł ",CZK:"Kč ",THB:"฿",VND:"₫",PHP:"₱",MYR:"RM ",IDR:"Rp ",ZAR:"R ",AED:"د.إ ",TRY:"₺ ",ILS:"₪ ",RUB:"₽ ",UAH:"₴ "};
+const CURR_LIST = ["USD","EUR","GBP","JPY","CAD","AUD","NZD","CHF","CNY","HKD","SGD","KRW","INR","MXN","BRL","SEK","NOK","DKK","PLN","CZK","THB","VND","PHP","MYR","IDR","ZAR","AED","TRY","ILS","RUB","UAH"];
+
+/* ---------- money helpers (integer cents, exact) ---------- */
+function toCents(amount){ // number|string -> integer cents, exact for 2dp input
+  const n = Number(amount);
+  if(!isFinite(n)) return 0;
+  return Math.round(n * 100);
+}
+function fmtCents(cents, code){
+  if(!isFinite(Number(cents))) return "0.00";
+  const neg = cents < 0;
+  const a = Math.abs(Math.round(cents));
+  const whole = Math.floor(a/100).toLocaleString("en-US");
+  const frac = String(a%100).padStart(2,"0");
+  const sym = CURR_SYMBOLS[code] !== undefined ? CURR_SYMBOLS[code] : (code ? code+" " : "");
+  return (neg?"-":"") + sym + whole + "." + frac;
+}
+/* convert trip-currency amount (string/number, up to 2dp) -> home cents.
+   rate = home-currency units per 1 trip-currency unit (e.g. 1 EUR = 1.08 USD). */
+function tripToHomeCents(tripAmount, rate){
+  const r = Number(rate), a = Number(tripAmount);
+  if(!isFinite(r) || !isFinite(a) || r < 0 || a < 0) return 0;
+  // keep 6dp precision on rate math, then round to the cent
+  return Math.round(a * r * 100);
+}
+function homeCentsToTrip(cents, rate){
+  const r = Number(rate);
+  if(!isFinite(r) || r <= 0) return 0;
+  return Math.round((cents/100)/r*100)/100;
+}
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+/* ---------- state ---------- */
+function blankState(){ return {version:1, trips:[], activeTripId:null}; }
+let state = blankState();
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    if(!s || !Array.isArray(s.trips)) return;
+    state = s;
+  }catch(e){ console.warn("TripBudget: stored data was unreadable, starting fresh.", e); }
+}
+/* harden imported data: coerce types, validate numbers, keep esc() as the render-time XSS guard */
+function isValidDateStr(s){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s||"")) return false;
+  const p = s.split("-"), y = +p[0], m = +p[1], d = +p[2];
+  const dt = new Date(y, m-1, d);
+  return dt.getFullYear()===y && dt.getMonth()===m-1 && dt.getDate()===d;
+}
+function sanitizeTrip(t){
+  if(!t || typeof t !== "object") return null;
+  const s = (v)=> String(v==null?"":v).slice(0,500);
+  const num = (v)=> { const n = Number(v); return isFinite(n) ? n : 0; };
+  const out = {
+    id: s(t.id) || uid(),
+    destination: s(t.destination) || "Untitled trip",
+    start: isValidDateStr(t.start) ? t.start : "",
+    end: isValidDateStr(t.end) ? t.end : "",
+    homeCur: /^[A-Z]{3}$/.test(t.homeCur||"") ? t.homeCur : "USD",
+    tripCur: /^[A-Z]{3}$/.test(t.tripCur||"") ? t.tripCur : "EUR",
+    rate: (num(t.rate) > 0) ? num(t.rate) : 1,
+    totalBudgetCents: Math.max(0, Math.round(num(t.totalBudgetCents))),
+    allocations: {}, savings: {targetCents:0}, expenses: []
+  };
+  if(out.start && out.end && daysBetween(out.start,out.end) < 0){ const tmp=out.start; out.start=out.end; out.end=tmp; }
+  CATEGORIES.forEach(c=>{
+    out.allocations[c.id] = Math.max(0, Math.round(num(t.allocations && t.allocations[c.id])));
+  });
+  out.savings.targetCents = Math.max(0, Math.round(num(t.savings && t.savings.targetCents)));
+  if(Array.isArray(t.expenses)) t.expenses.forEach(e=>{
+    if(!e || typeof e !== "object") return;
+    const hc = Math.max(0, Math.round(num(e.homeCents)));
+    out.expenses.push({
+      id: s(e.id) || uid(),
+      date: isValidDateStr(e.date) ? e.date : todayStr(),
+      cat: CATEGORIES.some(c=>c.id===e.cat) ? e.cat : "other",
+      tripAmount: Math.max(0, Math.round(num(e.tripAmount)*100)/100),
+      homeCents: hc,
+      note: s(e.note).slice(0,500)
+    });
+  });
+  return out;
+}
+function uid(){ return "t"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36); }
+function activeTrip(){ return state.trips.find(t=>t.id===state.activeTripId) || null; }
+function tripById(id){ return state.trips.find(t=>t.id===id) || null; }
+
+/* date helpers — parse YYYY-MM-DD as LOCAL dates (no UTC shift) */
+function parseLocal(d){ if(!d) return null; const p=d.split("-"); if(p.length<3) return null; const dt=new Date(+p[0],+p[1]-1,+p[2]); return isNaN(dt)?null:dt; }
+function fmtDate(d){ const dt=parseLocal(d); return dt?dt.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"—"; }
+function todayStr(){ const n=new Date(); return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0"); }
+function daysBetween(a,b){ const da=parseLocal(a), db=parseLocal(b); if(!da||!db) return 0; return Math.round((db-da)/86400000); }
+function tripDays(t){ if(!t.start||!t.end) return 0; return Math.max(0, daysBetween(t.start,t.end)+1); }
+function catById(id){ return CATEGORIES.find(c=>c.id===id) || CATEGORIES[CATEGORIES.length-1]; }
+
+/* ---------- theme ---------- */
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  document.getElementById("iconSun").style.display = theme==="dark" ? "none" : "";
+  document.getElementById("iconMoon").style.display = theme==="dark" ? "" : "none";
+  try{ localStorage.setItem(THEME_KEY, theme); }catch(e){}
+}
+(function initTheme(){
+  let t = null;
+  try{ t = localStorage.getItem(THEME_KEY); }catch(e){}
+  if(t!=="dark" && t!=="light"){
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  applyTheme(t);
+})();
+document.getElementById("themeToggle").addEventListener("click", ()=>{
+  const cur = document.documentElement.getAttribute("data-theme");
+  applyTheme(cur==="dark" ? "light" : "dark");
+});
+
+/* ---------- trips ---------- */
+function openTripModal(editing){
+  const t = editing ? activeTrip() : null;
+  document.getElementById("tripModalTitle").textContent = editing ? "Trip settings" : "New trip";
+  document.getElementById("fDest").value = t ? t.destination : "";
+  document.getElementById("fStart").value = t ? (t.start||"") : "";
+  document.getElementById("fEnd").value = t ? (t.end||"") : "";
+  document.getElementById("fHomeCur").value = t ? t.homeCur : "USD";
+  document.getElementById("fTripCur").value = t ? t.tripCur : "EUR";
+  document.getElementById("fRate").value = t ? t.rate : "";
+  document.getElementById("fBudget").value = t ? (t.totalBudgetCents/100) : "";
+  updateRateHint();
+  document.getElementById("tripModal").style.display = "flex";
+  editingTrip = editing ? t.id : null;
+}
+let editingTrip = null;
+function updateRateHint(){
+  const hc = document.getElementById("fHomeCur").value, tc = document.getElementById("fTripCur").value;
+  document.getElementById("rateHint").textContent = "(1 "+tc+" = ? "+hc+")";
+}
+document.getElementById("tripSave").addEventListener("click", ()=>{
+  const dest = document.getElementById("fDest").value.trim();
+  const start = document.getElementById("fStart").value, end = document.getElementById("fEnd").value;
+  const homeCur = document.getElementById("fHomeCur").value, tripCur = document.getElementById("fTripCur").value;
+  const rate = Number(document.getElementById("fRate").value);
+  const budgetCents = toCents(document.getElementById("fBudget").value || 0);
+  if(!dest){ alert("Please enter a destination."); return; }
+  if(!start || !end){ alert("Please pick start and end dates."); return; }
+  if(daysBetween(start,end) < 0){ alert("End date must be on or after the start date."); return; }
+  if(!(rate > 0)){ alert("Please enter a valid exchange rate greater than 0."); return; }
+  if(editingTrip){
+    const t = tripById(editingTrip); if(!t) return;
+    Object.assign(t,{destination:dest,start,end,homeCur,tripCur,rate,totalBudgetCents:budgetCents});
+  } else {
+    const t = {id:uid(), destination:dest, start, end, homeCur, tripCur, rate,
+      totalBudgetCents:budgetCents, allocations:{}, savings:{targetCents:0}, expenses:[]};
+    CATEGORIES.forEach(c=>{ t.allocations[c.id]=0; });
+    state.trips.push(t);
+    state.activeTripId = t.id;
+  }
+  save(); closeModal("tripModal"); renderAll();
+});
+function closeModal(id){ document.getElementById(id).style.display = "none"; }
+document.getElementById("tripCancel").addEventListener("click", ()=>closeModal("tripModal"));
+document.getElementById("newTripBtn").addEventListener("click", ()=>openTripModal(false));
+document.getElementById("emptyNewBtn").addEventListener("click", ()=>openTripModal(false));
+document.getElementById("editTripBtn").addEventListener("click", ()=>{ if(activeTrip()) openTripModal(true); });
+document.getElementById("deleteTripBtn").addEventListener("click", ()=>{
+  const t = activeTrip(); if(!t) return;
+  if(!confirm('Delete the trip "'+t.destination+'"? All its budget data will be removed.')) return;
+  state.trips = state.trips.filter(x=>x.id!==t.id);
+  state.activeTripId = state.trips.length ? state.trips[0].id : null;
+  save(); renderAll();
+});
+document.getElementById("tripSelect").addEventListener("change", e=>{
+  state.activeTripId = e.target.value; save(); renderAll();
+});
+document.getElementById("fHomeCur").addEventListener("change", updateRateHint);
+document.getElementById("fTripCur").addEventListener("change", updateRateHint);
+
+/* ---------- export / import ---------- */
+function downloadFile(name, text){
+  const blob = new Blob([text], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+document.getElementById("exportBtn").addEventListener("click", ()=>{
+  const stamp = todayStr();
+  downloadFile("tripbudget-export-"+stamp+".json", JSON.stringify(state,null,2));
+});
+document.getElementById("importBtn").addEventListener("click", ()=>document.getElementById("importFile").click());
+document.getElementById("importFile").addEventListener("change", e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const s = JSON.parse(r.result);
+      if(!s || !Array.isArray(s.trips)) throw new Error("bad file");
+      const clean = [];
+      s.trips.forEach(t=>{ const c = sanitizeTrip(t); if(c) clean.push(c); });
+      if(!clean.length) throw new Error("no valid trips");
+      state = {version:1, trips:clean, activeTripId:null};
+      if(!tripById(state.activeTripId)) state.activeTripId = state.trips.length?state.trips[0].id:null;
+      save(); renderAll();
+      alert("Import complete: "+state.trips.length+" trip(s) loaded.");
+    }catch(err){ alert("Could not import that file — it isn't a valid TripBudget export."); }
+    e.target.value = "";
+  };
+  r.readAsText(f);
+});
+
+/* ---------- tabs ---------- */
+document.querySelectorAll("nav.tabs button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected","false"));
+    b.setAttribute("aria-selected","true");
+    document.querySelectorAll(".tabpane").forEach(p=>p.style.display="none");
+    document.getElementById("tab-"+b.dataset.tab).style.display = "";
+  });
+});
+
+/* ---------- dashboard ---------- */
+function tripTotals(t){
+  const perCat = {}; CATEGORIES.forEach(c=>perCat[c.id]=0);
+  t.expenses.forEach(x=>{ const c = catById(x.cat).id; perCat[c]+= x.homeCents; });
+  const spent = Object.values(perCat).reduce((a,b)=>a+b,0);
+  const allocated = CATEGORIES.reduce((a,c)=>a+(t.allocations[c.id]||0),0);
+  const budget = t.totalBudgetCents || allocated;
+  return {perCat, spent, allocated, budget, remaining: budget-spent,
+          pct: budget>0 ? Math.round(spent/budget*1000)/10 : 0};
+}
+function renderDashboard(t){
+  const el = document.getElementById("tab-dashboard");
+  const d = tripTotals(t), days = tripDays(t);
+  const today = todayStr();
+  const toDep = daysBetween(today, t.start);
+  const daysLeft = Math.max(0, daysBetween(today, t.end));
+  let timing;
+  if(toDep > 0) timing = '<div class="stat"><div class="k">Departure</div><div class="v">'+toDep+' day'+(toDep===1?"":"s")+'</div></div>';
+  else if(toDep === 0) timing = '<div class="stat"><div class="k">Departure</div><div class="v">Today!</div></div>';
+  else timing = '<div class="stat"><div class="k">Trip status</div><div class="v">'+(daysLeft>0?daysLeft+' day'+(daysLeft===1?"":"s")+' left':'Finished')+'</div></div>';
+  const dailyAllow = days>0 && d.budget>0 ? Math.floor(d.budget/days) : 0;
+  el.innerHTML =
+    '<div class="toolbar no-print"><span class="spacer"></span><button id="printBtn">🖨 Print trip summary</button></div>'+
+    '<div class="card"><h2>'+esc(t.destination)+' <span class="note">'+esc(fmtDate(t.start))+' → '+esc(fmtDate(t.end))+' · '+esc(t.homeCur)+' / '+esc(t.tripCur)+' · 1 '+esc(t.tripCur)+' = '+esc(String(t.rate))+' '+esc(t.homeCur)+'</span></h2>'+
+    '<div class="grid-stats">'+
+      '<div class="stat"><div class="k">Total budget</div><div class="v">'+esc(fmtCents(d.budget,t.homeCur))+'</div></div>'+
+      '<div class="stat"><div class="k">Spent</div><div class="v '+(d.spent>d.budget?'bad':'')+'">'+esc(fmtCents(d.spent,t.homeCur))+'</div></div>'+
+      '<div class="stat"><div class="k">Remaining</div><div class="v '+(d.remaining<0?'bad':'good')+'">'+esc(fmtCents(d.remaining,t.homeCur))+'</div></div>'+
+      '<div class="stat"><div class="k">Used</div><div class="v '+(d.pct>100?'bad':d.pct>85?'warn':'')+'">'+d.pct+'%</div></div>'+
+      timing+
+      '<div class="stat"><div class="k">Daily allowance</div><div class="v">'+esc(fmtCents(dailyAllow,t.homeCur))+'</div></div>'+
+    '</div>'+
+    '<div class="progress'+(d.pct>100?' over':'')+'"><i style="width:'+Math.min(100,d.pct)+'%"></i></div>'+
+    (d.pct>100?'<p><span class="badge over">OVER BUDGET by '+esc(fmtCents(d.spent-d.budget,t.homeCur))+'</span></p>':'')+
+    '</div>'+
+    '<div class="card"><h2>Spending by category</h2>'+
+      CATEGORIES.map(c=>{
+        const alloc = t.allocations[c.id]||0, spent = d.perCat[c.id];
+        const pct = alloc>0 ? Math.round(spent/alloc*1000)/10 : (spent>0?100:0);
+        return '<div class="day-row"><div class="hd"><div class="d">'+c.icon+' '+esc(c.name)+'</div>'+
+          '<div><strong>'+esc(fmtCents(spent,t.homeCur))+'</strong> <span class="note">of '+esc(fmtCents(alloc,t.homeCur))+'</span> '+
+          (alloc>0 && spent>alloc ? '<span class="badge over">over</span>' : '<span class="badge ok">'+pct+'%</span>')+'</div></div>'+
+          '<div class="progress'+(alloc>0&&spent>alloc?' over':'')+'"><i style="width:'+Math.min(100,pct)+'%"></i></div></div>';
+      }).join("")+
+    '</div>';
+  document.getElementById("printBtn").addEventListener("click", printSummary);
+}
+
+/* ---------- planner (allocations + savings) ---------- */
+function renderPlanner(t){
+  const el = document.getElementById("tab-planner");
+  const days = tripDays(t);
+  const allocated = CATEGORIES.reduce((a,c)=>a+(t.allocations[c.id]||0),0);
+  const dailyAllow = days>0 ? Math.floor((t.totalBudgetCents||0)/days) : 0;
+  el.innerHTML =
+    '<div class="card"><h2>Pre-trip budget allocation <span class="note">(in '+esc(t.homeCur)+')</span></h2>'+
+    '<div class="field" style="max-width:320px"><label>Total trip budget ('+esc(t.homeCur)+')</label>'+
+      '<input id="pBudget" type="number" min="0" step="0.01" value="'+(t.totalBudgetCents/100)+'"></div>'+
+    CATEGORIES.map(c=>
+      '<div class="cat-row"><div class="nm">'+c.icon+' '+esc(c.name)+'</div>'+
+      '<div><input type="number" min="0" step="0.01" data-alloc="'+c.id+'" value="'+((t.allocations[c.id]||0)/100)+'" aria-label="'+esc(c.name)+' allocation"></div>'+
+      '<div class="bar-cell"><div class="progress"><i style="width:'+(allocated>0?Math.min(100,(t.allocations[c.id]||0)/allocated*100):0)+'%"></i></div></div>'+
+      '<div class="note" data-share="'+c.id+'">'+(allocated>0?Math.round((t.allocations[c.id]||0)/allocated*1000)/10:0)+'%</div></div>'
+    ).join("")+
+    '<p><strong>Allocated: <span id="pAllocTotal">'+esc(fmtCents(allocated,t.homeCur))+'</span></strong> '+
+    '<span class="note">of '+esc(fmtCents(t.totalBudgetCents,t.homeCur))+'</span> '+
+    '<span id="pAllocDiff"></span></p>'+
+    (days>0?'<p class="note">Per-day allowance: <strong>'+esc(fmtCents(dailyAllow,t.homeCur))+'</strong> over '+days+' day'+(days===1?"":"s")+'.</p>':'<p class="note">Pick valid trip dates to see the per-day allowance.</p>')+
+    '</div>'+
+    '<div class="card"><h2>Savings target</h2>'+
+    '<div class="form-grid"><div class="field"><label>Departure date</label><input id="sDepart" type="date" value="'+esc(t.start||'')+'"></div>'+
+    '<div class="field"><label>Target to save ('+esc(t.homeCur)+')</label><input id="sTarget" type="number" min="0" step="0.01" value="'+((t.savings&&t.savings.targetCents||0)/100)+'"></div></div>'+
+    '<div id="savingsOut" class="savings-out">Enter a departure date and a target above.</div>'+
+    '<p class="note">Based on today ('+esc(fmtDate(todayStr()))+'). Save a little each week and the trip pays for itself.</p></div>';
+  const recalcAlloc = ()=>{
+    let sum = 0;
+    el.querySelectorAll("[data-alloc]").forEach(inp=>{
+      const cents = toCents(inp.value||0);
+      t.allocations[inp.dataset.alloc] = cents; sum += cents;
+    });
+    t.totalBudgetCents = toCents(document.getElementById("pBudget").value||0);
+    save();
+    document.getElementById("pAllocTotal").textContent = fmtCents(sum,t.homeCur);
+    const diff = t.totalBudgetCents - sum;
+    const dEl = document.getElementById("pAllocDiff");
+    if(diff === 0){ dEl.innerHTML = '<span class="badge ok">fully allocated</span>'; }
+    else if(diff > 0){ dEl.innerHTML = '<span class="badge soon">'+esc(fmtCents(diff,t.homeCur))+' unallocated</span>'; }
+    else { dEl.innerHTML = '<span class="badge over">'+esc(fmtCents(-diff,t.homeCur))+' over budget</span>'; }
+    el.querySelectorAll("[data-alloc]").forEach(inp=>{
+      const c = inp.dataset.alloc;
+      const sh = sum>0 ? Math.round((t.allocations[c]||0)/sum*1000)/10 : 0;
+      const lbl = el.querySelector('[data-share="'+c+'"]');
+      if(lbl) lbl.textContent = sh+"%";
+      const bar = inp.closest(".cat-row").querySelector(".progress>i");
+      if(bar) bar.style.width = Math.min(100, sh)+"%";
+    });
+  };
+  el.querySelectorAll("[data-alloc]").forEach(inp=>inp.addEventListener("change", recalcAlloc));
+  document.getElementById("pBudget").addEventListener("change", recalcAlloc);
+  recalcAlloc();
+  const recalcSavings = ()=>{
+    const depart = document.getElementById("sDepart").value;
+    const target = toCents(document.getElementById("sTarget").value||0);
+    t.savings = {targetCents:target}; save();
+    const out = document.getElementById("savingsOut");
+    const daysLeft = daysBetween(todayStr(), depart);
+    if(!depart || target<=0){ out.textContent = "Enter a departure date and a target above."; return; }
+    if(daysLeft <= 0){ out.textContent = "Departure is today or in the past — time to enjoy the trip!"; return; }
+    const weeks = Math.max(1, Math.ceil(daysLeft/7));
+    const months = Math.max(1, Math.ceil(daysLeft/30.44));
+    const perWeek = Math.ceil(target/weeks), perMonth = Math.ceil(target/months);
+    out.innerHTML = 'Save <strong>'+esc(fmtCents(perMonth,t.homeCur))+'/month</strong> or <strong>'+esc(fmtCents(perWeek,t.homeCur))+'/week</strong> to reach '+esc(fmtCents(target,t.homeCur))+' by '+esc(fmtDate(depart))+' <span class="note">('+daysLeft+' days to go)</span>';
+  };
+  document.getElementById("sDepart").addEventListener("change", recalcSavings);
+  document.getElementById("sTarget").addEventListener("change", recalcSavings);
+  recalcSavings();
+}
+
+/* ---------- expenses ---------- */
+function openExpenseModal(editId){
+  const t = activeTrip(); if(!t) return;
+  const sel = document.getElementById("eCat");
+  sel.innerHTML = CATEGORIES.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join("");
+  document.getElementById("eCurHint").textContent = "(in "+t.tripCur+")";
+  const x = editId ? t.expenses.find(e=>e.id===editId) : null;
+  document.getElementById("expenseModalTitle").textContent = x ? "Edit expense" : "Log expense";
+  document.getElementById("eDate").value = x ? x.date : todayStr();
+  document.getElementById("eCat").value = x ? x.cat : "food";
+  document.getElementById("eAmount").value = x ? x.tripAmount : "";
+  document.getElementById("eNote").value = x ? (x.note||"") : "";
+  document.getElementById("eHomeCur").checked = false;
+  editingExpense = editId || null;
+  document.getElementById("expenseModal").style.display = "flex";
+}
+let editingExpense = null;
+document.getElementById("expenseSave").addEventListener("click", ()=>{
+  const t = activeTrip(); if(!t) return;
+  const date = document.getElementById("eDate").value;
+  const cat = document.getElementById("eCat").value;
+  const amt = document.getElementById("eAmount").value;
+  const note = document.getElementById("eNote").value.trim();
+  const inHome = document.getElementById("eHomeCur").checked;
+  if(!date){ alert("Pick a date for the expense."); return; }
+  const num = Number(amt);
+  if(!(num > 0)){ alert("Enter an amount greater than 0."); return; }
+  // round trip amount to 2dp to keep money exact
+  const tripAmount = inHome ? homeCentsToTrip(toCents(num), t.rate) : Math.round(num*100)/100;
+  const homeCents = inHome ? toCents(num) : tripToHomeCents(tripAmount, t.rate);
+  const rec = {id: editingExpense || uid(), date, cat,
+    tripAmount: Math.round(tripAmount*100)/100, homeCents, note};
+  if(editingExpense){
+    const i = t.expenses.findIndex(e=>e.id===editingExpense);
+    if(i>=0) t.expenses[i] = rec;
+  } else t.expenses.push(rec);
+  save(); closeModal("expenseModal"); renderAll();
+});
+document.getElementById("expenseCancel").addEventListener("click", ()=>closeModal("expenseModal"));
+function renderExpenses(t){
+  const el = document.getElementById("tab-expenses");
+  const d = tripTotals(t);
+  const rows = t.expenses.slice().sort((a,b)=> a.date<b.date?-1:a.date>b.date?1:0);
+  el.innerHTML =
+    '<div class="toolbar"><button class="primary" id="addExpBtn">+ Log expense</button><span class="spacer"></span>'+
+    '<span class="note">Amounts entered in <strong>'+esc(t.tripCur)+'</strong>; totals shown in <strong>'+esc(t.homeCur)+'</strong>. Rate: 1 '+esc(t.tripCur)+' = '+esc(String(t.rate))+' '+esc(t.homeCur)+'</span></div>'+
+    '<div class="card"><h2>Budget vs actual by category</h2>'+
+    CATEGORIES.map(c=>{
+      const alloc = t.allocations[c.id]||0, spent = d.perCat[c.id];
+      const pct = alloc>0 ? Math.round(spent/alloc*1000)/10 : (spent>0?100:0);
+      const left = alloc-spent;
+      return '<div class="day-row"><div class="hd"><div class="d">'+c.icon+' '+esc(c.name)+'</div>'+
+        '<div><strong>'+esc(fmtCents(spent,t.homeCur))+'</strong> <span class="note">/ '+esc(fmtCents(alloc,t.homeCur))+'</span> '+
+        (left<0?'<span class="badge over">over by '+esc(fmtCents(-left,t.homeCur))+'</span>':'<span class="badge ok">'+esc(fmtCents(left,t.homeCur))+' left</span>')+'</div></div>'+
+        '<div class="progress'+(left<0?' over':'')+'"><i style="width:'+Math.min(100,pct)+'%"></i></div></div>';
+    }).join("")+'</div>'+
+    '<div class="card"><h2>Expense log ('+rows.length+')</h2>'+
+    (rows.length ?
+      '<div style="overflow-x:auto"><table><thead><tr><th>Date</th><th>Category</th><th>Note</th><th class="num">'+esc(t.tripCur)+'</th><th class="num">'+esc(t.homeCur)+'</th><th></th></tr></thead><tbody>'+
+      rows.map(x=>{
+        const c = catById(x.cat);
+        const tSym = CURR_SYMBOLS[t.tripCur]!==undefined?CURR_SYMBOLS[t.tripCur]:t.tripCur+" ";
+        return '<tr><td>'+esc(fmtDate(x.date))+'</td><td>'+esc(c.name)+'</td><td>'+esc(x.note||"—")+'</td>'+
+          '<td class="num">'+esc(tSym+Number(x.tripAmount).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}))+'</td>'+
+          '<td class="num">'+esc(fmtCents(x.homeCents,t.homeCur))+'</td>'+
+          '<td class="num no-print"><button data-edit="'+x.id+'">Edit</button> <button data-del="'+x.id+'" class="danger">✕</button></td></tr>';
+      }).join("")+'</tbody></table></div>'
+    : '<p class="empty">No expenses yet — log your first one above.</p>')+'</div>';
+  document.getElementById("addExpBtn").addEventListener("click", ()=>openExpenseModal(null));
+  el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click", ()=>openExpenseModal(b.dataset.edit)));
+  el.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click", ()=>{
+    if(!confirm("Delete this expense?")) return;
+    t.expenses = t.expenses.filter(e=>e.id!==b.dataset.del);
+    save(); renderAll();
+  }));
+}
+
+/* ---------- daily view ---------- */
+function renderDaily(t){
+  const el = document.getElementById("tab-daily");
+  const d = tripTotals(t), days = tripDays(t);
+  if(days<=0){ el.innerHTML = '<div class="card empty">Set trip dates in Trip settings to see the daily view.</div>'; return; }
+  const dailyAllow = d.budget>0 ? Math.floor(d.budget/days) : 0;
+  const byDay = {};
+  t.expenses.forEach(x=>{ byDay[x.date] = (byDay[x.date]||0) + x.homeCents; });
+  const start = parseLocal(t.start);
+  let html = '<div class="card"><h2>Daily spending vs allowance <span class="note">('+esc(fmtCents(dailyAllow,t.homeCur))+'/day)</span></h2>';
+  for(let i=0;i<days;i++){
+    const dt = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+    const key = dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+    const spent = byDay[key]||0;
+    const pct = dailyAllow>0 ? Math.round(spent/dailyAllow*1000)/10 : (spent>0?100:0);
+    const cats = {};
+    t.expenses.filter(x=>x.date===key).forEach(x=>{ cats[x.cat]=(cats[x.cat]||0)+x.homeCents; });
+    const catBars = Object.keys(cats).map(cid=>{
+      const c = catById(cid), share = spent>0?Math.round(cats[cid]/spent*100):0;
+      return '<div style="display:flex;align-items:center;gap:.5rem;margin:.2rem 0"><span style="width:150px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.icon+' '+esc(c.name)+'</span>'+
+        '<div class="progress" style="flex:1;margin:0"><i style="width:'+share+'%"></i></div>'+
+        '<span class="num" style="width:90px;text-align:right">'+esc(fmtCents(cats[cid],t.homeCur))+'</span></div>';
+    }).join("");
+    html += '<div class="day-row"><div class="hd"><div class="d">'+esc(dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}))+'</div>'+
+      '<div><strong>'+esc(fmtCents(spent,t.homeCur))+'</strong> <span class="note">of '+esc(fmtCents(dailyAllow,t.homeCur))+'</span> '+
+      (spent>dailyAllow&&dailyAllow>0?'<span class="badge over">over</span>':'<span class="badge ok">'+pct+'%</span>')+'</div></div>'+
+      '<div class="progress'+(spent>dailyAllow&&dailyAllow>0?' over':'')+'"><i style="width:'+Math.min(100,pct)+'%"></i></div>'+
+      (catBars?'<details><summary>Category breakdown</summary>'+catBars+'</details>':'<div class="note">No spending logged.</div>')+'</div>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+/* ---------- print ---------- */
+function printSummary(){
+  const t = activeTrip(); if(!t) return;
+  const d = tripTotals(t), days = tripDays(t);
+  const po = document.getElementById("print-only");
+  po.innerHTML = '<h1>Trip budget summary — '+esc(t.destination)+'</h1>'+
+    '<div class="sub">'+esc(fmtDate(t.start))+' → '+esc(fmtDate(t.end))+' ('+days+' days) · '+esc(t.homeCur)+' home / '+esc(t.tripCur)+' trip · 1 '+esc(t.tripCur)+' = '+esc(String(t.rate))+' '+esc(t.homeCur)+'</div>'+
+    '<table><thead><tr><th>Category</th><th class="num">Allocated</th><th class="num">Spent</th><th class="num">Remaining</th></tr></thead><tbody>'+
+    CATEGORIES.map(c=>{
+      const a=t.allocations[c.id]||0, s=d.perCat[c.id];
+      return '<tr><td>'+esc(c.name)+'</td><td class="num">'+esc(fmtCents(a,t.homeCur))+'</td><td class="num">'+esc(fmtCents(s,t.homeCur))+'</td><td class="num">'+esc(fmtCents(a-s,t.homeCur))+'</td></tr>';
+    }).join("")+
+    '<tr><td><strong>Total</strong></td><td class="num"><strong>'+esc(fmtCents(d.allocated,t.homeCur))+'</strong></td><td class="num"><strong>'+esc(fmtCents(d.spent,t.homeCur))+'</strong></td><td class="num"><strong>'+esc(fmtCents(d.remaining,t.homeCur))+'</strong></td></tr>'+
+    '</tbody></table><p>Budget '+esc(fmtCents(d.budget,t.homeCur))+' · used '+d.pct+'% · prepared with TripBudget</p>';
+  window.print();
+}
+
+/* ---------- render all ---------- */
+function renderTripSelect(){
+  const sel = document.getElementById("tripSelect");
+  sel.innerHTML = state.trips.map(t=>'<option value="'+t.id+'"'+(t.id===state.activeTripId?' selected':'')+'>'+esc(t.destination)+'</option>').join("");
+  sel.style.display = state.trips.length ? "" : "none";
+}
+function renderAll(){
+  renderTripSelect();
+  const t = activeTrip();
+  document.getElementById("emptyState").style.display = t ? "none" : "";
+  document.querySelectorAll(".tabpane").forEach(p=>p.style.display = t ? "" : "none");
+  document.querySelectorAll("nav.tabs").forEach(n=>n.style.display = t ? "" : "none");
+  if(!t){
+    document.getElementById("tab-dashboard").innerHTML = "";
+    return;
+  }
+  // keep first tab visible unless another is selected
+  const selTab = document.querySelector('nav.tabs button[aria-selected="true"]');
+  const tab = selTab ? selTab.dataset.tab : "dashboard";
+  document.querySelectorAll(".tabpane").forEach(p=>p.style.display="none");
+  document.getElementById("tab-"+tab).style.display = "";
+  renderDashboard(t); renderPlanner(t); renderExpenses(t); renderDaily(t);
+}
+CURR_LIST.forEach(c=>{
+  ["fHomeCur","fTripCur"].forEach(id=>{
+    const o = document.createElement("option"); o.value=c; o.textContent=c;
+    document.getElementById(id).appendChild(o);
+  });
+});
+document.getElementById("fHomeCur").value = "USD";
+document.getElementById("fTripCur").value = "EUR";
+load();
+renderAll();
+/* expose for automated QA */
+window.__tripbudget = {state:()=>state, tripTotals, tripToHomeCents, homeCentsToTrip, isValidDateStr, toCents, fmtCents, save, renderAll, load};
+</script>
+</body>
+</html>
