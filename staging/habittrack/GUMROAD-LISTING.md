@@ -21,13 +21,13 @@ Productivity, Habits, Self Improvement, Health & Fitness, Planner, Tracker, Offl
 ## Gallery (in order)
 1. `gallery/cover-1280x720.png` — Hero cover: populated app in browser frame
 2. `gallery/01-light-overview.png` — Full app, light mode: habits, streaks, stats
-2. `gallery/02-dark-overview.png` — Dark mode
-3. `gallery/04-heatmap-detail.png` — GitHub-style activity heatmap with rest days
-4. `gallery/05-new-habit.png` — Creating a habit: schedule, color, icon, partial credit
-5. `gallery/06-day-editor.png` — Per-day editor: status + notes
-6. `gallery/07-backup.png` — JSON/CSV backup & restore
-7. `gallery/03-mobile.png` — Mobile layout
-8. `gallery/08-empty-state.png` — Clean first-run state
+3. `gallery/02-dark-overview.png` — Dark mode: same dense layout, dark theme
+4. `gallery/04-heatmap-detail.png` — GitHub-style activity heatmap with rest days
+5. `gallery/05-new-habit.png` — Creating a habit: schedule, color, icon, partial credit
+6. `gallery/06-day-editor.png` — Per-day editor: status + notes
+7. `gallery/07-backup.png` — JSON/CSV backup & restore
+8. `gallery/03-mobile.png` — Mobile layout
+9. `gallery/08-empty-state.png` — Clean first-run state
 
 ## Description body
 

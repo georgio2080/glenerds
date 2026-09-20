@@ -13,7 +13,17 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/cover-square-1200.png (also attach gallery/0-cover.png … 7-katch-mcardle.png as product images)
+gallery/cover-square-1200.png (Gumroad thumbnail; also attach the gallery images below as product images)
+
+## Gallery (in order)
+1. `gallery/cover-1280x720.png` — Hero cover: populated app in browser frame
+2. `gallery/1-inputs.png` — Input form: units, age, sex, height, weight, body fat, activity, goal
+3. `gallery/2-results.png` — Results: BMR, TDEE, target calories, pace estimate, daily macro bars
+4. `gallery/3-show-your-work.png` — Show-your-work: exact formula and every calculation step
+5. `gallery/4-dark-mode.png` — Dark mode: same dense layout, dark theme
+6. `gallery/5-mobile.png` — Mobile layout
+7. `gallery/6-metric.png` — Metric units (kg, cm) input mode
+8. `gallery/7-katch-mcardle.png` — Katch-McArdle formula with body-fat input
 
 ## Product file
 macrotrack-bundle.zip
