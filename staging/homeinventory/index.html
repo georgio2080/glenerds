@@ -36,6 +36,11 @@
   --danger:#f87171; --danger-bg:#450a0a;
 }
 *{box-sizing:border-box}
+/* The `hidden` attribute must win over component display rules (e.g. .btn-ghost
+   sets display:inline-flex, which would otherwise keep "Cancel edit" visible). */
+[hidden]{display:none!important}
+section.card{scroll-margin-top:92px}
+.item-card,.room-row{scroll-margin-top:92px}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   background:var(--bg);color:var(--text);line-height:1.5}
 .hero{position:sticky;top:0;z-index:50;background:var(--header-grad);color:#fff;
@@ -300,8 +305,10 @@ function demoState(){return {
   ]};}
 function loadState(){
   try{var raw=localStorage.getItem(LS_STATE);
-    if(raw){var s=JSON.parse(raw);
-      if(s&&Array.isArray(s.rooms)&&Array.isArray(s.items)) return s;}}catch(e){}
+    /* B5: run localStorage through the same sanitizer as imports — a
+       hand-tampered entry used to flow unsanitized into render paths. */
+    if(raw){var s=sanitizeState(JSON.parse(raw));
+      if(s)return s;}}catch(e){}
   return null;
 }
 var state=loadState();
@@ -325,12 +332,20 @@ setTheme(document.documentElement.getAttribute("data-theme")||"light");
 /* ---------- helpers ---------- */
 function roomById(id){for(var i=0;i<state.rooms.length;i++)if(state.rooms[i].id===id)return state.rooms[i];return null;}
 function roomName(id){var r=roomById(id);return r?r.name:"(removed room)";}
-function roomTotals(){var t={};state.rooms.forEach(function(r){t[r.id]={count:0,total:0};});
+function roomTotals(){var t=Object.create(null);state.rooms.forEach(function(r){t[r.id]={count:0,total:0};});
   state.items.forEach(function(it){if(!t[it.roomId])t[it.roomId]={count:0,total:0};
     t[it.roomId].count++;t[it.roomId].total+=Number(it.value)||0;});return t;}
 function grandTotal(){var g=0;state.items.forEach(function(it){g+=Number(it.value)||0;});return g;}
-function validValue(v){if(v===""||v==null)return{ok:false,msg:"Enter a purchase value."};
-  var n=Number(v);if(!isFinite(n))return{ok:false,msg:"Value must be a number."};
+function validValue(v){
+  if(v==null)return{ok:false,msg:"Enter a purchase value."};
+  /* Import hardening: reject booleans/arrays/objects outright, and accept only
+     plain decimal strings/numbers — no hex ("0x11"), exponents, or silent
+     coercions. Whitespace-only input is treated as 0 (adjudicated). */
+  if(typeof v==="boolean"||Array.isArray(v)||typeof v==="object")return{ok:false,msg:"Value must be a number."};
+  var s=String(v).trim();
+  if(s==="")return String(v)===""?{ok:false,msg:"Enter a purchase value."}:{ok:true,val:0};
+  if(!/^[+-]?(\d+(\.\d+)?|\.\d+)$/.test(s))return{ok:false,msg:"Value must be a number."};
+  var n=Number(s);if(!isFinite(n))return{ok:false,msg:"Value must be a number."};
   if(n<0)return{ok:false,msg:"Value cannot be negative."};
   if(n>99999999)return{ok:false,msg:"Value is unrealistically large."};
   return{ok:true,val:Math.round(n*100)/100};}
@@ -361,7 +376,11 @@ function renderRooms(){
   if(!state.rooms.length)html='<p class="empty">No rooms yet — add your first room above.</p>';
   $("roomList").innerHTML=html;
   var opts=state.rooms.map(function(r){return '<option value="'+esc(r.id)+'">'+esc(r.name)+'</option>';}).join("");
+  /* B1 fix: keep the user's selected room across re-renders — rebuilding the
+     options used to reset the select to the first room, mis-filing batch adds. */
+  var curRoom=$("itemRoom").value;
   $("itemRoom").innerHTML=opts;
+  if(curRoom&&opts.indexOf('value="'+esc(curRoom)+'"')>=0)$("itemRoom").value=curRoom;
   var f='<option value="">All rooms</option>'+opts;
   var cur=$("filterRoom").value;$("filterRoom").innerHTML=f;
   /* Only restore the filter if that room still exists — otherwise the select
@@ -535,7 +554,7 @@ $("printBtn").addEventListener("click",function(){window.print();});
 var CAT_COLORS={"Electronics":"#6366f1","Furniture":"#f59e0b","Appliances":"#0ea5e9",
   "Jewelry":"#ec4899","Clothing":"#8b5cf6","Kitchenware":"#10b981",
   "Tools":"#f97316","Documents":"#64748b","Other":"#a3a3a3"};
-function catTotals(){var t={};state.items.forEach(function(it){
+function catTotals(){var t=Object.create(null);state.items.forEach(function(it){
   var c=(typeof it.category==="string"&&CAT_COLORS[it.category])?it.category:"Other";
   t[c]=(t[c]||0)+(Number(it.value)||0);});return t;}
 function renderRoomBars(){
@@ -590,22 +609,32 @@ $("exportBtn").addEventListener("click",function(){
   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
   notice("dataNotice","Backup exported.","ok");
 });
+/* Import/localStorage caps: a hostile file with ~100k items would synchronously
+   build ~100k DOM cards and hang the tab. Truncation is surfaced on import. */
+var MAX_IMPORT_ROOMS=200,MAX_IMPORT_ITEMS=5000;
 function sanitizeState(s){
   if(!s||typeof s!=="object"||!Array.isArray(s.rooms)||!Array.isArray(s.items))return null;
-  var rooms=[],ids={};
-  for(var i=0;i<s.rooms.length;i++){var r=s.rooms[i];
+  /* Null-prototype dictionaries: user-controlled ids are used as lookup keys, so a
+     plain {} would let "__proto__"/"constructor" pass the membership check through
+     the prototype chain (prototype pollution — fixed 2026-09-20). hasOwnProperty
+     guards make the check explicit. */
+  var rooms=[],ids=Object.create(null),truncated=false;
+  for(var i=0;i<s.rooms.length&&rooms.length<MAX_IMPORT_ROOMS;i++){var r=s.rooms[i];
     if(!r||typeof r.name!=="string")continue;
     var name=r.name.trim().slice(0,60);if(!name)continue;
     var id=typeof r.id==="string"?r.id.slice(0,80):uid("r");
-    if(ids[id])id=uid("r");ids[id]=1;rooms.push({id:id,name:name});}
+    if(Object.prototype.hasOwnProperty.call(ids,id))id=uid("r");ids[id]=1;rooms.push({id:id,name:name});}
+  if(s.rooms.length>MAX_IMPORT_ROOMS)truncated=true;
   if(!rooms.length)return null;
-  var items=[];
-  for(var j=0;j<s.items.length;j++){var it=s.items[j];
-    if(!it||typeof it.name!=="string"||!ids[it.roomId])continue;
+  var items=[],itemIds=Object.create(null);
+  for(var j=0;j<s.items.length&&items.length<MAX_IMPORT_ITEMS;j++){var it=s.items[j];
+    if(!it||typeof it.name!=="string"||!Object.prototype.hasOwnProperty.call(ids,it.roomId))continue;
     var nm=it.name.trim().slice(0,120);if(!nm)continue;
     var vv=validValue(it.value);if(!vv.ok)continue;
+    var iid=typeof it.id==="string"?it.id.slice(0,80):uid("i");
+    if(Object.prototype.hasOwnProperty.call(itemIds,iid))iid=uid("i");itemIds[iid]=1;
     var photo=typeof it.photo==="string"&&it.photo.indexOf("data:image/")===0?it.photo.slice(0,700000):"";
-    items.push({id:typeof it.id==="string"?it.id.slice(0,80):uid("i"),
+    items.push({id:iid,
       roomId:it.roomId,name:nm,
       category:typeof it.category==="string"?it.category.slice(0,30):"Other",
       value:vv.val,
@@ -613,7 +642,8 @@ function sanitizeState(s){
       purchaseDate:(typeof it.purchaseDate==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(it.purchaseDate))?it.purchaseDate:"",
       photo:photo,
       note:typeof it.note==="string"?it.note.slice(0,200):""});}
-  return {rooms:rooms,items:items};
+  if(s.items.length>MAX_IMPORT_ITEMS)truncated=true;
+  return {rooms:rooms,items:items,truncated:truncated};
 }
 $("importFile").addEventListener("change",function(){
   var f=this.files&&this.files[0];if(!f)return;
@@ -623,7 +653,8 @@ $("importFile").addEventListener("change",function(){
       if(!s){notice("dataNotice","That file is not a valid HomeInventory backup.");return;}
       state=s;clearItemForm();save();renderAll();
       try{$("demoBar").style.display="none";}catch(e){}
-      notice("dataNotice","Imported "+s.items.length+" item(s) in "+s.rooms.length+" room(s).","ok");
+      if(s.truncated)notice("dataNotice","Import truncated to "+MAX_IMPORT_ITEMS+" items / "+MAX_IMPORT_ROOMS+" rooms — the file contained more.","err");
+      else notice("dataNotice","Imported "+s.items.length+" item(s) in "+s.rooms.length+" room(s).","ok");
     }catch(e){notice("dataNotice","Could not read that file — it is not valid JSON.");}
   };
   rd.onerror=function(){notice("dataNotice","Could not read that file.");};
