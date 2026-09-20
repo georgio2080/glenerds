@@ -148,6 +148,41 @@ html[data-theme="dark"] .stat:nth-child(4)::before{background-color:#252a55; bac
 .flag.red .fmsg{color:var(--red); font-weight:600}
 .flag.amber .fmsg{color:var(--amber); font-weight:600}
 .empty{color:var(--muted)}
+/* ---------- Charts (Year at a glance) ---------- */
+.charts{display:grid; gap:10px; margin:12px 0 4px}
+.charts.two{grid-template-columns:1fr}
+@media (min-width:560px){ .charts.two{grid-template-columns:1fr 1fr} }
+.chart{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:12px; box-shadow:var(--shadow); min-width:0}
+.chart h3{margin:0 0 8px; font-size:.95rem; letter-spacing:-.01em; display:flex; align-items:center; gap:8px}
+.chart h3 .dot{width:10px; height:10px; border-radius:3px; background:var(--grad); flex:none}
+.chart svg{width:100%; height:auto; display:block}
+.chart .ax{fill:var(--muted); font-size:9px}
+.chart .grid{stroke:var(--border); stroke-width:1}
+.chart .bar{fill:url(#w9gradM)}
+.chart .yoybar{fill:url(#w9gradY)}
+.chart .donut-bg{fill:none; stroke:var(--border); stroke-width:22}
+.chart .donut-seg{fill:none; stroke-width:22}
+.chart .donut-c{fill:var(--text); font-size:20px; font-weight:800; text-anchor:middle}
+.chart .donut-l{fill:var(--muted); font-size:10px; text-anchor:middle}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:8px; font-size:.85rem; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.legend i{width:11px; height:11px; border-radius:3px; display:inline-block}
+.trow{display:grid; grid-template-columns:1fr auto; gap:2px 10px; align-items:center; padding:5px 0;
+  border-bottom:1px dashed var(--border)}
+.trow:last-child{border-bottom:none}
+.trow .tname{font-weight:600; font-size:.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.trow .tamt{font-weight:700; font-size:.92rem; font-variant-numeric:tabular-nums}
+.trow .tbar{grid-column:1 / -1; height:9px; border-radius:99px; background:var(--border); overflow:hidden}
+.trow .tbar i{display:block; height:100%; border-radius:99px; background:var(--grad)}
+/* ---------- Threshold progress on contractor cards ---------- */
+.thresh{margin-top:10px}
+.thresh-track{position:relative; height:10px; border-radius:99px; background:var(--border)}
+.thresh-fill{position:absolute; left:0; top:0; bottom:0; border-radius:99px; background:var(--accent); min-width:4px}
+.thresh.amber .thresh-fill{background:var(--amber)}
+.thresh.red .thresh-fill{background:var(--red)}
+.thresh-marker{position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--muted); opacity:.7}
+.thresh-lbl{font-size:.82rem; color:var(--muted); margin-top:4px; font-variant-numeric:tabular-nums}
 /* ---------- Contractor cards ---------- */
 .contractor{border:1px solid var(--border); border-radius:var(--radius); background:var(--panel);
   padding:14px; margin-bottom:12px; box-shadow:var(--shadow)}
@@ -215,6 +250,8 @@ footer.site a{color:var(--accent)}
     <h2 id="dashHead"><span class="sec-ic"><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M6 20v-6M12 20V8M18 20v-9' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'/></svg></span>Dashboard</h2>
     <div id="dashboard" aria-live="polite">
       <div class="stats" id="statGrid"></div>
+      <h2 id="vizHead"><span class="sec-ic"><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M4 20V10M10 20V4M16 20v-8M22 20H2' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/></svg></span>Year at a glance</h2>
+      <div id="charts"></div>
       <h2><span class="sec-ic"><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 4L2.5 20h19zM12 10v4.5M12 17.6v.4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></span>Needs attention</h2>
       <div id="flagList"></div>
     </div>
@@ -345,6 +382,15 @@ function loadStore(){
               return sanitizePayment(p) !== null;
             });
             if(c.payments.length !== before) store._dirty = true;
+            // Normalize entity too: a hand-edited value like "Corporation"
+            // would otherwise desync the card's exempt pill/note from the
+            // dashboard counts (Grok QA 2026-09-20). Canonicalize common
+            // variants; fall back to "individual" only if unrecognizable.
+            if(ENTITIES.indexOf(c.entity) < 0){
+              var ce = String(c.entity || "").toLowerCase().replace(/[^a-z]/g, "");
+              c.entity = (ce === "corporation" || ce === "inc") ? "corp" : (ENTITIES.indexOf(ce) >= 0 ? ce : "individual");
+              store._dirty = true;
+            }
             if(c.w9 !== true){ if(c.w9 !== false || c.w9Date) store._dirty = true; c.w9 = false; c.w9Date = ""; }
             else if(typeof c.w9Date !== "string" || !validDate(c.w9Date)){ if(c.w9Date) store._dirty = true; c.w9Date = ""; }
           });
@@ -524,6 +570,7 @@ function renderDashboard(){
     d.appendChild(el("div", s[0], "lbl"));
     statGrid.appendChild(d);
   });
+  renderCharts();
 
   var flagList = document.getElementById("flagList");
   while(flagList.firstChild) flagList.removeChild(flagList.firstChild);
@@ -551,6 +598,193 @@ function renderDashboard(){
   if(lim.est){
     flagList.appendChild(el("p", "Note: starting with the 2027 tax year, the IRS adjusts this threshold for inflation each year. W9Track flags at the $2,000 base figure — confirm the current inflation-adjusted amount before filing.", "exempt-note"));
   }
+}
+
+/* ================= Charts (Year at a glance) ================= */
+var SVGNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, text){
+  var n = document.createElementNS(SVGNS, tag);
+  if(attrs) for(var k in attrs) n.setAttribute(k, attrs[k]);
+  if(text != null) n.textContent = text;
+  return n;
+}
+function svgGradient(id){
+  var defs = svgEl("defs");
+  var g = svgEl("linearGradient", {id:id, x1:"0", y1:"0", x2:"0", y2:"1"});
+  g.appendChild(svgEl("stop", {offset:"0", "stop-color":"#8b5cf6"}));
+  g.appendChild(svgEl("stop", {offset:"1", "stop-color":"#6366f1"}));
+  defs.appendChild(g);
+  return defs;
+}
+function chartTitle(t){
+  var h = el("h3");
+  h.appendChild(el("span", null, "dot"));
+  h.appendChild(document.createTextNode(t));
+  return h;
+}
+var MONTH_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var MONTH_INIT = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+
+function monthlyChart(contractors, year){
+  var months = [0,0,0,0,0,0,0,0,0,0,0,0];
+  contractors.forEach(function(c){
+    (c.payments || []).forEach(function(p){
+      if(!p || typeof p.date !== "string" || p.date.slice(0,4) !== year) return;
+      var m = parseInt(p.date.slice(5,7), 10);
+      if(m >= 1 && m <= 12 && isFinite(p.amount) && p.amount > 0) months[m-1] += p.amount;
+    });
+  });
+  var wrap = el("div", null, "chart");
+  wrap.appendChild(chartTitle("Payments by month · " + year));
+  var max = Math.max.apply(null, months.concat([0]));
+  if(max <= 0){
+    wrap.appendChild(el("p", "No payment data for " + year + " yet — add a payment to see it here.", "empty"));
+    return wrap;
+  }
+  var W = 360, H = 196, padL = 42, padB = 20, padT = 10;
+  var plotW = W - padL - 8, plotH = H - padT - padB;
+  var svg = svgEl("svg", {viewBox:"0 0 " + W + " " + H, role:"img",
+    "aria-label":"Bar chart of payments by month for " + year + ". Highest month: " + money(max) + "."});
+  svg.appendChild(svgGradient("w9gradM"));
+  [0, 0.5, 1].forEach(function(f){
+    var v = max * f, y = padT + plotH - plotH * f;
+    svg.appendChild(svgEl("line", {x1:padL, y1:y, x2:W-8, y2:y, class:"grid"}));
+    svg.appendChild(svgEl("text", {x:padL-5, y:(y+3).toFixed(1), class:"ax", "text-anchor":"end"}, wholeDollars(v)));
+  });
+  var slot = plotW / 12, bw = Math.min(20, slot * 0.66);
+  months.forEach(function(v, i){
+    var h = plotH * v / max;
+    var x = padL + slot * i + (slot - bw) / 2;
+    var y = padT + plotH - h;
+    var bar = svgEl("rect", {x:x.toFixed(1), y:y.toFixed(1), width:bw.toFixed(1),
+      height:Math.max(h, v > 0 ? 2 : 0).toFixed(1), rx:3, class:"bar"});
+    bar.appendChild(svgEl("title", null, MONTH_SHORT[i] + ": " + money(v)));
+    svg.appendChild(bar);
+    svg.appendChild(svgEl("text", {x:(x + bw/2).toFixed(1), y:H-6, class:"ax", "text-anchor":"middle"}, MONTH_INIT[i]));
+  });
+  wrap.appendChild(svg);
+  return wrap;
+}
+
+function topChart(contractors){
+  var wrap = el("div", null, "chart");
+  wrap.appendChild(chartTitle("Top contractors"));
+  var ranked = contractors.map(function(c){ return {name:c.name, t:ytd(c)}; })
+    .filter(function(r){ return r.t > 0; })
+    .sort(function(a,b){ return b.t - a.t; }).slice(0, 6);
+  if(!ranked.length){
+    wrap.appendChild(el("p", "No payments recorded yet.", "empty"));
+    return wrap;
+  }
+  var max = ranked[0].t;
+  ranked.forEach(function(r){
+    var row = el("div", null, "trow");
+    row.appendChild(el("div", r.name, "tname"));
+    row.appendChild(el("div", money(r.t), "tamt"));
+    var bar = el("div", null, "tbar");
+    var f = el("i");
+    f.style.width = (max > 0 ? (r.t / max * 100) : 0).toFixed(1) + "%";
+    bar.appendChild(f);
+    row.appendChild(bar);
+    wrap.appendChild(row);
+  });
+  return wrap;
+}
+
+function donutChart(contractors){
+  var wrap = el("div", null, "chart");
+  wrap.appendChild(chartTitle("W-9 status"));
+  var onFile = contractors.filter(function(c){ return c.w9; }).length;
+  var exempt = contractors.filter(function(c){ return !c.w9 && c.entity === "corp"; }).length;
+  var missing = contractors.length - onFile - exempt;
+  if(!contractors.length){
+    wrap.appendChild(el("p", "No contractors yet.", "empty"));
+    return wrap;
+  }
+  var R = 54, CIRC = 2 * Math.PI * R;
+  var svg = svgEl("svg", {viewBox:"0 0 140 140", role:"img",
+    "aria-label":"Donut chart: " + onFile + " W-9s on file, " + missing + " missing, " + exempt + " exempt."});
+  svg.appendChild(svgEl("circle", {cx:70, cy:70, r:R, class:"donut-bg"}));
+  var segs = [
+    {v:onFile, color:"var(--green)", label:"On file"},
+    {v:missing, color:"var(--amber)", label:"Missing"},
+    {v:exempt, color:"var(--muted)", label:"Exempt"}
+  ];
+  var acc = 0;
+  var g = svgEl("g", {transform:"rotate(-90 70 70)"});
+  segs.forEach(function(s){
+    if(s.v <= 0) return;
+    var len = s.v / contractors.length * CIRC;
+    var seg = svgEl("circle", {cx:70, cy:70, r:R, class:"donut-seg",
+      "stroke-dasharray":len.toFixed(1) + " " + CIRC.toFixed(1),
+      "stroke-dashoffset":(-acc).toFixed(1)});
+    seg.style.stroke = s.color;
+    seg.appendChild(svgEl("title", null, s.label + ": " + s.v));
+    g.appendChild(seg);
+    acc += len;
+  });
+  svg.appendChild(g);
+  svg.appendChild(svgEl("text", {x:70, y:68, class:"donut-c"}, String(contractors.length)));
+  svg.appendChild(svgEl("text", {x:70, y:84, class:"donut-l"}, "contractors"));
+  wrap.appendChild(svg);
+  var leg = el("div", null, "legend");
+  segs.forEach(function(s){
+    var sp = el("span");
+    var dot = el("i");
+    dot.style.background = s.color;
+    sp.appendChild(dot);
+    sp.appendChild(document.createTextNode(s.label + " · " + s.v));
+    leg.appendChild(sp);
+  });
+  wrap.appendChild(leg);
+  return wrap;
+}
+
+function yoyChart(){
+  var wrap = el("div", null, "chart");
+  wrap.appendChild(chartTitle("Total paid by year"));
+  var data = years.map(function(y){
+    var t = yearData(y).contractors.reduce(function(s,c){ return s + ytd(c, y); }, 0);
+    return {y:y, t:t};
+  });
+  var max = Math.max.apply(null, data.map(function(d){ return d.t; }).concat([0]));
+  if(max <= 0){
+    wrap.appendChild(el("p", "No payment data yet.", "empty"));
+    return wrap;
+  }
+  var n = data.length;
+  var W = Math.max(360, n * 64), H = 152, padB = 20, padT = 10;
+  var plotH = H - padT - padB;
+  var svg = svgEl("svg", {viewBox:"0 0 " + W + " " + H, role:"img",
+    "aria-label":"Bar chart of total paid per tax year."});
+  svg.appendChild(svgGradient("w9gradY"));
+  var slot = W / n, bw = Math.min(34, slot * 0.55);
+  data.forEach(function(d, i){
+    var h = plotH * d.t / max;
+    var x = slot * i + (slot - bw) / 2, y = padT + plotH - h;
+    var bar = svgEl("rect", {x:x.toFixed(1), y:y.toFixed(1), width:bw.toFixed(1),
+      height:Math.max(h, d.t > 0 ? 2 : 0).toFixed(1), rx:3, class:"yoybar"});
+    if(d.y === currentYear) bar.style.stroke = "var(--text)";
+    bar.appendChild(svgEl("title", null, d.y + ": " + money(d.t)));
+    svg.appendChild(bar);
+    var lbl = svgEl("text", {x:(x + bw/2).toFixed(1), y:H-6, class:"ax", "text-anchor":"middle"}, d.y);
+    if(d.y === currentYear) lbl.style.fontWeight = "700";
+    svg.appendChild(lbl);
+  });
+  wrap.appendChild(svg);
+  return wrap;
+}
+
+function renderCharts(){
+  var box = document.getElementById("charts");
+  while(box.firstChild) box.removeChild(box.firstChild);
+  var contractors = yearData(currentYear).contractors;
+  box.appendChild(monthlyChart(contractors, currentYear));
+  var two = el("div", null, "charts two");
+  two.appendChild(donutChart(contractors));
+  two.appendChild(topChart(contractors));
+  box.appendChild(two);
+  box.appendChild(yoyChart());
 }
 
 /* ================= Contractor list ================= */
@@ -603,6 +837,28 @@ function renderContractors(){
     if(fp){ pills.appendChild(document.createTextNode(" ")); pills.appendChild(fp); }
     head.appendChild(pills);
     card.appendChild(head);
+    // Threshold progress bar: at-a-glance view of how close this contractor
+    // is to the 1099 filing threshold (visual rework 2026-09-20). Corps are
+    // exempt, so they get no bar.
+    if(c.entity !== "corp"){
+      var ct = ytd(c);
+      var clim = limitsFor(currentYear);
+      var pct = clim.red > 0 ? Math.min(100, ct / clim.red * 100) : 0;
+      var th = el("div", null, "thresh" + (ct >= clim.red ? " red" : ct >= clim.amber ? " amber" : ""));
+      th.setAttribute("role", "img");
+      th.setAttribute("aria-label", "Paid " + money(ct) + " of " + wholeDollars(clim.red) + " 1099 threshold");
+      var track = el("div", null, "thresh-track");
+      var tfill = el("div", null, "thresh-fill");
+      tfill.style.width = pct.toFixed(1) + "%";
+      track.appendChild(tfill);
+      var mark = el("div", null, "thresh-marker");
+      mark.style.left = (clim.amber / clim.red * 100).toFixed(1) + "%";
+      mark.title = "Amber zone starts at " + wholeDollars(clim.amber);
+      track.appendChild(mark);
+      th.appendChild(track);
+      th.appendChild(el("div", money(ct) + " of " + wholeDollars(clim.red) + " threshold", "thresh-lbl"));
+      card.appendChild(th);
+    }
     if(c.contact) card.appendChild(el("div", "Contact: " + c.contact, "cmeta"));
     if(c.notes) card.appendChild(el("div", c.notes, "cmeta"));
     if(c.entity === "corp") card.appendChild(el("div", "Corporations are generally exempt from 1099 reporting (exceptions: attorney and medical/health-care payments).", "exempt-note"));

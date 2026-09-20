@@ -1,3 +1,23 @@
+## 2026-09-20 — Grok browser QA adjudicated (leg ran on pre-visual build)
+- Leg result: zero functional defects in everything it could exercise (thresholds 2024-2029 incl. exact $1,999.99/$2,000 boundaries, contractor add/edit, cross-year payment routing, W-9 flow, corp exemption, export, dark mode, add-year validation).
+- Finding A (missing "1099-exempt" pill on a corp card): NOT REPRODUCIBLE — disproven. The render path is deterministic: entity "corp" + no W-9 always renders the pill, the note, and the "Corporation" label (verified in node DOM harness). The leg's own dashboard-count evidence confirms the contractor was treated as exempt. Misread, no symptom to fix.
+- Finding B (silent validation on blank W-9 date / $0 payment): ENVIRONMENT ARTIFACT. Both rejections fire window.alert with an explicit message; the leg's automation auto-dismisses native dialogs (it documented this for confirm()), so the message flashed past. Works in real browsers. No change.
+- Finding C (Add/Edit entity vocabulary mismatch): FACTUALLY WRONG PREMISE. The Add form already uses value="corp" (lowercase) — identical vocabulary to the Edit form. The leg mistook visible labels for values. No mismatch exists.
+- Hardening added anyway: loadStore scrub now canonicalizes hand-edited entity values ("Corporation"/"CORP"/"inc" -> "corp", unknown -> "individual") so card pills/notes can never desync from dashboard counts, matching the existing poisoned-storage scrub (Gemini API review 2026-09-20).
+- Also closed a previously-untestable gap: delete-OK path (window.confirm -> true) verified in harness — contractor removed, store saved, list re-rendered.
+
+## 2026-09-20 — Visual rework: "Year at a glance" charts (Glen's standing visual rule)
+- New dashboard section "Year at a glance" with hand-rolled SVG charts (zero external requests, offline-safe, dark-mode aware):
+  - Payments-by-month bar chart for the selected tax year (12 bars, gridlines, hover titles).
+  - W-9 status donut (on file / missing / corporation-exempt) with counts legend.
+  - Top contractors horizontal bar chart (top 6 by YTD).
+  - Total-paid-by-year bar chart across all tax years (selected year highlighted).
+- Threshold progress bar on every non-corporation contractor card: YTD vs the year's red threshold, amber/red coloring, amber-zone marker, text + aria labels. Corporations get no bar (exempt).
+- All user-derived text (contractor names) goes through textContent — no HTML injection surface.
+- Empty states: muted "no data yet" messages instead of empty charts.
+- Verified: JS syntax check + node DOM-stub smoke test (12 monthly bars, 3 donut segments, sorted top-6, XSS-safe names, corp excluded from progress bars, correct red/amber classes).
+- NOT yet live: waiting on the Grok QA leg before pushing (browser legs run sequentially on one shared profile).
+
 # W9Track — Build Log (CHANGES.md)
 
 App #7 — Contractor W-9 & 1099 Tracker. Single-file offline HTML app.
