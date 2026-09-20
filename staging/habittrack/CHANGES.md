@@ -31,3 +31,6 @@
 - Fixed: CSV export/import round-trips note-only entries (blank status).
 - Dismissed as false positives: DST infinite-loop claim (Y/M/D constructor is
   DST-safe, node-verified across 2026 transitions) and the streak-algorithm claim.
+- Fixed (copy/SEO bench, Gemini leg): page title trimmed to 51 chars so it
+  survives SERP truncation; added canonical, Open Graph and Twitter card tags
+  (og:image = square cover).
