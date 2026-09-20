@@ -377,6 +377,20 @@
 .g-verdict-warn { color: var(--g-warn); }
 .g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
 
+/* ---------- 9b. BAR CHARTS (pure CSS, zero requests) ---------- */
+.g-bars { margin: 14px 0 0; display: grid; gap: 8px; }
+.g-bar-row { display: grid; grid-template-columns: minmax(84px, 132px) 1fr minmax(52px, auto); gap: 10px; align-items: center; font-size: 0.88rem; }
+.g-bar-name { color: var(--g-text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g-bar-track { height: 10px; border-radius: 6px; background: var(--g-code-bg); border: 1px solid var(--g-border); position: relative; }
+.g-bar-fill { display: block; height: 100%; border-radius: 6px; background: var(--g-accent); transition: width .25s var(--g-ease); }
+.g-bar-fill.good { background: var(--g-good); }
+.g-bar-fill.warn { background: var(--g-warn); }
+.g-bar-fill.bad { background: var(--g-bad); }
+.g-bar-val { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.g-bar-marker { position: absolute; top: -3px; bottom: -3px; width: 3px; border-radius: 2px; background: var(--g-accent); }
+.g-bar-marker.good { background: var(--g-good); }
+.g-bar-marker.bad { background: var(--g-bad); }
+
 /* Show-your-work math block */
 .g-math {
   font-family: var(--g-mono);
@@ -823,6 +837,7 @@ document.documentElement.setAttribute('data-theme',t);})();
     <div class="g-result" id="f-res">
       <div class="g-big-number" id="f-big" aria-live="polite"></div>
       <div id="f-verdict"></div>
+      <div class="g-bars" id="f-bars" aria-hidden="true"></div>
       <div class="g-math" id="f-work"></div>
     </div>
   </section>
@@ -837,6 +852,7 @@ document.documentElement.setAttribute('data-theme',t);})();
     <div class="g-result" id="c-res">
       <div class="g-big-number" id="c-big" aria-live="polite"></div>
       <p class="g-result-note" id="c-note"></p>
+      <div class="g-bars" id="c-bars" aria-hidden="true"></div>
       <div class="g-math" id="c-work"></div>
     </div>
   </section>
@@ -852,6 +868,7 @@ document.documentElement.setAttribute('data-theme',t);})();
     <div class="g-result" id="g-res">
       <div class="g-big-number" id="g-big" aria-live="polite"></div>
       <p class="g-result-note" id="g-note"></p>
+      <div class="g-bars" id="g-bars" aria-hidden="true"></div>
       <div class="g-math" id="g-work"></div>
     </div>
     <div class="g-table-wrap"><table class="g-table" aria-label="Grade point scale">
@@ -890,6 +907,8 @@ const $=id=>document.getElementById(id);
 const r2=x=>Math.round(x*100)/100;
 function num(v){const n=parseFloat(v);return isFinite(n)?n:NaN;}
 function showErr(id,msg){const e=$(id);if(msg){e.textContent=msg;e.classList.add('show');}else{e.textContent='';e.classList.remove('show');}}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function barCls(p){return p>=90?'good':p>=70?'':p>=60?'warn':'bad';}
 
 /* ---------- FINAL SOLVER ---------- */
 const fCur=$('f-cur'),fGoal=$('f-goal'),fWt=$('f-wt');
@@ -913,6 +932,11 @@ function calcFinal(){
     ver.innerHTML='You need <b>'+r2(need)+'%</b> on the final to finish with <b>'+r2(d)+'%</b> in the course.';
   }
   $('f-work').textContent='required = (desired − (1 − w) × current) ÷ w\nrequired = ('+d+' − (1 − '+r2(wf)+') × '+c+') ÷ '+r2(wf)+'\nrequired = ('+d+' − '+r2((1-wf)*c)+') ÷ '+r2(wf)+' = '+r2(need)+'%';
+  const needPct=Math.max(0,Math.min(100,need));
+  const mCls=need>100?'bad':need<0?'good':'';
+  $('f-bars').innerHTML='<div class="g-bar-row"><span class="g-bar-name">Needed on final</span>'+
+    '<span class="g-bar-track"><span class="g-bar-marker '+mCls+'" style="left:calc('+r2(needPct)+'% - 1px)"></span></span>'+
+    '<span class="g-bar-val">'+r2(need)+'%</span></div>';
   $('f-res').classList.add('show');
   save();
 }
@@ -935,7 +959,7 @@ function cRow(name,wt,sc){
 function calcCourse(){
   showErr('c-err','');
   const rows=[...cRows.querySelectorAll('.rowline')];
-  let tw=0,ts=0,lines=[],ok=false;
+  let tw=0,ts=0,lines=[],ok=false;const barData=[];
   for(const r of rows){
     const ins=r.querySelectorAll('input');
     const name=(ins[0].value||'Category').trim()||'Category';
@@ -943,7 +967,7 @@ function calcCourse(){
     if(isNaN(w)||isNaN(s))continue;
     if(w<0||w>100)return showErr('c-err','Weights must be between 0 and 100.'),$ ('c-res').classList.remove('show');
     if(s<0||s>100)return showErr('c-err','Scores must be between 0 and 100.'),$ ('c-res').classList.remove('show');
-    ok=true;tw+=w;ts+=w*s;lines.push('  '+name+': '+w+'% × '+s+'% = '+r2(w*s));
+    ok=true;tw+=w;ts+=w*s;lines.push('  '+name+': '+w+'% × '+s+'% = '+r2(w*s));barData.push({n:name,s:s});
   }
   if(!ok)return $('c-res').classList.remove('show');
   if(tw===0)return showErr('c-err','Total weight is 0 — add weights to your categories.'),$ ('c-res').classList.remove('show');
@@ -951,6 +975,9 @@ function calcCourse(){
   $('c-big').textContent=r2(avg)+'%';
   $('c-note').textContent=tw===100?'Weights total exactly 100%.':'Weights total '+r2(tw)+'% — scaled to 100% automatically.';
   $('c-work').textContent='grade = Σ(weight × score) ÷ Σ(weight)\n'+lines.join('\n')+'\n= '+r2(ts)+' ÷ '+r2(tw)+' = '+r2(avg)+'%';
+  let cbars='';
+  for(const b of barData){const pct=Math.max(0,Math.min(100,b.s));cbars+='<div class="g-bar-row"><span class="g-bar-name">'+esc(b.n)+'</span><span class="g-bar-track"><span class="g-bar-fill '+barCls(pct)+'" style="width:'+r2(pct)+'%"></span></span><span class="g-bar-val">'+r2(b.s)+'%</span></div>';}
+  $('c-bars').innerHTML=cbars;
   $('c-res').classList.add('show');
   save();
 }
@@ -978,23 +1005,31 @@ function calcGpa(){
   showErr('g-err','');
   const rows=[...gRows.querySelectorAll('.rowline')];
   const weighted=gW.checked;
-  let tc=0,tqp=0,lines=[],ok=false;
+  let tc=0,tqp=0,lines=[],ok=false;const gBarData=[];
   for(const r of rows){
     const t=r.querySelector('input[type=text]').value.trim()||'Course';
     const cr=num(r.querySelector('input[type=number]').value);
     const gr=r.querySelector('select').value;
     const hon=r.querySelector('input[type=checkbox]').checked;
     if(isNaN(cr))continue;
-    if(cr<=0||cr>12)return showErr('g-err','Credits must be between 0 and 12.'),$ ('g-res').classList.remove('show');
+    if(cr===0)continue; /* 0-credit / audit courses don't affect GPA */
+    if(cr<0||cr>12)return showErr('g-err','Credits must be between 0 and 12.'),$ ('g-res').classList.remove('show');
     const pts=POINTS[gr]+(weighted&&hon?1.0:0);
     ok=true;tc+=cr;tqp+=pts*cr;
     lines.push('  '+t+': '+gr+' → '+r2(POINTS[gr])+(weighted&&hon?' +1.0 (H/AP)':'')+' × '+cr+' cr = '+r2(pts*cr)+' pts');
+    gBarData.push({t:t,pts:pts,gr:gr});
   }
   if(!ok)return $('g-res').classList.remove('show');
   const gpa=tqp/tc;
   $('g-big').textContent='GPA '+r2(gpa);
   $('g-note').textContent=r2(tc)+' total credits · '+r2(tqp)+' quality points · '+(weighted?'weighted 4.0 scale (+1.0 Honors/AP)':'unweighted 4.0 scale');
   $('g-work').textContent='GPA = Σ(grade points × credits) ÷ Σ(credits)\n'+lines.join('\n')+'\n= '+r2(tqp)+' ÷ '+r2(tc)+' = '+r2(gpa);
+  const maxScale=weighted?5:4;
+  let gbars='';
+  for(const b of gBarData){const pct=Math.max(0,Math.min(100,b.pts/maxScale*100));gbars+='<div class="g-bar-row"><span class="g-bar-name">'+esc(b.t)+'</span><span class="g-bar-track"><span class="g-bar-fill '+barCls(pct)+'" style="width:'+r2(pct)+'%"></span></span><span class="g-bar-val">'+b.gr+'</span></div>';}
+  const gpaPct=Math.max(0,Math.min(100,gpa/maxScale*100));
+  gbars+='<div class="g-bar-row"><span class="g-bar-name"><b>Overall GPA</b></span><span class="g-bar-track"><span class="g-bar-fill '+barCls(gpaPct)+'" style="width:'+r2(gpaPct)+'%"></span></span><span class="g-bar-val">'+r2(gpa)+'</span></div>';
+  $('g-bars').innerHTML=gbars;
   $('g-res').classList.add('show');
   save();
 }
