@@ -235,3 +235,25 @@ contractor card — both re-run against correct state and PASS.)
   reinstated. App behavior matches the statute: $600 red / $400 amber for 2025
   and earlier, $2,000 red / $1,500 amber for 2026+ with the "confirm the current
   inflation-adjusted amount" note for 2027+. No app-code change needed.
+
+## 2026-09-20 — pick-gate adjudicated; Privacy & security section added
+- Pick gate complete and adjudicated by parent: Perplexity VIABLE (with
+  conditions), Gemini NOT VIABLE (as described). Parent ruling: W9Track is
+  VIABLE as a free lead-gen tool, with Gemini's cautions as ship-conditions.
+  Both pick legs marked findings-adjudicated in state.json.
+- Functional gate re-run ordered: the four prior "clean" legs were stub files
+  with no written findings (anti-cheat rule 7) — voided by parent, all four
+  legs reset to pending and re-running with real findings files.
+- Added a "Privacy & security" section before the footer: states the no-SSN/EIN
+  design, zero network requests (verifiable via View Source / Network tab),
+  local-storage-only data, Export JSON backup reminder, and that signed W-9
+  forms stay in the user's own files. Answers the pick-gate trust concern
+  directly: the app never asks for or stores TINs, so there is no
+  passphrase-encryption or last-4-only need — the "never enter SSN/EIN" note
+  on the Notes field already enforced this.
+- Trust posture verified in source: no fetch(), no XMLHttpRequest, no external
+  <script src>, no external CSS/fonts/images (all data: URIs); only browser
+  storage used is localStorage (w9track_v1, w9track_theme, w9track_year).
+- Threshold figures re-confirmed against live sources 2026-09-20 (Withum,
+  Avalara, tincheck, Whiteford, Healio): $2,000 for 2026, inflation-adjusted
+  from 2027 — matches the statute-backed entry above. No change needed.
