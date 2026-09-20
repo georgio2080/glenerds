@@ -184,3 +184,30 @@ contractor card — both re-run against correct state and PASS.)
   `setDataMsg` now takes an optional scroll flag; the cross-year routing
   path passes it, smooth-scrolling the explanation into view.
 - Regression: 34/34 + 8/8 = 42/42 passing. ZIP rebuilt (11 files, byte-verified).
+
+## 2026-09-20 — official source confirmed; factual-source blocker closed
+- The threshold figures are now backed by enacted statute, not just nonofficial
+  CPA sources. Verified via Perplexity research (15 cited sources) + independent
+  check of the Congressional Research Service summary (CRS R48611, congress.gov):
+  **One, Big, Beautiful Bill Act, Pub. L. No. 119-21, § 70433** (139 Stat. 72,
+  enacted July 4, 2025), amending IRC §§ 6041(a) and 6041A(a)(2) and adding
+  IRC § 6041(h). § 70433(a): raises the IRC § 6041(a) threshold from $600 to a
+  $2,000 base for payments made after December 31, 2025 (2026 tax year; $600
+  applied through 2025). § 70433(b): adds § 6041(h) requiring inflation
+  adjustment of the $2,000 base for calendar years after 2026 (from 2027).
+  § 70433(c): ties the § 6041A(a)(2) service-remuneration threshold (1099-NEC
+  rule) to the same raised threshold — both 1099-MISC (§ 6041) and 1099-NEC
+  (§ 6041A) covered. CRS: "permanently increases the reportable payments
+  threshold to $2,000 and provides for an annual inflation adjustment starting
+  in 2027."
+- IRS confirming guidance (per cited sources): IRS Publication 1099 (2026),
+  General Instructions for Certain Information Returns, "What's New": threshold
+  raised from $600 to $2,000 for tax years beginning after 2025, adjusted for
+  inflation beginning calendar year 2027. IRS IRB 2026-19, proposed regulation
+  REG-113229-25 (Prop. Reg. § 1.6041-1(a)(3)) conforms regulations to the
+  enacted statute.
+- The "officially verified" wording in this log is now supported by genuine
+  statute; the P.L. 119-21 citation (removed earlier as unverified) is hereby
+  reinstated. App behavior matches the statute: $600 red / $400 amber for 2025
+  and earlier, $2,000 red / $1,500 amber for 2026+ with the "confirm the current
+  inflation-adjusted amount" note for 2027+. No app-code change needed.
