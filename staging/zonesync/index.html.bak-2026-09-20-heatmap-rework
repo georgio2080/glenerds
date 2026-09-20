@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d6e66'/%3E%3Ctext x='32' y='44' font-size='36' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3EZ%3C/text%3E%3C/svg%3E">
 <title>Free Time Zone Overlap Calculator for Remote Teams (ZoneSync)</title>
-<meta name="description" content="Find the best meeting times for your distributed team with a free offline time zone overlap calculator. Works fully offline.">
+<meta name="description" content="Find the best meeting times for your distributed team with a free offline time zone overlap calculator and 24-hour heatmap. Works fully offline.">
 <script>
 // Apply saved theme (or OS preference) before first paint to avoid a flash.
 (function () {
@@ -167,20 +167,21 @@ thead th {
   border-bottom: 2px solid var(--grad-1);
 }
 tbody tr:nth-child(even) { background: rgba(127,127,150,.06); }
+.heatmap-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; }
 #members-list, #plan-results { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-/* ---------- overlap windows ---------- */
-.overlap-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
-.overlap-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: rgba(127,127,150,.06); }
-.overlap-item.all { border: 2px solid var(--gold); background: var(--gold-bg); }
-.overlap-time { font-weight: 700; }
-.overlap-count { font-size: 0.85rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
-.overlap-count.gold { color: var(--gold); }
-.overlap-strip-wrap { margin-top: 16px; }
-.overlap-strip { display: flex; gap: 2px; }
-.overlap-seg { flex: 1 1 0; min-width: 0; height: 30px; border-radius: 4px; background: rgba(127,127,150,.12); }
-.overlap-seg.full { box-shadow: inset 0 0 0 2px var(--gold); }
-.overlap-scale { display: flex; margin-top: 4px; }
-.overlap-scale span { flex: 1 1 0; min-width: 0; font-size: 0.72rem; color: var(--muted); }
+table.heatmap { min-width: 900px; table-layout: fixed; }
+table.heatmap th, table.heatmap td { text-align: center; padding: 6px 2px; font-size: 0.8rem; }
+table.heatmap th.rowhead, table.heatmap td.rowhead {
+  text-align: left; padding: 8px 10px; font-size: 0.92rem;
+  position: sticky; left: 0; background: var(--card); min-width: 130px; max-width: 180px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+table.heatmap thead th.rowhead { background: var(--card); z-index: 1; }
+td.hcell { height: 40px; min-width: 30px; }
+td.hcell.golden { box-shadow: inset 0 0 0 2px var(--gold); }
+th.hcol { min-width: 30px; }
+th.hcol.golden { background: var(--gold-bg); color: var(--gold); }
+tr.summaryrow td, tr.summaryrow th { font-weight: 700; }
 #members-list td .actions, #members-list td { white-space: nowrap; }
 #members-list td button { margin: 2px 4px 2px 0; }
 
@@ -242,7 +243,7 @@ footer.site a { color: var(--muted); }
       <div class="field">
         <label for="viewer-tz">Viewer time zone</label>
         <select id="viewer-tz"></select>
-        <span class="hint">All overlap times are shown in this time zone.</span>
+        <span class="hint">All heatmap columns are hours in this time zone.</span>
       </div>
     </section>
 
@@ -276,14 +277,17 @@ footer.site a { color: var(--muted); }
       <div id="members-list" style="margin-top:16px;"></div>
     </section>
 
-    <section class="card" aria-labelledby="overlap-h">
-      <h2 id="overlap-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2.1"/></svg></span>Best overlap windows</h2>
-      <p class="status" id="overlap-note" style="margin-top:0;"></p>
-      <ol class="overlap-list" id="overlap-list"></ol>
-      <div class="overlap-strip-wrap" id="overlap-strip-wrap" hidden>
-        <div class="overlap-strip" id="overlap-strip" role="img"></div>
-        <div class="overlap-scale" id="overlap-scale" aria-hidden="true"></div>
+    <section class="card" aria-labelledby="heat-h">
+      <h2 id="heat-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.2" height="7.2" rx="1.6"/><rect x="13.8" y="3" width="7.2" height="7.2" rx="1.6"/><rect x="3" y="13.8" width="7.2" height="7.2" rx="1.6"/><rect x="13.8" y="13.8" width="7.2" height="7.2" rx="1.6"/></svg></span>Overlap heatmap</h2>
+      <p class="status" id="heatmap-note" style="margin-top:0;"></p>
+      <div class="heatmap-wrap">
+        <table class="heatmap" id="heatmap" aria-label="24-hour work overlap heatmap"></table>
       </div>
+    </section>
+
+    <section class="card" aria-labelledby="golden-h">
+      <h2 id="golden-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg></span>Golden hours</h2>
+      <div id="golden" aria-live="polite"></div>
     </section>
 
     <section class="card" aria-labelledby="plan-h">
@@ -393,7 +397,7 @@ themeBtn.addEventListener('click', function () {
   document.documentElement.setAttribute('data-theme', next);
   try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
   paintThemeButton();
-  renderOverlap();
+  renderHeatmap();
 });
 paintThemeButton();
 
@@ -516,11 +520,9 @@ var endInput = document.getElementById('m-end');
 var submitBtn = document.getElementById('member-submit');
 var cancelBtn = document.getElementById('member-cancel');
 var membersList = document.getElementById('members-list');
-var overlapList = document.getElementById('overlap-list');
-var overlapNote = document.getElementById('overlap-note');
-var overlapStrip = document.getElementById('overlap-strip');
-var overlapScale = document.getElementById('overlap-scale');
-var overlapStripWrap = document.getElementById('overlap-strip-wrap');
+var heatmapTable = document.getElementById('heatmap');
+var heatmapNote = document.getElementById('heatmap-note');
+var goldenDiv = document.getElementById('golden');
 var planForm = document.getElementById('plan-form');
 var pDate = document.getElementById('p-date');
 var pTime = document.getElementById('p-time');
@@ -603,70 +605,118 @@ function renderMembers() {
   membersList.appendChild(table);
 }
 
-/* ---------------- overlap windows ---------------- */
-function fmtHour(h) {
-  h = ((h % 24) + 24) % 24;
-  var ap = h < 12 ? 'AM' : 'PM';
-  var h12 = h % 12; if (h12 === 0) h12 = 12;
-  return h12 + ' ' + ap;
+/* ---------------- heatmap ---------------- */
+function accentBase() {
+  return currentTheme() === 'dark' ? '45, 212, 191' : '13, 110, 102';
 }
-function renderOverlap() {
-  clear(overlapList);
-  clear(overlapStrip);
-  clear(overlapScale);
-  overlapStripWrap.hidden = true;
+function renderHeatmap() {
+  clear(heatmapTable);
   var n = state.members.length;
   if (!n) {
-    overlapNote.textContent = 'Add team members to see the best overlap windows.';
+    heatmapNote.textContent = 'Add team members to see the overlap heatmap.';
+    renderGolden([]);
     return;
   }
   var today = viewerToday();
+  heatmapNote.textContent = 'Hours are in ' + state.viewerTz + '. Filled cells mean the member is within work hours. Hover a cell for the member\u2019s local hour.';
+  var grid = [];
   var counts = [];
   for (var h = 0; h < 24; h++) counts.push(0);
   state.members.forEach(function (m) {
-    for (var hh = 0; hh < 24; hh++) if (workingAt(m, hh, today)) counts[hh]++;
-  });
-  overlapNote.textContent = 'All times are in ' + state.viewerTz + ', ranked by how many members are free.';
-  var wins = [];
-  var st = -1;
-  for (var h2 = 0; h2 <= 24; h2++) {
-    var c = h2 < 24 ? counts[h2] : 0;
-    if (c > 0 && st === -1) st = h2;
-    if (st !== -1 && (h2 === 24 || counts[h2] !== counts[st])) {
-      wins.push({ start: st, end: h2, count: counts[st] });
-      st = (h2 < 24 && counts[h2] > 0) ? h2 : -1;
+    var row = [];
+    for (var hh = 0; hh < 24; hh++) {
+      var w = workingAt(m, hh, today);
+      row.push(w);
+      if (w) counts[hh]++;
     }
-  }
-  wins.sort(function (a, b) {
-    return (b.count - a.count) || ((b.end - b.start) - (a.end - a.start)) || (a.start - b.start);
+    grid.push(row);
   });
-  var shown = wins.slice(0, 8);
-  shown.forEach(function (w) {
-    var li = el('li', null, 'overlap-item' + (w.count === n ? ' all' : ''));
-    li.appendChild(el('span', fmtHour(w.start) + ' \u2013 ' + fmtHour(w.end), 'overlap-time'));
-    li.appendChild(el('span', w.count === n ? 'Everyone free' : w.count + ' of ' + n + ' free', 'overlap-count' + (w.count === n ? ' gold' : '')));
-    overlapList.appendChild(li);
-  });
-  if (!shown.length) {
-    overlapList.appendChild(el('li', 'No overlapping work hours today \u2014 try shifting someone\u2019s hours.', 'status'));
-  } else if (wins.length > shown.length) {
-    overlapList.appendChild(el('li', '+' + (wins.length - shown.length) + ' more windows with fewer members free.', 'status'));
+  var thead = el('thead');
+  var hr = el('tr');
+  var corner = el('th', 'Member');
+  corner.setAttribute('scope', 'col');
+  corner.className = 'rowhead';
+  hr.appendChild(corner);
+  for (var h2 = 0; h2 < 24; h2++) {
+    var thc = el('th', pad2(h2));
+    thc.setAttribute('scope', 'col');
+    thc.className = 'hcol' + (counts[h2] === n ? ' golden' : '');
+    hr.appendChild(thc);
   }
-  if (!wins.some(function (w) { return w.count === n; })) {
-    overlapList.appendChild(el('li', 'Tip: shift someone\u2019s work hours to open a window when everyone is free.', 'status'));
-  }
-  overlapStripWrap.hidden = false;
+  thead.appendChild(hr);
+  heatmapTable.appendChild(thead);
+  var tbody = el('tbody');
   var base = accentBase();
-  var bestH = -1, bestC = 0;
-  for (var h3 = 0; h3 < 24; h3++) {
-    var seg = el('div', null, 'overlap-seg' + (counts[h3] === n ? ' full' : ''));
-    if (counts[h3] > 0) seg.style.backgroundColor = 'rgba(' + base + ', ' + (0.25 + 0.65 * (counts[h3] / n)).toFixed(2) + ')';
-    seg.title = fmtHour(h3) + ': ' + (counts[h3] === n ? 'everyone' : counts[h3] + ' of ' + n) + ' free';
-    overlapStrip.appendChild(seg);
-    if (counts[h3] > bestC) { bestC = counts[h3]; bestH = h3; }
+  state.members.forEach(function (m, mi) {
+    var tr = el('tr');
+    var rh = el('th', m.name);
+    rh.setAttribute('scope', 'row');
+    rh.className = 'rowhead';
+    tr.appendChild(rh);
+    for (var h3 = 0; h3 < 24; h3++) {
+      var td = el('td');
+      td.className = 'hcell' + (counts[h3] === n ? ' golden' : '');
+      var localH = memberHourAtViewerHour(m, h3, today);
+      td.title = m.name + ': ' + pad2(localH) + ':00 local \u2014 ' +
+        (grid[mi][h3] ? 'in work hours' : 'off hours');
+      if (grid[mi][h3]) {
+        var alpha = (0.25 + 0.65 * (counts[h3] / n)).toFixed(2);
+        td.style.backgroundColor = 'rgba(' + base + ', ' + alpha + ')';
+      }
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  });
+  var sr = el('tr');
+  sr.className = 'summaryrow';
+  var srh = el('th', 'Working');
+  srh.setAttribute('scope', 'row');
+  srh.className = 'rowhead';
+  sr.appendChild(srh);
+  for (var h4 = 0; h4 < 24; h4++) {
+    var sc = el('td', String(counts[h4]));
+    sc.className = 'hcell' + (counts[h4] === n ? ' golden' : '');
+    if (counts[h4] > 0) {
+      sc.style.backgroundColor = 'rgba(' + base + ', ' + (0.9 * counts[h4] / n).toFixed(2) + ')';
+    }
+    sr.appendChild(sc);
   }
-  for (var h4 = 0; h4 < 24; h4 += 3) overlapScale.appendChild(el('span', fmtHour(h4)));
-  overlapStrip.setAttribute('aria-label', '24-hour overlap strip. ' + (bestC > 0 ? 'Most members free at ' + fmtHour(bestH) + ' (' + bestC + ' of ' + n + ').' : 'No overlap today.'));
+  tbody.appendChild(sr);
+  heatmapTable.appendChild(tbody);
+  var goldenHours = [];
+  for (var h5 = 0; h5 < 24; h5++) if (counts[h5] === n) goldenHours.push(h5);
+  renderGolden(goldenHours);
+}
+
+/* ---------------- golden hours ---------------- */
+function rangesOf(hours) {
+  var out = [];
+  var start = null, prev = null;
+  hours.forEach(function (h) {
+    if (start === null) { start = h; prev = h; }
+    else if (h === prev + 1) { prev = h; }
+    else { out.push([start, prev + 1]); start = h; prev = h; }
+  });
+  if (start !== null) out.push([start, prev + 1]);
+  return out;
+}
+function renderGolden(goldenHours) {
+  clear(goldenDiv);
+  if (!state.members.length) {
+    goldenDiv.appendChild(el('p', 'Add team members to find golden hours.', 'status'));
+    return;
+  }
+  if (!goldenHours.length) {
+    goldenDiv.appendChild(el('p', 'No golden hours \u2014 there is no hour when the whole team overlaps.', 'status'));
+    goldenDiv.appendChild(el('p', 'Tip: shift someone\u2019s work hours, or accept partial overlap and pick the hours with the highest count in the heatmap.', 'status'));
+    return;
+  }
+  goldenDiv.appendChild(el('p', 'Best meeting windows (' + state.viewerTz + '):', 'status'));
+  var chips = el('div', null, 'chips');
+  rangesOf(goldenHours).forEach(function (r) {
+    chips.appendChild(el('span', pad2(r[0]) + ':00\u2013' + pad2(r[1] % 24) + ':00', 'chip'));
+  });
+  goldenDiv.appendChild(chips);
 }
 
 /* ---------------- member form (add / edit) ---------------- */
@@ -856,7 +906,7 @@ document.getElementById('btn-clear').addEventListener('click', function () {
 /* ---------------- init ---------------- */
 function renderAll() {
   renderMembers();
-  renderOverlap();
+  renderHeatmap();
   if (planGenerated) renderPlan();
 }
 fillZoneSelect(viewerSel, state.viewerTz);
