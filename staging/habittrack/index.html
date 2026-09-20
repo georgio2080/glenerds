@@ -1392,12 +1392,12 @@ function csvEsc(v){
   return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
 }
 function exportCsv(){
-  const rows = ["habit_name,date,status,note"];
+  const rows = ["habit_id,habit_name,date,status,note"];
   state.habits.forEach(h => {
     Object.keys(state.log[h.id] || {}).sort().forEach(k => {
       const en = state.log[h.id][k];
       if(!en || (!en.status && !en.note)) return; // skip fully-empty rows; note-only entries export with blank status
-      rows.push([csvEsc(h.name), csvEsc(k), csvEsc(en.status || ""), csvEsc(en.note || "")].join(","));
+      rows.push([csvEsc(h.id), csvEsc(h.name), csvEsc(k), csvEsc(en.status || ""), csvEsc(en.note || "")].join(","));
     });
   });
   download("habittrack-backup-" + todayKey() + ".csv", rows.join("\n"), "text/csv");
@@ -1432,10 +1432,16 @@ function importFile(file){
         const d = JSON.parse(text);
         if(!d || !Array.isArray(d.habits) || !d.log || typeof d.log !== "object") throw new Error("not a HabitTrack backup");
         const clean = [];
-        let dropped = 0;
+        let dropped = 0, dupIds = 0;
+        const seenIds = {};
         d.habits.forEach(h => {
           const s = sanitizeHabit(h);
-          if(s) clean.push(s); else dropped++;
+          if(!s){ dropped++; return; }
+          /* duplicate ids are ambiguous (the log is keyed by id): first habit
+             wins, later duplicates are dropped, the log stays with the first */
+          if(seenIds[s.id]){ dupIds++; return; }
+          seenIds[s.id] = true;
+          clean.push(s);
         });
         if(clean.length === 0) throw new Error("no valid habits in backup");
         d.habits = clean;
@@ -1447,28 +1453,47 @@ function importFile(file){
         if(!window.confirm("Replace everything on this device with the backup (" + d.habits.length + " habits)?")) return;
         state = { habits: d.habits, log: cleanLog };
         saveState(); renderAll();
-        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Imported ' + d.habits.length + " habits." + (dropped ? " (" + dropped + " invalid entries skipped)" : "") + "</p>";
+        const skipParts = [];
+        if(dropped) skipParts.push(dropped + " invalid");
+        if(dupIds) skipParts.push(dupIds + " duplicate id");
+        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Imported ' + d.habits.length + " habits." + (skipParts.length ? " (" + skipParts.join(", ") + " entries skipped)" : "") + "</p>";
       }else{
-        // CSV: match rows to habits by name, merge entries
+        // CSV: match rows by habit_id when the column is present (unambiguous),
+        // otherwise by name. Duplicate names are ambiguous — those rows are
+        // skipped, never silently merged into the first matching habit.
         const rows = parseCsv(text);
         if(rows.length < 2) throw new Error("CSV has no data rows");
         const header = rows[0].map(s => s.trim().toLowerCase());
         const hi = header.indexOf("habit_name"), di = header.indexOf("date"),
-              si = header.indexOf("status"), ni = header.indexOf("note");
+              si = header.indexOf("status"), ni = header.indexOf("note"),
+              ii = header.indexOf("habit_id");
         if(hi === -1 || di === -1 || si === -1) throw new Error("CSV needs habit_name, date, status columns");
-        let merged = 0, skipped = 0;
+        const byId = {};
+        state.habits.forEach(h => { byId[h.id] = h; });
+        let merged = 0, skipped = 0, ambiguous = 0;
         for(let r = 1; r < rows.length; r++){
           const row = rows[r];
+          const idv = ii === -1 ? "" : (row[ii] || "").trim();
           const name = (row[hi] || "").trim(), date = (row[di] || "").trim(), status = (row[si] || "").trim();
           const note = ni === -1 ? "" : (row[ni] || "");
-          const h = state.habits.find(x => x.name === name);
+          let h = null;
+          if(idv){
+            h = byId[idv] || null; // explicit id with no match: unknown habit, skip
+          }else{
+            const matches = state.habits.filter(x => x.name === name);
+            if(matches.length > 1){ ambiguous++; continue; } // duplicate name: do not guess
+            h = matches[0] || null;
+          }
           if(!h || !isValidDateKey(date) || (status && ["done","partial","skip"].indexOf(status) === -1)){ skipped++; continue; }
           if(!status && !note){ skipped++; continue; } // fully-empty row: nothing to store
           setEntry(h.id, date, status || null, note.slice(0, 500));
           merged++;
         }
         renderAll();
-        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Merged ' + merged + " entries" + (skipped ? " (" + skipped + " rows skipped — unknown habit, bad date or status)" : "") + ".</p>";
+        const cskip = [];
+        if(skipped) cskip.push(skipped + " unknown habit / bad date or status");
+        if(ambiguous) cskip.push(ambiguous + " ambiguous duplicate-name");
+        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Merged ' + merged + " entries" + (cskip.length ? " (" + cskip.join("; ") + " skipped)" : "") + ".</p>";
       }
     }catch(err){
       msg.innerHTML = '<p class="sub" style="color:var(--g-bad)">Import failed: ' + esc(err.message) + ". Nothing was changed.</p>";
