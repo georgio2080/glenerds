@@ -180,6 +180,19 @@ footer.site a{color:var(--accent)}
 .status-msg{min-height:1.5em; margin:6px 0; font-weight:600}
 .status-msg.error{color:var(--red)}
 .status-msg.ok{color:var(--green)}
+/* ---------- Print ---------- */
+@media print{
+  header.topbar, .status-msg,
+  section[aria-labelledby="addHead"], section[aria-labelledby="dataHead"],
+  section[aria-labelledby="yrHead"]{display:none !important}
+  .cactions, form.payments, form.inline{display:none !important}
+  body{background:#fff; color:#000}
+  main{max-width:none; padding:0}
+  .card, .contractor, .flag{box-shadow:none; border-color:#999}
+  .payments{overflow:visible}
+  table{min-width:0}
+  .pill, .stat .num, .flag .fmsg{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+}
 </style>
 </head>
 <body>
@@ -318,12 +331,21 @@ function el(tag, text, cls){
   if(text != null) n.textContent = text;
   return n;
 }
-function money(n){ return "$" + Number(n).toFixed(2); }
+function money(n){
+  var v = Number(n);
+  if(!isFinite(v)) return "$0.00";
+  return (v < 0 ? "-$" : "$") + Math.abs(v).toFixed(2);
+}
 function todayISO(){
   var d = new Date();
   return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
 }
-function validDate(s){ return DATE_RE.test(s); }
+function validDate(s){
+  if(!DATE_RE.test(s)) return false;
+  var p = s.split("-").map(Number);
+  var d = new Date(p[0], p[1]-1, p[2]);
+  return d.getFullYear() === p[0] && d.getMonth() === p[1]-1 && d.getDate() === p[2];
+}
 function ytd(c){ return (c.payments || []).reduce(function(t,p){ return t + (p && isFinite(p.amount) ? p.amount : 0); }, 0); }
 function uid(){ return "c" + Date.now().toString(36) + Math.floor(Math.random()*1e6).toString(36); }
 
@@ -760,10 +782,18 @@ document.getElementById("importFile").addEventListener("change", function(ev){
         var target = yearData(y).contractors;
         list.forEach(function(raw){
           var sc = sanitizeContractor(raw);
+          if(sc){
+            var clash = target.some(function(x){ return x.id === sc.id; });
+            if(clash) sc.id = uid();
+          }
           if(sc && target.length < MAX_CONTRACTORS){ target.push(sc); ok++; }
           else skipped++;
         });
       });
+      Object.keys(srcYears).forEach(function(y){
+        if(validYear(y) && years.indexOf(y) < 0){ years.push(y); }
+      });
+      years.sort();
     }catch(e){ setDataMsg("Import failed: file is not valid W9Track JSON.", true); ev.target.value = ""; return; }
     saveStore(); renderYearSelect(); renderAll();
     setDataMsg("Imported " + ok + " contractor" + (ok === 1 ? "" : "s") + (skipped ? ", skipped " + skipped + " invalid." : "."), false);
@@ -801,7 +831,14 @@ document.getElementById("demoBtn").addEventListener("click", function(){
 document.getElementById("clearBtn").addEventListener("click", function(){
   if(window.confirm("Delete ALL contractors and payments for ALL years? This cannot be undone.")){
     store.years = {};
-    saveStore(); openPanels = {}; renderAll();
+    saveStore(); openPanels = {};
+    years = [];
+    ["2025","2026","2027"].forEach(function(y){ if(years.indexOf(y)<0) years.push(y); });
+    var cy = String(new Date().getFullYear());
+    if(validYear(cy) && years.indexOf(cy)<0) years.push(cy);
+    years.sort();
+    currentYear = validYear(cy) ? cy : "2026";
+    renderYearSelect(); renderAll();
     setDataMsg("All data cleared.", false);
   }
 });

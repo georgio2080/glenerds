@@ -209,7 +209,7 @@ footer .disclaimer{margin-top:10px;font-size:.75rem}
       <div class="field">
         <label for="newPlaceRent">Expected rent at a new place ($/mo)</label>
         <input type="number" id="newPlaceRent" min="0" step="0.01" placeholder="1,450" inputmode="decimal">
-        <div class="hint">What you'd realistically pay elsewhere. Defaults to your current rent.</div>
+        <div class="hint">What you'd realistically pay elsewhere.</div>
       </div>
     </div>
   </section>
@@ -452,7 +452,7 @@ function calculate(silent){
   if (err){
     $("inputErr").textContent = err;
     $("inputErr").classList.add("show");
-    if (!silent) $("resultsBody").hidden = true;
+    $("resultsBody").hidden = true; /* never show stale numbers next to an error */
     return null;
   }
   $("inputErr").classList.remove("show");

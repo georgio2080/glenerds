@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Rent Receipt Generator</title>
-<meta name="description" content="Free rent receipt generator: create a printable rent receipt in seconds. Enter landlord and tenant details, amount, and payment method, then print a professional landlord receipt. Works offline — your data never leaves this device.">
+<title>Rent Receipt Generator &mdash; Free Printable Landlord Receipts</title>
+<meta name="description" content="Free rent receipt generator: create a printable landlord receipt in seconds. Enter tenant and rent details, then print — 100% offline, no account, no subscription, your data never leaves this device. By Glenerds.">
 <script>
 /* Pre-theme: set data-theme before first paint to avoid flash */
 (function(){try{
@@ -115,6 +115,7 @@ footer>div{margin-bottom:6px}
 .disclaimer{font-size:.75rem;opacity:.85}
 /* ---- Print: only the receipt ---- */
 @media print{
+  @page{size:letter;margin:12mm}
   body{background:#fff}
   .hero,.no-print,footer{display:none!important}
   main{max-width:none;margin:0;padding:0}

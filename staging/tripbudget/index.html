@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TripBudget — Trip Budget Planner</title>
+<title>Trip Budget Planner & Travel Expense Tracker (Offline) — TripBudget</title>
 <style>
 :root{
   --bg:#f6f7f9; --surface:#ffffff; --surface2:#eef0f4; --text:#1c2230; --muted:#64707f;
@@ -221,17 +221,41 @@ function fmtCents(cents, code){
   return (neg?"-":"") + sym + whole + "." + frac;
 }
 /* convert trip-currency amount (string/number, up to 2dp) -> home cents.
-   rate = home-currency units per 1 trip-currency unit (e.g. 1 EUR = 1.08 USD). */
+   rate = home-currency units per 1 trip-currency unit (e.g. 1 EUR = 1.08 USD).
+   Decimal-exact: rates are finite user-entered decimals, so multiply on the
+   rate's decimal string form and round half-up — plain float math drifts
+   below exact .5-cent boundaries (e.g. 6.67*1.5 -> 1000 instead of 1001). */
+function rateParts(rate){
+  let rs = String(rate);
+  if(/e/i.test(rs)){
+    rs = Number(rate).toFixed(12);
+    if(/e/i.test(rs)) return {int: BigInt(Math.round(Number(rate))), dp: 0};
+    rs = rs.replace(/0+$/,"").replace(/\.$/,"");
+  }
+  const dot = rs.indexOf(".");
+  const dp = dot < 0 ? 0 : rs.length - dot - 1;
+  return {int: BigInt((rs.replace(".","") || "0").replace("-","")), dp};
+}
 function tripToHomeCents(tripAmount, rate){
   const r = Number(rate), a = Number(tripAmount);
   if(!isFinite(r) || !isFinite(a) || r < 0 || a < 0) return 0;
-  // keep 6dp precision on rate math, then round to the cent
-  return Math.round(a * r * 100);
+  const aCents = Math.round(a*100); // exact integer for 2dp input
+  const rp = rateParts(r);
+  const prod = BigInt(aCents) * rp.int;
+  const div = 10n ** BigInt(rp.dp);
+  const q = prod / div, rem = prod % div;
+  const out = q + (rem*2n >= div ? 1n : 0n);
+  return out <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(out) : Math.round(a*r*100);
 }
 function homeCentsToTrip(cents, rate){
   const r = Number(rate);
   if(!isFinite(r) || r <= 0) return 0;
-  return Math.round((cents/100)/r*100)/100;
+  const rp = rateParts(r);
+  if(rp.int === 0n) return 0;
+  // want round-half-up of cents/r, expressed in hundredths of the trip unit
+  const num = BigInt(Math.round(cents)) * (10n ** BigInt(rp.dp));
+  const q = num / rp.int, rem = num % rp.int;
+  return Number(q + (rem*2n >= rp.int ? 1n : 0n)) / 100;
 }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
@@ -346,7 +370,7 @@ document.getElementById("tripSave").addEventListener("click", ()=>{
   const start = document.getElementById("fStart").value, end = document.getElementById("fEnd").value;
   const homeCur = document.getElementById("fHomeCur").value, tripCur = document.getElementById("fTripCur").value;
   const rate = Number(document.getElementById("fRate").value);
-  const budgetCents = toCents(document.getElementById("fBudget").value || 0);
+  const budgetCents = Math.max(0, toCents(document.getElementById("fBudget").value || 0));
   if(!dest){ alert("Please enter a destination."); return; }
   if(!start || !end){ alert("Please pick start and end dates."); return; }
   if(daysBetween(start,end) < 0){ alert("End date must be on or after the start date."); return; }
@@ -502,10 +526,13 @@ function renderPlanner(t){
   const recalcAlloc = ()=>{
     let sum = 0;
     el.querySelectorAll("[data-alloc]").forEach(inp=>{
-      const cents = toCents(inp.value||0);
+      const cents = Math.max(0, toCents(inp.value||0)); // negatives invalid -> clamp
+      inp.value = cents/100;
       t.allocations[inp.dataset.alloc] = cents; sum += cents;
     });
-    t.totalBudgetCents = toCents(document.getElementById("pBudget").value||0);
+    const pb = document.getElementById("pBudget");
+    t.totalBudgetCents = Math.max(0, toCents(pb.value||0));
+    pb.value = t.totalBudgetCents/100;
     save();
     document.getElementById("pAllocTotal").textContent = fmtCents(sum,t.homeCur);
     const diff = t.totalBudgetCents - sum;

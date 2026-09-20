@@ -368,7 +368,8 @@ function simulate(strategy, extraMonthly){
     totalInterest+=mInt;
     var oi, dd;
     for(oi=0;oi<order.length;oi++){ dd=byId[order[oi]];
-      if(!dd||dd.bal<=0.004) continue;
+      if(!dd) continue;
+      if(dd.bal<=0.004){ extra+=dd.min; continue; } /* paid-off debt: its minimum rolls into the attack pool */
       var pay=Math.min(dd.min,dd.bal);
       dd.bal-=pay; mPaid+=pay;
       extra+=(dd.min-pay); /* freed minimum rolls into the extra pool */

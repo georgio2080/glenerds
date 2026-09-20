@@ -977,7 +977,7 @@ function toBase(qty, unit) { /* grams | ml | count */
 }
 function fmtMoney(n) {
   if (!isFinite(n)) return '—';
-  return '$' + n.toFixed(2);
+  return (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2);
 }
 function num(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
 function esc(s) {
@@ -997,10 +997,32 @@ function load() {
       if (d && Array.isArray(d.ingredients) && Array.isArray(d.recipes)) state = d;
     }
   } catch (e) { /* corrupted storage -> start fresh */ state = { ingredients: [], recipes: [] }; }
+  sanitizeState();
   if (!state.ingredients.length && !state.recipes.length) seed();
 }
 function save() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+/* Harden against hand-edited / corrupted data (import file or localStorage):
+   guarantees the shapes recipeTotals/renderLines/renderIngredients assume. */
+function sanitizeState() {
+  if (!Array.isArray(state.ingredients)) state.ingredients = [];
+  if (!Array.isArray(state.recipes)) state.recipes = [];
+  state.ingredients = state.ingredients.filter(function (i) { return i && typeof i === 'object'; });
+  state.recipes = state.recipes.filter(function (r) { return r && typeof r === 'object'; });
+  var NUMS = ['yieldQty', 'laborHours', 'laborRate', 'packagingPerUnit', 'overheadPct', 'targetMarginPct'];
+  state.ingredients.forEach(function (i) {
+    if (!i.id) i.id = uid();
+    i.pkgQty = num(i.pkgQty); i.pkgPrice = num(i.pkgPrice);
+    if (i.pkgQty < 0) i.pkgQty = 0; if (i.pkgPrice < 0) i.pkgPrice = 0;
+  });
+  state.recipes.forEach(function (r) {
+    if (!r.id) r.id = uid();
+    if (!Array.isArray(r.lines)) r.lines = [];
+    NUMS.forEach(function (f) { r[f] = Math.max(0, num(r[f])); });
+    r.lines = r.lines.filter(function (ln) { return ln && typeof ln === 'object'; });
+    r.lines.forEach(function (ln) { ln.qty = Math.max(0, num(ln.qty)); });
+  });
 }
 function seed() {
   state.ingredients = [
@@ -1181,10 +1203,12 @@ function deleteRecipe() {
 }
 function recField(field, val) {
   var r = cur(); if (!r) return;
+  if (field !== 'name' && field !== 'yieldUnit') val = Math.max(0, val); /* typed negatives bypass min="0" */
   r[field] = val; save(); renderSummary();
 }
 function lineField(idx, field, val) {
   var r = cur(); if (!r || !r.lines[idx]) return;
+  if (field === 'qty') val = Math.max(0, val); /* typed negatives bypass min="0" */
   r.lines[idx][field] = val; save();
   /* update this line's cost in place — never rebuild the row while typing */
   var cell = document.getElementById('linecost-' + idx);
@@ -1325,7 +1349,8 @@ function importData(input) {
     try {
       var d = JSON.parse(rd.result);
       if (!d || !Array.isArray(d.ingredients) || !Array.isArray(d.recipes)) throw new Error('bad file');
-      state = d; currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+      state = d; sanitizeState();
+      currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
       save(); renderIngredients(); renderRecipe();
     } catch (e) {
       var el = document.getElementById('rec-err');

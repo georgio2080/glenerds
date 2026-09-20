@@ -37,7 +37,7 @@ TripBudget is a trip budget planner built for people who plan their trips like t
 
 **Who it's for**
 
-Type-A travel planners, budget honeymooners, family vacation organizers, backpackers watching every dollar, and anyone who's ever said "this trip is going to be so helpful to plan."
+Type-A travel planners, budget honeymooners, family vacation organizers, backpackers watching every dollar, and anyone who's ever opened a credit-card statement after a trip and winced.
 
 **What you get**
 
@@ -46,6 +46,8 @@ Type-A travel planners, budget honeymooners, family vacation organizers, backpac
 - Free updates forever
 
 Open the file, plan the trip, enjoy the trip. ✈️
+
+**More from Glenerds** — simple offline tools that respect your privacy: https://glenerds.gumroad.com
 
 ---
 

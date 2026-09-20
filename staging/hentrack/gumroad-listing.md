@@ -24,5 +24,11 @@ $0 (free tool)
 
 Free forever — by Glenerds. https://glenerds.gumroad.com
 
+Related Glenerds tools: [GardenCal](https://glenerds.gumroad.com) — vegetable garden planting calendar by zone. More one-time-purchase tools at https://glenerds.gumroad.com
+
+## Tags / categories
+
+backyard chickens, chicken egg tracker, egg production log, flock management, cost per dozen, feed cost tracker, homestead, urban chickens, egg sales
+
 ## Thumbnail/gallery
 Square cover + gallery screenshots from `gallery/` (light dashboard, egg log, flock, dark mode, mobile).

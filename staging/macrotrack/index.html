@@ -1218,6 +1218,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
         $('o-' + m + '-bar').style.width = '0%';
       });
       $('pace').hidden = true;
+      $('km-notice').hidden = true;
       stepsEl.innerHTML = '<div class="notice">Fix the highlighted fields above to see your numbers.</div>';
       return;
     }
@@ -1228,6 +1229,11 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       if (r.bodyFat === null || !isFinite(r.bodyFat)) {
         $('km-notice').hidden = false;
         ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
+        ['p', 'c', 'f'].forEach(function (m) {
+          $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
+          $('o-' + m + '-bar').style.width = '0%';
+        });
+        $('pace').hidden = true;
         stepsEl.innerHTML = '<div class="notice">Katch-McArdle needs body fat % — enter it above or choose another formula.</div>';
         return;
       }

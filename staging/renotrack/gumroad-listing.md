@@ -42,6 +42,8 @@ Open it on your phone at the property with zero bars and it just works.
 - **Dark mode, mobile-friendly, printable** — clean on a 360px phone screen,
   easy on the eyes after hours, and prints a tidy budget summary for your
   records or your partner.
+- **One-time purchase** — pay once, use it forever. No subscription, no monthly
+  fee, free updates for life.
 
 **Who it's for:** homeowners managing their own remodel, house flippers
 juggling multiple properties, and anyone who's been burned by renovation
@@ -50,6 +52,14 @@ costs creeping 20% over "the plan."
 **What you get:** one self-contained `index.html` (~49KB) + README. Open in
 any modern browser (Chrome, Edge, Firefox, Safari) on Mac, Windows, or phone.
 Free updates for life.
+
+**More from Glenerds** — also check out HomeInventory (catalog everything in
+your home), TripBudget (travel budget planner), and DebtPayoff (debt payoff
+planner): https://glenerds.gumroad.com
+
+---
+
+*by Glenerds — simple offline tools that respect your privacy.*
 
 ---
 

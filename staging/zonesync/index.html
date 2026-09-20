@@ -325,6 +325,7 @@ footer.site a { color: var(--muted); }
 var STORAGE_KEY = 'zonesync-state-v1';
 var THEME_KEY = 'zonesync-theme';
 var MAX_NAME_LEN = 50;
+var MAX_MEMBERS = 200;
 
 var FALLBACK_ZONES = [
   'UTC',
@@ -420,6 +421,7 @@ function loadState() {
         var s = sanitizeMember(m);
         if (s) out.members.push(s);
       });
+      if (out.members.length > MAX_MEMBERS) out.members.length = MAX_MEMBERS;
     }
     return out;
   } catch (e) { return fallback; }
@@ -750,6 +752,10 @@ form.addEventListener('submit', function (ev) {
       return;
     }
   }
+  if (editingIndex < 0 && state.members.length >= MAX_MEMBERS) {
+    setDataStatus('The team is full (' + MAX_MEMBERS + ' members max). Delete someone before adding more.', 'err');
+    return;
+  }
   if (editingIndex >= 0) state.members[editingIndex] = m;
   else state.members.push(m);
   saveState();
@@ -839,9 +845,16 @@ fileInput.addEventListener('change', function () {
       var data = JSON.parse(reader.result);
       var list = data && Array.isArray(data.members) ? data.members : null;
       if (!list) throw new Error('bad shape');
+      var seen = {};
+      state.members.forEach(function (m) { seen[m.name.toLowerCase()] = true; });
+      var room = MAX_MEMBERS - state.members.length;
       list.forEach(function (m) {
         var s = sanitizeMember(m);
-        if (s) { state.members.push(s); ok++; } else { bad++; }
+        var k = s ? s.name.toLowerCase() : null;
+        if (s && k !== null && !seen[k] && room > 0) {
+          seen[k] = true; room--;
+          state.members.push(s); ok++;
+        } else { bad++; }
       });
       if (data && validZone(data.viewerTz)) {
         state.viewerTz = data.viewerTz;

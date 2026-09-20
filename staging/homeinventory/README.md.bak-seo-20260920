@@ -1,0 +1,34 @@
+# HomeInventory — Home Inventory for Insurance Claims
+
+An offline, single-file web app that catalogs your belongings room by room and
+generates a claim-ready insurance report. No account, no subscription, no internet
+needed — open `index.html` in any browser (even from `file://`) and it just works.
+
+## What it does
+
+- **Rooms** — add, rename, and delete rooms. Each room shows its item count and total
+  documented value. Rooms with items can't be deleted until emptied.
+- **Item catalog** — name, category, purchase value, serial number, purchase date,
+  receipt/note, and a photo (stored on this device, downscaled to keep storage small).
+- **Per-room and grand totals** — every total is computed live and shown in dollars.
+- **Claim-ready report** — room-by-room table with item, category, serial, purchase
+  date, and value, plus a grand total. Print / Save as PDF prints only the report.
+- **Search and room filter** — find items by name, serial, note, category, or room.
+- **Dark mode** — visible toggle, follows your system preference on first load, remembered.
+- **Your data stays yours** — everything is saved in the browser's localStorage on your
+  device. Export a JSON backup any time; import it to restore or move devices.
+- **Print / PDF** — a clean print stylesheet produces the claim report only.
+
+## Files
+
+- `index.html` — the whole app (single file, zero external requests)
+- `gallery/` — screenshots for the listing
+
+## Privacy
+
+No analytics, no network requests, no cookies. The only link in the app is the discreet
+"by Glenerds" attribution in the footer.
+
+---
+
+© Glenerds. Sold as a one-time purchase — yours forever, no subscription.

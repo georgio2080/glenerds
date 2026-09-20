@@ -29,7 +29,7 @@ Free contractor estimate and quote builder app. Create printable job proposals, 
 
 Download this 100% free offline quote and estimate builder for contractors, handymen, and freelancers. Create, print, and track professional job proposals instantly without an internet connection or signup. No upsells.
 
-💸 100% FREE — no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
+💸 100% FREE — no upsells, no subscription, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 ✨ WHAT IT DOES
 • 🧾 Quote editor — customer info, quote date, valid-until, status (Draft / Sent / Accepted / Declined)
@@ -53,7 +53,7 @@ No install, no internet, no account. Open the file, set up your business profile
 QuoteCraft is fully offline. No trackers, no analytics, no external requests.
 
 🛠️ MORE FROM GLENERDS
-• Browse all Glenerds tools → https://glenerds.gumroad.com
+• More free + paid tools by Glenerds → https://glenerds.gumroad.com
 
 📩 SUPPORT
 Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.

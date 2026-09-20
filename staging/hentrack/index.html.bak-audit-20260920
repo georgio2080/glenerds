@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HenTrack — Backyard Chicken Flock & Egg Tracker</title>
+<meta name="description" content="Track daily egg production, feed costs, flock health and egg sales for your backyard chickens. Offline, private, free forever.">
+<style>
+:root{
+  --bg:#f6f4ec; --card:#ffffff; --ink:#23281f; --muted:#6b705c;
+  --line:#e3ddc9; --accent:#5b8c3e; --accent-d:#48702f; --accent-soft:#eaf3df;
+  --warn:#b7791f; --bad:#b3402e; --good:#3e7d44;
+  --input-bg:#ffffff; --shadow:0 1px 3px rgba(35,40,31,.08);
+  --radius:14px;
+}
+[data-theme="dark"]{
+  --bg:#141712; --card:#1e231b; --ink:#ecead9; --muted:#a3a88f;
+  --line:#2e342a; --accent:#8fbf6a; --accent-d:#a5d37f; --accent-soft:#24301c;
+  --warn:#d9a441; --bad:#e0684f; --good:#7cc47f;
+  --input-bg:#262c22; --shadow:0 1px 3px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:860px;margin:0 auto;padding:16px 14px 90px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 4px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-d));
+  display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.brand h1{font-size:22px;margin:0;letter-spacing:-.3px}
+.tagline{color:var(--muted);font-size:13.5px;margin:2px 0 14px}
+.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:10px;padding:9px 14px;font-weight:600}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-d)}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--line)}
+.btn.small{padding:5px 10px;font-size:13px;border-radius:8px}
+.theme-btn{white-space:nowrap}
+.tabs{display:flex;gap:6px;overflow-x:auto;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:6px;margin:0 0 14px;box-shadow:var(--shadow)}
+.tabs button{flex:1;white-space:nowrap;border:0;background:transparent;color:var(--muted);font:inherit;
+  font-weight:600;padding:10px 8px;border-radius:9px;cursor:pointer;font-size:14px}
+.tabs button.active{background:var(--accent-soft);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px;margin:0 0 14px;box-shadow:var(--shadow)}
+.card h2{font-size:17px;margin:0 0 4px}
+.card .sub{color:var(--muted);font-size:13px;margin:0 0 12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:560px){.grid3{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+.field{margin:0 0 10px}
+.field label{display:block;font-size:13px;font-weight:600;margin:0 0 4px}
+.field .hint{font-weight:400;color:var(--muted);font-size:12px}
+input,select,textarea{font:inherit;width:100%;background:var(--input-bg);color:var(--ink);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+input[type="checkbox"]{width:auto}
+.rowline{display:flex;gap:8px;align-items:center}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 14px}
+@media(max-width:640px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px;box-shadow:var(--shadow)}
+.stat .k{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+.stat .v{font-size:22px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;font-weight:600;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);
+  padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent-d)}
+[data-theme="dark"] .pill{color:var(--accent)}
+.pill.warn{background:#f7ecd4;color:#8a5c14}
+[data-theme="dark"] .pill.warn{background:#3a2f16;color:var(--warn)}
+.pill.bad{background:#f9dcd4;color:#96331f}
+[data-theme="dark"] .pill.bad{background:#3d231c;color:var(--bad)}
+.xbtn{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;line-height:1}
+.xbtn:hover{color:var(--bad);background:var(--accent-soft)}
+.empty{color:var(--muted);text-align:center;padding:22px 10px;font-size:14px}
+canvas.chart{width:100%;height:170px;display:block}
+footer.attrib{text-align:center;color:var(--muted);font-size:13px;margin:26px 0 8px}
+footer.attrib a{color:var(--accent);font-weight:700;text-decoration:none}
+details.how{margin:0 0 14px}
+details.how summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--accent-d)}
+[data-theme="dark"] details.how summary{color:var(--accent)}
+.kbd-note{font-size:13px;color:var(--muted)}
+@media print{
+  .tabs,.no-print,header.top .theme-btn,footer.attrib .np{display:none!important}
+  body{background:#fff;color:#000}
+  .card,.stat{box-shadow:none;break-inside:avoid}
+  .wrap{padding:0;max-width:100%}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">🐔</div>
+      <h1>HenTrack</h1>
+    </div>
+    <button class="btn small theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">🌙 Theme</button>
+  </header>
+  <p class="tagline">Daily egg counts, feed costs, flock records &amp; egg sales for backyard chicken keepers. 100% offline — your data never leaves this device.</p>
+
+  <nav class="tabs no-print" role="tablist" aria-label="Sections">
+    <button role="tab" data-tab="dash" class="active">Dashboard</button>
+    <button role="tab" data-tab="eggs">Egg Log</button>
+    <button role="tab" data-tab="flock">Flock</button>
+    <button role="tab" data-tab="costs">Feed &amp; Costs</button>
+    <button role="tab" data-tab="sales">Egg Sales</button>
+    <button role="tab" data-tab="data">Backup</button>
+  </nav>
+
+  <section id="tab-dash">
+    <div class="stat-grid" id="statGrid"></div>
+    <div class="card">
+      <h2>Eggs per day — last 14 days</h2>
+      <p class="sub">Tap Egg Log to record today's count.</p>
+      <canvas class="chart" id="eggChart" width="800" height="170"></canvas>
+    </div>
+    <div class="card">
+      <h2>How cost per dozen works</h2>
+      <p class="sub" style="margin:0">HenTrack divides everything you log under Feed &amp; Costs by the dozens of eggs logged in the same period. Log feed bags, bedding, supplements and vet visits, keep up the daily egg counts, and the number gets more honest every week.</p>
+    </div>
+  </section>
+
+  <section id="tab-eggs" hidden>
+    <div class="card">
+      <h2>Log today's eggs</h2>
+      <p class="sub">One entry per day — logging again for the same date updates it.</p>
+      <div class="grid3">
+        <div class="field"><label for="eggDate">Date</label><input type="date" id="eggDate"></div>
+        <div class="field"><label for="eggCount">Eggs collected</label><input type="number" id="eggCount" min="0" step="1" value="0"></div>
+        <div class="field"><label for="eggBroken">Damaged <span class="hint">(soft shell / broken)</span></label><input type="number" id="eggBroken" min="0" step="1" value="0"></div>
+      </div>
+      <div class="field"><label for="eggNotes">Notes <span class="hint">(optional — double yolks, first egg, predator scare…)</span></label><input type="text" id="eggNotes" placeholder="e.g. 2 double yolks, Marigold's first egg"></div>
+      <button class="btn primary" id="eggAdd" type="button">Save egg count</button>
+    </div>
+    <div class="card">
+      <h2>Recent days</h2>
+      <div id="eggList"></div>
+    </div>
+  </section>
+
+  <section id="tab-flock" hidden>
+    <div class="card">
+      <h2>Add a hen</h2>
+      <div class="grid2">
+        <div class="field"><label for="henName">Name</label><input type="text" id="henName" placeholder="e.g. Marigold"></div>
+        <div class="field"><label for="henBreed">Breed <span class="hint">(optional)</span></label><input type="text" id="henBreed" placeholder="e.g. Rhode Island Red"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="henHatch">Hatch / acquired date <span class="hint">(optional)</span></label><input type="date" id="henHatch"></div>
+        <div class="field"><label for="henStatus">Status</label>
+          <select id="henStatus">
+            <option value="laying">Laying</option>
+            <option value="pullet">Pullet (not laying yet)</option>
+            <option value="molting">Molting</option>
+            <option value="broody">Broody</option>
+            <option value="retired">Retired</option>
+            <option value="lost">Lost / rehomed</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn primary" id="henAdd" type="button">Add hen</button>
+    </div>
+    <div class="card">
+      <h2>Your flock</h2>
+      <p class="sub">Change a hen's status any time — lay rate only counts hens marked Laying.</p>
+      <div id="flockList"></div>
+    </div>
+  </section>
+
+  <section id="tab-costs" hidden>
+    <div class="card">
+      <h2>Log feed &amp; supplies</h2>
+      <div class="grid2">
+        <div class="field"><label for="expDate">Date</label><input type="date" id="expDate"></div>
+        <div class="field"><label for="expCat">Category</label>
+          <select id="expCat">
+            <option>Feed</option><option>Bedding</option><option>Supplements / grit</option>
+            <option>Vet / meds</option><option>Equipment / coop</option><option>Chicks / birds</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="expItem">Item</label><input type="text" id="expItem" placeholder="e.g. 50 lb layer pellets"></div>
+        <div class="field"><label for="expCost">Cost ($)</label><input type="number" id="expCost" min="0" step="0.01" placeholder="0.00"></div>
+      </div>
+      <button class="btn primary" id="expAdd" type="button">Add expense</button>
+    </div>
+    <div class="card">
+      <h2>Expenses</h2>
+      <p class="sub" id="expTotal"></p>
+      <div id="expList"></div>
+    </div>
+  </section>
+
+  <section id="tab-sales" hidden>
+    <div class="card">
+      <h2>Log egg sales</h2>
+      <p class="sub">Sell to neighbors? Track dozens sold and watch the flock pay for itself.</p>
+      <div class="grid3">
+        <div class="field"><label for="saleDate">Date</label><input type="date" id="saleDate"></div>
+        <div class="field"><label for="saleDoz">Dozens sold</label><input type="number" id="saleDoz" min="0" step="0.5" placeholder="0"></div>
+        <div class="field"><label for="salePrice">Price per dozen ($)</label><input type="number" id="salePrice" min="0" step="0.01" placeholder="0.00"></div>
+      </div>
+      <button class="btn primary" id="saleAdd" type="button">Add sale</button>
+    </div>
+    <div class="card">
+      <h2>Sales history</h2>
+      <p class="sub" id="saleTotal"></p>
+      <div id="saleList"></div>
+    </div>
+  </section>
+
+  <section id="tab-data" hidden>
+    <div class="card">
+      <h2>Backup &amp; restore</h2>
+      <p class="sub">Your data lives only in this browser. Export a backup file before clearing browser data or switching devices.</p>
+      <div class="rowline no-print" style="flex-wrap:wrap">
+        <button class="btn" id="expJson" type="button">Export backup (JSON)</button>
+        <label class="btn" for="impJson" style="cursor:pointer">Import backup</label>
+        <input type="file" id="impJson" accept="application/json" hidden>
+        <button class="btn" id="printBtn" type="button">Print summary</button>
+      </div>
+      <p class="kbd-note no-print" id="dataStats" style="margin-top:12px"></p>
+      <div class="no-print" style="margin-top:14px">
+        <button class="btn danger small" id="wipeBtn" type="button">Delete all HenTrack data</button>
+      </div>
+    </div>
+    <details class="how">
+      <summary>What counts as a "laying" hen?</summary>
+      <p class="kbd-note">Only hens with status <b>Laying</b> count toward the lay-rate percentage (eggs per hen per day). Mark molting, broody or pullet hens with their real status and the rate stays honest.</p>
+    </details>
+  </section>
+
+  <footer class="attrib">
+    Free offline tool <a href="https://glenerds.gumroad.com">by Glenerds</a> — no signup, no tracking, your data never leaves this device.
+  </footer>
+</div>
+<script>
+"use strict";
+/* ---------- utils ---------- */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function todayStr(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function num(v){var n=parseFloat(v);return isFinite(n)?n:0;}
+function money(n){n=num(n);return (n<0?"-":"")+"$"+Math.abs(n).toFixed(2);}
+function parseDate(s){var p=String(s||"").split("-");return new Date(+p[0],(+p[1]||1)-1,+p[2]||1);}
+function fmtDate(s){var d=parseDate(s);return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});}
+function daysAgo(n){var d=new Date();d.setDate(d.getDate()-n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function inLastDays(s,n){return s>=daysAgo(n)&&s<=todayStr();}
+
+/* ---------- state ---------- */
+var KEY="hentrack-v1";
+var state={hens:[],eggLogs:[],expenses:[],sales:[],theme:null};
+function load(){
+  try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);for(var k in state){if(s[k]!==undefined)state[k]=s[k];}}}catch(e){}
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+load();
+
+/* ---------- theme ---------- */
+function applyTheme(t){
+  state.theme=t;document.documentElement.setAttribute("data-theme",t);save();
+  $("themeBtn").textContent=(t==="dark"?"☀️":"🌙")+" Theme";
+}
+(function initTheme(){
+  var t=state.theme;
+  if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
+  applyTheme(t);
+})();
+$("themeBtn").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");drawChart();});
+
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tabs button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("active");});
+    b.classList.add("active");
+    ["dash","eggs","flock","costs","sales","data"].forEach(function(t){
+      $("tab-"+t).hidden=(t!==b.dataset.tab);
+    });
+    if(b.dataset.tab==="dash"){renderDash();}
+    if(b.dataset.tab==="data"){renderDataStats();}
+  });
+});
+
+/* ---------- dashboard ---------- */
+function activeHens(){return state.hens.filter(function(h){return h.status==="laying";});}
+function eggsIn(days){var c=0;state.eggLogs.forEach(function(l){if(inLastDays(l.date,days))c+=num(l.count);});return c;}
+function expIn(days){var c=0;state.expenses.forEach(function(e){if(inLastDays(e.date,days))c+=num(e.cost);});return c;}
+function revIn(days){var c=0;state.sales.forEach(function(s){if(inLastDays(s.date,days))c+=num(s.dozens)*num(s.pricePerDozen);});return c;}
+function renderDash(){
+  var hens=activeHens().length, eggs30=eggsIn(30), exp30=expIn(30), rev30=revIn(30);
+  var layRate=hens>0?(eggs30/(hens*30)*100):0;
+  var dozens30=eggs30/12;
+  var cpd=dozens30>0?(exp30/dozens30):0;
+  var totExp=state.expenses.reduce(function(a,e){return a+num(e.cost);},0);
+  var totRev=state.sales.reduce(function(a,s){return a+num(s.dozens)*num(s.pricePerDozen);},0);
+  var html="";
+  html+='<div class="stat"><div class="k">Laying hens</div><div class="v">'+hens+'</div></div>';
+  html+='<div class="stat"><div class="k">Eggs · 30 days</div><div class="v">'+eggs30+'</div></div>';
+  html+='<div class="stat"><div class="k">Lay rate</div><div class="v">'+layRate.toFixed(0)+'<small>%</small></div></div>';
+  html+='<div class="stat"><div class="k">Cost / dozen · 30d</div><div class="v">'+(dozens30>0?money(cpd):"—")+'</div></div>';
+  html+='<div class="stat"><div class="k">Spent · 30 days</div><div class="v">'+money(exp30)+'</div></div>';
+  html+='<div class="stat"><div class="k">Egg revenue · 30d</div><div class="v">'+money(rev30)+'</div></div>';
+  html+='<div class="stat"><div class="k">All-time spent</div><div class="v">'+money(totExp)+'</div></div>';
+  html+='<div class="stat"><div class="k">All-time profit</div><div class="v">'+money(totRev-totExp)+'</div></div>';
+  $("statGrid").innerHTML=html;
+  drawChart();
+}
+function drawChart(){
+  var cv=$("eggChart");if(!cv||$("tab-dash").hidden)return;
+  var ctx=cv.getContext("2d");
+  var W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
+  var dark=document.documentElement.getAttribute("data-theme")==="dark";
+  var grid=dark?"#2e342a":"#e3ddc9", bar=dark?"#8fbf6a":"#5b8c3e", txt=dark?"#a3a88f":"#6b705c";
+  var data=[];
+  for(var i=13;i>=0;i--){var d=daysAgo(i);var c=0;state.eggLogs.forEach(function(l){if(l.date===d)c+=num(l.count);});data.push({d:d,c:c});}
+  var max=0;data.forEach(function(x){if(x.c>max)max=x.c;});if(max<4)max=4;
+  ctx.strokeStyle=grid;ctx.fillStyle=txt;ctx.font="10px sans-serif";ctx.lineWidth=1;
+  for(var g=0;g<=4;g++){var y=8+(H-30)*(g/4);ctx.beginPath();ctx.moveTo(30,y);ctx.lineTo(W-6,y);ctx.stroke();
+    ctx.fillText(Math.round(max*(1-g/4)),4,y+3);}
+  var bw=(W-40)/14;
+  data.forEach(function(x,i){
+    var h=(H-34)*(x.c/max), x0=32+i*bw+2, y0=H-22-h;
+    ctx.fillStyle=bar;ctx.fillRect(x0,y0,bw-4,h);
+    if(i%2===0){ctx.fillStyle=txt;var dt=parseDate(x.d);ctx.fillText((dt.getMonth()+1)+"/"+dt.getDate(),x0-2,H-8);}
+  });
+}
+
+/* ---------- egg log ---------- */
+$("eggDate").value=todayStr();
+$("eggAdd").addEventListener("click",function(){
+  var d=$("eggDate").value||todayStr();
+  var ex=state.eggLogs.find(function(l){return l.date===d;});
+  var rec={id:ex?ex.id:uid(),date:d,count:Math.max(0,Math.round(num($("eggCount").value))),
+    broken:Math.max(0,Math.round(num($("eggBroken").value))),notes:$("eggNotes").value.trim()};
+  if(ex){state.eggLogs[state.eggLogs.indexOf(ex)]=rec;}else{state.eggLogs.push(rec);}
+  save();$("eggNotes").value="";renderEggs();
+});
+function renderEggs(){
+  var rows=state.eggLogs.slice().sort(function(a,b){return b.date<a.date?-1:1;}).slice(0,30);
+  if(!rows.length){$("eggList").innerHTML='<div class="empty">No egg counts yet — log your first day above.</div>';return;}
+  var h='<table><thead><tr><th>Date</th><th class="num">Eggs</th><th class="num">Damaged</th><th>Notes</th><th></th></tr></thead><tbody>';
+  rows.forEach(function(l){
+    h+='<tr><td>'+esc(fmtDate(l.date))+'</td><td class="num"><b>'+num(l.count)+'</b></td><td class="num">'+num(l.broken)+'</td><td>'+esc(l.notes)+'</td><td class="num"><button class="xbtn no-print" data-del-egg="'+l.id+'" aria-label="Delete">×</button></td></tr>';
+  });
+  $("eggList").innerHTML=h+'</tbody></table>';
+}
+$("eggList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-del-egg");
+  if(id){state.eggLogs=state.eggLogs.filter(function(l){return l.id!==id;});save();renderEggs();}
+});
+
+/* ---------- flock ---------- */
+var STATUS_LABEL={laying:"Laying",pullet:"Pullet",molting:"Molting",broody:"Broody",retired:"Retired",lost:"Lost / rehomed"};
+var STATUS_CLASS={laying:"",pullet:"warn",molting:"warn",broody:"warn",retired:"",lost:"bad"};
+$("henAdd").addEventListener("click",function(){
+  var name=$("henName").value.trim();
+  if(!name){alert("Give the hen a name first.");return;}
+  state.hens.push({id:uid(),name:name,breed:$("henBreed").value.trim(),hatch:$("henHatch").value,status:$("henStatus").value});
+  save();$("henName").value="";$("henBreed").value="";$("henHatch").value="";renderFlock();
+});
+function renderFlock(){
+  if(!state.hens.length){$("flockList").innerHTML='<div class="empty">No hens yet — add your flock above.</div>';return;}
+  var h='<table><thead><tr><th>Hen</th><th>Breed</th><th>Status</th><th></th></tr></thead><tbody>';
+  state.hens.forEach(function(x){
+    h+='<tr><td><b>'+esc(x.name)+'</b>'+(x.hatch?'<br><span class="kbd-note">'+esc(fmtDate(x.hatch))+'</span>':"")+'</td><td>'+esc(x.breed||"—")+'</td>';
+    h+='<td><select data-hen-status="'+x.id+'" aria-label="Status for '+esc(x.name)+'">';
+    Object.keys(STATUS_LABEL).forEach(function(k){h+='<option value="'+k+'"'+(x.status===k?" selected":"")+'>'+STATUS_LABEL[k]+'</option>';});
+    h+='</select></td><td class="num"><button class="xbtn no-print" data-del-hen="'+x.id+'" aria-label="Remove">×</button></td></tr>';
+  });
+  $("flockList").innerHTML=h+'</tbody></table>';
+}
+$("flockList").addEventListener("change",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-hen-status");
+  if(id){var x=state.hens.find(function(z){return z.id===id;});if(x){x.status=e.target.value;save();}}
+});
+$("flockList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-del-hen");
+  if(id&&confirm("Remove this hen from the flock?")){state.hens=state.hens.filter(function(z){return z.id!==id;});save();renderFlock();}
+});
+
+/* ---------- expenses ---------- */
+$("expDate").value=todayStr();
+$("expAdd").addEventListener("click",function(){
+  var cost=num($("expCost").value);
+  if(cost<=0){alert("Enter the cost first.");return;}
+  state.expenses.push({id:uid(),date:$("expDate").value||todayStr(),cat:$("expCat").value,item:$("expItem").value.trim(),cost:cost});
+  save();$("expItem").value="";$("expCost").value="";renderExp();
+});
+function renderExp(){
+  var tot=state.expenses.reduce(function(a,e){return a+num(e.cost);},0);
+  var m30=expIn(30);
+  $("expTotal").textContent="All-time: "+money(tot)+" · last 30 days: "+money(m30);
+  var rows=state.expenses.slice().sort(function(a,b){return b.date<a.date?-1:1;}).slice(0,40);
+  if(!rows.length){$("expList").innerHTML='<div class="empty">No expenses yet.</div>';return;}
+  var h='<table><thead><tr><th>Date</th><th>Item</th><th>Category</th><th class="num">Cost</th><th></th></tr></thead><tbody>';
+  rows.forEach(function(e){
+    h+='<tr><td>'+esc(fmtDate(e.date))+'</td><td>'+esc(e.item||"—")+'</td><td><span class="pill">'+esc(e.cat)+'</span></td><td class="num">'+money(e.cost)+'</td><td class="num"><button class="xbtn no-print" data-del-exp="'+e.id+'" aria-label="Delete">×</button></td></tr>';
+  });
+  $("expList").innerHTML=h+'</tbody></table>';
+}
+$("expList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-del-exp");
+  if(id){state.expenses=state.expenses.filter(function(x){return x.id!==id;});save();renderExp();}
+});
+
+/* ---------- sales ---------- */
+$("saleDate").value=todayStr();
+$("saleAdd").addEventListener("click",function(){
+  var dz=num($("saleDoz").value),pp=num($("salePrice").value);
+  if(dz<=0||pp<0){alert("Enter dozens sold and price per dozen.");return;}
+  state.sales.push({id:uid(),date:$("saleDate").value||todayStr(),dozens:dz,pricePerDozen:pp});
+  save();$("saleDoz").value="";$("salePrice").value="";renderSales();
+});
+function renderSales(){
+  var tot=state.sales.reduce(function(a,s){return a+num(s.dozens)*num(s.pricePerDozen);},0);
+  var dz=state.sales.reduce(function(a,s){return a+num(s.dozens);},0);
+  $("saleTotal").textContent="All-time: "+dz.toFixed(1)+" dozen · "+money(tot)+" revenue";
+  var rows=state.sales.slice().sort(function(a,b){return b.date<a.date?-1:1;}).slice(0,40);
+  if(!rows.length){$("saleList").innerHTML='<div class="empty">No sales logged yet.</div>';return;}
+  var h='<table><thead><tr><th>Date</th><th class="num">Dozens</th><th class="num">$/dozen</th><th class="num">Total</th><th></th></tr></thead><tbody>';
+  rows.forEach(function(s){
+    h+='<tr><td>'+esc(fmtDate(s.date))+'</td><td class="num">'+num(s.dozens).toFixed(1)+'</td><td class="num">'+money(s.pricePerDozen)+'</td><td class="num"><b>'+money(num(s.dozens)*num(s.pricePerDozen))+'</b></td><td class="num"><button class="xbtn no-print" data-del-sale="'+s.id+'" aria-label="Delete">×</button></td></tr>';
+  });
+  $("saleList").innerHTML=h+'</tbody></table>';
+}
+$("saleList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-del-sale");
+  if(id){state.sales=state.sales.filter(function(x){return x.id!==id;});save();renderSales();}
+});
+
+/* ---------- backup ---------- */
+function renderDataStats(){
+  $("dataStats").textContent=state.hens.length+" hens · "+state.eggLogs.length+" egg days · "+state.expenses.length+" expenses · "+state.sales.length+" sales logged.";
+}
+$("expJson").addEventListener("click",function(){
+  var blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="hentrack-backup-"+todayStr()+".json";document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+});
+$("impJson").addEventListener("change",function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var s=JSON.parse(r.result);
+      if(!s||typeof s!=="object"||!Array.isArray(s.hens))throw new Error("bad file");
+      ["eggLogs","expenses","sales"].forEach(function(k){if(!Array.isArray(s[k]))s[k]=[];});
+      state=s;save();renderAll();renderDataStats();alert("Backup imported.");
+    }catch(err){alert("That file doesn't look like a HenTrack backup.");}
+  };
+  r.readAsText(f);e.target.value="";
+});
+$("printBtn").addEventListener("click",function(){window.print();});
+$("wipeBtn").addEventListener("click",function(){
+  if(confirm("Delete ALL HenTrack data? This cannot be undone.")&&confirm("Really delete everything?")){
+    state={hens:[],eggLogs:[],expenses:[],sales:[],theme:state.theme};
+    save();renderAll();renderDataStats();
+  }
+});
+
+/* ---------- init ---------- */
+function renderAll(){renderDash();renderEggs();renderFlock();renderExp();renderSales();}
+renderAll();
+window.addEventListener("resize",function(){drawChart();});
+</script>
+</body>
+</html>

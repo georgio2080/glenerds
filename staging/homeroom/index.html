@@ -291,8 +291,7 @@ document.querySelectorAll(".tabs button").forEach(function(b){
     document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("active");});
     b.classList.add("active");
     ["dash","lessons","attend","grades","reading","students","data"].forEach(function(t){$("tab-"+t).hidden=(t!==b.dataset.tab);});
-    if(b.dataset.tab==="dash")renderDash();
-    if(b.dataset.tab==="data")renderDataStats();
+    renderDash();renderWeek();renderAttend();renderGrades();renderReading();renderStudents();renderDataStats();
   });
 });
 
@@ -351,10 +350,10 @@ var wkCursor=weekStart(todayStr()), wkStudent=null;
 $("lesDate").value=todayStr();
 function refreshLessonStudentTabs(){
   var box=$("wkStuTabs");
+  if(!wkStudent&&state.students.length)wkStudent=state.students[0].id;
   box.innerHTML=state.students.map(function(s){
     return '<button type="button" data-wk-stu="'+s.id+'" class="'+(wkStudent===s.id?"active":"")+'">'+esc(s.name)+'</button>';
   }).join("");
-  if(!wkStudent&&state.students.length)wkStudent=state.students[0].id;
 }
 $("wkStuTabs").addEventListener("click",function(e){
   var id=e.target.getAttribute&&e.target.getAttribute("data-wk-stu");
@@ -439,10 +438,10 @@ $("attToday").addEventListener("click",function(){attCursor=todayStr();renderAtt
 var grStudent=null;
 function refreshGradeTabs(){
   var box=$("grStuTabs");
+  if(!grStudent&&state.students.length)grStudent=state.students[0].id;
   box.innerHTML=state.students.map(function(s){
     return '<button type="button" data-gr-stu="'+s.id+'" class="'+(grStudent===s.id?"active":"")+'">'+esc(s.name)+'</button>';
   }).join("");
-  if(!grStudent&&state.students.length)grStudent=state.students[0].id;
 }
 $("grStuTabs").addEventListener("click",function(e){
   var id=e.target.getAttribute&&e.target.getAttribute("data-gr-stu");
@@ -453,6 +452,7 @@ $("grAdd").addEventListener("click",function(){
   if(!stu){alert("Add a student first (Students tab).");return;}
   if(!name){alert("Name the assignment first.");return;}
   if(mx<=0){alert("Enter the max points first.");return;}
+  if(sc<0){alert("Score can't be negative.");return;}
   state.grades.push({id:uid(),studentId:stu,subject:$("grSubj").value||"",name:name,score:sc,max:mx});
   save();$("grName").value="";$("grScore").value="";$("grMax").value="";grStudent=stu;renderGrades();
 });
@@ -488,10 +488,10 @@ $("grList").addEventListener("click",function(e){
 var rdStudent=null;
 function refreshReadTabs(){
   var box=$("rdStuTabs");
+  if(!rdStudent&&state.students.length)rdStudent=state.students[0].id;
   box.innerHTML=state.students.map(function(s){
     return '<button type="button" data-rd-stu="'+s.id+'" class="'+(rdStudent===s.id?"active":"")+'">'+esc(s.name)+'</button>';
   }).join("");
-  if(!rdStudent&&state.students.length)rdStudent=state.students[0].id;
 }
 $("rdStuTabs").addEventListener("click",function(e){
   var id=e.target.getAttribute&&e.target.getAttribute("data-rd-stu");
@@ -581,7 +581,7 @@ $("impJson").addEventListener("change",function(e){
       if(!s||typeof s!=="object"||!Array.isArray(s.students))throw new Error("bad file");
       ["lessons","grades","books"].forEach(function(k){if(!Array.isArray(s[k]))s[k]=[];});
       if(!s.attendance||typeof s.attendance!=="object")s.attendance={};
-      state=s;save();init();renderDataStats();alert("Backup imported.");
+      state=s;save();applyTheme(state.theme||((window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light"));init();renderDataStats();alert("Backup imported.");
     }catch(err){alert("That file doesn't look like a HomeRoom backup.");}
   };
   r.readAsText(f);e.target.value="";

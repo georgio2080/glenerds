@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HomeInventory for Insurance — Room-by-Room Belongings Tracker, Offline</title>
-<meta name="description" content="Catalog your belongings room by room and generate a claim-ready insurance report. Offline, private, no account — your data never leaves this device.">
+<title>Home Inventory for Insurance Claims — Room-by-Room Tracker, Offline | Glenerds</title>
+<meta name="description" content="Lost or damaged belongings? Document every item room by room — values, serials, photos — and print a claim-ready insurance report in minutes. 100% offline, no account, no subscription: your data never leaves this device. One-time purchase, yours forever. By Glenerds.">
 <script>
 /* Pre-theme: set data-theme before first paint to avoid flash */
 (function(){try{
@@ -244,7 +244,9 @@ function $(id){return document.getElementById(id);}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function money(n){var v=Math.round(Number(n)*100)/100;
-  return "$"+v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,",");}
+  /* Negative money formats as -$41.49, never $-41.49 */
+  var neg=v<0,a=Math.abs(v);
+  return (neg?"-$":"$")+a.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,",");}
 function uid(p){return p+"-"+Date.now().toString(36)+"-"+Math.floor(Math.random()*1e6).toString(36);}
 function notice(id,msg,kind){var el=$(id);el.textContent=msg;el.className="notice "+(kind||"err");
   clearTimeout(el._t);el._t=setTimeout(function(){el.className="notice";el.textContent="";},6000);}
@@ -276,6 +278,9 @@ if(!state){state=demoState();isDemo=true;save();}
 function save(){try{localStorage.setItem(LS_STATE,JSON.stringify(state));}catch(e){
   notice("dataNotice","Could not save — storage may be full (photos take space). Try smaller images.","err");}}
 if(isDemo){try{$("demoBar").style.display="";}catch(e){}}
+/* Return visits load saved state (isDemo false) — the demo banner must not
+   reappear forever; it announces the one-time demo seeding, not the user's data. */
+else{try{$("demoBar").style.display="none";}catch(e){}}
 
 /* ---------- theme ---------- */
 function setTheme(t){document.documentElement.setAttribute("data-theme",t);
@@ -327,7 +332,9 @@ function renderRooms(){
   $("itemRoom").innerHTML=opts;
   var f='<option value="">All rooms</option>'+opts;
   var cur=$("filterRoom").value;$("filterRoom").innerHTML=f;
-  if(cur)$("filterRoom").value=cur;
+  /* Only restore the filter if that room still exists — otherwise the select
+     is left with no valid selection (blank dropdown). */
+  if(cur&&f.indexOf('value="'+esc(cur)+'"')>=0)$("filterRoom").value=cur;
 }
 $("roomList").addEventListener("click",function(e){
   var b=e.target.closest("button");if(!b)return;
@@ -520,7 +527,7 @@ function sanitizeState(s){
       category:typeof it.category==="string"?it.category.slice(0,30):"Other",
       value:vv.val,
       serial:typeof it.serial==="string"?it.serial.slice(0,80):"",
-      purchaseDate:typeof it.purchaseDate==="string"?it.purchaseDate.slice(0,10):"",
+      purchaseDate:(typeof it.purchaseDate==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(it.purchaseDate))?it.purchaseDate:"",
       photo:photo,
       note:typeof it.note==="string"?it.note.slice(0,200):""});}
   return {rooms:rooms,items:items};

@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vegetable Garden Planting Calendar by Zone — Frost Dates & Seed Starting Schedule | GardenCal</title>
+<meta name="description" content="Free-forever offline garden planting calendar: pick your USDA zone and get seed-starting, transplant, direct-sow and fall planting dates for 36 vegetables and herbs. No account, no subscription.">
+<style>
+/* ==========================================================================
+   GLENERDS DESIGN SYSTEM v1.0
+   --------------------------------------------------------------------------
+   One shared visual language for every Glenerds microtool.
+   Designed to be INLINED into each app's <style> block — keeps the
+   single-file property: zero network requests, file:// safe, no webfonts,
+   no CDNs, no frameworks, no build step.
+
+   Usage: paste this whole file inside a STYLE element in <head>, then use
+   the g- classes below. See INTEGRATION.md for the theme-toggle wiring.
+
+   Conventions:
+   - Every class is prefixed `g-` to avoid collisions.
+   - Theming is driven by `data-theme="light|dark"` on <html>.
+   - First load with no saved choice honors prefers-color-scheme.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --g-bg:            #f8fafc;   /* page background: soft cool white */
+  --g-surface:       #ffffff;   /* cards, panels */
+  --g-surface-2:     #f1f5f9;   /* recessed / inset areas, tab track */
+  --g-border:        #e2e8f0;   /* hairlines */
+  --g-border-strong: #cbd5e1;
+
+  /* Text */
+  --g-text:          #0f172a;   /* slate-900 */
+  --g-text-soft:     #334155;   /* slate-700 — secondary text */
+  --g-muted:         #64748b;   /* slate-500 — captions, hints */
+
+  /* Accent: refined indigo */
+  --g-accent:        #4f46e5;   /* indigo-600 */
+  --g-accent-hover:  #4338ca;   /* indigo-700 */
+  --g-accent-ink:    #ffffff;   /* text on accent */
+  --g-accent-soft:   #eef2ff;   /* indigo-50 — tinted fills */
+  --g-accent-ring:   rgba(79, 70, 229, 0.22);
+
+  /* Status */
+  --g-good:          #047857;   /* emerald-700 */
+  --g-good-soft:     #ecfdf5;
+  --g-bad:           #b42318;
+  --g-bad-soft:      #fef3f2;
+  --g-warn:          #b45309;
+  --g-warn-soft:     #fffbeb;
+
+  /* Inputs */
+  --g-input-bg:      #ffffff;
+  --g-input-border:  #cbd5e1;
+  --g-code-bg:       #f1f5f9;
+
+  /* Shape + motion */
+  --g-radius-sm: 8px;
+  --g-radius-md: 12px;
+  --g-radius-lg: 16px;
+  --g-radius-pill: 999px;
+  --g-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --g-shadow-md: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --g-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --g-ease: 160ms ease;
+
+  /* Type */
+  --g-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, system-ui, sans-serif;
+  --g-mono: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Consolas,
+            "Liberation Mono", monospace;
+}
+
+/* Dark theme: genuinely designed — deep blue-black, lifted surfaces,
+   brightened indigo. Not an inversion of light. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --g-bg:            #0b0e14;
+  --g-surface:       #141926;
+  --g-surface-2:     #0f1420;
+  --g-border:        #232c40;
+  --g-border-strong: #33405c;
+
+  --g-text:          #f1f5f9;
+  --g-text-soft:     #cbd5e1;
+  --g-muted:         #94a3b8;
+
+  --g-accent:        #818cf8;   /* indigo-400 — readable on dark */
+  --g-accent-hover:  #a5b4fc;   /* indigo-300 */
+  --g-accent-ink:    #0b0e14;
+  --g-accent-soft:   rgba(129, 140, 248, 0.14);
+  --g-accent-ring:   rgba(129, 140, 248, 0.35);
+
+  --g-good:          #34d399;
+  --g-good-soft:     rgba(52, 211, 153, 0.12);
+  --g-bad:           #f87171;
+  --g-bad-soft:      rgba(248, 113, 113, 0.12);
+  --g-warn:          #fbbf24;
+  --g-warn-soft:     rgba(251, 191, 36, 0.12);
+
+  --g-input-bg:      #0f1420;
+  --g-input-border:  #33405c;
+  --g-code-bg:       #0f1420;
+
+  --g-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --g-shadow-md: 0 1px 3px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --g-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+
+.g-app {
+  font-family: var(--g-font);
+  background: var(--g-bg);
+  color: var(--g-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Page container */
+.g-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+/* ---------- 3. TYPOGRAPHY ---------- */
+.g-display  { font-size: 1.9rem;  font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;  margin: 0 0 8px; }
+.g-title    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;  margin: 0 0 6px; }
+.g-body     { font-size: 1rem;    color: var(--g-text-soft); margin: 0 0 12px; }
+.g-caption  { font-size: 0.85rem; color: var(--g-muted);    margin: 0; }
+.g-mono     { font-family: var(--g-mono); font-size: 0.9em; }
+
+/* ---------- 4. HEADER ---------- */
+.g-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 4px;
+}
+.g-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.g-brand-mark {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--g-accent);
+  color: var(--g-accent-ink);
+  font-weight: 800; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-sm);
+  user-select: none;
+}
+.g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
+.g-tagline { color: var(--g-muted); font-size: 0.92rem; margin: 6px 0 14px; max-width: 56ch; }
+
+/* Theme toggle */
+.g-theme-toggle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  border-radius: var(--g-radius-pill);
+  padding: 8px 14px;
+  font-size: 0.88rem; font-weight: 600; font-family: var(--g-font);
+  cursor: pointer;
+  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
+  white-space: nowrap;
+}
+.g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
+.g-theme-toggle:active { transform: scale(0.97); }
+
+/* ---------- 5. TABS (segmented control) ---------- */
+.g-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  background: var(--g-surface-2);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 4px;
+  margin: 14px 0;
+}
+.g-tab {
+  flex: 1 1 auto;
+  appearance: none;
+  border: 0; background: transparent;
+  color: var(--g-muted);
+  font-family: var(--g-font);
+  font-size: 0.93rem; font-weight: 600;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
+  white-space: nowrap;
+}
+.g-tab:hover { color: var(--g-text); }
+.g-tab[aria-selected="true"] {
+  background: var(--g-surface);
+  color: var(--g-text);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-tab:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+
+/* ---------- 6. CARDS ---------- */
+.g-card {
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  padding: 22px;
+  margin: 16px 0;
+  box-shadow: var(--g-shadow-sm);
+}
+.g-card > .g-title { margin-bottom: 4px; }
+.g-card .g-desc { color: var(--g-muted); font-size: 0.92rem; margin: 0 0 14px; }
+.g-card-flat { box-shadow: none; }
+
+/* ---------- 7. BUTTONS ---------- */
+.g-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--g-font);
+  font-size: 0.95rem; font-weight: 650;
+  border-radius: 10px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--g-ease), border-color var(--g-ease),
+              color var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
+  text-decoration: none;
+  line-height: 1.2;
+}
+.g-btn:active { transform: translateY(1px) scale(0.99); }
+.g-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.g-btn-primary {
+  background: var(--g-accent);
+  border-color: var(--g-accent);
+  color: var(--g-accent-ink);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-btn-primary:hover:not(:disabled) { background: var(--g-accent-hover); border-color: var(--g-accent-hover); }
+
+.g-btn-secondary {
+  background: var(--g-surface);
+  border-color: var(--g-border-strong);
+  color: var(--g-text);
+}
+.g-btn-secondary:hover:not(:disabled) { border-color: var(--g-accent); color: var(--g-accent); }
+
+.g-btn-danger {
+  background: var(--g-bad-soft);
+  border-color: transparent;
+  color: var(--g-bad);
+}
+.g-btn-danger:hover:not(:disabled) { background: var(--g-bad); color: #fff; }
+
+.g-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--g-text-soft);
+}
+.g-btn-ghost:hover:not(:disabled) { background: var(--g-surface-2); color: var(--g-text); }
+
+.g-btn-sm { font-size: 0.85rem; padding: 8px 13px; border-radius: 8px; }
+.g-btn-block { display: flex; width: 100%; }
+.g-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+
+/* ---------- 8. FORMS ---------- */
+.g-field { margin: 12px 0; }
+.g-label { display: block; font-weight: 650; font-size: 0.92rem; margin-bottom: 6px; color: var(--g-text); }
+.g-hint { font-size: 0.82rem; color: var(--g-muted); margin-top: 6px; }
+
+.g-input, .g-select, .g-textarea {
+  width: 100%;
+  font-family: var(--g-font);
+  font-size: 1rem;
+  color: var(--g-text);
+  background: var(--g-input-bg);
+  border: 1px solid var(--g-input-border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  transition: border-color var(--g-ease), box-shadow var(--g-ease);
+}
+.g-input::placeholder, .g-textarea::placeholder { color: var(--g-muted); opacity: 0.75; }
+.g-input:hover, .g-select:hover, .g-textarea:hover { border-color: var(--g-border-strong); }
+.g-input:focus, .g-select:focus, .g-textarea:focus {
+  outline: none;
+  border-color: var(--g-accent);
+  box-shadow: 0 0 0 3px var(--g-accent-ring);
+}
+.g-textarea { min-height: 96px; resize: vertical; }
+.g-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+[data-theme="dark"] .g-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.g-input:disabled, .g-select:disabled, .g-textarea:disabled {
+  opacity: 0.55; cursor: not-allowed; background: var(--g-surface-2);
+}
+
+/* Validation */
+.g-input.is-invalid, .g-select.is-invalid {
+  border-color: var(--g-bad);
+}
+.g-input.is-invalid:focus, .g-select.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--g-bad-soft);
+}
+.g-error { display: none; color: var(--g-bad); font-size: 0.86rem; font-weight: 600; margin-top: 6px; }
+.g-error.show { display: block; }
+
+/* Checkbox / radio rows */
+.g-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.95rem; color: var(--g-text-soft);
+  cursor: pointer; margin: 10px 0;
+}
+.g-check input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  margin: 1px 0 0;
+  border: 1.5px solid var(--g-input-border);
+  border-radius: 6px;
+  background: var(--g-input-bg);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--g-ease), border-color var(--g-ease);
+}
+.g-check input[type="radio"] { border-radius: 50%; }
+.g-check input:checked { background: var(--g-accent); border-color: var(--g-accent); }
+.g-check input:checked::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: no-repeat center / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 6.8 11.8 12.5 4.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.g-check input[type="radio"]:checked::after {
+  background: none;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--g-accent-ink);
+}
+.g-check input:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--g-accent-ring); }
+
+/* ---------- 9. RESULT PANELS ---------- */
+.g-result {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: var(--g-radius-md);
+  border: 1px solid var(--g-border);
+  background: var(--g-surface-2);
+}
+.g-big-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 2px 0 6px;
+}
+.g-verdict { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+.g-verdict-good { color: var(--g-good); }
+.g-verdict-bad  { color: var(--g-bad); }
+.g-verdict-warn { color: var(--g-warn); }
+.g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
+
+/* Show-your-work math block */
+.g-math {
+  font-family: var(--g-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background: var(--g-code-bg);
+  border: 1px solid var(--g-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: var(--g-text-soft);
+}
+
+/* ---------- 10. STAT ROWS ---------- */
+.g-stats { margin: 12px 0 0; border-top: 1px solid var(--g-border); }
+.g-stat {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--g-border);
+  font-size: 0.95rem;
+}
+.g-stat:last-child { border-bottom: 0; }
+.g-stat .g-stat-label { color: var(--g-muted); }
+.g-stat .g-stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+.g-stat .g-stat-value.good { color: var(--g-good); }
+.g-stat .g-stat-value.bad  { color: var(--g-bad); }
+
+/* ---------- 11. TABLES ---------- */
+.g-table-wrap { overflow-x: auto; margin: 12px -4px 0; padding: 0 4px; }
+.g-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.g-table th {
+  text-align: left;
+  font-size: 0.76rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--g-muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--g-border-strong);
+  white-space: nowrap;
+}
+.g-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+.g-table tr:last-child td { border-bottom: 0; }
+.g-table tbody tr { transition: background var(--g-ease); }
+.g-table tbody tr:hover { background: var(--g-surface-2); }
+
+/* ---------- 12. BADGES / PILLS ---------- */
+.g-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; font-weight: 700;
+  border-radius: var(--g-radius-pill);
+  padding: 4px 11px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.g-badge-accent { background: var(--g-accent-soft); color: var(--g-accent); }
+.g-badge-good   { background: var(--g-good-soft);   color: var(--g-good); }
+.g-badge-bad    { background: var(--g-bad-soft);    color: var(--g-bad); }
+.g-badge-warn   { background: var(--g-warn-soft);   color: var(--g-warn); }
+.g-badge-neutral{ background: var(--g-surface-2);    color: var(--g-muted); border: 1px solid var(--g-border); }
+.g-badge-dot::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+}
+
+/* ---------- 13. EMPTY STATES ---------- */
+.g-empty {
+  text-align: center;
+  border: 1.5px dashed var(--g-border-strong);
+  border-radius: var(--g-radius-lg);
+  padding: 36px 20px;
+  margin: 16px 0;
+  color: var(--g-muted);
+}
+.g-empty-icon { font-size: 2rem; margin-bottom: 8px; }
+.g-empty .g-title { font-size: 1.05rem; color: var(--g-text-soft); }
+.g-empty p { font-size: 0.9rem; margin: 4px 0 14px; }
+
+/* ---------- 14. FOOTER ---------- */
+.g-footer {
+  text-align: center;
+  margin: 32px 0 8px;
+  font-size: 0.85rem;
+  color: var(--g-muted);
+}
+.g-footer a { color: var(--g-accent); text-decoration: none; font-weight: 600; }
+.g-footer a:hover { text-decoration: underline; }
+.g-footer .g-fine { display: block; margin-top: 8px; font-size: 0.78rem; }
+
+/* ---------- 15. LAYOUT HELPERS ---------- */
+.g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.g-stack > * + * { margin-top: 12px; }
+.g-divider { border: 0; border-top: 1px solid var(--g-border); margin: 20px 0; }
+
+/* ---------- 16. FOCUS (accessibility) ---------- */
+.g-btn:focus-visible,
+.g-theme-toggle:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--g-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 17. RESPONSIVE ---------- */
+@media (max-width: 560px) {
+  .g-wrap { padding: 14px 12px 40px; }
+  .g-display { font-size: 1.6rem; }
+  .g-card { padding: 18px 16px; border-radius: 14px; }
+  .g-big-number { font-size: 2rem; }
+  .g-grid-2, .g-grid-3 { grid-template-columns: 1fr; }
+  .g-brand-mark { width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px; }
+  .g-brand-name { font-size: 1.2rem; }
+  .g-tab { padding: 9px 10px; font-size: 0.88rem; }
+}
+
+/* ---------- 18. MOTION PREFERENCE ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+
+/* ---------- 19. ICONS ----------
+   Requires the glenerds-icons.svg sprite inlined in the page (see
+   INTEGRATION.md). <use> inherits stroke from the wrapper, so the two
+   variants are just classes on the <svg> element. */
+.g-icon {
+  width: 24px; height: 24px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  fill: none;
+  vertical-align: -4px;
+}
+.g-icon-sm { width: 18px; height: 18px; }
+.g-icon-lg { width: 32px; height: 32px; }
+/* Flash variant: brand indigo gradient stroke instead of text color. */
+.g-icon-flash { stroke: url(#g-grad-indigo); }
+.g-btn .g-icon { width: 20px; height: 20px; vertical-align: -3px; }
+.g-tab .g-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; }
+
+/* ---------- 20. APP ICONS ----------
+   iOS-style rounded-square gradient tile + one white glyph.
+   Each app picks its own gradient via --g-ai1 / --g-ai2. */
+.g-appicon {
+  --g-ai1: #6366f1;
+  --g-ai2: #8b5cf6;
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--g-ai1), var(--g-ai2));
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  flex: 0 0 auto;
+}
+.g-appicon .g-icon { width: 32px; height: 32px; color: #ffffff; }
+.g-appicon-sm { width: 44px; height: 44px; border-radius: 13px; }
+.g-appicon-sm .g-icon { width: 24px; height: 24px; }
+.g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
+.g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+.gc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.gc-month { border: 1px solid var(--g-border); border-radius: var(--g-radius); padding: 1rem; background: var(--g-surface); }
+.gc-month h3 { margin: 0 0 .5rem; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
+.gc-month.now-month { border-color: var(--g-accent); box-shadow: 0 0 0 1px var(--g-accent); }
+.gc-event { display: flex; gap: .5rem; align-items: baseline; padding: .3rem 0; border-top: 1px dashed var(--g-border); font-size: .92rem; }
+.gc-event:first-of-type { border-top: 0; }
+.gc-badge { flex: none; font-size: .72rem; font-weight: 700; padding: .12rem .45rem; border-radius: 999px; white-space: nowrap; }
+.b-in { background: #7c5cff22; color: #a78bfa; }
+.b-tr { background: #22c55e22; color: #4ade80; }
+.b-ds { background: #f59e0b22; color: #fbbf24; }
+.b-hv { background: #ef444422; color: #f87171; }
+.b-fl { background: #38bdf822; color: #38bdf8; }
+[data-theme="light"] .b-in { color: #6d28d9; } [data-theme="light"] .b-tr { color: #15803d; }
+[data-theme="light"] .b-ds { color: #b45309; } [data-theme="light"] .b-hv { color: #b91c1c; }
+[data-theme="light"] .b-fl { color: #0369a1; }
+.gc-frost { display: flex; gap: 1rem; flex-wrap: wrap; margin: .75rem 0; }
+.gc-frost .kpi { flex: 1 1 200px; }
+.gc-crops { columns: 2; column-gap: 1.5rem; }
+@media (max-width: 640px) { .gc-crops { columns: 1; } }
+.gc-crop-check { display: flex; gap: .5rem; align-items: center; padding: .22rem 0; break-inside: avoid; font-size: .92rem; }
+.gc-note { font-size: .85rem; color: var(--g-text-muted); }
+@media print {
+  .no-print, .g-tabs, footer, .g-theme-toggle { display: none !important; }
+  .gc-grid { grid-template-columns: 1fr 1fr; }
+  body { background: #fff; }
+}
+</style>
+<script>
+/* Pre-paint theme init — shared glenerds-theme key */
+(function(){var t=null;try{t=localStorage.getItem('glenerds-theme')}catch(e){}
+if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+document.documentElement.setAttribute('data-theme',t);})();
+function gToggleTheme(){var h=document.documentElement;
+var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catch(e){}}
+</script>
+</head>
+<body>
+<!-- ==========================================================================
+     GLENERDS ICON SET v1.0 — inline SVG <symbol> sprite
+     --------------------------------------------------------------------------
+     Inline this whole file right after <body> in each app (or paste the
+     <svg> block). Zero external requests. See INTEGRATION.md for usage.
+
+     - 24x24 grid, stroke-based line icons, stroke-width 2, round caps/joins.
+     - Clean variant inherits text color (currentColor).
+     - Flash variant: add class "g-icon-flash" to the <svg> wrapper and the
+       stroke renders in the brand indigo gradient instead.
+     - All geometry inherits from the symbol; do not set stroke/fill on <use>.
+     ========================================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-grad-indigo" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#818cf8"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="g-grad-sunset" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="g-grad-ocean" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="g-grad-royal" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#c084fc"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- calculator -->
+  <symbol id="g-i-calc" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6.5" y="3" width="11" height="18" rx="2"/>
+    <path d="M9.5 7.5h5"/>
+    <path d="M9.5 12h.02M12 12h.02M14.5 12h.02M9.5 15.5h.02M12 15.5h.02M14.5 15.5h.02"/>
+  </symbol>
+
+  <!-- chart / graph (bars) -->
+  <symbol id="g-i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20h16"/>
+    <path d="M7.5 20v-6.5M12 20V6.5M16.5 20v-9.5"/>
+  </symbol>
+
+  <!-- calendar -->
+  <symbol id="g-i-cal" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>
+    <path d="M8 3v3.5M16 3v3.5M3.5 10h17"/>
+  </symbol>
+
+  <!-- checkmark -->
+  <symbol id="g-i-check" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.8 12.6l4.7 4.7L19.2 7.2"/>
+  </symbol>
+
+  <!-- streak flame -->
+  <symbol id="g-i-flame" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.2c.9 2.8-.5 4.3-1.7 5.6C8.7 10.5 7 12.4 7 15.2a5 5 0 0010 0c0-2-1-3.5-2-4.9-.4 1.1-1.1 1.9-2.1 2.3.4-3-.4-6.7-.9-9.4z"/>
+  </symbol>
+
+  <!-- star -->
+  <symbol id="g-i-star" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/>
+  </symbol>
+
+  <!-- moon -->
+  <symbol id="g-i-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.2 14.8A8.3 8.3 0 019.2 3.8a8.3 8.3 0 1011 11z"/>
+  </symbol>
+
+  <!-- sun -->
+  <symbol id="g-i-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4.2"/>
+    <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/>
+  </symbol>
+
+  <!-- plus -->
+  <symbol id="g-i-plus" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5.5v13M5.5 12h13"/>
+  </symbol>
+
+  <!-- trash -->
+  <symbol id="g-i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 6.8h15"/>
+    <path d="M9.5 6.2V4.8a1.3 1.3 0 011.3-1.3h2.4a1.3 1.3 0 011.3 1.3v1.4"/>
+    <path d="M6.8 6.8l.9 12.4a1.6 1.6 0 001.6 1.5h5.4a1.6 1.6 0 001.6-1.5l.9-12.4"/>
+    <path d="M10 10.8v5.5M14 10.8v5.5"/>
+  </symbol>
+
+  <!-- download -->
+  <symbol id="g-i-download" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4v10.5"/>
+    <path d="M7.6 11L12 15.4 16.4 11"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- upload -->
+  <symbol id="g-i-upload" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 15.5V5"/>
+    <path d="M7.6 9.4L12 5l4.4 4.4"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- settings gear -->
+  <symbol id="g-i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3.4"/>
+    <path d="M12 5v2.2M12 16.8V19M5 12h2.2M16.8 12H19M7.1 7.1l1.5 1.5M15.4 15.4l1.5 1.5M16.9 7.1l-1.5 1.5M8.6 15.4l-1.5 1.5"/>
+  </symbol>
+
+  <!-- heart -->
+  <symbol id="g-i-heart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20.5c-5-3.4-8.5-6.8-8.5-10.6C3.5 7.1 5.7 5 8.4 5c1.5 0 2.8.8 3.6 2 .8-1.2 2.1-2 3.6-2 2.7 0 4.9 2.1 4.9 4.9 0 3.8-3.5 7.2-8.5 10.6z"/>
+  </symbol>
+
+  <!-- clock -->
+  <symbol id="g-i-clock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 7.3V12l3.2 2"/>
+  </symbol>
+
+  <!-- target -->
+  <symbol id="g-i-target" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <circle cx="12" cy="12" r="4.8"/>
+    <circle cx="12" cy="12" r="1.4"/>
+  </symbol>
+
+  <!-- trophy -->
+  <symbol id="g-i-trophy" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 4h9v4.5a4.5 4.5 0 01-9 0V4z"/>
+    <path d="M7.5 5.5H4.5a3.5 3.5 0 003.8 3.8M16.5 5.5h3a3.5 3.5 0 01-3.8 3.8"/>
+    <path d="M12 13v4M8.5 20.5h7"/>
+  </symbol>
+
+  <!-- tag -->
+  <symbol id="g-i-tag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.6 13.4L11 3.8a2 2 0 00-1.4-.6H5a1.8 1.8 0 00-1.8 1.8v4.6c0 .5.2 1 .6 1.4l9.6 9.6a1.9 1.9 0 002.7 0l4.5-4.5a1.9 1.9 0 000-2.7z"/>
+    <circle cx="8" cy="8" r="1.4"/>
+  </symbol>
+
+  <!-- search -->
+  <symbol id="g-i-search" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="6.5"/>
+    <path d="M15.8 15.8l4.7 4.7"/>
+  </symbol>
+
+  <!-- edit pencil -->
+  <symbol id="g-i-edit" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20l1.2-4.2L16.7 4.3a2 2 0 012.9 2.9L8.1 18.7 4 20z"/>
+    <path d="M14.8 6.2l2.9 2.9"/>
+  </symbol>
+
+  <!-- share -->
+  <symbol id="g-i-share" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6.5" cy="12" r="2.5"/>
+    <circle cx="17" cy="5.8" r="2.5"/>
+    <circle cx="17" cy="18.2" r="2.5"/>
+    <path d="M8.7 10.9l6.1-3.5M8.7 13.1l6.1 3.5"/>
+  </symbol>
+
+  <!-- lock -->
+  <symbol id="g-i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/>
+    <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/>
+    <path d="M12 14.5v2"/>
+  </symbol>
+
+  <!-- sparkles -->
+  <symbol id="g-i-sparkles" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8-4.8-1.7 4.8-1.7L12 3.5z"/>
+    <path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/>
+  </symbol>
+
+  <!-- home -->
+  <symbol id="g-i-home" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11.2L12 4l8 7.2"/>
+    <path d="M6.2 9.8V20h11.6V9.8"/>
+    <path d="M10 20v-4.8h4V20"/>
+  </symbol>
+
+  <!-- back arrow -->
+  <symbol id="g-i-back" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.8 5.5L8.3 12l6.5 6.5"/>
+  </symbol>
+
+  <!-- close X -->
+  <symbol id="g-i-x" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 6l12 12M18 6L6 18"/>
+  </symbol>
+
+  <!-- info -->
+  <symbol id="g-i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 11v5"/>
+    <path d="M12 7.6v.2"/>
+  </symbol>
+
+  <!-- wallet -->
+  <symbol id="g-i-wallet" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="6.5" width="18" height="13" rx="3"/>
+    <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
+    <circle cx="17.5" cy="14.8" r="1.1"/>
+  </symbol>
+
+  <!-- list -->
+  <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
+    <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
+  </symbol>
+
+  <!-- bell -->
+  <symbol id="g-i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.2 16v-4.8a5.8 5.8 0 0111.6 0V16l1.7 2.8H4.5L6.2 16z"/>
+    <path d="M10 20.5a2.2 2.2 0 004 0"/>
+  </symbol>
+</svg>
+
+<header class="g-header no-print">
+  <div class="g-container" style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
+    <div>
+      <h1 class="g-h1" style="margin:0">Garden planting calendar</h1>
+      <p class="g-sub">Seed-starting, transplant & harvest dates for your zone. Offline, no account, no subscription.</p>
+    </div>
+    <button class="g-btn g-btn-ghost g-theme-toggle" onclick="gToggleTheme()" aria-label="Toggle dark mode">◐ Theme</button>
+  </div>
+</header>
+
+<main class="g-container">
+  <section class="g-card no-print" aria-label="Your zone">
+    <h2 class="g-h2">Your zone</h2>
+    <div class="g-form-grid">
+      <div class="g-field">
+        <label class="g-label" for="gc-zone">USDA hardiness zone</label>
+        <select class="g-input" id="gc-zone" onchange="setZone(this.value)"></select>
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="gc-last">Last spring frost <span class="g-hint" style="display:inline">(optional — overrides zone average)</span></label>
+        <input class="g-input" id="gc-last" type="text" inputmode="numeric" placeholder="MM/DD" onchange="setCustom(this)">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="gc-first">First fall frost <span class="g-hint" style="display:inline">(optional)</span></label>
+        <input class="g-input" id="gc-first" type="text" inputmode="numeric" placeholder="MM/DD" onchange="setCustom(this)">
+      </div>
+    </div>
+    <div class="gc-frost" id="gc-frost"></div>
+    <p class="gc-note">Zone frost dates are long-term averages — check your local cooperative extension for the most accurate dates for your town. Entering your own dates above overrides them.</p>
+    <details>
+      <summary style="cursor:pointer;font-weight:600">Choose crops (<span id="gc-count"></span> selected)</summary>
+      <div class="gc-crops" id="gc-crops" style="margin-top:.75rem"></div>
+    </details>
+  </section>
+
+  <div class="g-tabs no-print" role="tablist" aria-label="Calendar views">
+    <button class="g-tab" role="tab" id="tab-month" aria-selected="true" onclick="showTab('month')">Month-by-month</button>
+    <button class="g-tab" role="tab" id="tab-crop" aria-selected="false" onclick="showTab('crop')">Crop schedule</button>
+  </div>
+
+  <section id="panel-month" role="tabpanel" aria-labelledby="tab-month">
+    <div class="g-card" id="gc-now"></div>
+    <div class="gc-grid" id="gc-months"></div>
+  </section>
+
+  <section id="panel-crop" role="tabpanel" aria-labelledby="tab-crop" hidden>
+    <div class="g-card" style="overflow-x:auto">
+      <table class="g-table" style="min-width:640px">
+        <thead><tr><th>Crop</th><th class="num">Start indoors</th><th class="num">Transplant</th><th class="num">Direct sow</th><th class="num">Harvest ≈</th><th class="num">Fall sow</th></tr></thead>
+        <tbody id="gc-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="g-card no-print">
+    <h2 class="g-h2">Backup & print</h2>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="g-btn g-btn-secondary" onclick="window.print()">Print / PDF</button>
+      <button class="g-btn g-btn-secondary" onclick="exportData()">Export data</button>
+      <label class="g-btn g-btn-secondary" style="cursor:pointer">Import data<input type="file" accept=".json,application/json" hidden onchange="importData(this)"></label>
+    </div>
+    <p class="gc-note" id="gc-err" role="alert"></p>
+  </section>
+</main>
+
+<footer class="g-footer no-print">
+  <div class="g-container"><p class="g-attrib">by <a href="https://glenerds.gumroad.com">Glenerds</a></p></div>
+</footer>
+
+<script>
+var STORE_KEY = 'gardencal.v1';
+
+/* ---------- data ---------- */
+/* Average frost dates per USDA zone (month, day). Long-term approximations. */
+var ZONES = {
+  '3':  { last: [5, 21], first: [9, 10] },
+  '4':  { last: [5, 10], first: [9, 21] },
+  '5':  { last: [4, 30], first: [10, 10] },
+  '6':  { last: [4, 20], first: [10, 20] },
+  '7':  { last: [4, 10], first: [10, 30] },
+  '8':  { last: [3, 28], first: [11, 10] },
+  '9':  { last: [2, 28], first: [11, 30] },
+  '10': { last: [1, 31], first: [12, 15] }
+};
+/*
+ * Crop fields (weeks relative to last spring frost L, first fall frost F):
+ * in  = start indoors this many weeks before L
+ * tr  = transplant this many weeks after L (negative = before)
+ * ds  = [weeks before L, weeks after L] direct-sow window
+ * mat = days to maturity (for harvest estimate)
+ * fall= sow for fall this many weeks before F
+ * fallOnly = planted in fall for next-year harvest (garlic)
+ */
+var CROPS = [
+  { id: 'tomato', n: 'Tomatoes', in: 6, tr: 2, mat: 75, note: 'Harden off seedlings a week before transplanting.' },
+  { id: 'pepper', n: 'Peppers (sweet & hot)', in: 8, tr: 3, mat: 75, note: 'Need warm soil; wait until nights stay above 50°F.' },
+  { id: 'eggplant', n: 'Eggplant', in: 8, tr: 3, mat: 80 },
+  { id: 'broccoli', n: 'Broccoli', in: 6, tr: 2, ds: [-4, 2], mat: 70, fall: 12 },
+  { id: 'cabbage', n: 'Cabbage', in: 6, tr: 3, ds: [-4, 2], mat: 75, fall: 12 },
+  { id: 'cauliflower', n: 'Cauliflower', in: 6, tr: 2, mat: 65, fall: 12 },
+  { id: 'kale', n: 'Kale', in: 5, tr: 3, ds: [-4, 4], mat: 60, fall: 10, note: 'Sweetens after a light frost.' },
+  { id: 'lettuce', n: 'Lettuce', in: 4, tr: 2, ds: [-4, 6], mat: 50, fall: 8, note: 'Sow every 2 weeks for continuous harvest.' },
+  { id: 'spinach', n: 'Spinach', ds: [-6, 4], mat: 45, fall: 8 },
+  { id: 'arugula', n: 'Arugula', ds: [-4, 4], mat: 40, fall: 8 },
+  { id: 'carrot', n: 'Carrots', ds: [-4, 8], mat: 70, fall: 12, note: 'Keep soil evenly moist until germination.' },
+  { id: 'beet', n: 'Beets', ds: [-4, 6], mat: 60, fall: 10 },
+  { id: 'radish', n: 'Radishes', ds: [-4, 8], mat: 30, fall: 8, note: 'Fastest crop — great for filling gaps.' },
+  { id: 'turnip', n: 'Turnips', ds: [-4, 6], mat: 55, fall: 10 },
+  { id: 'pea', n: 'Peas', ds: [-6, 2], mat: 65, fall: 12, note: 'Inoculate seed for better nitrogen fixing.' },
+  { id: 'bean', n: 'Green beans', ds: [1, 8], mat: 55, fall: 12, note: 'Sow every 2–3 weeks for succession.' },
+  { id: 'cucumber', n: 'Cucumbers', in: 3, tr: 2, ds: [2, 6], mat: 60, fall: 14 },
+  { id: 'zsquash', n: 'Summer squash / zucchini', in: 3, tr: 2, ds: [2, 6], mat: 55, fall: 14 },
+  { id: 'wsquash', n: 'Winter squash', in: 3, tr: 2, ds: [2, 4], mat: 95 },
+  { id: 'pumpkin', n: 'Pumpkins', ds: [2, 4], mat: 110, note: 'Need the full season — don\'t plant late.' },
+  { id: 'corn', n: 'Sweet corn', ds: [2, 6], mat: 80, note: 'Plant in blocks, not rows, for pollination.' },
+  { id: 'potato', n: 'Potatoes', ds: [-4, 2], mat: 90, note: 'Plant certified seed potatoes, 4" deep.' },
+  { id: 'sweetpot', n: 'Sweet potatoes', tr: 3, mat: 110, note: 'Plant slips, not seeds, in warm soil.' },
+  { id: 'onion', n: 'Onions', in: 10, tr: -4, ds: [-6, -2], mat: 100, note: 'Sets go out earliest; seeds need the head start indoors.' },
+  { id: 'garlic', n: 'Garlic', fallOnly: true, mat: 240, note: 'Plant cloves in fall, harvest next summer.' },
+  { id: 'leek', n: 'Leeks', in: 10, tr: 0, mat: 120 },
+  { id: 'celery', n: 'Celery', in: 10, tr: 2, mat: 110, note: 'Slow to germinate — keep warm and moist.' },
+  { id: 'basil', n: 'Basil', in: 6, tr: 2, ds: [2, 4], mat: 70, note: 'Pinch flower buds to keep leaves coming.' },
+  { id: 'parsley', n: 'Parsley', in: 8, tr: 2, ds: [0, 2], mat: 75 },
+  { id: 'cilantro', n: 'Cilantro', ds: [-2, 6], mat: 50, fall: 8, note: 'Bolts in heat — sow in cool weather.' },
+  { id: 'dill', n: 'Dill', ds: [0, 6], mat: 60 },
+  { id: 'chard', n: 'Swiss chard', ds: [-2, 6], mat: 55, fall: 10 },
+  { id: 'collard', n: 'Collards', in: 5, tr: 3, ds: [-2, 4], mat: 70, fall: 10 },
+  { id: 'brussels', n: 'Brussels sprouts', in: 8, tr: 3, mat: 100, fall: 14, note: 'Best as a fall crop in most zones.' },
+  { id: 'melon', n: 'Melons', in: 4, tr: 3, ds: [3, 5], mat: 85 },
+  { id: 'okra', n: 'Okra', ds: [3, 6], mat: 60, note: 'Loves heat — don\'t rush it.' }
+];
+
+/* ---------- date helpers ---------- */
+var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var MON_S = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function frostDate(md) { /* [m,d] -> Date this year */
+  var y = new Date().getFullYear();
+  return new Date(y, md[0] - 1, md[1]);
+}
+function addD(d, days) { var x = new Date(d); x.setDate(x.getDate() + days); return x; }
+function fmtD(d) { return d ? MON_S[d.getMonth()] + ' ' + d.getDate() : '—'; }
+function fmtRange(a, b) { return a && b ? fmtD(a) + ' – ' + fmtD(b) : a ? fmtD(a) : '—'; }
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function parseMD(v) {
+  var m = /^\s*(\d{1,2})[\/\-](\d{1,2})\s*$/.exec(v || '');
+  if (!m) return null;
+  var mo = +m[1], d = +m[2];
+  if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+  return [mo, d];
+}
+
+/* ---------- state ---------- */
+var STORE_KEY2 = STORE_KEY; /* alias for clarity */
+var state = { zone: '6', customLast: null, customFirst: null, crops: {}, view: 'month' };
+function load() {
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if (raw) { var d = JSON.parse(raw); if (d && d.zone) state = d; }
+  } catch (e) {}
+  normalizeCrops();
+}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+function normalizeCrops() {
+  if (!state.crops) state.crops = {};
+  CROPS.forEach(function (c) { if (state.crops[c.id] === undefined) state.crops[c.id] = true; });
+}
+function frostDates() {
+  var z = ZONES[state.zone] || ZONES['6'];
+  return {
+    last: state.customLast ? frostDate(state.customLast) : frostDate(z.last),
+    first: state.customFirst ? frostDate(state.customFirst) : frostDate(z.first),
+    custom: !!(state.customLast || state.customFirst)
+  };
+}
+
+/* ---------- schedule computation ---------- */
+/* Returns per-crop: {crop, indoor, transplant, dsA, dsB, harvest, fallSow} (Dates or null) */
+function cropSchedule(c, L, F) {
+  var s = { crop: c, indoor: null, transplant: null, dsA: null, dsB: null, harvest: null, fallSow: null };
+  if (c.fallOnly) {
+    s.fallSow = addD(F, -6 * 7);
+    s.harvest = addD(s.fallSow, c.mat || 240);
+    return s;
+  }
+  if (c.in != null) s.indoor = addD(L, -c.in * 7);
+  if (c.tr != null) s.transplant = addD(L, c.tr * 7);
+  if (c.ds) { s.dsA = addD(L, c.ds[0] * 7); s.dsB = addD(L, c.ds[1] * 7); }
+  var plantD = s.transplant || s.dsA;
+  if (plantD && c.mat) s.harvest = addD(plantD, c.mat);
+  if (c.fall != null) s.fallSow = addD(F, -c.fall * 7);
+  return s;
+}
+function activeCrops() { return CROPS.filter(function (c) { return state.crops[c.id]; }); }
+
+/* ---------- controls ---------- */
+function fillZoneSelect() {
+  var sel = document.getElementById('gc-zone');
+  Object.keys(ZONES).forEach(function (z) {
+    var o = document.createElement('option');
+    o.value = z; o.textContent = 'Zone ' + z;
+    if (z === state.zone) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+function setZone(z) { state.zone = z; save(); renderAll(); }
+function setCustom(input) {
+  var v = parseMD(input.value);
+  if (input.id === 'gc-last') state.customLast = v;
+  else state.customFirst = v;
+  if (input.value && !v) { gcErr('Use MM/DD format, e.g. 04/20.'); return; }
+  gcErr(''); save(); renderAll();
+}
+function gcErr(msg) { document.getElementById('gc-err').textContent = msg || ''; }
+function toggleCrop(id) {
+  state.crops[id] = !state.crops[id]; save();
+  updateCropCount(); renderMonth(); renderCropTable();
+}
+function updateCropCount() {
+  var n = 0;
+  CROPS.forEach(function (c) { if (state.crops[c.id]) n++; });
+  document.getElementById('gc-count').textContent = n;
+}
+function renderCropPicker() {
+  var host = document.getElementById('gc-crops');
+  host.innerHTML = '';
+  CROPS.forEach(function (c) {
+    var lab = document.createElement('label');
+    lab.className = 'gc-crop-check';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = !!state.crops[c.id];
+    cb.onchange = function () { toggleCrop(c.id); };
+    lab.appendChild(cb);
+    lab.appendChild(document.createTextNode(c.n));
+    host.appendChild(lab);
+  });
+  updateCropCount();
+}
+function showTab(which) {
+  state.view = which; save();
+  var m = which === 'month';
+  document.getElementById('panel-month').hidden = !m;
+  document.getElementById('panel-crop').hidden = m;
+  document.getElementById('tab-month').setAttribute('aria-selected', m ? 'true' : 'false');
+  document.getElementById('tab-crop').setAttribute('aria-selected', m ? 'false' : 'true');
+}
+
+/* ---------- month view ---------- */
+var BADGES = {
+  indoor: ['b-in', 'Start indoors'], transplant: ['b-tr', 'Transplant'],
+  ds: ['b-ds', 'Direct sow'], harvest: ['b-hv', 'Harvest ≈'], fall: ['b-fl', 'Fall sow']
+};
+function renderMonth() {
+  var fr = frostDates(), L = fr.last, F = fr.first;
+  document.getElementById('gc-frost').innerHTML =
+    '<div class="kpi"><div class="k">Last spring frost' + (fr.custom ? ' (custom)' : ' (zone avg)') + '</div><div class="v">' + fmtD(L) + '</div></div>' +
+    '<div class="kpi"><div class="k">First fall frost' + (fr.custom ? ' (custom)' : ' (zone avg)') + '</div><div class="v">' + fmtD(F) + '</div></div>';
+  var sched = activeCrops().map(function (c) { return cropSchedule(c, L, F); });
+  /* bucket events by month */
+  var months = [];
+  for (var m = 0; m < 12; m++) months.push([]);
+  function addEv(date, type, label, crop) {
+    if (!date) return;
+    months[date.getMonth()].push({ d: date.getDate(), type: type, label: label, crop: crop });
+  }
+  sched.forEach(function (s) {
+    var c = s.crop;
+    addEv(s.indoor, 'indoor', fmtD(s.indoor), c.n);
+    addEv(s.transplant, 'transplant', fmtD(s.transplant), c.n);
+    if (s.dsA) addEv(s.dsA, 'ds', fmtRange(s.dsA, s.dsB), c.n);
+    if (s.harvest && !c.fallOnly) addEv(s.harvest, 'harvest', fmtD(s.harvest), c.n);
+    if (s.fallSow) addEv(s.fallSow, 'fall', fmtD(s.fallSow) + (c.fallOnly ? ' (for next year)' : ''), c.n);
+  });
+  months.forEach(function (evs) { evs.sort(function (a, b) { return a.d - b.d; }); });
+  var nowM = new Date().getMonth();
+  /* "right now" card */
+  var now = months[nowM];
+  document.getElementById('gc-now').innerHTML =
+    '<h2 class="g-h2">Right now — ' + MONTHS[nowM] + '</h2>' +
+    (now.length ? now.map(evHTML).join('') :
+      '<p class="gc-note">Nothing scheduled this month. Plan ahead or tend what\'s growing.</p>');
+  /* month grid */
+  var host = document.getElementById('gc-months');
+  host.innerHTML = '';
+  months.forEach(function (evs, m) {
+    var card = document.createElement('div');
+    card.className = 'gc-month' + (m === nowM ? ' now-month' : '');
+    card.innerHTML = '<h3>' + MONTHS[m] + (m === nowM ? ' <span class="gc-badge b-tr">now</span>' : '') + '</h3>' +
+      (evs.length ? evs.map(evHTML).join('') : '<p class="gc-note">—</p>');
+    host.appendChild(card);
+  });
+}
+function evHTML(e) {
+  var b = BADGES[e.type];
+  return '<div class="gc-event"><span class="gc-badge ' + b[0] + '">' + b[1] + '</span>' +
+    '<span><strong>' + esc(e.crop) + '</strong> <span class="gc-note">' + esc(e.label) + '</span></span></div>';
+}
+
+/* ---------- crop table ---------- */
+function renderCropTable() {
+  var fr = frostDates(), L = fr.last, F = fr.first;
+  var tb = document.getElementById('gc-tbody');
+  tb.innerHTML = '';
+  activeCrops().forEach(function (c) {
+    var s = cropSchedule(c, L, F);
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td><strong>' + esc(c.n) + '</strong>' + (c.note ? '<br><span class="gc-note">' + esc(c.note) + '</span>' : '') + '</td>' +
+      '<td class="num">' + (s.indoor ? fmtD(s.indoor) : '—') + '</td>' +
+      '<td class="num">' + (s.transplant ? fmtD(s.transplant) : '—') + '</td>' +
+      '<td class="num">' + fmtRange(s.dsA, s.dsB) + '</td>' +
+      '<td class="num">' + (s.harvest ? fmtD(s.harvest) : '—') + '</td>' +
+      '<td class="num">' + (s.fallSow ? fmtD(s.fallSow) : '—') + '</td>';
+    tb.appendChild(tr);
+  });
+}
+
+function renderAll() {
+  renderCropPicker();
+  renderMonth();
+  renderCropTable();
+}
+
+/* ---------- export / import ---------- */
+function download(name, text) {
+  var blob = new Blob([text], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function exportData() { download('gardencal-backup.json', JSON.stringify(state, null, 2)); }
+function importData(input) {
+  var f = input.files && input.files[0]; if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function () {
+    try {
+      var d = JSON.parse(rd.result);
+      if (!d || !d.zone || !ZONES[d.zone]) throw new Error('bad file');
+      state = d; normalizeCrops(); save();
+      document.getElementById('gc-zone').value = state.zone;
+      document.getElementById('gc-last').value = state.customLast ? state.customLast.join('/') : '';
+      document.getElementById('gc-first').value = state.customFirst ? state.customFirst.join('/') : '';
+      showTab(state.view || 'month');
+      renderAll(); gcErr('');
+    } catch (e) { gcErr('Could not import that file — it is not a GardenCal backup.'); }
+    input.value = '';
+  };
+  rd.readAsText(f);
+}
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded', function () {
+  load();
+  fillZoneSelect();
+  document.getElementById('gc-last').value = state.customLast ? state.customLast.join('/') : '';
+  document.getElementById('gc-first').value = state.customFirst ? state.customFirst.join('/') : '';
+  showTab(state.view === 'crop' ? 'crop' : 'month');
+  renderAll();
+});
+</script>
+</body>
+</html>

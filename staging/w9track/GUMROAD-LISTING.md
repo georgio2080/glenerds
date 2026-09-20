@@ -27,7 +27,7 @@ w-9 tracker, 1099, contractor management, small business, tax organizer, freelan
 
 Tax season doesn't have to be a scramble. Track every contractor, know exactly whose W-9 you have on file, log payments through the year — and get flagged the moment someone crosses the $600 1099 threshold.
 
-💸 100% FREE — no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
+💸 100% FREE — no upsells, no subscription, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 ✨ WHAT IT DOES
 • 📁 Tax-year organization — 2025, 2026, 2027, plus custom years
@@ -50,7 +50,8 @@ No install, no internet, no account. Open the file, add your contractors once, l
 🔒 PRIVACY BY DESIGN
 W9Track never stores SSN or EIN numbers — only whether a W-9 is on file and the date received. Fully offline: no trackers, no analytics, no external requests.
 
-🛠️ MORE FROM GLENERDS
+🛠️ MORE FROM GLENERDS — made by Glenerds
+• Also hiring contractors? QuoteCraft — free contractor estimate & quote builder → https://glenerds.gumroad.com
 • Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT

@@ -23,6 +23,8 @@ $0 (free tool)
 
 **Private by design:** 100% offline single HTML file. No account, no subscription, no tracking — your family's data never leaves your device. Export a JSON backup any time. Print a clean summary for your records.
 
+**More by Glenerds:** a growing collection of free offline tools for your family — find them all in the Glenerds store: https://glenerds.gumroad.com
+
 Free forever — by Glenerds. https://glenerds.gumroad.com
 
 ## Thumbnail/gallery

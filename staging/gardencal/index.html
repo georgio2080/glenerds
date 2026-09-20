@@ -420,6 +420,7 @@
   border-bottom: 1px solid var(--g-border-strong);
   white-space: nowrap;
 }
+.g-table .num { text-align: right; }
 .g-table td {
   padding: 10px;
   border-bottom: 1px solid var(--g-border);
@@ -541,7 +542,7 @@ a:focus-visible {
 .g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
 .gc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
-.gc-month { border: 1px solid var(--g-border); border-radius: var(--g-radius); padding: 1rem; background: var(--g-surface); }
+.gc-month { border: 1px solid var(--g-border); border-radius: var(--g-radius-md); padding: 1rem; background: var(--g-surface); }
 .gc-month h3 { margin: 0 0 .5rem; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
 .gc-month.now-month { border-color: var(--g-accent); box-shadow: 0 0 0 1px var(--g-accent); }
 .gc-event { display: flex; gap: .5rem; align-items: baseline; padding: .3rem 0; border-top: 1px dashed var(--g-border); font-size: .92rem; }
@@ -577,7 +578,7 @@ var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
 h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catch(e){}}
 </script>
 </head>
-<body>
+<body class="g-app">
 <!-- ==========================================================================
      GLENERDS ICON SET v1.0 — inline SVG <symbol> sprite
      --------------------------------------------------------------------------
@@ -797,19 +798,19 @@ h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catc
 </svg>
 
 <header class="g-header no-print">
-  <div class="g-container" style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
+  <div class="g-wrap" style="display:flex;justify-content:space-between;align-items:center;gap:1rem">
     <div>
-      <h1 class="g-h1" style="margin:0">Garden planting calendar</h1>
-      <p class="g-sub">Seed-starting, transplant & harvest dates for your zone. Offline, no account, no subscription.</p>
+      <h1 class="g-display" style="margin:0">Garden planting calendar</h1>
+      <p class="g-tagline">Seed-starting, transplant & harvest dates for your zone. Offline, no account, no subscription.</p>
     </div>
     <button class="g-btn g-btn-ghost g-theme-toggle" onclick="gToggleTheme()" aria-label="Toggle dark mode">◐ Theme</button>
   </div>
 </header>
 
-<main class="g-container">
+<main class="g-wrap">
   <section class="g-card no-print" aria-label="Your zone">
-    <h2 class="g-h2">Your zone</h2>
-    <div class="g-form-grid">
+    <h2 class="g-title">Your zone</h2>
+    <div class="g-grid-3">
       <div class="g-field">
         <label class="g-label" for="gc-zone">USDA hardiness zone</label>
         <select class="g-input" id="gc-zone" onchange="setZone(this.value)"></select>
@@ -851,7 +852,7 @@ h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catc
   </section>
 
   <section class="g-card no-print">
-    <h2 class="g-h2">Backup & print</h2>
+    <h2 class="g-title">Backup & print</h2>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap">
       <button class="g-btn g-btn-secondary" onclick="window.print()">Print / PDF</button>
       <button class="g-btn g-btn-secondary" onclick="exportData()">Export data</button>
@@ -862,7 +863,7 @@ h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catc
 </main>
 
 <footer class="g-footer no-print">
-  <div class="g-container"><p class="g-attrib">by <a href="https://glenerds.gumroad.com">Glenerds</a></p></div>
+  <div class="g-wrap"><p class="g-attrib">by <a href="https://glenerds.gumroad.com">Glenerds</a></p></div>
 </footer>
 
 <script>
@@ -947,7 +948,9 @@ function parseMD(v) {
   var m = /^\s*(\d{1,2})[\/\-](\d{1,2})\s*$/.exec(v || '');
   if (!m) return null;
   var mo = +m[1], d = +m[2];
-  if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+  if (mo < 1 || mo > 12 || d < 1) return null;
+  var dim = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][mo - 1];
+  if (d > dim) return null;
   return [mo, d];
 }
 
@@ -957,7 +960,7 @@ var state = { zone: '6', customLast: null, customFirst: null, crops: {}, view: '
 function load() {
   try {
     var raw = localStorage.getItem(STORE_KEY);
-    if (raw) { var d = JSON.parse(raw); if (d && d.zone) state = d; }
+    if (raw) { var d = JSON.parse(raw); if (d && d.zone && ZONES[d.zone]) state = d; }
   } catch (e) {}
   normalizeCrops();
 }
@@ -1007,9 +1010,9 @@ function fillZoneSelect() {
 function setZone(z) { state.zone = z; save(); renderAll(); }
 function setCustom(input) {
   var v = parseMD(input.value);
+  if (input.value && !v) { gcErr('Use MM/DD format, e.g. 04/20.'); return; }
   if (input.id === 'gc-last') state.customLast = v;
   else state.customFirst = v;
-  if (input.value && !v) { gcErr('Use MM/DD format, e.g. 04/20.'); return; }
   gcErr(''); save(); renderAll();
 }
 function gcErr(msg) { document.getElementById('gc-err').textContent = msg || ''; }
@@ -1077,7 +1080,7 @@ function renderMonth() {
   /* "right now" card */
   var now = months[nowM];
   document.getElementById('gc-now').innerHTML =
-    '<h2 class="g-h2">Right now — ' + MONTHS[nowM] + '</h2>' +
+    '<h2 class="g-title">Right now — ' + MONTHS[nowM] + '</h2>' +
     (now.length ? now.map(evHTML).join('') :
       '<p class="gc-note">Nothing scheduled this month. Plan ahead or tend what\'s growing.</p>');
   /* month grid */
@@ -1141,7 +1144,7 @@ function importData(input) {
       document.getElementById('gc-zone').value = state.zone;
       document.getElementById('gc-last').value = state.customLast ? state.customLast.join('/') : '';
       document.getElementById('gc-first').value = state.customFirst ? state.customFirst.join('/') : '';
-      showTab(state.view || 'month');
+      showTab(state.view === 'crop' ? 'crop' : 'month');
       renderAll(); gcErr('');
     } catch (e) { gcErr('Could not import that file — it is not a GardenCal backup.'); }
     input.value = '';

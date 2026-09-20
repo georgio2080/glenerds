@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="RecipeCost — free offline recipe cost calculator for home bakers. Cost every ingredient, get per-serving cost, and price with your target profit margin. No signup, works offline.">
+<title>Recipe Cost Calculator for Home Bakers — Ingredient Costing & Pricing | RecipeCost</title>
+<style>
+/* ===== GLENERDS DESIGN SYSTEM (inlined) ===== */
+/* ==========================================================================
+   GLENERDS DESIGN SYSTEM v1.0
+   --------------------------------------------------------------------------
+   One shared visual language for every Glenerds microtool.
+   Designed to be INLINED into each app's <style> block — keeps the
+   single-file property: zero network requests, file:// safe, no webfonts,
+   no CDNs, no frameworks, no build step.
+
+   Usage: paste this whole file inside a STYLE element in <head>, then use
+   the g- classes below. See INTEGRATION.md for the theme-toggle wiring.
+
+   Conventions:
+   - Every class is prefixed `g-` to avoid collisions.
+   - Theming is driven by `data-theme="light|dark"` on <html>.
+   - First load with no saved choice honors prefers-color-scheme.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --g-bg:            #f8fafc;   /* page background: soft cool white */
+  --g-surface:       #ffffff;   /* cards, panels */
+  --g-surface-2:     #f1f5f9;   /* recessed / inset areas, tab track */
+  --g-border:        #e2e8f0;   /* hairlines */
+  --g-border-strong: #cbd5e1;
+
+  /* Text */
+  --g-text:          #0f172a;   /* slate-900 */
+  --g-text-soft:     #334155;   /* slate-700 — secondary text */
+  --g-muted:         #64748b;   /* slate-500 — captions, hints */
+
+  /* Accent: refined indigo */
+  --g-accent:        #4f46e5;   /* indigo-600 */
+  --g-accent-hover:  #4338ca;   /* indigo-700 */
+  --g-accent-ink:    #ffffff;   /* text on accent */
+  --g-accent-soft:   #eef2ff;   /* indigo-50 — tinted fills */
+  --g-accent-ring:   rgba(79, 70, 229, 0.22);
+
+  /* Status */
+  --g-good:          #047857;   /* emerald-700 */
+  --g-good-soft:     #ecfdf5;
+  --g-bad:           #b42318;
+  --g-bad-soft:      #fef3f2;
+  --g-warn:          #b45309;
+  --g-warn-soft:     #fffbeb;
+
+  /* Inputs */
+  --g-input-bg:      #ffffff;
+  --g-input-border:  #cbd5e1;
+  --g-code-bg:       #f1f5f9;
+
+  /* Shape + motion */
+  --g-radius-sm: 8px;
+  --g-radius-md: 12px;
+  --g-radius-lg: 16px;
+  --g-radius-pill: 999px;
+  --g-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --g-shadow-md: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --g-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --g-ease: 160ms ease;
+
+  /* Type */
+  --g-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, system-ui, sans-serif;
+  --g-mono: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Consolas,
+            "Liberation Mono", monospace;
+}
+
+/* Dark theme: genuinely designed — deep blue-black, lifted surfaces,
+   brightened indigo. Not an inversion of light. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --g-bg:            #0b0e14;
+  --g-surface:       #141926;
+  --g-surface-2:     #0f1420;
+  --g-border:        #232c40;
+  --g-border-strong: #33405c;
+
+  --g-text:          #f1f5f9;
+  --g-text-soft:     #cbd5e1;
+  --g-muted:         #94a3b8;
+
+  --g-accent:        #818cf8;   /* indigo-400 — readable on dark */
+  --g-accent-hover:  #a5b4fc;   /* indigo-300 */
+  --g-accent-ink:    #0b0e14;
+  --g-accent-soft:   rgba(129, 140, 248, 0.14);
+  --g-accent-ring:   rgba(129, 140, 248, 0.35);
+
+  --g-good:          #34d399;
+  --g-good-soft:     rgba(52, 211, 153, 0.12);
+  --g-bad:           #f87171;
+  --g-bad-soft:      rgba(248, 113, 113, 0.12);
+  --g-warn:          #fbbf24;
+  --g-warn-soft:     rgba(251, 191, 36, 0.12);
+
+  --g-input-bg:      #0f1420;
+  --g-input-border:  #33405c;
+  --g-code-bg:       #0f1420;
+
+  --g-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --g-shadow-md: 0 1px 3px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --g-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+
+.g-app {
+  font-family: var(--g-font);
+  background: var(--g-bg);
+  color: var(--g-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Page container */
+.g-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+/* ---------- 3. TYPOGRAPHY ---------- */
+.g-display  { font-size: 1.9rem;  font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;  margin: 0 0 8px; }
+.g-title    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;  margin: 0 0 6px; }
+.g-body     { font-size: 1rem;    color: var(--g-text-soft); margin: 0 0 12px; }
+.g-caption  { font-size: 0.85rem; color: var(--g-muted);    margin: 0; }
+.g-mono     { font-family: var(--g-mono); font-size: 0.9em; }
+
+/* ---------- 4. HEADER ---------- */
+.g-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 4px;
+}
+.g-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.g-brand-mark {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--g-accent);
+  color: var(--g-accent-ink);
+  font-weight: 800; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-sm);
+  user-select: none;
+}
+.g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
+.g-tagline { color: var(--g-muted); font-size: 0.92rem; margin: 6px 0 14px; max-width: 56ch; }
+
+/* Theme toggle */
+.g-theme-toggle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  border-radius: var(--g-radius-pill);
+  padding: 8px 14px;
+  font-size: 0.88rem; font-weight: 600; font-family: var(--g-font);
+  cursor: pointer;
+  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
+  white-space: nowrap;
+}
+.g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
+.g-theme-toggle:active { transform: scale(0.97); }
+
+/* ---------- 5. TABS (segmented control) ---------- */
+.g-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  background: var(--g-surface-2);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 4px;
+  margin: 14px 0;
+}
+.g-tab {
+  flex: 1 1 auto;
+  appearance: none;
+  border: 0; background: transparent;
+  color: var(--g-muted);
+  font-family: var(--g-font);
+  font-size: 0.93rem; font-weight: 600;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
+  white-space: nowrap;
+}
+.g-tab:hover { color: var(--g-text); }
+.g-tab[aria-selected="true"] {
+  background: var(--g-surface);
+  color: var(--g-text);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-tab:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+
+/* ---------- 6. CARDS ---------- */
+.g-card {
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  padding: 22px;
+  margin: 16px 0;
+  box-shadow: var(--g-shadow-sm);
+}
+.g-card > .g-title { margin-bottom: 4px; }
+.g-card .g-desc { color: var(--g-muted); font-size: 0.92rem; margin: 0 0 14px; }
+.g-card-flat { box-shadow: none; }
+
+/* ---------- 7. BUTTONS ---------- */
+.g-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--g-font);
+  font-size: 0.95rem; font-weight: 650;
+  border-radius: 10px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--g-ease), border-color var(--g-ease),
+              color var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
+  text-decoration: none;
+  line-height: 1.2;
+}
+.g-btn:active { transform: translateY(1px) scale(0.99); }
+.g-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.g-btn-primary {
+  background: var(--g-accent);
+  border-color: var(--g-accent);
+  color: var(--g-accent-ink);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-btn-primary:hover:not(:disabled) { background: var(--g-accent-hover); border-color: var(--g-accent-hover); }
+
+.g-btn-secondary {
+  background: var(--g-surface);
+  border-color: var(--g-border-strong);
+  color: var(--g-text);
+}
+.g-btn-secondary:hover:not(:disabled) { border-color: var(--g-accent); color: var(--g-accent); }
+
+.g-btn-danger {
+  background: var(--g-bad-soft);
+  border-color: transparent;
+  color: var(--g-bad);
+}
+.g-btn-danger:hover:not(:disabled) { background: var(--g-bad); color: #fff; }
+
+.g-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--g-text-soft);
+}
+.g-btn-ghost:hover:not(:disabled) { background: var(--g-surface-2); color: var(--g-text); }
+
+.g-btn-sm { font-size: 0.85rem; padding: 8px 13px; border-radius: 8px; }
+.g-btn-block { display: flex; width: 100%; }
+.g-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+
+/* ---------- 8. FORMS ---------- */
+.g-field { margin: 12px 0; }
+.g-label { display: block; font-weight: 650; font-size: 0.92rem; margin-bottom: 6px; color: var(--g-text); }
+.g-hint { font-size: 0.82rem; color: var(--g-muted); margin-top: 6px; }
+
+.g-input, .g-select, .g-textarea {
+  width: 100%;
+  font-family: var(--g-font);
+  font-size: 1rem;
+  color: var(--g-text);
+  background: var(--g-input-bg);
+  border: 1px solid var(--g-input-border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  transition: border-color var(--g-ease), box-shadow var(--g-ease);
+}
+.g-input::placeholder, .g-textarea::placeholder { color: var(--g-muted); opacity: 0.75; }
+.g-input:hover, .g-select:hover, .g-textarea:hover { border-color: var(--g-border-strong); }
+.g-input:focus, .g-select:focus, .g-textarea:focus {
+  outline: none;
+  border-color: var(--g-accent);
+  box-shadow: 0 0 0 3px var(--g-accent-ring);
+}
+.g-textarea { min-height: 96px; resize: vertical; }
+.g-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+[data-theme="dark"] .g-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.g-input:disabled, .g-select:disabled, .g-textarea:disabled {
+  opacity: 0.55; cursor: not-allowed; background: var(--g-surface-2);
+}
+
+/* Validation */
+.g-input.is-invalid, .g-select.is-invalid {
+  border-color: var(--g-bad);
+}
+.g-input.is-invalid:focus, .g-select.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--g-bad-soft);
+}
+.g-error { display: none; color: var(--g-bad); font-size: 0.86rem; font-weight: 600; margin-top: 6px; }
+.g-error.show { display: block; }
+
+/* Checkbox / radio rows */
+.g-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.95rem; color: var(--g-text-soft);
+  cursor: pointer; margin: 10px 0;
+}
+.g-check input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  margin: 1px 0 0;
+  border: 1.5px solid var(--g-input-border);
+  border-radius: 6px;
+  background: var(--g-input-bg);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--g-ease), border-color var(--g-ease);
+}
+.g-check input[type="radio"] { border-radius: 50%; }
+.g-check input:checked { background: var(--g-accent); border-color: var(--g-accent); }
+.g-check input:checked::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: no-repeat center / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 6.8 11.8 12.5 4.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.g-check input[type="radio"]:checked::after {
+  background: none;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--g-accent-ink);
+}
+.g-check input:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--g-accent-ring); }
+
+/* ---------- 9. RESULT PANELS ---------- */
+.g-result {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: var(--g-radius-md);
+  border: 1px solid var(--g-border);
+  background: var(--g-surface-2);
+}
+.g-big-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 2px 0 6px;
+}
+.g-verdict { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+.g-verdict-good { color: var(--g-good); }
+.g-verdict-bad  { color: var(--g-bad); }
+.g-verdict-warn { color: var(--g-warn); }
+.g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
+
+/* Show-your-work math block */
+.g-math {
+  font-family: var(--g-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background: var(--g-code-bg);
+  border: 1px solid var(--g-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: var(--g-text-soft);
+}
+
+/* ---------- 10. STAT ROWS ---------- */
+.g-stats { margin: 12px 0 0; border-top: 1px solid var(--g-border); }
+.g-stat {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--g-border);
+  font-size: 0.95rem;
+}
+.g-stat:last-child { border-bottom: 0; }
+.g-stat .g-stat-label { color: var(--g-muted); }
+.g-stat .g-stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+.g-stat .g-stat-value.good { color: var(--g-good); }
+.g-stat .g-stat-value.bad  { color: var(--g-bad); }
+
+/* ---------- 11. TABLES ---------- */
+.g-table-wrap { overflow-x: auto; margin: 12px -4px 0; padding: 0 4px; }
+.g-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.g-table th {
+  text-align: left;
+  font-size: 0.76rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--g-muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--g-border-strong);
+  white-space: nowrap;
+}
+.g-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+.g-table tr:last-child td { border-bottom: 0; }
+.g-table tbody tr { transition: background var(--g-ease); }
+.g-table tbody tr:hover { background: var(--g-surface-2); }
+
+/* ---------- 12. BADGES / PILLS ---------- */
+.g-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; font-weight: 700;
+  border-radius: var(--g-radius-pill);
+  padding: 4px 11px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.g-badge-accent { background: var(--g-accent-soft); color: var(--g-accent); }
+.g-badge-good   { background: var(--g-good-soft);   color: var(--g-good); }
+.g-badge-bad    { background: var(--g-bad-soft);    color: var(--g-bad); }
+.g-badge-warn   { background: var(--g-warn-soft);   color: var(--g-warn); }
+.g-badge-neutral{ background: var(--g-surface-2);    color: var(--g-muted); border: 1px solid var(--g-border); }
+.g-badge-dot::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+}
+
+/* ---------- 13. EMPTY STATES ---------- */
+.g-empty {
+  text-align: center;
+  border: 1.5px dashed var(--g-border-strong);
+  border-radius: var(--g-radius-lg);
+  padding: 36px 20px;
+  margin: 16px 0;
+  color: var(--g-muted);
+}
+.g-empty-icon { font-size: 2rem; margin-bottom: 8px; }
+.g-empty .g-title { font-size: 1.05rem; color: var(--g-text-soft); }
+.g-empty p { font-size: 0.9rem; margin: 4px 0 14px; }
+
+/* ---------- 14. FOOTER ---------- */
+.g-footer {
+  text-align: center;
+  margin: 32px 0 8px;
+  font-size: 0.85rem;
+  color: var(--g-muted);
+}
+.g-footer a { color: var(--g-accent); text-decoration: none; font-weight: 600; }
+.g-footer a:hover { text-decoration: underline; }
+.g-footer .g-fine { display: block; margin-top: 8px; font-size: 0.78rem; }
+
+/* ---------- 15. LAYOUT HELPERS ---------- */
+.g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.g-stack > * + * { margin-top: 12px; }
+.g-divider { border: 0; border-top: 1px solid var(--g-border); margin: 20px 0; }
+
+/* ---------- 16. FOCUS (accessibility) ---------- */
+.g-btn:focus-visible,
+.g-theme-toggle:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--g-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 17. RESPONSIVE ---------- */
+@media (max-width: 560px) {
+  .g-wrap { padding: 14px 12px 40px; }
+  .g-display { font-size: 1.6rem; }
+  .g-card { padding: 18px 16px; border-radius: 14px; }
+  .g-big-number { font-size: 2rem; }
+  .g-grid-2, .g-grid-3 { grid-template-columns: 1fr; }
+  .g-brand-mark { width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px; }
+  .g-brand-name { font-size: 1.2rem; }
+  .g-tab { padding: 9px 10px; font-size: 0.88rem; }
+}
+
+/* ---------- 18. MOTION PREFERENCE ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+
+/* ---------- 19. ICONS ----------
+   Requires the glenerds-icons.svg sprite inlined in the page (see
+   INTEGRATION.md). <use> inherits stroke from the wrapper, so the two
+   variants are just classes on the <svg> element. */
+.g-icon {
+  width: 24px; height: 24px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  fill: none;
+  vertical-align: -4px;
+}
+.g-icon-sm { width: 18px; height: 18px; }
+.g-icon-lg { width: 32px; height: 32px; }
+/* Flash variant: brand indigo gradient stroke instead of text color. */
+.g-icon-flash { stroke: url(#g-grad-indigo); }
+.g-btn .g-icon { width: 20px; height: 20px; vertical-align: -3px; }
+.g-tab .g-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; }
+
+/* ---------- 20. APP ICONS ----------
+   iOS-style rounded-square gradient tile + one white glyph.
+   Each app picks its own gradient via --g-ai1 / --g-ai2. */
+.g-appicon {
+  --g-ai1: #6366f1;
+  --g-ai2: #8b5cf6;
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--g-ai1), var(--g-ai2));
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  flex: 0 0 auto;
+}
+.g-appicon .g-icon { width: 32px; height: 32px; color: #ffffff; }
+.g-appicon-sm { width: 44px; height: 44px; border-radius: 13px; }
+.g-appicon-sm .g-icon { width: 24px; height: 24px; }
+.g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
+.g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+/* ===== APP OVERRIDES (tokens only, no g- restyle) ===== */
+.g-table-wrap { overflow-x: auto; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.g-result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; margin-top: 1rem; }
+.kpi { background: var(--g-surface-2); border: 1px solid var(--g-border); border-radius: 10px; padding: .7rem .9rem; }
+.kpi .k { font-size: .75rem; color: var(--g-muted); text-transform: uppercase; letter-spacing: .04em; }
+.kpi .v { font-size: 1.25rem; font-weight: 700; margin-top: .15rem; font-variant-numeric: tabular-nums; }
+.kpi .v.good { color: #16a34a; } [data-theme="dark"] .kpi .v.good { color: #7de0a3; }
+.kpi .v.warn { color: #d97706; } [data-theme="dark"] .kpi .v.warn { color: #e3c76b; }
+.line-row { display: grid; grid-template-columns: 1fr 90px 110px auto auto; gap: .5rem; align-items: end; margin-bottom: .5rem; }
+@media (max-width: 640px) { .line-row { grid-template-columns: 1fr 72px 96px auto; } .line-row .hide-sm { display: none; } }
+.approx-flag { color: #d97706; font-size: .78rem; } [data-theme="dark"] .approx-flag { color: #e3c76b; }
+@media print { .no-print { display: none !important; } body { background: #fff; } }
+</style>
+<script>
+/* Pre-paint theme init — shared glenerds-theme key */
+(function(){var t=null;try{t=localStorage.getItem('glenerds-theme')}catch(e){}
+if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+document.documentElement.setAttribute('data-theme',t);})();
+function gToggleTheme(){var h=document.documentElement;
+var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catch(e){}}
+</script>
+</head>
+<body class="g-app">
+<!-- ==========================================================================
+     GLENERDS ICON SET v1.0 — inline SVG <symbol> sprite
+     --------------------------------------------------------------------------
+     Inline this whole file right after <body> in each app (or paste the
+     <svg> block). Zero external requests. See INTEGRATION.md for usage.
+
+     - 24x24 grid, stroke-based line icons, stroke-width 2, round caps/joins.
+     - Clean variant inherits text color (currentColor).
+     - Flash variant: add class "g-icon-flash" to the <svg> wrapper and the
+       stroke renders in the brand indigo gradient instead.
+     - All geometry inherits from the symbol; do not set stroke/fill on <use>.
+     ========================================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-grad-indigo" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#818cf8"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="g-grad-sunset" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="g-grad-ocean" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="g-grad-royal" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#c084fc"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- calculator -->
+  <symbol id="g-i-calc" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6.5" y="3" width="11" height="18" rx="2"/>
+    <path d="M9.5 7.5h5"/>
+    <path d="M9.5 12h.02M12 12h.02M14.5 12h.02M9.5 15.5h.02M12 15.5h.02M14.5 15.5h.02"/>
+  </symbol>
+
+  <!-- chart / graph (bars) -->
+  <symbol id="g-i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20h16"/>
+    <path d="M7.5 20v-6.5M12 20V6.5M16.5 20v-9.5"/>
+  </symbol>
+
+  <!-- calendar -->
+  <symbol id="g-i-cal" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>
+    <path d="M8 3v3.5M16 3v3.5M3.5 10h17"/>
+  </symbol>
+
+  <!-- checkmark -->
+  <symbol id="g-i-check" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.8 12.6l4.7 4.7L19.2 7.2"/>
+  </symbol>
+
+  <!-- streak flame -->
+  <symbol id="g-i-flame" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.2c.9 2.8-.5 4.3-1.7 5.6C8.7 10.5 7 12.4 7 15.2a5 5 0 0010 0c0-2-1-3.5-2-4.9-.4 1.1-1.1 1.9-2.1 2.3.4-3-.4-6.7-.9-9.4z"/>
+  </symbol>
+
+  <!-- star -->
+  <symbol id="g-i-star" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/>
+  </symbol>
+
+  <!-- moon -->
+  <symbol id="g-i-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.2 14.8A8.3 8.3 0 019.2 3.8a8.3 8.3 0 1011 11z"/>
+  </symbol>
+
+  <!-- sun -->
+  <symbol id="g-i-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4.2"/>
+    <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/>
+  </symbol>
+
+  <!-- plus -->
+  <symbol id="g-i-plus" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5.5v13M5.5 12h13"/>
+  </symbol>
+
+  <!-- trash -->
+  <symbol id="g-i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 6.8h15"/>
+    <path d="M9.5 6.2V4.8a1.3 1.3 0 011.3-1.3h2.4a1.3 1.3 0 011.3 1.3v1.4"/>
+    <path d="M6.8 6.8l.9 12.4a1.6 1.6 0 001.6 1.5h5.4a1.6 1.6 0 001.6-1.5l.9-12.4"/>
+    <path d="M10 10.8v5.5M14 10.8v5.5"/>
+  </symbol>
+
+  <!-- download -->
+  <symbol id="g-i-download" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4v10.5"/>
+    <path d="M7.6 11L12 15.4 16.4 11"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- upload -->
+  <symbol id="g-i-upload" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 15.5V5"/>
+    <path d="M7.6 9.4L12 5l4.4 4.4"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- settings gear -->
+  <symbol id="g-i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3.4"/>
+    <path d="M12 5v2.2M12 16.8V19M5 12h2.2M16.8 12H19M7.1 7.1l1.5 1.5M15.4 15.4l1.5 1.5M16.9 7.1l-1.5 1.5M8.6 15.4l-1.5 1.5"/>
+  </symbol>
+
+  <!-- heart -->
+  <symbol id="g-i-heart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20.5c-5-3.4-8.5-6.8-8.5-10.6C3.5 7.1 5.7 5 8.4 5c1.5 0 2.8.8 3.6 2 .8-1.2 2.1-2 3.6-2 2.7 0 4.9 2.1 4.9 4.9 0 3.8-3.5 7.2-8.5 10.6z"/>
+  </symbol>
+
+  <!-- clock -->
+  <symbol id="g-i-clock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 7.3V12l3.2 2"/>
+  </symbol>
+
+  <!-- target -->
+  <symbol id="g-i-target" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <circle cx="12" cy="12" r="4.8"/>
+    <circle cx="12" cy="12" r="1.4"/>
+  </symbol>
+
+  <!-- trophy -->
+  <symbol id="g-i-trophy" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 4h9v4.5a4.5 4.5 0 01-9 0V4z"/>
+    <path d="M7.5 5.5H4.5a3.5 3.5 0 003.8 3.8M16.5 5.5h3a3.5 3.5 0 01-3.8 3.8"/>
+    <path d="M12 13v4M8.5 20.5h7"/>
+  </symbol>
+
+  <!-- tag -->
+  <symbol id="g-i-tag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.6 13.4L11 3.8a2 2 0 00-1.4-.6H5a1.8 1.8 0 00-1.8 1.8v4.6c0 .5.2 1 .6 1.4l9.6 9.6a1.9 1.9 0 002.7 0l4.5-4.5a1.9 1.9 0 000-2.7z"/>
+    <circle cx="8" cy="8" r="1.4"/>
+  </symbol>
+
+  <!-- search -->
+  <symbol id="g-i-search" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="6.5"/>
+    <path d="M15.8 15.8l4.7 4.7"/>
+  </symbol>
+
+  <!-- edit pencil -->
+  <symbol id="g-i-edit" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20l1.2-4.2L16.7 4.3a2 2 0 012.9 2.9L8.1 18.7 4 20z"/>
+    <path d="M14.8 6.2l2.9 2.9"/>
+  </symbol>
+
+  <!-- share -->
+  <symbol id="g-i-share" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6.5" cy="12" r="2.5"/>
+    <circle cx="17" cy="5.8" r="2.5"/>
+    <circle cx="17" cy="18.2" r="2.5"/>
+    <path d="M8.7 10.9l6.1-3.5M8.7 13.1l6.1 3.5"/>
+  </symbol>
+
+  <!-- lock -->
+  <symbol id="g-i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/>
+    <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/>
+    <path d="M12 14.5v2"/>
+  </symbol>
+
+  <!-- sparkles -->
+  <symbol id="g-i-sparkles" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8-4.8-1.7 4.8-1.7L12 3.5z"/>
+    <path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/>
+  </symbol>
+
+  <!-- home -->
+  <symbol id="g-i-home" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11.2L12 4l8 7.2"/>
+    <path d="M6.2 9.8V20h11.6V9.8"/>
+    <path d="M10 20v-4.8h4V20"/>
+  </symbol>
+
+  <!-- back arrow -->
+  <symbol id="g-i-back" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.8 5.5L8.3 12l6.5 6.5"/>
+  </symbol>
+
+  <!-- close X -->
+  <symbol id="g-i-x" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 6l12 12M18 6L6 18"/>
+  </symbol>
+
+  <!-- info -->
+  <symbol id="g-i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 11v5"/>
+    <path d="M12 7.6v.2"/>
+  </symbol>
+
+  <!-- wallet -->
+  <symbol id="g-i-wallet" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="6.5" width="18" height="13" rx="3"/>
+    <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
+    <circle cx="17.5" cy="14.8" r="1.1"/>
+  </symbol>
+
+  <!-- list -->
+  <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
+    <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
+  </symbol>
+
+  <!-- bell -->
+  <symbol id="g-i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.2 16v-4.8a5.8 5.8 0 0111.6 0V16l1.7 2.8H4.5L6.2 16z"/>
+    <path d="M10 20.5a2.2 2.2 0 004 0"/>
+  </symbol>
+</svg>
+
+<div class="g-wrap">
+
+<header class="g-header">
+  <div class="g-brand">
+    <span class="g-appicon g-appicon-sm" style="--g-ai1:#22c55e;--g-ai2:#84cc16">
+      <svg class="g-icon" aria-hidden="true"><use href="#g-i-calc"/></svg>
+    </span>
+    <h1 class="g-brand-name">RecipeCost</h1>
+  </div>
+  <button class="g-theme-toggle no-print" onclick="gToggleTheme()" aria-label="Toggle dark mode">
+    <svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon"/></svg><span>Theme</span>
+  </button>
+</header>
+<p class="g-tagline">Recipe cost calculator for home bakers — know exactly what each batch costs and price it with confidence.</p>
+
+<div class="g-tabs no-print" role="tablist" aria-label="Sections">
+  <button class="g-tab" role="tab" id="tab-ing" aria-selected="true" onclick="showTab('ing')">Ingredients</button>
+  <button class="g-tab" role="tab" id="tab-rec" aria-selected="false" onclick="showTab('rec')">Recipes</button>
+</div>
+
+<!-- ================= INGREDIENTS ================= -->
+<section id="panel-ing" role="tabpanel" aria-labelledby="tab-ing">
+  <div class="g-card">
+    <p class="g-title">Ingredient library</p>
+    <p class="g-desc">Enter what you paid per package. RecipeCost works out the cost per gram, ml, or piece automatically.</p>
+    <div class="g-grid-2">
+      <div class="g-field">
+        <label class="g-label" for="ing-name">Ingredient name</label>
+        <input class="g-input" id="ing-name" type="text" placeholder="All-purpose flour" autocomplete="off">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-price">Package price ($)</label>
+        <input class="g-input" id="ing-price" type="number" min="0" step="0.01" placeholder="4.99">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-qty">Package size</label>
+        <input class="g-input" id="ing-qty" type="number" min="0" step="any" placeholder="5000">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-unit">Package unit</label>
+        <select class="g-input" id="ing-unit"></select>
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-gpc">Grams per cup <span class="g-hint" style="display:inline">(optional — for cup↔gram conversion)</span></label>
+        <input class="g-input" id="ing-gpc" type="number" min="0" step="any" placeholder="e.g. 120 for flour">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-gpe">Grams per piece <span class="g-hint" style="display:inline">(optional — for count items like eggs)</span></label>
+        <input class="g-input" id="ing-gpe" type="number" min="0" step="any" placeholder="e.g. 50 for an egg">
+      </div>
+      <div class="g-field" style="align-self:end">
+        <div class="g-btn-row">
+          <button class="g-btn g-btn-primary" id="ing-add" onclick="addIngredient()">Add ingredient</button>
+          <button class="g-btn g-btn-secondary" onclick="clearIngForm()">Clear</button>
+        </div>
+      </div>
+    </div>
+    <p class="g-error" id="ing-err"></p>
+  </div>
+
+  <div class="g-card">
+    <p class="g-title">Your ingredients <span class="g-badge g-badge-neutral" id="ing-count">0</span></p>
+    <div class="g-table-wrap"><table class="g-table" id="ing-table">
+      <thead><tr><th>Ingredient</th><th class="num">Package</th><th class="num">Unit cost</th><th class="no-print"></th></tr></thead>
+      <tbody id="ing-tbody"></tbody>
+    </table></div>
+    <div class="g-empty" id="ing-empty">
+      <p class="g-title">No ingredients yet</p>
+      <p class="g-desc">Add the ingredients you buy — with package size and price — and costing takes care of itself.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RECIPES ================= -->
+<section id="panel-rec" role="tabpanel" aria-labelledby="tab-rec" hidden>
+  <div class="g-card no-print">
+    <div class="g-field">
+      <label class="g-label" for="rec-select">Recipe</label>
+      <div class="g-btn-row">
+        <select class="g-input" id="rec-select" onchange="selectRecipe(this.value)" style="flex:1"></select>
+        <button class="g-btn g-btn-primary" onclick="newRecipe()">New</button>
+        <button class="g-btn g-btn-danger" onclick="deleteRecipe()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="rec-editor">
+    <div class="g-card">
+      <p class="g-title">Recipe details</p>
+      <div class="g-grid-3">
+        <div class="g-field">
+          <label class="g-label" for="rec-name">Recipe name</label>
+          <input class="g-input" id="rec-name" type="text" placeholder="Chocolate chip cookies" oninput="recField('name', this.value)">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-yield">Batch yield (pieces / servings)</label>
+          <input class="g-input" id="rec-yield" type="number" min="0" step="any" placeholder="24" oninput="recField('yieldQty', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-yieldunit">Yield unit</label>
+          <input class="g-input" id="rec-yieldunit" type="text" placeholder="cookies" value="pieces" oninput="recField('yieldUnit', this.value)">
+        </div>
+      </div>
+    </div>
+
+    <div class="g-card">
+      <p class="g-title">Ingredients in this recipe</p>
+      <div id="lines"></div>
+      <div class="g-btn-row no-print">
+        <button class="g-btn g-btn-secondary" onclick="addLine()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-plus"/></svg> Add ingredient line</button>
+      </div>
+      <p class="g-error" id="line-err"></p>
+    </div>
+
+    <div class="g-card">
+      <p class="g-title">Labor, packaging &amp; overhead</p>
+      <div class="g-grid-2">
+        <div class="g-field">
+          <label class="g-label" for="rec-hours">Your hours on this batch</label>
+          <input class="g-input" id="rec-hours" type="number" min="0" step="any" placeholder="1.5" oninput="recField('laborHours', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-rate">Hourly rate ($)</label>
+          <input class="g-input" id="rec-rate" type="number" min="0" step="any" placeholder="20" oninput="recField('laborRate', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-pack">Packaging cost per piece ($)</label>
+          <input class="g-input" id="rec-pack" type="number" min="0" step="any" placeholder="0.25" oninput="recField('packagingPerUnit', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-oh">Overhead % <span class="g-hint" style="display:inline">(electricity, wear, fees)</span></label>
+          <input class="g-input" id="rec-oh" type="number" min="0" step="any" placeholder="10" oninput="recField('overheadPct', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-margin">Target profit margin %</label>
+          <input class="g-input" id="rec-margin" type="number" min="0" max="95" step="any" placeholder="50" oninput="recField('targetMarginPct', num(this.value))">
+          <p class="g-hint">Margin = profit ÷ selling price. 50% margin means half the price is profit.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-card" id="summary-card">
+      <p class="g-title">Cost &amp; pricing summary</p>
+      <div class="g-result-grid" id="summary-grid"></div>
+      <div class="g-math" id="summary-math" style="margin-top:1rem"></div>
+      <div class="g-btn-row no-print" style="margin-top:1rem">
+        <button class="g-btn g-btn-secondary" onclick="window.print()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-download"/></svg> Print / save PDF</button>
+        <button class="g-btn g-btn-ghost" onclick="exportData()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-share"/></svg> Export data</button>
+        <button class="g-btn g-btn-ghost" onclick="document.getElementById('import-file').click()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-upload"/></svg> Import data</button>
+        <input type="file" id="import-file" accept="application/json" hidden onchange="importData(this)">
+      </div>
+      <p class="g-error" id="rec-err"></p>
+    </div>
+  </div>
+  <div class="g-empty" id="rec-empty" hidden>
+    <p class="g-title">No recipes yet</p>
+    <p class="g-desc">Create your first recipe, add ingredient lines from your library, and see the true cost per piece.</p>
+    <div class="g-btn-row"><button class="g-btn g-btn-primary" onclick="newRecipe()">New recipe</button></div>
+  </div>
+</section>
+
+<footer class="g-footer">
+  Free offline tool <a href="https://glenerds.gumroad.com">by Glenerds</a> — no signup, no tracking, your data never leaves this device.
+</footer>
+</div>
+<script>
+"use strict";
+/* ================= RecipeCost — offline recipe costing for home bakers ================= */
+var STORE_KEY = 'recipecost.v1';
+
+/* ---------- units ---------- */
+var MASS = { g: 1, kg: 1000, oz: 28.349523125, lb: 453.59237 };
+var VOL  = { ml: 1, l: 1000, tsp: 4.92892159375, tbsp: 14.78676478125, cup: 236.5882365 };
+var EACH = { each: 1, pc: 1, pcs: 1, piece: 1, pieces: 1 };
+var UNIT_GROUPS = [
+  { label: 'Weight', units: ['g', 'kg', 'oz', 'lb'] },
+  { label: 'Volume', units: ['ml', 'l', 'tsp', 'tbsp', 'cup'] },
+  { label: 'Count',  units: ['each'] }
+];
+function unitDim(u) {
+  u = String(u).toLowerCase();
+  if (MASS[u] !== undefined) return 'mass';
+  if (VOL[u] !== undefined) return 'vol';
+  return 'each';
+}
+function toBase(qty, unit) { /* grams | ml | count */
+  var u = String(unit).toLowerCase(), d = unitDim(u);
+  if (d === 'mass') return qty * MASS[u];
+  if (d === 'vol') return qty * VOL[u];
+  return qty;
+}
+function fmtMoney(n) {
+  if (!isFinite(n)) return '—';
+  return '$' + n.toFixed(2);
+}
+function num(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function uid() { return 'x' + Math.random().toString(36).slice(2, 10); }
+
+/* ---------- state ---------- */
+var state = { ingredients: [], recipes: [] };
+function load() {
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      var d = JSON.parse(raw);
+      if (d && Array.isArray(d.ingredients) && Array.isArray(d.recipes)) state = d;
+    }
+  } catch (e) { /* corrupted storage -> start fresh */ state = { ingredients: [], recipes: [] }; }
+  if (!state.ingredients.length && !state.recipes.length) seed();
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+function seed() {
+  state.ingredients = [
+    { id: uid(), name: 'All-purpose flour', pkgQty: 5000, pkgUnit: 'g', pkgPrice: 4.99, gPerCup: 120 },
+    { id: uid(), name: 'Granulated sugar', pkgQty: 4000, pkgUnit: 'g', pkgPrice: 3.89, gPerCup: 200 },
+    { id: uid(), name: 'Unsalted butter', pkgQty: 16, pkgUnit: 'oz', pkgPrice: 4.49, gPerCup: 227 },
+    { id: uid(), name: 'Large eggs', pkgQty: 12, pkgUnit: 'each', pkgPrice: 3.29, gPerCup: 0, gPerEach: 50 }
+  ];
+}
+
+/* ---------- ingredient costing ---------- */
+function pkgBaseQty(ing) { return toBase(ing.pkgQty, ing.pkgUnit); }
+function unitCost(ing) { /* cost per gram / ml / each */
+  var b = pkgBaseQty(ing);
+  if (!(b > 0)) return 0;
+  return ing.pkgPrice / b;
+}
+function unitCostLabel(ing) {
+  var d = unitDim(ing.pkgUnit);
+  return d === 'mass' ? 'per gram' : d === 'vol' ? 'per ml' : 'each';
+}
+/* cost of qty+unit of ingredient ing. Returns {cost, approx} */
+function lineCost(ing, qty, unit) {
+  if (!(qty > 0)) return { cost: 0, approx: false };
+  var pd = unitDim(ing.pkgUnit), ld = unitDim(unit);
+  var uc = unitCost(ing);
+  if (pd === ld) return { cost: toBase(qty, unit) / pkgBaseQty(ing) * ing.pkgPrice, approx: false };
+  var gpc = num(ing.gPerCup), gpe = num(ing.gPerEach);
+  /* count <-> weight via grams-per-piece */
+  if (pd === 'each' && ld === 'mass') {
+    if (!(gpe > 0)) return { cost: 0, approx: false, err: 'needs grams-per-piece' };
+    return { cost: toBase(qty, unit) * (ing.pkgPrice / (ing.pkgQty * gpe)), approx: false };
+  }
+  if (pd === 'mass' && ld === 'each') {
+    if (!(gpe > 0)) return { cost: 0, approx: false, err: 'needs grams-per-piece' };
+    return { cost: qty * gpe * uc, approx: false };
+  }
+  if (pd === 'each' || ld === 'each') return { cost: 0, approx: false, err: 'cannot convert' };
+  /* mass <-> volume via grams-per-cup */
+  var cups;
+  if (ld === 'vol') cups = toBase(qty, unit) / VOL.cup;
+  else {
+    if (!(gpc > 0)) return { cost: 0, approx: false, err: 'needs grams-per-cup' };
+    cups = toBase(qty, unit) / gpc;
+  }
+  var approx = !(gpc > 0);
+  if (pd === 'mass') return { cost: cups * (gpc > 0 ? gpc : VOL.cup) * uc, approx: approx };
+  return { cost: cups * VOL.cup * uc, approx: approx };
+}
+function lineCostHTML(ing, ln) {
+  var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+  if (lc.err) return '<span class="approx-flag" title="' + esc(lc.err) + ' — add it on the Ingredients tab">needs conversion</span>';
+  return fmtMoney(lc.cost) + (lc.approx ? ' <span class="approx-flag" title="Used water-density fallback — add grams-per-cup for accuracy">≈</span>' : '');
+}
+
+/* ---------- tabs ---------- */
+function showTab(which) {
+  var ing = which === 'ing';
+  document.getElementById('panel-ing').hidden = !ing;
+  document.getElementById('panel-rec').hidden = ing;
+  document.getElementById('tab-ing').setAttribute('aria-selected', ing ? 'true' : 'false');
+  document.getElementById('tab-rec').setAttribute('aria-selected', ing ? 'false' : 'true');
+}
+
+/* ---------- ingredients UI ---------- */
+function fillUnitSelect() {
+  var sel = document.getElementById('ing-unit');
+  sel.innerHTML = '';
+  UNIT_GROUPS.forEach(function (g) {
+    var og = document.createElement('optgroup'); og.label = g.label;
+    g.units.forEach(function (u) {
+      var o = document.createElement('option'); o.value = u; o.textContent = u; og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+}
+var editingIngId = null;
+function ingErr(msg) {
+  var el = document.getElementById('ing-err');
+  el.textContent = msg || ''; el.classList.toggle('show', !!msg);
+}
+function addIngredient() {
+  var name = document.getElementById('ing-name').value.trim();
+  var price = num(document.getElementById('ing-price').value);
+  var qty = num(document.getElementById('ing-qty').value);
+  var unit = document.getElementById('ing-unit').value;
+  var gpc = num(document.getElementById('ing-gpc').value);
+  var gpe = num(document.getElementById('ing-gpe').value);
+  if (!name) return ingErr('Give the ingredient a name.');
+  if (!(price >= 0) || !(qty > 0)) return ingErr('Enter a package price and a package size greater than zero.');
+  ingErr('');
+  if (editingIngId) {
+    var ing = state.ingredients.find(function (i) { return i.id === editingIngId; });
+    if (ing) { ing.name = name; ing.pkgPrice = price; ing.pkgQty = qty; ing.pkgUnit = unit; ing.gPerCup = gpc; ing.gPerEach = gpe; }
+    editingIngId = null;
+    document.getElementById('ing-add').textContent = 'Add ingredient';
+  } else {
+    state.ingredients.push({ id: uid(), name: name, pkgPrice: price, pkgQty: qty, pkgUnit: unit, gPerCup: gpc, gPerEach: gpe });
+  }
+  save(); clearIngForm(); renderIngredients(); renderRecipeSelect();
+}
+function clearIngForm() {
+  ['ing-name', 'ing-price', 'ing-qty', 'ing-gpc', 'ing-gpe'].forEach(function (id) { document.getElementById(id).value = ''; });
+  editingIngId = null; document.getElementById('ing-add').textContent = 'Add ingredient'; ingErr('');
+}
+function editIngredient(id) {
+  var ing = state.ingredients.find(function (i) { return i.id === id; });
+  if (!ing) return;
+  document.getElementById('ing-name').value = ing.name;
+  document.getElementById('ing-price').value = ing.pkgPrice;
+  document.getElementById('ing-qty').value = ing.pkgQty;
+  document.getElementById('ing-unit').value = ing.pkgUnit;
+  document.getElementById('ing-gpc').value = ing.gPerCup || '';
+  document.getElementById('ing-gpe').value = ing.gPerEach || '';
+  editingIngId = id;
+  document.getElementById('ing-add').textContent = 'Save changes';
+  document.getElementById('ing-name').focus();
+}
+function deleteIngredient(id) {
+  var used = state.recipes.some(function (r) { return r.lines.some(function (l) { return l.ingId === id; }); });
+  if (used && !confirm('This ingredient is used in a recipe. Delete it anyway?')) return;
+  state.ingredients = state.ingredients.filter(function (i) { return i.id !== id; });
+  state.recipes.forEach(function (r) { r.lines = r.lines.filter(function (l) { return l.ingId !== id; }); });
+  save(); renderIngredients(); renderRecipe();
+}
+function renderIngredients() {
+  var tb = document.getElementById('ing-tbody');
+  tb.innerHTML = '';
+  document.getElementById('ing-count').textContent = state.ingredients.length;
+  document.getElementById('ing-empty').style.display = state.ingredients.length ? 'none' : '';
+  state.ingredients.forEach(function (ing) {
+    var tr = document.createElement('tr');
+    var uc = unitCost(ing);
+    var ucTxt = uc < 0.01 ? '$' + uc.toFixed(4) : fmtMoney(uc);
+    tr.innerHTML =
+      '<td>' + esc(ing.name) + '</td>' +
+      '<td class="num">' + esc(String(ing.pkgQty)) + ' ' + esc(ing.pkgUnit) + ' @ ' + fmtMoney(ing.pkgPrice) + '</td>' +
+      '<td class="num">' + ucTxt + ' ' + unitCostLabel(ing) + '</td>' +
+      '<td class="num no-print"><button class="g-btn g-btn-ghost g-btn-sm" onclick="editIngredient(\'' + ing.id + '\')">Edit</button> ' +
+      '<button class="g-btn g-btn-ghost g-btn-sm" onclick="deleteIngredient(\'' + ing.id + '\')">Delete</button></td>';
+    tb.appendChild(tr);
+  });
+}
+
+/* ---------- recipes ---------- */
+var currentRecipeId = null;
+function blankRecipe() {
+  return { id: uid(), name: '', yieldQty: 0, yieldUnit: 'pieces', lines: [],
+           laborHours: 0, laborRate: 0, packagingPerUnit: 0, overheadPct: 10, targetMarginPct: 50 };
+}
+function cur() { return state.recipes.find(function (r) { return r.id === currentRecipeId; }); }
+function renderRecipeSelect() {
+  var sel = document.getElementById('rec-select');
+  sel.innerHTML = '';
+  state.recipes.forEach(function (r) {
+    var o = document.createElement('option');
+    o.value = r.id; o.textContent = r.name || '(unnamed recipe)';
+    if (r.id === currentRecipeId) o.selected = true;
+    sel.appendChild(o);
+  });
+  var has = state.recipes.length > 0;
+  document.getElementById('rec-editor').hidden = !has;
+  document.getElementById('rec-empty').hidden = has;
+}
+function newRecipe() {
+  var r = blankRecipe();
+  state.recipes.push(r); currentRecipeId = r.id;
+  save(); renderRecipeSelect(); renderRecipe();
+  document.getElementById('rec-name').focus();
+}
+function selectRecipe(id) { currentRecipeId = id; renderRecipe(); }
+function deleteRecipe() {
+  var r = cur(); if (!r) return;
+  if (!confirm('Delete "' + (r.name || 'this recipe') + '"?')) return;
+  state.recipes = state.recipes.filter(function (x) { return x.id !== r.id; });
+  currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+  save(); renderRecipeSelect(); renderRecipe();
+}
+function recField(field, val) {
+  var r = cur(); if (!r) return;
+  r[field] = val; save(); renderSummary();
+}
+function lineField(idx, field, val) {
+  var r = cur(); if (!r || !r.lines[idx]) return;
+  r.lines[idx][field] = val; save();
+  /* update this line's cost in place — never rebuild the row while typing */
+  var cell = document.getElementById('linecost-' + idx);
+  if (cell) {
+    var ing = state.ingredients.find(function (i) { return i.id === r.lines[idx].ingId; });
+    cell.innerHTML = lineCostHTML(ing, r.lines[idx]);
+  }
+  renderSummary();
+}
+function addLine() {
+  var r = cur(); if (!r) return;
+  if (!state.ingredients.length) {
+    var e = document.getElementById('line-err');
+    e.textContent = 'Add ingredients to your library first (Ingredients tab).';
+    e.classList.add('show'); return;
+  }
+  r.lines.push({ ingId: state.ingredients[0].id, qty: 0, unit: state.ingredients[0].pkgUnit });
+  save(); renderLines(); renderSummary();
+}
+function removeLine(idx) {
+  var r = cur(); if (!r) return;
+  r.lines.splice(idx, 1); save(); renderLines(); renderSummary();
+}
+function lineUnitOptions(selected) {
+  var html = '';
+  UNIT_GROUPS.forEach(function (g) {
+    html += '<optgroup label="' + g.label + '">';
+    g.units.forEach(function (u) {
+      html += '<option value="' + u + '"' + (u === selected ? ' selected' : '') + '>' + u + '</option>';
+    });
+    html += '</optgroup>';
+  });
+  return html;
+}
+function renderLines() {
+  var r = cur(), host = document.getElementById('lines');
+  host.innerHTML = '';
+  document.getElementById('line-err').classList.remove('show');
+  if (!r) return;
+  r.lines.forEach(function (ln, idx) {
+    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+    var row = document.createElement('div');
+    row.className = 'line-row';
+    var opts = state.ingredients.map(function (i) {
+      return '<option value="' + i.id + '"' + (i.id === ln.ingId ? ' selected' : '') + '>' + esc(i.name) + '</option>';
+    }).join('');
+    var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+    var costTxt = lineCostHTML(ing, ln);
+    row.innerHTML =
+      '<div class="g-field" style="margin:0"><select class="g-input" onchange="lineField(' + idx + ',\'ingId\',this.value)">' + opts + '</select></div>' +
+      '<div class="g-field" style="margin:0"><input class="g-input" type="number" min="0" step="any" placeholder="Qty" value="' + esc(String(ln.qty || '')) + '" oninput="lineField(' + idx + ',\'qty\',num(this.value))"></div>' +
+      '<div class="g-field" style="margin:0"><select class="g-input" onchange="lineField(' + idx + ',\'unit\',this.value)">' + lineUnitOptions(ln.unit) + '</select></div>' +
+      '<div class="num hide-sm" id="linecost-' + idx + '" style="font-variant-numeric:tabular-nums">' + costTxt + '</div>' +
+      '<div class="no-print"><button class="g-btn g-btn-ghost g-btn-sm" onclick="removeLine(' + idx + ')" aria-label="Remove line">✕</button></div>';
+    host.appendChild(row);
+  });
+}
+
+/* ---------- summary ---------- */
+function recipeTotals(r) {
+  var ingTotal = 0, approx = false, errors = 0;
+  r.lines.forEach(function (ln) {
+    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+    if (!ing) return;
+    var lc = lineCost(ing, num(ln.qty), ln.unit);
+    if (lc.err) errors++;
+    ingTotal += lc.cost;
+    if (lc.approx) approx = true;
+  });
+  var labor = num(r.laborHours) * num(r.laborRate);
+  var pack = num(r.packagingPerUnit) * num(r.yieldQty);
+  var subtotal = ingTotal + labor + pack;
+  var overhead = subtotal * num(r.overheadPct) / 100;
+  var total = subtotal + overhead;
+  var y = num(r.yieldQty);
+  var perUnit = y > 0 ? total / y : 0;
+  var margin = num(r.targetMarginPct);
+  var price = (margin < 100 && margin >= 0 && y > 0) ? perUnit / (1 - margin / 100) : 0;
+  return { ingTotal: ingTotal, labor: labor, pack: pack, overhead: overhead, total: total,
+           perUnit: perUnit, price: price, profitUnit: price - perUnit,
+           profitBatch: (price - perUnit) * y, approx: approx, errors: errors };
+}
+function renderSummary() {
+  var r = cur(); if (!r) return;
+  var t = recipeTotals(r);
+  var y = num(r.yieldQty);
+  var foodPct = (t.price > 0 && y > 0) ? (t.ingTotal / (t.price * y) * 100) : 0;
+  function kpi(label, val, cls) {
+    return '<div class="kpi"><div class="k">' + label + '</div><div class="v' + (cls ? ' ' + cls : '') + '">' + val + '</div></div>';
+  }
+  var priceCls = t.price > 0 ? 'good' : '';
+  document.getElementById('summary-grid').innerHTML =
+    kpi('Total batch cost', fmtMoney(t.total)) +
+    kpi('Cost per ' + esc(r.yieldUnit || 'piece'), fmtMoney(t.perUnit)) +
+    kpi('Suggested price', t.price > 0 ? fmtMoney(t.price) : '—', priceCls) +
+    kpi('Profit per ' + esc(r.yieldUnit || 'piece'), t.price > 0 ? fmtMoney(t.profitUnit) : '—') +
+    kpi('Profit per batch', t.price > 0 ? fmtMoney(t.profitBatch) : '—') +
+    kpi('Food cost %', t.price > 0 ? foodPct.toFixed(1) + '%' : '—', foodPct > 35 ? 'warn' : '');
+  var math =
+    'Ingredients ' + fmtMoney(t.ingTotal) + ' + labor ' + fmtMoney(t.labor) +
+    ' + packaging ' + fmtMoney(t.pack) + ' + overhead ' + fmtMoney(t.overhead) +
+    ' = ' + fmtMoney(t.total) + ' total' +
+    (y > 0 ? ' ÷ ' + y + ' = ' + fmtMoney(t.perUnit) + ' per ' + esc(r.yieldUnit || 'piece') : '') +
+    (t.price > 0 ? ' → price at ' + num(r.targetMarginPct) + '% margin: ' +
+      fmtMoney(t.perUnit) + ' ÷ (1 − ' + (num(r.targetMarginPct) / 100).toFixed(2) + ') = ' + fmtMoney(t.price) : '');
+  if (t.approx) math += ' · <span class="approx-flag">≈ some lines used water-density fallback — add grams-per-cup on the Ingredients tab for exact costs</span>';
+  if (t.errors) math += ' · <span class="approx-flag">' + t.errors + ' line(s) need a grams-per-cup value to cost</span>';
+  document.getElementById('summary-math').innerHTML = math;
+}
+function renderRecipe() {
+  var r = cur();
+  renderRecipeSelect();
+  if (!r) { renderSummary && null; return; }
+  document.getElementById('rec-name').value = r.name || '';
+  document.getElementById('rec-yield').value = r.yieldQty || '';
+  document.getElementById('rec-yieldunit').value = r.yieldUnit || 'pieces';
+  document.getElementById('rec-hours').value = r.laborHours || '';
+  document.getElementById('rec-rate').value = r.laborRate || '';
+  document.getElementById('rec-pack').value = r.packagingPerUnit || '';
+  document.getElementById('rec-oh').value = r.overheadPct;
+  document.getElementById('rec-margin').value = r.targetMarginPct;
+  renderLines(); renderSummary();
+}
+
+/* ---------- export / import ---------- */
+function download(name, text, type) {
+  var blob = new Blob([text], { type: type || 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function exportData() { download('recipecost-backup.json', JSON.stringify(state, null, 2)); }
+function importData(input) {
+  var f = input.files && input.files[0]; if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function () {
+    try {
+      var d = JSON.parse(rd.result);
+      if (!d || !Array.isArray(d.ingredients) || !Array.isArray(d.recipes)) throw new Error('bad file');
+      state = d; currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+      save(); renderIngredients(); renderRecipe();
+    } catch (e) {
+      var el = document.getElementById('rec-err');
+      el.textContent = 'Could not import that file — it is not a RecipeCost backup.';
+      el.classList.add('show');
+    }
+    input.value = '';
+  };
+  rd.readAsText(f);
+}
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded', function () {
+  load();
+  fillUnitSelect();
+  renderIngredients();
+  currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+  renderRecipe();
+});
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>QuoteCraft — Local Service Quote Builder</title>
+<title>Free Contractor Estimate &amp; Quote Builder | QuoteCraft</title>
 <meta name="description" content="QuoteCraft: build itemized, professional service quotes on-site from your phone. Offline, private, exact-to-the-cent math.">
 <style>
 /* ============ QuoteCraft facelift — design tokens ============ */
@@ -712,6 +712,15 @@ function openQuote(id){
   document.getElementById("f-disc-value").value = q.discountValue;
   document.getElementById("f-tax-rate").value = q.taxRate;
   document.getElementById("f-terms").value = q.terms;
+  /* reset the add-item form: drop any stale edit state left over from another quote */
+  document.getElementById("ni-desc").value = "";
+  document.getElementById("ni-qty").value = "";
+  document.getElementById("ni-price").value = "";
+  document.getElementById("ni-taxable").checked = true;
+  document.getElementById("ni-err").textContent = "";
+  var addBtn = document.getElementById("btn-add-item");
+  delete addBtn.dataset.editId;
+  addBtn.textContent = "Add item";
   renderItems(q);
   renderTotals(q);
   showView("edit");

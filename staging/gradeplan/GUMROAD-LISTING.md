@@ -25,9 +25,11 @@ final grade calculator, gpa calculator, grade calculator, what do i need on the 
 
 🎓 Free Final Grade Calculator & GPA Calculator — GradePlan: What You Need on the Final Exam
 
+by Glenerds — free offline tools with no account, no subscription, no ads.
+
 "What do I need on the final to get an A?" Type in your current grade, the grade you want, and how much the final is worth — GradePlan solves for the exact score you need, shows every step of the math, and tells you honestly when the goal is mathematically impossible (and what your real ceiling is).
 
-💸 100% FREE — no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
+💸 100% FREE — no upsells, no account, no subscription, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 ✨ WHAT IT DOES
 • 📝 FINAL EXAM SOLVER — current grade + desired grade + final weight → the exact score you need on the final
@@ -53,6 +55,7 @@ No install, no internet, no account. Open the file and calculate instantly — t
 GradePlan is fully offline. No trackers, no analytics, no external requests. Unlike the big grade-calculator sites stuck in 2009: no ads, no cookie banners, no account funnel.
 
 🛠️ MORE FROM GLENERDS
+• HomeRoom (homeschool lesson planner & attendance tracker) and DebtPayoff (student-loan payoff planner) — free offline tools by Glenerds
 • Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT

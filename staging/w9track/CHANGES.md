@@ -81,3 +81,14 @@ contractor card — both re-run against correct state and PASS.)
   - Edge case: ytd() assumed c.payments exists; malformed localStorage would throw → now (c.payments || []).reduce with per-payment finite guard. Verified live: injected corrupt record renders without errors.
 - Dropped false claims: pass-1 "no dead code" (esc() was unused); pass-2 "import doesn't reset ev.target.value" (catch does run ev.target.value = ""); pass-2 "empty {} import silently skips" (hits catch, shows error).
 - Verified clean: zero executable innerHTML/outerHTML/document.write/insertAdjacentHTML; all user strings via textContent; import sanitization (type/length/finite/date/year-range/caps); export blob revoked; hidden CSS (.hidden !important) verified effective; zero console/page errors desktop + mobile.
+
+## 2026-09-20 — audit (Glen's "100% proper" bar)
+- Verified-real bugs fixed under fix-without-asking (backup index.html.bak-audit-20260920):
+  1. Imported data for a NEW tax year was invisible: import wrote store.years[y] but never added y to the in-memory `years` array, so the year selector never showed it. Import now merges new valid years into `years` (sorted) before re-rendering the selector.
+  2. Imported duplicate contractor ids were kept as-is (shared openPanels state / edit-form id collisions). Import now regenerates the id on collision.
+  3. validDate() accepted impossible dates like 2030-02-30 (regex only). Now verifies the calendar date is real.
+  4. money() rendered negatives as "$-41.49". Now "-$41.49" (belt-and-braces; negatives are unreachable via UI/import).
+  5. No print stylesheet at all. Added @media print: hides topbar/forms/action buttons, light colors, tables unwrapped.
+  6. Clear-all left the in-memory `years` list stale and didn't re-render the year selector. Now rebuilds years, resets to the current year, re-renders.
+- SEO (Glen's addition; backup GUMROAD-LISTING.md.bak-seo-20260920): title/meta/description already keyword-first and problem-first. Strengthened differentiator line with explicit "no subscription", and "MORE FROM GLENERDS — made by Glenerds" now cross-links the related sibling QuoteCraft (contractor estimate & quote builder) via the Glenerds store (no live product pages exist yet).
+- Gemini leg (8 findings): #3/#4 (import-year sync) were real and are fixed above; the rest adjudicated non-issues (saveStore ReferenceError — never reachable; import parse catch — handled; entity filter bypass — requires own-localStorage tampering; validYear input type — always a string; __proto__ import keys — filtered by validYear before any yearData write; clear-all orphaned edit form — renderAll detaches all cards).

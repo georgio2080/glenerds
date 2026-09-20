@@ -881,7 +881,7 @@ themeBtn.addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==
 
 /* ---------- tabs ---------- */
 const tabBtns=[...document.querySelectorAll('.g-tab')];
-function showTab(name){tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.setAttribute('aria-selected',on);document.getElementById('tab-'+b.dataset.tab).hidden=!on;});try{localStorage.setItem('gradeplan-tab',name);}catch(e){}}
+function showTab(name){tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.setAttribute('aria-selected',on);document.getElementById('tab-'+b.dataset.tab).hidden=!on;});save();}
 tabBtns.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 
 /* ---------- helpers ---------- */

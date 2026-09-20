@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HenTrack — Backyard Chicken Flock & Egg Tracker</title>
+<title>Backyard Chicken Egg Tracker — Flock Records, Feed Costs &amp; Cost Per Dozen | HenTrack</title>
 <meta name="description" content="Track daily egg production, feed costs, flock health and egg sales for your backyard chickens. Offline, private, free forever.">
 <style>
 :root{
@@ -255,7 +255,7 @@ function money(n){n=num(n);return (n<0?"-":"")+"$"+Math.abs(n).toFixed(2);}
 function parseDate(s){var p=String(s||"").split("-");return new Date(+p[0],(+p[1]||1)-1,+p[2]||1);}
 function fmtDate(s){var d=parseDate(s);return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});}
 function daysAgo(n){var d=new Date();d.setDate(d.getDate()-n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
-function inLastDays(s,n){return s>=daysAgo(n)&&s<=todayStr();}
+function inLastDays(s,n){return s>=daysAgo(n-1)&&s<=todayStr();}
 
 /* ---------- state ---------- */
 var KEY="hentrack-v1";

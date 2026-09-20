@@ -27,7 +27,7 @@ time zone, remote team, overlap calculator, meeting planner, distributed team, w
 
 Stop doing time-zone math in your head. Add your distributed team members with their time zones and work hours, and ZoneSync shows you exactly when everyone is working — including the "golden hours" when the whole team overlaps.
 
-💸 100% FREE — no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
+💸 100% FREE — no subscription, no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 ✨ WHAT IT DOES
 • 👥 Team members — name, time zone, local work hours (overnight shifts supported)
@@ -50,7 +50,7 @@ No install, no internet, no account. Open the file, add your team once, and inst
 ZoneSync is fully offline. No trackers, no analytics, no external requests.
 
 🛠️ MORE FROM GLENERDS
-• Browse all Glenerds tools → https://glenerds.gumroad.com
+Made by Glenerds — browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT
 Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.

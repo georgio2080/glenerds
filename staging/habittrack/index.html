@@ -929,6 +929,10 @@ function entry(hid, key){
   const l = state.log[hid];
   return l ? (l[key] || null) : null;
 }
+function entryStatus(hid, key){
+  const e = entry(hid, key);
+  return e && e.status ? e.status : null; // note-only entries count as unlogged
+}
 function setEntry(hid, key, status, note){
   if(!state.log[hid]) state.log[hid] = {};
   if(status == null && !note){
@@ -949,21 +953,21 @@ function computeStreaks(h){
   let cur = 0;
   // current streak: walk back from today; if today is still open, start at yesterday
   let d = new Date(end);
-  if(isScheduled(h, d) && !entry(h.id, localKey(d))) d = addDays(d, -1);
+  if(isScheduled(h, d) && !entryStatus(h.id, localKey(d))) d = addDays(d, -1);
   while(d >= created){
     if(!isScheduled(h, d)){ d = addDays(d, -1); continue; }
-    const e = entry(h.id, localKey(d));
-    if(e && (e.status === "done" || e.status === "partial")){ cur++; d = addDays(d, -1); }
-    else if(e && e.status === "skip"){ d = addDays(d, -1); } // pause, no break
+    const s = entryStatus(h.id, localKey(d));
+    if(s === "done" || s === "partial"){ cur++; d = addDays(d, -1); }
+    else if(s === "skip"){ d = addDays(d, -1); } // pause, no break
     else break;
   }
   // best streak: scan whole life
   let best = 0, run = 0, d2 = new Date(created);
   while(d2 <= end){
     if(isScheduled(h, d2)){
-      const e = entry(h.id, localKey(d2));
-      if(e && (e.status === "done" || e.status === "partial")){ run++; if(run > best) best = run; }
-      else if(e && e.status === "skip"){ /* pause */ }
+      const s = entryStatus(h.id, localKey(d2));
+      if(s === "done" || s === "partial"){ run++; if(run > best) best = run; }
+      else if(s === "skip"){ /* pause */ }
       else run = 0;
     }
     d2 = addDays(d2, 1);
@@ -978,9 +982,9 @@ function completionRate(h){
   while(d <= end){
     if(isScheduled(h, d)){
       scheduled++;
-      const e = entry(h.id, localKey(d));
-      if(e && (e.status === "done" || e.status === "partial")) completed++;
-      else if(e && e.status === "skip") skipped++;
+      const s = entryStatus(h.id, localKey(d));
+      if(s === "done" || s === "partial") completed++;
+      else if(s === "skip") skipped++;
     }
     d = addDays(d, 1);
   }
@@ -1028,8 +1032,8 @@ function renderStats(){
   state.habits.forEach(h => {
     const st = computeStreaks(h);
     if(st.current > longest) longest = st.current;
-    const e = entry(h.id, tk);
-    if(e && (e.status === "done" || e.status === "partial")) checkins++;
+    const s = entryStatus(h.id, tk);
+    if(s === "done" || s === "partial") checkins++;
   });
   const dueToday = state.habits.filter(h => isScheduled(h, new Date())).length;
   el.innerHTML =
@@ -1052,7 +1056,7 @@ function renderList(){
     const st = computeStreaks(h);
     const cr = completionRate(h);
     const e = entry(h.id, tk);
-    const cur = e ? e.status : null;
+    const cur = entryStatus(h.id, tk);
     const due = isScheduled(h, now);
     const partialBtn = h.allowPartial
       ? '<button data-act="partial" data-h="' + h.id + '" class="' + (cur === "partial" ? "partial-on" : "") + '" ' + (due ? "" : "disabled") + '>◐ Partial</button>' : "";
@@ -1100,10 +1104,10 @@ function heatmapHtml(h, days){
     const scheduled = inRange && d >= parseKey(h.created) && isScheduled(h, d);
     let cls = "cell", title = fmtDay(k), bg = "";
     if(scheduled){
-      const e = entry(h.id, k);
-      if(e && e.status === "done"){ cls += " partial"; bg = ' style="background:' + esc(h.color) + '"'; title += " — done"; }
-      else if(e && e.status === "partial"){ cls += " partial"; bg = ' style="background:' + esc(h.color) + '"'; title += " — partial"; }
-      else if(e && e.status === "skip"){ cls += " skip"; title += " — rest day"; }
+      const s = entryStatus(h.id, k);
+      if(s === "done"){ cls += " partial"; bg = ' style="background:' + esc(h.color) + '"'; title += " — done"; }
+      else if(s === "partial"){ cls += " partial"; bg = ' style="background:' + esc(h.color) + '"'; title += " — partial"; }
+      else if(s === "skip"){ cls += " skip"; title += " — rest day"; }
       else if(d < end){ cls += " missed"; title += " — missed"; }
       else { title += " — today, not logged"; }
       html += '<div class="' + cls + '"' + bg + ' title="' + esc(title) + '" data-day="' + k + '" data-h="' + h.id + '" tabindex="0" role="button" aria-label="' + esc(title) + '"></div>';
@@ -1315,6 +1319,7 @@ function exportCsv(){
   state.habits.forEach(h => {
     Object.keys(state.log[h.id] || {}).sort().forEach(k => {
       const en = state.log[h.id][k];
+      if(!en || !en.status) return; // note-only entries re-import as skipped rows; leave them out
       rows.push([csvEsc(h.name), csvEsc(k), csvEsc(en.status), csvEsc(en.note || "")].join(","));
     });
   });
@@ -1354,12 +1359,17 @@ function importFile(file){
           if(!h.created || !/^\d{4}-\d{2}-\d{2}$/.test(h.created)) h.created = todayKey();
         });
         Object.keys(d.log).forEach(hid => {
+          if(!d.log[hid] || typeof d.log[hid] !== "object" || Array.isArray(d.log[hid])) throw new Error("bad log entry");
           Object.keys(d.log[hid]).forEach(k => {
             if(!/^\d{4}-\d{2}-\d{2}$/.test(k)) throw new Error("bad date key: " + k);
             const s = d.log[hid][k] && d.log[hid][k].status;
-            if(["done","partial","skip"].indexOf(s) === -1) throw new Error("bad status: " + s);
+            if(s != null && ["done","partial","skip"].indexOf(s) === -1) throw new Error("bad status: " + s);
           });
         });
+        // drop orphaned log entries whose habit id is not in this backup
+        const keep = {};
+        d.habits.forEach(h => { keep[h.id] = true; });
+        Object.keys(d.log).forEach(hid => { if(!keep[hid]) delete d.log[hid]; });
         if(!window.confirm("Replace everything on this device with the backup (" + d.habits.length + " habits)?")) return;
         state = { habits: d.habits, log: d.log };
         saveState(); renderAll();

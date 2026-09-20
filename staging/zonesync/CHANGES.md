@@ -1,5 +1,20 @@
 # ZoneSync — build log
 
+## 2026-09-20 — audit fixes (fix-without-asking)
+1. **Import no longer duplicates members.** Re-importing an export (or any JSON
+   containing a name already on the team, case-insensitive) now skips the
+   duplicate instead of appending it, so export→import round-trips are
+   idempotent. Skipped duplicates count in the "skipped N invalid entries"
+   message.
+2. **Member cap (200).** Import, the add-member form, and localStorage load all
+   cap the team at 200 members so a hostile/oversized JSON payload can't bloat
+   the DOM.
+3. **SEO listing touch-ups** (GUMROAD-LISTING.md): added explicit
+   "no subscription" to the free-line differentiators; "MORE FROM GLENERDS"
+   now reads as an explicit "Made by Glenerds" line.
+All verified with a 58-check Playwright QA (file://, offline, dark mode,
+validation, DST gap, mobile 360x800) — zero console/page errors.
+
 ## 2026-09-19 — initial build (app #8, free-loop)
 Single-file offline app per SPEC v1: team time-zone overlap heatmap,
 golden-hour detection, meeting planner, JSON export/import, demo data,

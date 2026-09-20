@@ -32,7 +32,7 @@ Productivity, Habits, Self Improvement, Health & Fitness, Planner, Tracker, Offl
 
 Build streaks that actually stick. HabitTrack is a free daily habit tracker that lives entirely in your browser — no account, no ads, no tracking, no subscription. Your habits never leave your device.
 
-**What's inside (by HabitTrack, from Glenerds):**
+**What's inside** (by Glenerds):
 - ✅ One-tap daily check-offs with streak + best-streak counters
 - 📊 GitHub-style activity heatmap for every habit
 - ☾ Rest days that pause your streak without breaking it
@@ -50,5 +50,3 @@ Build streaks that actually stick. HabitTrack is a free daily habit tracker that
 ---
 
 **More free tools by Glenerds:** MacroTrack (free TDEE + macro calculator), GradePlan (free final grade calculator), SplitFair, TicketMath, PackTrack, SubAudit, QuoteCraft, TurnoverCheck, MoveInProof, W9Track, ZoneSync — https://glenerds.gumroad.com
-
-*Affiliates welcome — https://glenerds.gumroad.com/affiliates*

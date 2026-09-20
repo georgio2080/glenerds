@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomeRoom — Homeschool Lesson Planner & Attendance Tracker</title>
+<meta name="description" content="Plan weekly lessons, take attendance, track grades and reading logs for your homeschool. Offline, private, free forever.">
+<style>
+:root{
+  --bg:#f4f2fa; --card:#ffffff; --ink:#25222e; --muted:#6f6a7d;
+  --line:#e2ddf0; --accent:#6a5acd; --accent-d:#5746b8; --accent-soft:#ece8fb;
+  --warn:#b7791f; --bad:#b3402e; --good:#3e7d44;
+  --input-bg:#ffffff; --shadow:0 1px 3px rgba(37,34,46,.08);
+  --radius:14px;
+}
+[data-theme="dark"]{
+  --bg:#15141b; --card:#1f1d29; --ink:#eae7f5; --muted:#a49eb8;
+  --line:#322e44; --accent:#9d8ff0; --accent-d:#b3a6f5; --accent-soft:#2a2540;
+  --warn:#d9a441; --bad:#e0684f; --good:#7cc47f;
+  --input-bg:#292636; --shadow:0 1px 3px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:900px;margin:0 auto;padding:16px 14px 90px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 4px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-d));
+  display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.brand h1{font-size:22px;margin:0;letter-spacing:-.3px}
+.tagline{color:var(--muted);font-size:13.5px;margin:2px 0 14px}
+.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:10px;padding:9px 14px;font-weight:600}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-d)}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--line)}
+.btn.small{padding:5px 10px;font-size:13px;border-radius:8px}
+.tabs{display:flex;gap:6px;overflow-x:auto;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:6px;margin:0 0 14px;box-shadow:var(--shadow)}
+.tabs button{flex:1;white-space:nowrap;border:0;background:transparent;color:var(--muted);font:inherit;
+  font-weight:600;padding:10px 8px;border-radius:9px;cursor:pointer;font-size:14px}
+.tabs button.active{background:var(--accent-soft);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px;margin:0 0 14px;box-shadow:var(--shadow)}
+.card h2{font-size:17px;margin:0 0 4px}
+.card .sub{color:var(--muted);font-size:13px;margin:0 0 12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:560px){.grid2,.grid3{grid-template-columns:1fr}}
+.field{margin:0 0 10px}
+.field label{display:block;font-size:13px;font-weight:600;margin:0 0 4px}
+.field .hint{font-weight:400;color:var(--muted);font-size:12px}
+input,select,textarea{font:inherit;width:100%;background:var(--input-bg);color:var(--ink);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+input[type="checkbox"]{width:auto;transform:scale(1.25)}
+.rowline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 14px}
+@media(max-width:640px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px;box-shadow:var(--shadow)}
+.stat .k{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+.stat .v{font-size:22px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);
+  padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent-d)}
+[data-theme="dark"] .pill{color:var(--accent)}
+.pill.good{background:#dcefe0;color:#2c6b32}
+[data-theme="dark"] .pill.good{background:#20301f;color:var(--good)}
+.xbtn{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;line-height:1}
+.xbtn:hover{color:var(--bad);background:var(--accent-soft)}
+.empty{color:var(--muted);text-align:center;padding:22px 10px;font-size:14px}
+.lesson{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);
+  border-radius:10px;margin:0 0 8px;background:var(--input-bg)}
+.lesson.done{opacity:.62}
+.lesson.done .ltitle{text-decoration:line-through}
+.lesson input[type="checkbox"]{margin-top:4px;flex:none}
+.lesson .lbody{flex:1;min-width:0}
+.lesson .ltitle{font-weight:700}
+.lesson .lmeta{font-size:12.5px;color:var(--muted)}
+.dayhead{font-weight:800;margin:14px 0 8px;font-size:15px}
+.dayhead:first-child{margin-top:0}
+.stu-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.stu-tabs button{border:1px solid var(--line);background:var(--card);color:var(--muted);font:inherit;
+  font-weight:700;font-size:13px;padding:7px 14px;border-radius:99px;cursor:pointer}
+.stu-tabs button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.att-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.att-card{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--input-bg)}
+.att-card .nm{font-weight:700;margin-bottom:6px}
+.att-card .btns{display:flex;gap:6px}
+.att-card .btns .btn{flex:1;padding:7px 4px;font-size:13px}
+.att-card .btns .btn.on-p{background:var(--good);border-color:var(--good);color:#fff}
+.att-card .btns .btn.on-a{background:var(--bad);border-color:var(--bad);color:#fff}
+footer.attrib{text-align:center;color:var(--muted);font-size:13px;margin:26px 0 8px}
+footer.attrib a{color:var(--accent);font-weight:700;text-decoration:none}
+.kbd-note{font-size:13px;color:var(--muted)}
+@media print{
+  .tabs,.no-print,header.top .theme-btn{display:none!important}
+  body{background:#fff;color:#000}
+  .card,.stat{box-shadow:none;break-inside:avoid}
+  .wrap{padding:0;max-width:100%}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">🏫</div>
+      <h1>HomeRoom</h1>
+    </div>
+    <button class="btn small theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">🌙 Theme</button>
+  </header>
+  <p class="tagline">Weekly lesson plans, one-tap attendance, gradebook &amp; reading logs for your homeschool. 100% offline — your family's data never leaves this device.</p>
+
+  <nav class="tabs no-print" role="tablist" aria-label="Sections">
+    <button role="tab" data-tab="dash" class="active">Today</button>
+    <button role="tab" data-tab="lessons">Lessons</button>
+    <button role="tab" data-tab="attend">Attendance</button>
+    <button role="tab" data-tab="grades">Gradebook</button>
+    <button role="tab" data-tab="reading">Reading</button>
+    <button role="tab" data-tab="students">Students</button>
+    <button role="tab" data-tab="data">Backup</button>
+  </nav>
+
+  <section id="tab-dash">
+    <div class="stat-grid" id="statGrid"></div>
+    <div class="card">
+      <h2>Today's lessons <span class="kbd-note" id="todayLabel"></span></h2>
+      <div id="todayList"></div>
+    </div>
+  </section>
+
+  <section id="tab-lessons" hidden>
+    <div class="card">
+      <h2>Plan a lesson</h2>
+      <div class="grid2">
+        <div class="field"><label for="lesStu">Student</label><select id="lesStu"></select></div>
+        <div class="field"><label for="lesSubj">Subject</label><select id="lesSubj"></select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="lesDate">Date</label><input type="date" id="lesDate"></div>
+        <div class="field"><label for="lesTitle">Lesson</label><input type="text" id="lesTitle" placeholder="e.g. Fractions ch. 4, pp. 112–118"></div>
+      </div>
+      <div class="field"><label for="lesNotes">Notes <span class="hint">(optional — materials, page numbers…)</span></label><input type="text" id="lesNotes" placeholder="e.g. manipulatives + worksheet 4B"></div>
+      <button class="btn primary" id="lesAdd" type="button">Add lesson</button>
+    </div>
+    <div class="card">
+      <h2>This week</h2>
+      <div class="rowline no-print" style="margin-bottom:10px">
+        <button class="btn small" id="wkPrev" type="button">← Prev</button>
+        <button class="btn small" id="wkToday" type="button">This week</button>
+        <button class="btn small" id="wkNext" type="button">Next →</button>
+        <span class="kbd-note" id="wkLabel"></span>
+      </div>
+      <div class="stu-tabs" id="wkStuTabs"></div>
+      <div id="wkList"></div>
+    </div>
+  </section>
+
+  <section id="tab-attend" hidden>
+    <div class="card">
+      <h2>Take attendance</h2>
+      <p class="sub" id="attDateLabel"></p>
+      <div class="rowline no-print" style="margin-bottom:12px">
+        <button class="btn small" id="attPrev" type="button">← Prev day</button>
+        <button class="btn small" id="attToday" type="button">Today</button>
+        <button class="btn small" id="attNext" type="button">Next day →</button>
+      </div>
+      <div class="att-grid" id="attGrid"></div>
+    </div>
+    <div class="card">
+      <h2>Year totals</h2>
+      <p class="sub">Many states require 175–180 school days — track your progress here.</p>
+      <div id="attTotals"></div>
+    </div>
+  </section>
+
+  <section id="tab-grades" hidden>
+    <div class="card">
+      <h2>Log an assignment</h2>
+      <div class="grid2">
+        <div class="field"><label for="grStu">Student</label><select id="grStu"></select></div>
+        <div class="field"><label for="grSubj">Subject</label><select id="grSubj"></select></div>
+      </div>
+      <div class="grid3">
+        <div class="field"><label for="grName">Assignment</label><input type="text" id="grName" placeholder="e.g. Quiz 4"></div>
+        <div class="field"><label for="grScore">Score</label><input type="number" id="grScore" min="0" step="0.5" placeholder="0"></div>
+        <div class="field"><label for="grMax">Out of</label><input type="number" id="grMax" min="0" step="0.5" placeholder="100"></div>
+      </div>
+      <button class="btn primary" id="grAdd" type="button">Add grade</button>
+    </div>
+    <div class="card">
+      <h2>Gradebook</h2>
+      <div class="stu-tabs" id="grStuTabs"></div>
+      <div id="grList"></div>
+    </div>
+  </section>
+
+  <section id="tab-reading" hidden>
+    <div class="card">
+      <h2>Log a book</h2>
+      <div class="grid2">
+        <div class="field"><label for="rdStu">Student</label><select id="rdStu"></select></div>
+        <div class="field"><label for="rdTitle">Book title</label><input type="text" id="rdTitle" placeholder="e.g. Charlotte's Web"></div>
+      </div>
+      <div class="grid3">
+        <div class="field"><label for="rdAuthor">Author <span class="hint">(optional)</span></label><input type="text" id="rdAuthor" placeholder=""></div>
+        <div class="field"><label for="rdPages">Pages</label><input type="number" id="rdPages" min="0" step="1" placeholder="0"></div>
+        <div class="field"><label for="rdDate">Finished <span class="hint">(optional)</span></label><input type="date" id="rdDate"></div>
+      </div>
+      <button class="btn primary" id="rdAdd" type="button">Add book</button>
+    </div>
+    <div class="card">
+      <h2>Reading log</h2>
+      <div class="stu-tabs" id="rdStuTabs"></div>
+      <div id="rdList"></div>
+    </div>
+  </section>
+
+  <section id="tab-students" hidden>
+    <div class="card">
+      <h2>Add a student</h2>
+      <div class="grid2">
+        <div class="field"><label for="stuName">Name</label><input type="text" id="stuName" placeholder="e.g. Emma"></div>
+        <div class="field"><label for="stuGrade">Grade level <span class="hint">(optional)</span></label><input type="text" id="stuGrade" placeholder="e.g. 4th"></div>
+      </div>
+      <button class="btn primary" id="stuAdd" type="button">Add student</button>
+    </div>
+    <div class="card">
+      <h2>Students &amp; subjects</h2>
+      <p class="sub">Subjects are per student — add the ones you actually teach.</p>
+      <div id="stuList"></div>
+    </div>
+  </section>
+
+  <section id="tab-data" hidden>
+    <div class="card">
+      <h2>Backup &amp; restore</h2>
+      <p class="sub">Your data lives only in this browser. Export a backup before clearing browser data or switching devices.</p>
+      <div class="rowline no-print" style="flex-wrap:wrap">
+        <button class="btn" id="expJson" type="button">Export backup (JSON)</button>
+        <label class="btn" for="impJson" style="cursor:pointer">Import backup</label>
+        <input type="file" id="impJson" accept="application/json" hidden>
+        <button class="btn" id="printBtn" type="button">Print summary</button>
+      </div>
+      <p class="kbd-note no-print" id="dataStats" style="margin-top:12px"></p>
+      <div class="no-print" style="margin-top:14px">
+        <button class="btn danger small" id="wipeBtn" type="button">Delete all HomeRoom data</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="attrib">
+    Free offline tool <a href="https://glenerds.gumroad.com">by Glenerds</a> — no signup, no tracking, your data never leaves this device.
+  </footer>
+</div>
+<script>
+"use strict";
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function todayStr(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function num(v){var n=parseFloat(v);return isFinite(n)?n:0;}
+function parseDate(s){var p=String(s||"").split("-");return new Date(+p[0],(+p[1]||1)-1,+p[2]||1);}
+function fmtDate(s){return parseDate(s).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});}
+function fmtLong(s){return parseDate(s).toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});}
+function addDays(s,n){var d=parseDate(s);d.setDate(d.getDate()+n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function weekStart(s){var d=parseDate(s);var dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function letterGrade(pct){if(pct>=90)return"A";if(pct>=80)return"B";if(pct>=70)return"C";if(pct>=60)return"D";return"F";}
+
+var KEY="homeroom-v1";
+var state={students:[],lessons:[],attendance:{},grades:[],books:[],theme:null};
+function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);for(var k in state){if(s[k]!==undefined)state[k]=s[k];}}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+load();
+
+function applyTheme(t){state.theme=t;document.documentElement.setAttribute("data-theme",t);save();
+  $("themeBtn").textContent=(t==="dark"?"☀️":"🌙")+" Theme";}
+(function(){var t=state.theme;if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}applyTheme(t);})();
+$("themeBtn").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");});
+
+document.querySelectorAll(".tabs button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("active");});
+    b.classList.add("active");
+    ["dash","lessons","attend","grades","reading","students","data"].forEach(function(t){$("tab-"+t).hidden=(t!==b.dataset.tab);});
+    if(b.dataset.tab==="dash")renderDash();
+    if(b.dataset.tab==="data")renderDataStats();
+  });
+});
+
+function stuName(id){var s=state.students.find(function(x){return x.id===id;});return s?s.name:"?";}
+function stuSubjects(id){var s=state.students.find(function(x){return x.id===id;});return s?(s.subjects||[]):[];}
+function fillStudentSelects(){
+  ["lesStu","grStu","rdStu"].forEach(function(id){
+    var sel=$(id),cur=sel.value;
+    sel.innerHTML=state.students.map(function(s){return '<option value="'+s.id+'">'+esc(s.name)+'</option>';}).join("");
+    if(cur&&state.students.some(function(s){return s.id===cur;}))sel.value=cur;
+  });
+  fillSubjectSelect($("lesStu").value,$("lesSubj"));
+  fillSubjectSelect($("grStu").value,$("grSubj"));
+}
+function fillSubjectSelect(stuId,sel){
+  var subs=stuSubjects(stuId),cur=sel.value;
+  sel.innerHTML=subs.map(function(s){return '<option>'+esc(s)+'</option>';}).join("");
+  if(cur&&subs.indexOf(cur)>=0)sel.value=cur;
+}
+["lesStu","grStu"].forEach(function(id){
+  $(id).addEventListener("change",function(){fillSubjectSelect($(id).value,id==="lesStu"?$("lesSubj"):$("grSubj"));});
+});
+
+/* ---------- dashboard ---------- */
+function renderDash(){
+  var t=todayStr();
+  var todays=state.lessons.filter(function(l){return l.date===t;});
+  var done=todays.filter(function(l){return l.done;}).length;
+  var att=state.attendance[t]||{};
+  var present=Object.keys(att).filter(function(k){return att[k]==="p";}).length;
+  var totalDays=Object.keys(state.attendance).filter(function(d){return Object.keys(state.attendance[d]).some(function(k){return state.attendance[d][k]==="p";});}).length;
+  var totAssign=state.grades.length, totBooks=state.books.length;
+  var html="";
+  html+='<div class="stat"><div class="k">Lessons today</div><div class="v">'+done+"/"+todays.length+'</div></div>';
+  html+='<div class="stat"><div class="k">Present today</div><div class="v">'+present+"/"+state.students.length+'</div></div>';
+  html+='<div class="stat"><div class="k">School days</div><div class="v">'+totalDays+'</div></div>';
+  html+='<div class="stat"><div class="k">Assignments</div><div class="v">'+totAssign+'</div></div>';
+  $("statGrid").innerHTML=html;
+  $("todayLabel").textContent="— "+fmtLong(t);
+  if(!state.students.length){$("todayList").innerHTML='<div class="empty">Add a student first, then plan lessons.</div>';return;}
+  if(!todays.length){$("todayList").innerHTML='<div class="empty">Nothing planned for today. Add lessons under the Lessons tab.</div>';return;}
+  var h="";
+  todays.forEach(function(l){
+    h+='<div class="lesson'+(l.done?" done":"")+'"><input type="checkbox" data-lesson-done="'+l.id+'"'+(l.done?" checked":"")+' aria-label="Mark done">'
+      +'<div class="lbody"><div class="ltitle">'+esc(l.title)+'</div><div class="lmeta">'+esc(stuName(l.studentId))+' · '+esc(l.subject)+'</div></div></div>';
+  });
+  $("todayList").innerHTML=h;
+}
+$("todayList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-lesson-done");
+  if(id){var l=state.lessons.find(function(x){return x.id===id;});if(l){l.done=e.target.checked;save();renderDash();}}
+});
+
+/* ---------- lessons ---------- */
+var wkCursor=weekStart(todayStr()), wkStudent=null;
+$("lesDate").value=todayStr();
+function refreshLessonStudentTabs(){
+  var box=$("wkStuTabs");
+  box.innerHTML=state.students.map(function(s){
+    return '<button type="button" data-wk-stu="'+s.id+'" class="'+(wkStudent===s.id?"active":"")+'">'+esc(s.name)+'</button>';
+  }).join("");
+  if(!wkStudent&&state.students.length)wkStudent=state.students[0].id;
+}
+$("wkStuTabs").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-wk-stu");
+  if(id){wkStudent=id;renderWeek();}
+});
+$("lesAdd").addEventListener("click",function(){
+  var stu=$("lesStu").value,title=$("lesTitle").value.trim();
+  if(!stu){alert("Add a student first (Students tab).");return;}
+  if(!title){alert("Name the lesson first.");return;}
+  state.lessons.push({id:uid(),studentId:stu,subject:$("lesSubj").value||"",date:$("lesDate").value||todayStr(),title:title,notes:$("lesNotes").value.trim(),done:false});
+  save();$("lesTitle").value="";$("lesNotes").value="";renderWeek();
+});
+$("wkPrev").addEventListener("click",function(){wkCursor=addDays(wkCursor,-7);renderWeek();});
+$("wkNext").addEventListener("click",function(){wkCursor=addDays(wkCursor,7);renderWeek();});
+$("wkToday").addEventListener("click",function(){wkCursor=weekStart(todayStr());renderWeek();});
+function renderWeek(){
+  refreshLessonStudentTabs();
+  if(!wkStudent&&state.students.length)wkStudent=state.students[0].id;
+  $("wkLabel").textContent=fmtDate(wkCursor)+" – "+fmtDate(addDays(wkCursor,6));
+  var box=$("wkList");
+  if(!wkStudent){box.innerHTML='<div class="empty">Add a student first.</div>';return;}
+  var h="";
+  for(var i=0;i<7;i++){
+    var d=addDays(wkCursor,i);
+    var ls=state.lessons.filter(function(l){return l.date===d&&l.studentId===wkStudent;});
+    h+='<div class="dayhead">'+fmtLong(d)+'</div>';
+    if(!ls.length){h+='<div class="kbd-note" style="margin-bottom:8px">—</div>';continue;}
+    ls.forEach(function(l){
+      h+='<div class="lesson'+(l.done?" done":"")+'"><input type="checkbox" data-wk-done="'+l.id+'"'+(l.done?" checked":"")+' aria-label="Mark done">'
+        +'<div class="lbody"><div class="ltitle">'+esc(l.title)+'</div><div class="lmeta">'+esc(l.subject)+(l.notes?" · "+esc(l.notes):"")+'</div></div>'
+        +'<button class="xbtn no-print" data-wk-del="'+l.id+'" aria-label="Delete">×</button></div>';
+    });
+  }
+  box.innerHTML=h;
+}
+$("wkList").addEventListener("click",function(e){
+  var t=e.target, doneId=t.getAttribute?t.getAttribute("data-wk-done"):null,
+      delId=t.getAttribute?t.getAttribute("data-wk-del"):null;
+  if(doneId){var l=state.lessons.find(function(x){return x.id===doneId;});if(l){l.done=e.target.checked;save();renderWeek();}}
+  if(delId&&confirm("Delete this lesson?")){state.lessons=state.lessons.filter(function(x){return x.id!==delId;});save();renderWeek();}
+});
+
+/* ---------- attendance ---------- */
+var attCursor=todayStr();
+function renderAttend(){
+  $("attDateLabel").textContent=fmtLong(attCursor);
+  var grid=$("attGrid");
+  if(!state.students.length){grid.innerHTML='<div class="empty">Add a student first.</div>';}
+  else{
+    var day=state.attendance[attCursor]||{};
+    grid.innerHTML=state.students.map(function(s){
+      var v=day[s.id]||"";
+      return '<div class="att-card"><div class="nm">'+esc(s.name)+'</div><div class="btns no-print">'
+        +'<button type="button" class="btn'+(v==="p"?" on-p":"")+'" data-att="'+s.id+'|p">Present</button>'
+        +'<button type="button" class="btn'+(v==="a"?" on-a":"")+'" data-att="'+s.id+'|a">Absent</button></div>'
+        +(v?'<div class="kbd-note" style="margin-top:6px">Marked: '+(v==="p"?"Present":"Absent")+'</div>':"")
+        +'</div>';
+    }).join("");
+  }
+  var h='<table><thead><tr><th>Student</th><th class="num">Present</th><th class="num">Absent</th><th class="num">Rate</th></tr></thead><tbody>';
+  state.students.forEach(function(s){
+    var p=0,a=0;
+    Object.keys(state.attendance).forEach(function(d){var v=state.attendance[d][s.id];if(v==="p")p++;else if(v==="a")a++;});
+    var rate=(p+a)>0?Math.round(p/(p+a)*100):0;
+    h+='<tr><td><b>'+esc(s.name)+'</b></td><td class="num">'+p+'</td><td class="num">'+a+'</td><td class="num">'+rate+'%</td></tr>';
+  });
+  $("attTotals").innerHTML=state.students.length?h+'</tbody></table>':'<div class="empty">No students yet.</div>';
+}
+$("attGrid").addEventListener("click",function(e){
+  var v=e.target.getAttribute&&e.target.getAttribute("data-att");
+  if(!v)return;
+  var parts=v.split("|"),sid=parts[0],mark=parts[1];
+  if(!state.attendance[attCursor])state.attendance[attCursor]={};
+  state.attendance[attCursor][sid]=(state.attendance[attCursor][sid]===mark)?"":mark;
+  save();renderAttend();
+});
+$("attPrev").addEventListener("click",function(){attCursor=addDays(attCursor,-1);renderAttend();});
+$("attNext").addEventListener("click",function(){attCursor=addDays(attCursor,1);renderAttend();});
+$("attToday").addEventListener("click",function(){attCursor=todayStr();renderAttend();});
+
+/* ---------- gradebook ---------- */
+var grStudent=null;
+function refreshGradeTabs(){
+  var box=$("grStuTabs");
+  box.innerHTML=state.students.map(function(s){
+    return '<button type="button" data-gr-stu="'+s.id+'" class="'+(grStudent===s.id?"active":"")+'">'+esc(s.name)+'</button>';
+  }).join("");
+  if(!grStudent&&state.students.length)grStudent=state.students[0].id;
+}
+$("grStuTabs").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-gr-stu");
+  if(id){grStudent=id;renderGrades();}
+});
+$("grAdd").addEventListener("click",function(){
+  var stu=$("grStu").value,name=$("grName").value.trim(),sc=num($("grScore").value),mx=num($("grMax").value);
+  if(!stu){alert("Add a student first (Students tab).");return;}
+  if(!name){alert("Name the assignment first.");return;}
+  if(mx<=0){alert("Enter the max points first.");return;}
+  state.grades.push({id:uid(),studentId:stu,subject:$("grSubj").value||"",name:name,score:sc,max:mx});
+  save();$("grName").value="";$("grScore").value="";$("grMax").value="";grStudent=stu;renderGrades();
+});
+function renderGrades(){
+  refreshGradeTabs();
+  if(!grStudent&&state.students.length)grStudent=state.students[0].id;
+  var box=$("grList");
+  if(!grStudent){box.innerHTML='<div class="empty">Add a student first.</div>';return;}
+  var rows=state.grades.filter(function(g){return g.studentId===grStudent;});
+  var bySubj={};
+  rows.forEach(function(g){(bySubj[g.subject||"General"]=bySubj[g.subject||"General"]||[]).push(g);});
+  var h="";
+  Object.keys(bySubj).sort().forEach(function(subj){
+    var gs=bySubj[subj],ts=0,tm=0;
+    gs.forEach(function(g){ts+=num(g.score);tm+=num(g.max);});
+    var pct=tm>0?ts/tm*100:0;
+    h+='<div class="dayhead">'+esc(subj)+' <span class="pill good">'+pct.toFixed(1)+'% · '+letterGrade(pct)+'</span></div>';
+    h+='<table><thead><tr><th>Assignment</th><th class="num">Score</th><th class="num">Grade</th><th></th></tr></thead><tbody>';
+    gs.forEach(function(g){
+      var p=num(g.max)>0?num(g.score)/num(g.max)*100:0;
+      h+='<tr><td>'+esc(g.name)+'</td><td class="num">'+num(g.score)+' / '+num(g.max)+'</td><td class="num"><b>'+p.toFixed(0)+'%</b> '+letterGrade(p)+'</td><td class="num"><button class="xbtn no-print" data-gr-del="'+g.id+'" aria-label="Delete">×</button></td></tr>';
+    });
+    h+='</tbody></table>';
+  });
+  box.innerHTML=h||'<div class="empty">No grades yet for '+esc(stuName(grStudent))+'.</div>';
+}
+$("grList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-gr-del");
+  if(id&&confirm("Delete this grade?")){state.grades=state.grades.filter(function(g){return g.id!==id;});save();renderGrades();}
+});
+
+/* ---------- reading ---------- */
+var rdStudent=null;
+function refreshReadTabs(){
+  var box=$("rdStuTabs");
+  box.innerHTML=state.students.map(function(s){
+    return '<button type="button" data-rd-stu="'+s.id+'" class="'+(rdStudent===s.id?"active":"")+'">'+esc(s.name)+'</button>';
+  }).join("");
+  if(!rdStudent&&state.students.length)rdStudent=state.students[0].id;
+}
+$("rdStuTabs").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-rd-stu");
+  if(id){rdStudent=id;renderReading();}
+});
+$("rdAdd").addEventListener("click",function(){
+  var stu=$("rdStu").value,title=$("rdTitle").value.trim();
+  if(!stu){alert("Add a student first (Students tab).");return;}
+  if(!title){alert("Enter the book title first.");return;}
+  state.books.push({id:uid(),studentId:stu,title:title,author:$("rdAuthor").value.trim(),pages:Math.max(0,Math.round(num($("rdPages").value))),finished:$("rdDate").value||""});
+  save();$("rdTitle").value="";$("rdAuthor").value="";$("rdPages").value="";$("rdDate").value="";rdStudent=stu;renderReading();
+});
+function renderReading(){
+  refreshReadTabs();
+  if(!rdStudent&&state.students.length)rdStudent=state.students[0].id;
+  var box=$("rdList");
+  if(!rdStudent){box.innerHTML='<div class="empty">Add a student first.</div>';return;}
+  var rows=state.books.filter(function(b){return b.studentId===rdStudent;});
+  var pages=rows.reduce(function(a,b){return a+num(b.pages);},0);
+  var h='<p class="sub">'+rows.length+' books · '+pages+' pages</p>';
+  if(rows.length){
+    h+='<table><thead><tr><th>Title</th><th>Author</th><th class="num">Pages</th><th>Finished</th><th></th></tr></thead><tbody>';
+    rows.forEach(function(b){
+      h+='<tr><td><b>'+esc(b.title)+'</b></td><td>'+esc(b.author||"—")+'</td><td class="num">'+num(b.pages)+'</td><td>'+(b.finished?esc(fmtDate(b.finished)):"—")+'</td><td class="num"><button class="xbtn no-print" data-rd-del="'+b.id+'" aria-label="Delete">×</button></td></tr>';
+    });
+    h+='</tbody></table>';
+  }else{h+='<div class="empty">No books logged yet for '+esc(stuName(rdStudent))+'.</div>';}
+  box.innerHTML=h;
+}
+$("rdList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-rd-del");
+  if(id&&confirm("Delete this book?")){state.books=state.books.filter(function(b){return b.id!==id;});save();renderReading();}
+});
+
+/* ---------- students ---------- */
+$("stuAdd").addEventListener("click",function(){
+  var name=$("stuName").value.trim();
+  if(!name){alert("Enter the student's name first.");return;}
+  state.students.push({id:uid(),name:name,grade:$("stuGrade").value.trim(),subjects:["Math","Reading","Writing","Science","History"]});
+  save();$("stuName").value="";$("stuGrade").value="";fillStudentSelects();renderStudents();renderAttend();
+});
+function renderStudents(){
+  var box=$("stuList");
+  if(!state.students.length){box.innerHTML='<div class="empty">No students yet.</div>';return;}
+  box.innerHTML=state.students.map(function(s){
+    return '<div class="card" style="margin:0 0 10px"><div class="rowline" style="justify-content:space-between">'
+      +'<div><b>'+esc(s.name)+'</b>'+(s.grade?' <span class="kbd-note">'+esc(s.grade)+'</span>':"")+'</div>'
+      +'<button class="xbtn no-print" data-stu-del="'+s.id+'" aria-label="Remove student">×</button></div>'
+      +'<div class="field" style="margin:10px 0 0"><label>Subjects <span class="hint">(comma-separated)</span></label>'
+      +'<input type="text" data-stu-subj="'+s.id+'" value="'+esc((s.subjects||[]).join(", "))+'"></div></div>';
+  }).join("");
+}
+$("stuList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-stu-del");
+  if(id&&confirm("Remove "+stuName(id)+" and ALL their lessons, grades and books? This cannot be undone.")){
+    state.students=state.students.filter(function(s){return s.id!==id;});
+    state.lessons=state.lessons.filter(function(l){return l.studentId!==id;});
+    state.grades=state.grades.filter(function(g){return g.studentId!==id;});
+    state.books=state.books.filter(function(b){return b.studentId!==id;});
+    Object.keys(state.attendance).forEach(function(d){delete state.attendance[d][id];});
+    if(wkStudent===id)wkStudent=null;if(grStudent===id)grStudent=null;if(rdStudent===id)rdStudent=null;
+    save();fillStudentSelects();renderStudents();renderWeek();renderAttend();renderGrades();renderReading();
+  }
+});
+$("stuList").addEventListener("change",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-stu-subj");
+  if(id){var s=state.students.find(function(x){return x.id===id;});
+    if(s){s.subjects=e.target.value.split(",").map(function(x){return x.trim();}).filter(Boolean);save();fillStudentSelects();}}
+});
+
+/* ---------- backup ---------- */
+function renderDataStats(){
+  $("dataStats").textContent=state.students.length+" students · "+state.lessons.length+" lessons · "+state.grades.length+" grades · "+state.books.length+" books logged.";
+}
+$("expJson").addEventListener("click",function(){
+  var blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="homeroom-backup-"+todayStr()+".json";document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+});
+$("impJson").addEventListener("change",function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var s=JSON.parse(r.result);
+      if(!s||typeof s!=="object"||!Array.isArray(s.students))throw new Error("bad file");
+      ["lessons","grades","books"].forEach(function(k){if(!Array.isArray(s[k]))s[k]=[];});
+      if(!s.attendance||typeof s.attendance!=="object")s.attendance={};
+      state=s;save();init();renderDataStats();alert("Backup imported.");
+    }catch(err){alert("That file doesn't look like a HomeRoom backup.");}
+  };
+  r.readAsText(f);e.target.value="";
+});
+$("printBtn").addEventListener("click",function(){window.print();});
+$("wipeBtn").addEventListener("click",function(){
+  if(confirm("Delete ALL HomeRoom data? This cannot be undone.")&&confirm("Really delete everything?")){
+    state={students:[],lessons:[],attendance:{},grades:[],books:[],theme:state.theme};
+    wkStudent=null;grStudent=null;rdStudent=null;save();init();renderDataStats();
+  }
+});
+
+/* ---------- init ---------- */
+function init(){
+  fillStudentSelects();renderDash();renderWeek();renderAttend();renderGrades();renderReading();renderStudents();
+}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Offline Tools &amp; Calculators &mdash; Full Library | Glenerds</title>
+<meta name="description" content="The full Glenerds library of free offline tools and calculators: moving costs, craft pricing, savings, net worth, inspections, and more. No account, no subscription.">
+<link rel="canonical" href="https://glenerds.netlify.app/tools/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Glenerds">
+<meta property="og:title" content="Free Offline Tools &amp; Calculators &mdash; Full Library | Glenerds">
+<meta property="og:description" content="The full Glenerds library of free offline tools and calculators. No account, no subscription.">
+<meta property="og:url" content="https://glenerds.netlify.app/tools/">
+<script>
+(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script><link rel="stylesheet" href="../style.css">
+</head><body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../index.html">Glenerds</a>
+<nav class="main">
+<a href="../index.html">Home</a>
+<a href="../index.html#free-tools">Free Tools</a>
+<a href="../index.html#products">Products</a>
+<a href="https://glenerds.gumroad.com">Store</a>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">\u25D0 Dark</button>
+</nav></div></header>
+<div class="wrap">
+<p class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Free Tools</p>
+<main>
+<div class="hero">
+<h1>Free Offline Tools &amp; Calculators</h1>
+<p class="lead">Every free Glenerds tool in one place. Each one runs entirely in your browser &mdash;
+no accounts, no subscriptions, no uploads. Your data never leaves your device.</p>
+</div>
+<h2 class="sec">Money &amp; finance</h2>
+<div class="grid">
+<div class="card"><h3>Free Compound Interest Calculator</h3><p>Model investing growth with inflation, fees, and tax adjustments &mdash; simple or advanced mode.</p>
+<a class="btn" href="compound-interest-calculator/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free 52-Week Savings Challenge Calculator</h3><p>Customize the weekly amount, track all 52 weeks, and watch the running total grow.</p>
+<a class="btn" href="savings-challenge/index.html">Open the free tool</a></div>
+<p class="small">Going further: <a href="../products/handmade-pricing-calculator-etsy-craft-sellers/index.html">CraftCost ($14)</a> prices handmade goods for profit &middot; <a href="../products/hoa-resale-package-reserve-study-risk-analyzer/index.html">HOA ReserveCheck ($9)</a> vets a condo's finances before you buy &middot; <a href="../products/depositdocket/index.html">DepositDocket ($14)</a> keeps landlord deposit records</p>
+<div class="card"><h3>Free Net Worth Tracker</h3><p>List what you own and what you owe; your net worth updates live, privately on your device.</p>
+<a class="btn" href="net-worth-tracker/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Debt Payoff Strategy Planner</h3><p>Compare snowball vs avalanche vs custom payoff plans side by side — total interest, payoff date, and schedule, all offline.</p>
+<a class="btn" href="debt-payoff-planner/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Craft Pricing Calculator</h3><p>Enter materials, labor, and fees to get a suggested handmade price with a profit verdict.</p>
+<a class="btn" href="craft-pricing-calculator/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Security Deposit Deduction Calculator</h3><p>Itemize deductions and compute the tenant refund instantly; prints a clean statement.</p>
+<a class="btn" href="security-deposit-deduction-calculator/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Rent Receipt Generator</h3><p>Create and print professional rent receipts — landlord and tenant details, payment method, auto-numbering, and a saved receipt history. Runs entirely offline, privately.</p>
+<a class="btn" href="rent-receipt-generator/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free HOA Special Assessment Calculator</h3><p>Estimate your personal share of a special assessment from project cost, units, and reserves.</p>
+<a class="btn" href="hoa-special-assessment-calculator/index.html">Open the free tool</a></div>
+</div>
+<h2 class="sec">Home &amp; moving</h2>
+<div class="grid">
+<div class="card"><h3>Free Moving Cost Calculator</h3><p>Estimate DIY, container, and full-service move costs by home size and distance.</p>
+<a class="btn" href="moving-cost-calculator/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Lease Renewal vs Moving Calculator</h3><p>Landlord raised the rent? Compare the true total cost of renewing vs moving — movers, deposits, fees, overlap rent — and find your break-even month.</p>
+<a class="btn" href="renew-or-move/index.html">Open the free tool</a></div>
+<p class="small">Going further: <a href="../products/moving-company-quote-comparison-scam-checker/index.html">MoveAudit ($9)</a> vets movers against 35 scam signals &middot; <a href="../products/flipbid-reconciler/index.html">FlipBid Reconciler ($29)</a> normalizes 3 contractor bids &middot; <a href="../products/hullcheck/index.html">HullCheck ($29)</a> inspects used boats</p>
+<div class="card"><h3>Free Contractor Bid Comparison Worksheet</h3><p>Line up two contractor bids item by item; price gaps over 15% get flagged.</p>
+<a class="btn" href="contractor-bid-comparison/index.html">Open the free tool</a></div>
+<div class="card"><h3>Free Used Boat Inspection Checklist</h3><p>Dockside pre-purchase checklist: hull, engine, trailer, and electrics with a repair tally.</p>
+<a class="btn" href="used-boat-inspection-checklist/index.html">Open the free tool</a></div>
+</div>
+<h2 class="sec">Fitness &amp; coaching</h2>
+<div class="grid">
+<div class="card"><h3>Free Offline Habit Tracker</h3><p>Build daily streaks with a simple tracker that saves to your browser. No account, no app.</p>
+<a class="btn" href="habit-tracker/index.html">Open the free tool</a></div>
+<p class="small">Going further: <a href="../products/online-fitness-coach-check-in-tracker/index.html">FitnessCheckIn ($29)</a> manages a full client roster &middot; <a href="../alternatives/trainerize-truecoach-alternative/index.html">Trainerize / TrueCoach alternative</a> comparison</p>
+<div class="card"><h3>Free Fitness Client Check-In Tracker</h3><p>Log a client&rsquo;s weekly check-ins &mdash; weight, measurements, adherence &mdash; and compare weeks.</p>
+<a class="btn" href="fitness-client-check-in/index.html">Open the free tool</a></div>
+</div>
+<h2 class="sec">Food &amp; drink</h2>
+<div class="grid">
+<div class="card"><h3>Free Used Espresso Machine Inspection Checklist</h3><p>Inspect a used commercial espresso machine point by point, with a repair-cost estimate.</p>
+<a class="btn" href="espresso-machine-inspection-checklist/index.html">Open the free tool</a></div>
+<p class="small">Going further: <a href="../products/cremacheck/index.html">CremaCheck ($29)</a> inspects used espresso machines by brand &middot; <a href="../products/pitprofit/index.html">PitProfit ($29)</a> tracks a full BBQ contest season</p>
+<div class="card"><h3>Free BBQ Contest Cost Tracker</h3><p>Log a contest weekend&rsquo;s real costs and payouts to see whether it made money.</p>
+<a class="btn" href="bbq-contest-cost-tracker/index.html">Open the free tool</a></div>
+</div>
+<h2 class="sec">Web &amp; design</h2>
+<div class="grid">
+<div class="card"><h3>Free CSS Specificity Calculator</h3><p>Paste any selector and see its specificity score counted and explained.</p>
+<a class="btn" href="css-specificity-calculator/index.html">Open the free tool</a></div>
+<p class="small">Going further: <a href="../products/css-element-inspector-chrome/index.html">CSS Element Inspector ($9)</a> inspects real elements in Chrome</p>
+</div>
+
+<section class="block prose">
+<h2 class="sec">Looking for the full versions?</h2>
+<p>Each free tool above covers its job completely. When you need the professional version &mdash; a
+full client roster instead of one client, brand-specific inspection checklists, multi-season
+tracking &mdash; the paid toolkits apply the same offline, one-time-purchase philosophy to bigger
+jobs. <a href="../index.html#products">Browse the paid toolkits</a> or visit the
+<a href="https://glenerds.gumroad.com">Glenerds store</a>.</p>
+</section>
+</main>
+</div>
+<footer class="site"><div class="wrap">
+<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
+inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
+<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
+<p class="small"><a href="../site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
+<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
+</div></footer>
+<script>
+(function(){
+  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
+  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
+  function paint(){var t=cur();root.setAttribute('data-theme',t);
+    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
+  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  paint();
+})();
+</script>
+</body>
+</html>

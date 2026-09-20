@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RenoTrack — Home Renovation Budget Tracker</title>
+<title>Home Renovation Budget Tracker — RenoTrack</title>
 <style>
 :root{
   --bg:#f4f6f9; --bg2:#eef1f5; --card:#ffffff; --ink:#1c2430; --ink2:#5b6b7d;
@@ -341,13 +341,13 @@ function newProject(){
   S.projects.push(p); S.activeProjectId=p.id; save();
   renderProjectSel(); render();
   dlgForm("Rename project",[{k:"name",lbl:"Project name",val:p.name,req:true}],(vals)=>{
-    p.name=vals.name.trim()||p.name; save(); renderProjectSel(); render();
+    p.name=vals.name.trim().slice(0,120)||p.name; save(); renderProjectSel(); render();
   });
 }
 function renameProject(){
   const p=P(); if(!p) return;
   dlgForm("Rename project",[{k:"name",lbl:"Project name",val:p.name,req:true}],(vals)=>{
-    p.name=vals.name.trim()||p.name; save(); renderProjectSel(); render();
+    p.name=vals.name.trim().slice(0,120)||p.name; save(); renderProjectSel(); render();
   });
 }
 function deleteProject(){
@@ -646,7 +646,7 @@ function coForm(editId){
   ],(vals)=>{
     const dc=toCents(vals.impact);
     if(c){ Object.assign(c,{description:vals.description.trim(),categoryId:vals.categoryId,deltaCents:dc,date:vals.date,status:vals.status}); }
-    else{ p.changeOrders.push({id:uid(),description:vals.description.trim(),categoryId:vals.categoryId,deltaCents:dc,date:vals.date,status:vals.status}); }
+    else{ p.changeOrders.push({id:uid(),description:vals.description.trim(),categoryId:vals.categoryId,deltaCents:dc,date:vals.date,status:vals.status}); coFilter="all"; }
     save(); render();
   },{saveLabel:c?"Save":"Add change order",
       note:"Approved change orders roll into that category's actuals and draw on your contingency guard."});

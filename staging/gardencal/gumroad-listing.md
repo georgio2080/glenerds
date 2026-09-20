@@ -40,8 +40,8 @@ the whole season planned in five minutes.
 
 ---
 
-Related Glenerds tools: [RecipeCost](https://glenerds.gumroad.com) — recipe costing & pricing
-for home bakers. More one-time-purchase tools at https://glenerds.gumroad.com
+Related Glenerds tools: RecipeCost — recipe costing & pricing for home bakers — plus more
+one-time-purchase offline tools at the Glenerds store: https://glenerds.gumroad.com
 
 *Affiliates welcome — 30% commission, auto-approved. Share GardenCal with your gardening
 audience and earn on every sale: https://glenerds.gumroad.com/affiliates*
