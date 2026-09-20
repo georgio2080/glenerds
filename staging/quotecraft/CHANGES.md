@@ -152,3 +152,11 @@ Backup: `index.html.bak-2026-09-19-r2`.
   with "Free contractor estimate and quote builder app. Create printable job
   proposals, service estimates, and invoices offline instantly with no signup
   required." before the brand line; rest of the description unchanged.
+
+## 2026-09-20 (re-verification pass)
+- **Cover dimensions (FIX 3):** gallery/0-cover.png center-cropped from 1280x800 to
+  1280x720 to match the established cover standard (W9Track, ZoneSync precedent).
+  Square thumbnail unchanged at 1200x1200.
+- **ZIP rebuilt:** quotecraft-bundle.zip regenerated with the new cover; excludes
+  local .bak working files (was 15 entries incl. .bak files, now 13 clean entries).
+  index.html in ZIP byte-matches the live source.
