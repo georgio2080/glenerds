@@ -44,7 +44,7 @@
   APP QUEUE — add one row per staged app:
   -->
   <table>
-    <thead><tr><th>App</th><th>Status</th><th>AI Checked</th><th>100%</th><th>Staged</th><th>Notes</th></tr></thead>
+    <thead><tr><th>App</th><th>Status</th><th>Testing</th><th>100%</th><th>Staged</th><th>Notes</th></tr></thead>
     <tbody>
       <tr>
         <td><a href="./w9track/">W9Track — Contractor W-9 &amp; 1099 Tracker</a></td>
@@ -191,7 +191,7 @@ document.querySelectorAll('button.pill').forEach(function(b){
     var state = b.classList.contains('passed') ? 'passed' : (b.classList.contains('inreview') ? 'inreview' : 'pending');
     var title = '', text = '';
     if (kind === 'ai') {
-      title = app + ' — outside-AI checks';
+      title = app + ' — testing';
       text = state === 'passed'
         ? 'Passed — all outside-AI checks finished with zero open issues: bug testing clean, SEO title done, SEO description done, all 8 gallery images pass. Parent sign-off recorded.'
         : state === 'inreview'
