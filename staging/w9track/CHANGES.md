@@ -92,3 +92,27 @@ contractor card — both re-run against correct state and PASS.)
   6. Clear-all left the in-memory `years` list stale and didn't re-render the year selector. Now rebuilds years, resets to the current year, re-renders.
 - SEO (Glen's addition; backup GUMROAD-LISTING.md.bak-seo-20260920): title/meta/description already keyword-first and problem-first. Strengthened differentiator line with explicit "no subscription", and "MORE FROM GLENERDS — made by Glenerds" now cross-links the related sibling QuoteCraft (contractor estimate & quote builder) via the Glenerds store (no live product pages exist yet).
 - Gemini leg (8 findings): #3/#4 (import-year sync) were real and are fixed above; the rest adjudicated non-issues (saveStore ReferenceError — never reachable; import parse catch — handled; entity filter bypass — requires own-localStorage tampering; validYear input type — always a string; __proto__ import keys — filtered by validYear before any yearData write; clear-all orphaned edit form — renderAll detaches all cards).
+
+## Full-AI-treatment fixes (2026-09-20, from ChatGPT + Grok review legs)
+- **Year-dependent 1099 thresholds**: OBBBA (P.L. 119-21) raised the federal 1099-NEC/MISC
+  threshold from $600 to $2,000 for payments made on/after 2026-01-01 (verified via web
+  research). Flags, pills, and copy are now per-tax-year: $600 red / $400 amber for 2025
+  and earlier; $2,000 red / $1,500 amber for 2026+. All threshold strings render from the
+  constants (no more hard-coded "$600" in logic paths). Explainer section rewritten as
+  "The 1099 threshold rule".
+- **Payment date/year mismatch guard**: adding a payment whose date year differs from the
+  selected tax year now asks for confirmation instead of silently filing it under the
+  wrong year. Date input defaults to today when viewing the current year, Jan 1 of the
+  selected year otherwise.
+- **Selected tax year persists** across reloads (localStorage `w9track_year`).
+- **Import**: verifies `data.app === "w9track"`; re-importing the same file no longer
+  duplicates contractors (exact-duplicate records are skipped and reported separately
+  from invalid ones).
+- **Edit form**: marking W-9 "Yes" now requires a valid received date (alert + abort)
+  instead of silently defaulting to today.
+- **Dashboard "W-9s missing"** no longer counts corporation contractors (exempt).
+- **saveStore** catches quota/write failures and shows a visible error telling the user
+  to export JSON as backup.
+- **$0 payments rejected** (amount must be greater than $0).
+- ChatGPT/Grok "contractor rename" reports root-caused to test-harness contamination
+  (parallel browser QA sessions share one Chromium profile/localStorage) — not an app bug.

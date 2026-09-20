@@ -1,7 +1,7 @@
 # W9Track — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free Contractor W-9 Tracker: 1099 Threshold Flags & Payment Log for Small Business
+Free Contractor W-9 Tracker & 1099 Payment Log for Small Business
 
 ## Permalink slug
 free-contractor-w9-tracker-1099-threshold
@@ -23,9 +23,9 @@ w-9 tracker, 1099, contractor management, small business, tax organizer, freelan
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-📋 Free Contractor W-9 & 1099 Tracker — W9Track
+📋 Free Contractor W-9 Tracker & 1099 Payment Log
 
-Tax season doesn't have to be a scramble. Track every contractor, know exactly whose W-9 you have on file, log payments through the year — and get flagged the moment someone crosses the $600 1099 threshold.
+Paying independent contractors? Stop scrambling at tax season. W9Track helps you track every contractor, know exactly whose W-9 you have on file, log payments through the year — and get flagged the moment someone crosses the IRS Form 1099-NEC threshold ($600 for 2025 and earlier, $2,000 for 2026+). Runs as a single HTML file in any browser — no install, no internet, no account.
 
 💸 100% FREE — no upsells, no subscription, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
@@ -34,9 +34,9 @@ Tax season doesn't have to be a scramble. Track every contractor, know exactly w
 • 👷 Contractor records — name, business, contact, entity type, notes
 • ✅ W-9 tracking — on file yes/no + date received
 • 💵 Payment log — per-contractor entries with year-to-date totals
-• 🚩 Automatic $600 flags — red when a contractor without a W-9 hits $600 ("Needs 1099"), amber at $400 ("Approaching threshold")
+• 🚩 Automatic 1099 threshold flags — red when a contractor without a W-9 hits the threshold for the selected tax year ("Needs 1099"), amber when approaching it
 • 🏢 Corporation handling — corps marked generally exempt from 1099 reporting
-• 📖 Plain-English $600 rule explainer built in
+• 📖 Plain-English 1099 threshold explainer built in (thresholds follow the tax year: $600 for 2025 and earlier, $2,000 for 2026+)
 
 📦 WHAT YOU GET
 • W9Track as a single HTML file — double-click to open in any browser

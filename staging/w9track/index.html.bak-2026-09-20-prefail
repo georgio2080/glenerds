@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%237c3aed'/%3E%3Ctext x='32' y='44' font-size='36' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3EW%3C/text%3E%3C/svg%3E">
 <title>Free Contractor W-9 &amp; 1099 Tracker (W9Track)</title>
-<meta name="description" content="Offline tracker for contractor W-9 collection status and year-to-date payments. Flags who needs a 1099 under current IRS thresholds ($600 for 2025 and earlier, $2,000 for 2026+).">
+<meta name="description" content="Offline tracker for contractor W-9 collection status and year-to-date payments. Flags who needs a 1099 at the $600 threshold.">
 <style>
 /* ---------- Theme tokens ---------- */
 :root{
@@ -221,9 +221,9 @@ footer.site a{color:var(--accent)}
 
   <!-- Explainer -->
   <section aria-labelledby="ruleHead" class="card explainer">
-    <h2 id="ruleHead"><span class="sec-ic"><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 3v18' stroke='black' stroke-width='2' stroke-linecap='round'/><path d='M16.5 6.8C15 5.3 13.2 4.6 11.4 4.6c-2.4 0-4 1.3-4 3.1 0 4.2 9.2 2.2 9.2 6.5 0 1.9-1.8 3.2-4.4 3.2-1.7 0-3.2-.6-4.6-1.6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/></svg></span>The 1099 threshold rule</h2>
-    <p>In general, if you pay a contractor <strong>$600 or more in a calendar year</strong> for services, you must file a Form 1099-NEC reporting those payments — and to file it you need their taxpayer information, collected with <strong>Form W-9</strong>. (Federal threshold; some states still use $600.)</p>
-    <p><strong>How W9Track flags it:</strong> thresholds follow the selected tax year — <strong>$600 for 2025 and earlier, $2,000 for 2026 and later</strong> (One Big Beautiful Bill Act). A contractor with no W-9 on file turns <strong>amber at $400 / $1,500</strong> (&ldquo;approaching the threshold — collect the W-9 now&rdquo;) and <strong>red at the threshold</strong> (&ldquo;needs 1099 — collect W-9 immediately&rdquo;). Corporation contractors are generally exempt from 1099 reporting and are shown with an exempt note.</p>
+    <h2 id="ruleHead"><span class="sec-ic"><svg viewBox='0 0 24 24' aria-hidden='true'><path d='M12 3v18' stroke='black' stroke-width='2' stroke-linecap='round'/><path d='M16.5 6.8C15 5.3 13.2 4.6 11.4 4.6c-2.4 0-4 1.3-4 3.1 0 4.2 9.2 2.2 9.2 6.5 0 1.9-1.8 3.2-4.4 3.2-1.7 0-3.2-.6-4.6-1.6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/></svg></span>The $600 rule</h2>
+    <p>In general, if you pay a contractor <strong>$600 or more in a calendar year</strong> for services, you must file a Form 1099-NEC reporting those payments — and to file it you need their taxpayer information, collected with <strong>Form W-9</strong>.</p>
+    <p><strong>How W9Track flags it:</strong> a contractor with no W-9 on file turns <strong>amber at $400</strong> in payments ("approaching the $600 threshold — collect the W-9 now") and <strong>red at $600</strong> ("needs 1099 — collect W-9 immediately"). Corporation contractors are generally exempt from 1099 reporting and are shown with an exempt note.</p>
     <div class="disclaimer" role="note"><strong>Not tax advice.</strong> Rules have exceptions and change. Confirm with your accountant or the IRS before filing anything.</div>
   </section>
 
@@ -299,20 +299,7 @@ footer.site a{color:var(--accent)}
 /* ================= Storage ================= */
 var STORE_KEY = "w9track_v1";
 var THEME_KEY = "w9track_theme";
-var YEAR_KEY = "w9track_year";
-/* Federal 1099-NEC/MISC reporting thresholds per tax year. The One Big Beautiful
-   Bill Act (P.L. 119-21) raised the threshold from $600 to $2,000 for payments
-   made on or after 2026-01-01 (inflation-indexed starting 2027 — recheck then). */
-function limitsFor(year){
-  var y = parseInt(year, 10);
-  if(y >= 2026) return { red: 2000, amber: 1500 };
-  return { red: 600, amber: 400 };
-}
-function wholeDollars(n){
-  var v = Math.round(Number(n));
-  if(!isFinite(v)) v = 0;
-  return (v < 0 ? "-$" : "$") + String(Math.abs(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+var RED_LIMIT = 600, AMBER_LIMIT = 400;
 var DATE_RE = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 var ENTITIES = ["individual","llc","corp","other"];
 var MAX_CONTRACTORS = 1000, MAX_PAYMENTS = 5000;
@@ -330,13 +317,7 @@ function loadStore(){
   }catch(e){ /* corrupt -> start fresh */ }
   return store;
 }
-function saveStore(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
-  catch(e){
-    var m = document.getElementById("dataMsg");
-    if(m){ m.textContent = "Could not save: browser storage is full or unavailable. Use Export JSON to back up your data."; m.className = "status-msg error"; }
-  }
-}
+function saveStore(){ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
 var store = loadStore();
 
 function yearData(y){
@@ -410,13 +391,6 @@ function sanitizeContractor(c){
     payments: payments
   };
 }
-function sameRecord(a, b){
-  function core(x){
-    return { name: x.name, business: x.business, contact: x.contact, entity: x.entity,
-             w9: x.w9, w9Date: x.w9Date, notes: x.notes, payments: x.payments };
-  }
-  return JSON.stringify(core(a)) === JSON.stringify(core(b));
-}
 function validYear(y){ return /^(20\d{2})$/.test(y) && Number(y) >= 2000 && Number(y) <= 2099; }
 
 /* ================= State ================= */
@@ -424,13 +398,8 @@ var years = Object.keys(store.years).filter(validYear).sort();
 ["2025","2026","2027"].forEach(function(y){ if(years.indexOf(y)<0) years.push(y); });
 years.sort();
 var currentYear = String(new Date().getFullYear());
-try{
-  var savedYear = localStorage.getItem(YEAR_KEY);
-  if(savedYear && validYear(savedYear)) currentYear = savedYear;
-}catch(e){}
 if(!validYear(currentYear)) currentYear = "2026";
 if(years.indexOf(currentYear)<0){ years.push(currentYear); years.sort(); }
-function persistYear(){ try{ localStorage.setItem(YEAR_KEY, currentYear); }catch(e){} }
 
 /* ================= Theme ================= */
 var themeToggle = document.getElementById("themeToggle");
@@ -468,13 +437,13 @@ function renderYearSelect(){
     yearSelect.appendChild(opt);
   });
 }
-yearSelect.addEventListener("change", function(){ currentYear = yearSelect.value; persistYear(); renderAll(); });
+yearSelect.addEventListener("change", function(){ currentYear = yearSelect.value; renderAll(); });
 document.getElementById("addYearBtn").addEventListener("click", function(){
   var inp = document.getElementById("newYearInput");
   var y = inp.value.trim();
   if(!validYear(y)){ setDataMsg("Enter a 4-digit year between 2000 and 2099.", true); return; }
   if(years.indexOf(y)<0){ years.push(y); years.sort(); }
-  currentYear = y; persistYear(); inp.value = "";
+  currentYear = y; inp.value = "";
   renderYearSelect(); renderAll();
   setDataMsg("Switched to tax year " + y + ".", false);
 });
@@ -490,7 +459,7 @@ function renderDashboard(){
   var stats = [
     ["Contractors", String(contractors.length)],
     ["W-9s on file", String(onFile)],
-    ["W-9s missing", String(contractors.filter(function(c){ return !c.w9 && c.entity !== "corp"; }).length)],
+    ["W-9s missing", String(contractors.length - onFile)],
     ["Total paid YTD", money(total)]
   ];
   stats.forEach(function(s){
@@ -502,25 +471,24 @@ function renderDashboard(){
 
   var flagList = document.getElementById("flagList");
   while(flagList.firstChild) flagList.removeChild(flagList.firstChild);
-  var lim = limitsFor(currentYear);
   var flagged = contractors.filter(function(c){
-    return !c.w9 && c.entity !== "corp" && ytd(c) >= lim.amber;
+    return !c.w9 && c.entity !== "corp" && ytd(c) >= AMBER_LIMIT;
   }).sort(function(a,b){ return ytd(b) - ytd(a); });
 
   if(!flagged.length){
-    flagList.appendChild(el("p", "No contractors near the " + wholeDollars(lim.red) + " threshold without a W-9.", "empty"));
+    flagList.appendChild(el("p", "No contractors near the $600 threshold without a W-9.", "empty"));
     return;
   }
   flagged.forEach(function(c){
     var t = ytd(c);
-    var red = t >= lim.red;
+    var red = t >= RED_LIMIT;
     var f = el("div", null, "flag " + (red ? "red" : "amber"));
     var top = el("div");
     top.appendChild(el("span", c.name, "fname"));
     top.appendChild(document.createTextNode(" — "));
     top.appendChild(el("span", money(t) + " YTD", "famt"));
     f.appendChild(top);
-    f.appendChild(el("div", red ? "Needs 1099 + collect W-9" : "Approaching " + wholeDollars(lim.red) + " threshold — collect W-9", "fmsg"));
+    f.appendChild(el("div", red ? "Needs 1099 + collect W-9" : "Approaching $600 threshold — collect W-9", "fmsg"));
     flagList.appendChild(f);
   });
 }
@@ -537,10 +505,8 @@ function w9Pill(c){
 
 function flagPill(c){
   var t = ytd(c);
-  var lim = limitsFor(currentYear);
-  if(c.w9 || t < lim.amber || c.entity === "corp") return null;
-  var isRed = t >= lim.red;
-  return el("span", isRed ? "Needs 1099" : "Approaching " + wholeDollars(lim.red), "pill " + (isRed ? "bad" : "missing"));
+  if(c.w9 || t < AMBER_LIMIT || c.entity === "corp") return null;
+  return el("span", t >= RED_LIMIT ? "Needs 1099" : "Approaching $600", "pill " + (t >= RED_LIMIT ? "bad" : "missing"));
 }
 
 function renderContractors(){
@@ -674,8 +640,7 @@ function openEdit(card, c){
     c.entity = eSel.value;
     c.w9 = (wSel.value === "1");
     var dval = dInp.value;
-    if(c.w9 && !validDate(dval)){ window.alert("Enter the date the W-9 was received (or set W-9 to No)."); return; }
-    c.w9Date = c.w9 ? dval : "";
+    c.w9Date = (c.w9 && validDate(dval)) ? dval : (c.w9 ? todayISO() : "");
     c.notes = nTa.value.trim().slice(0,500);
     saveStore(); renderAll();
   });
@@ -726,8 +691,7 @@ function paymentsPanel(c){
   var dLab = document.createElement("label"); dLab.textContent = "Date";
   dLab.setAttribute("for", "pDate" + c.id);
   var dInp = document.createElement("input");
-  dInp.id = "pDate" + c.id; dInp.type = "date"; dInp.required = true;
-  dInp.value = (currentYear === String(new Date().getFullYear())) ? todayISO() : currentYear + "-01-01";
+  dInp.id = "pDate" + c.id; dInp.type = "date"; dInp.required = true; dInp.value = todayISO();
   dWrap.appendChild(dLab); dWrap.appendChild(dInp);
   var aWrap = el("div");
   var aLab = document.createElement("label"); aLab.textContent = "Amount";
@@ -749,12 +713,8 @@ function paymentsPanel(c){
   form.addEventListener("submit", function(ev){
     ev.preventDefault();
     if(!validDate(dInp.value)){ window.alert("Enter a valid date."); return; }
-    var dateYear = dInp.value.slice(0,4);
-    if(dateYear !== currentYear){
-      if(!window.confirm("This payment is dated " + dateYear + " but you are viewing tax year " + currentYear + ". Add it to " + currentYear + " anyway?")) return;
-    }
     var amt = Number(aInp.value);
-    if(!isFinite(amt) || amt <= 0){ window.alert("Enter an amount greater than $0."); return; }
+    if(!isFinite(amt) || amt < 0){ window.alert("Enter a valid amount of 0 or more."); return; }
     c.payments.push({
       date: dInp.value,
       amount: Math.round(amt * 100) / 100,
@@ -811,11 +771,11 @@ document.getElementById("importFile").addEventListener("change", function(ev){
   if(!file) return;
   var reader = new FileReader();
   reader.onload = function(){
-    var ok = 0, skipped = 0, dupes = 0;
+    var ok = 0, skipped = 0;
     try{
       var data = JSON.parse(reader.result);
-      if(!data || data.app !== "w9track" || typeof data.years !== "object") throw new Error("bad");
-      var srcYears = data.years;
+      var srcYears = data && data.years;
+      if(!srcYears || typeof srcYears !== "object") throw new Error("bad");
       Object.keys(srcYears).forEach(function(y){
         if(!validYear(y)) return;
         var list = srcYears[y] && srcYears[y].contractors;
@@ -823,16 +783,11 @@ document.getElementById("importFile").addEventListener("change", function(ev){
         var target = yearData(y).contractors;
         list.forEach(function(raw){
           var sc = sanitizeContractor(raw);
-          if(!sc){ skipped++; return; }
-          var clash = null;
-          for(var i = 0; i < target.length; i++){
-            if(target[i].id === sc.id){ clash = target[i]; break; }
+          if(sc){
+            var clash = target.some(function(x){ return x.id === sc.id; });
+            if(clash) sc.id = uid();
           }
-          if(clash){
-            if(sameRecord(clash, sc)){ dupes++; return; } // exact duplicate: skip, don't double-import
-            sc.id = uid();
-          }
-          if(target.length < MAX_CONTRACTORS){ target.push(sc); ok++; }
+          if(sc && target.length < MAX_CONTRACTORS){ target.push(sc); ok++; }
           else skipped++;
         });
       });
@@ -842,9 +797,7 @@ document.getElementById("importFile").addEventListener("change", function(ev){
       years.sort();
     }catch(e){ setDataMsg("Import failed: file is not valid W9Track JSON.", true); ev.target.value = ""; return; }
     saveStore(); renderYearSelect(); renderAll();
-    setDataMsg("Imported " + ok + " contractor" + (ok === 1 ? "" : "s") +
-      (dupes ? ", skipped " + dupes + " duplicate" + (dupes === 1 ? "" : "s") + "." : ".") +
-      (skipped ? " " + skipped + " invalid record" + (skipped === 1 ? "" : "s") + " skipped." : ""), false);
+    setDataMsg("Imported " + ok + " contractor" + (ok === 1 ? "" : "s") + (skipped ? ", skipped " + skipped + " invalid." : "."), false);
     ev.target.value = "";
   };
   reader.readAsText(file);
@@ -855,18 +808,18 @@ function loadDemo(){
     { id: uid(), name: "Alex Rivera", business: "", contact: "alex@example.com",
       entity: "individual", w9: false, w9Date: "", notes: "Video editing.",
       payments: [
-        { date: currentYear + "-02-15", amount: 850, memo: "Project A" },
-        { date: currentYear + "-05-20", amount: 1300, memo: "Project B" }
+        { date: currentYear + "-02-15", amount: 250, memo: "Project A" },
+        { date: currentYear + "-05-20", amount: 400, memo: "Project B" }
       ] },
     { id: uid(), name: "BrightSpark Studio", business: "BrightSpark LLC", contact: "",
       entity: "llc", w9: false, w9Date: "", notes: "",
-      payments: [ { date: currentYear + "-03-10", amount: 1600, memo: "Logo design" } ] },
+      payments: [ { date: currentYear + "-03-10", amount: 450, memo: "Logo design" } ] },
     { id: uid(), name: "Maria Chen", business: "", contact: "",
       entity: "individual", w9: true, w9Date: currentYear + "-01-08", notes: "Bookkeeper.",
       payments: [ { date: currentYear + "-01-30", amount: 900, memo: "Q1 books" } ] },
     { id: uid(), name: "NovaCorp Inc", business: "", contact: "",
       entity: "corp", w9: false, w9Date: "", notes: "IT support contract.",
-      payments: [ { date: currentYear + "-04-01", amount: 4800, memo: "Annual IT contract" } ] }
+      payments: [ { date: currentYear + "-04-01", amount: 1200, memo: "Annual contract" } ] }
   ];
   saveStore(); renderAll();
 }
@@ -886,7 +839,6 @@ document.getElementById("clearBtn").addEventListener("click", function(){
     if(validYear(cy) && years.indexOf(cy)<0) years.push(cy);
     years.sort();
     currentYear = validYear(cy) ? cy : "2026";
-    persistYear();
     renderYearSelect(); renderAll();
     setDataMsg("All data cleared.", false);
   }
