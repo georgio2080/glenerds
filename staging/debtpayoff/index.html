@@ -344,13 +344,13 @@ function orderFor(strategy){
   var ds=state.debts.slice();
   if(strategy==="snowball"){ ds.sort(function(a,b){return a.balance-b.balance;}); }
   else if(strategy==="avalanche"){ ds.sort(function(a,b){return b.apr-a.apr;}); }
-  else { var pos={}; state.order.forEach(function(id,i){pos[id]=i;});
+  else { var pos=Object.create(null); state.order.forEach(function(id,i){pos[id]=i;});
          ds.sort(function(a,b){return (pos[a.id]==null?999:pos[a.id])-(pos[b.id]==null?999:pos[b.id]);}); }
   return ds.map(function(d){return d.id;});
 }
 function simulate(strategy, extraMonthly){
   var debts=state.debts.map(function(d){return {id:d.id,bal:d.balance,apr:d.apr,min:d.minPayment};});
-  var byId={}; debts.forEach(function(d){byId[d.id]=d;});
+  var byId=Object.create(null); debts.forEach(function(d){byId[d.id]=d;});
   var order=orderFor(strategy);
   var totalInterest=0, totalPaid=0, month=0, streak=0, prevBal=Infinity;
   var schedule=[];
@@ -490,7 +490,7 @@ function renderStrategy(){
 }
 function renderOrder(){
   var wrap=$("orderList"); wrap.innerHTML="";
-  var pos={}; state.order.forEach(function(id,i){pos[id]=i;});
+  var pos=Object.create(null); state.order.forEach(function(id,i){pos[id]=i;});
   var sorted=state.debts.slice().sort(function(a,b){
     return (pos[a.id]==null?999:pos[a.id])-(pos[b.id]==null?999:pos[b.id]);});
   sorted.forEach(function(d,i){
