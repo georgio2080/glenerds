@@ -10,7 +10,7 @@
 /* Pre-theme: set data-theme before first paint to avoid flash */
 (function(){try{
   var t=localStorage.getItem("debtpayoff-theme");
-  if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
+  if(t!=="dark"&&t!=="light"){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
   document.documentElement.setAttribute("data-theme",t);
 }catch(e){}})();
 </script>
@@ -282,6 +282,7 @@ function uid(){ return "d"+Date.now().toString(36)+Math.floor(Math.random()*1e6)
 
 /* ---------- theme ---------- */
 function applyTheme(t){
+  if(t!=="dark") t="light";
   document.documentElement.setAttribute("data-theme",t);
   try{ localStorage.setItem(LS_THEME,t); }catch(e){}
   $("themeLabel").textContent = (t==="dark" ? "Light mode" : "Dark mode");
@@ -648,6 +649,7 @@ $("importBtn").addEventListener("click",function(){ $("importFile").click(); });
 $("importFile").addEventListener("change",function(e){
   var err=$("dataErr"); err.textContent="";
   var f=e.target.files[0]; if(!f) return;
+  if(f.size>1048576){ err.textContent="That file is too large to be a DebtPayoff export."; e.target.value=""; return; }
   var rd=new FileReader();
   rd.onload=function(){
     try{
@@ -661,6 +663,11 @@ $("importFile").addEventListener("change",function(e){
       var ids=debts.map(function(d){return d.id;});
       state.order=(Array.isArray(obj.order)?obj.order:[]).filter(function(id){return ids.indexOf(id)>=0;});
       ids.forEach(function(id){ if(state.order.indexOf(id)<0) state.order.push(id); });
+      /* restore strategy + extra payment saved by export, validated */
+      if(obj.strategy==="snowball"||obj.strategy==="avalanche"||obj.strategy==="custom"){ state.strategy=obj.strategy; }
+      var ex=Number(obj.extraMonthly);
+      if(isFinite(ex)&&ex>=0&&ex<=100000){ state.extraMonthly=Math.round(ex*100)/100; }
+      state.schedStrat=state.strategy;
       save(); renderAll();
       err.textContent=""; 
       var n=$("demoNotice"); n.hidden=false;
@@ -670,16 +677,19 @@ $("importFile").addEventListener("change",function(e){
   };
   rd.readAsText(f);
 });
-$("demoBtn").addEventListener("click",demoData);
+$("demoBtn").addEventListener("click",function(){
+  if(state.debts.length>0 && !confirm("Replace your current debts with the demo data?")) return;
+  demoData();
+});
 $("clearBtn").addEventListener("click",function(){
-  var lbl=$("clearLabel");
-  if(lbl.dataset.armed){
+  var btn=$("clearBtn"), lbl=$("clearLabel");
+  if(btn.dataset.armed){
     state.debts=[];state.order=[];editingId=null;save();renderAll();
-    lbl.textContent="Clear all data"; delete lbl.dataset.armed;
+    lbl.textContent="Clear all data"; delete btn.dataset.armed;
     $("demoNotice").hidden=true;
   }else{
-    lbl.dataset.armed="1"; lbl.textContent="Click again to confirm";
-    setTimeout(function(){lbl.textContent="Clear all data";delete lbl.dataset.armed;},2500);
+    btn.dataset.armed="1"; lbl.textContent="Click again to confirm";
+    setTimeout(function(){lbl.textContent="Clear all data";delete btn.dataset.armed;},2500);
   }
 });
 
