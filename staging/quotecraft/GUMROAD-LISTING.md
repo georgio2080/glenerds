@@ -19,7 +19,7 @@ gallery/cover-square-1200.png (also attach gallery/1-quotes-list.png … 7-mobil
 quotecraft-bundle.zip
 
 ## Tags
-quote builder, estimate template, service quote, free estimate template, bid template, quotation template, printable quote, service estimate, contractor estimate, estimate template pdf
+quote builder, estimate template, service quote, free estimate template, bid template, quote form, printable quote, service estimate, contractor estimate, contractor quote
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
