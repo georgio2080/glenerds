@@ -895,7 +895,7 @@ function sanitizeLog(log, habitIds){
   const out = {};
   if(!log || typeof log !== "object") return out;
   Object.keys(log).forEach(hid => {
-    if(!habitIds[hid]) return; // drop orphaned log entries
+    if(!Object.prototype.hasOwnProperty.call(habitIds, hid)) return; // drop orphaned log entries (+ __proto__/constructor keys)
     const entries = log[hid];
     if(!entries || typeof entries !== "object" || Array.isArray(entries)) return;
     const clean = {};
@@ -961,7 +961,11 @@ const ICONS = ["✅","🏃","📚","💧","🧘","💪","🎸","✍️","🌱","
 /* Repair a habit from storage/import: fix trivially repairable fields, return null when unrecoverable. */
 function sanitizeHabit(h){
   if(!h || typeof h !== "object" || Array.isArray(h)) return null;
-  if(!h.id || typeof h.id !== "string" || !h.id.trim()) return null;
+  /* id charset lock: ids are interpolated into HTML/data attributes and used as
+     object keys. Anything outside [A-Za-z0-9_-] is regenerated — this closes
+     stored-XSS via crafted import ids and __proto__/constructor key tricks. */
+  const id = (typeof h.id === "string" && /^[A-Za-z0-9_-]{1,64}$/.test(h.id) &&
+    ["__proto__","constructor","prototype"].indexOf(h.id) === -1) ? h.id : uid();
   const name = String(h.name == null ? "" : h.name).trim();
   if(!name) return null;
   const type = h.type === "weekly" ? "weekly" : "daily";
@@ -973,7 +977,7 @@ function sanitizeHabit(h){
   const icon = (typeof h.icon === "string" && ICONS.indexOf(h.icon) !== -1) ? h.icon : ICONS[0];
   const allowPartial = h.allowPartial === undefined ? true : !!h.allowPartial;
   const created = (typeof h.created === "string" && isValidDateKey(h.created)) ? h.created : todayKey();
-  return { id: h.id, name: name, type: type, weekdays: weekdays, color: color, icon: icon, allowPartial: allowPartial, created: created };
+  return { id: id, name: name, type: type, weekdays: weekdays, color: color, icon: icon, allowPartial: allowPartial, created: created };
 }
 const I_FLAME = '<svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-flame"/></svg>';
 const I_FLAME_FLASH = '<svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-flame"/></svg>';
@@ -1040,10 +1044,14 @@ function completionRate(h){
   const end = new Date(); end.setHours(0,0,0,0);
   const created = parseKey(h.created);
   let scheduled = 0, completed = 0, skipped = 0, d = new Date(created);
+  const tk = localKey(end);
   while(d <= end){
     if(isScheduled(h, d)){
+      const key = localKey(d);
+      /* same open-day rule as streaks: an unlogged today is not a miss yet */
+      if(key === tk && !entryStatus(h.id, key)){ d = addDays(d, 1); continue; }
       scheduled++;
-      const s = entryStatus(h.id, localKey(d));
+      const s = entryStatus(h.id, key);
       if(s === "done" || s === "partial") completed++;
       else if(s === "skip") skipped++;
     }
@@ -1092,7 +1100,7 @@ function renderStats(){
   let checkins = 0, longest = 0;
   state.habits.forEach(h => {
     const st = computeStreaks(h);
-    if(st.current > longest) longest = st.current;
+    if(st.best > longest) longest = st.best;
     const s = entryStatus(h.id, tk);
     if(s === "done" || s === "partial") checkins++;
   });
@@ -1194,6 +1202,7 @@ function renderDetail(hid){
   const cr = completionRate(h);
   let total = 0, partials = 0, skips = 0;
   Object.keys(state.log[hid] || {}).forEach(k => {
+    if(k < h.created) return; // ignore stray keys predating the habit (consistent with streaks/heatmap)
     const s = state.log[hid][k].status;
     if(s === "done"){ total++; } else if(s === "partial"){ total++; partials++; } else if(s === "skip"){ skips++; }
   });
@@ -1324,8 +1333,8 @@ document.getElementById("habitList").addEventListener("click", e => {
   if(act === "done" || act === "partial" || act === "skip"){
     const tk = todayKey();
     const cur = entry(hid, tk);
-    // tapping the active status again clears it (quick undo)
-    if(cur && cur.status === act){ setEntry(hid, tk, null, ""); }
+    // tapping the active status again clears it (quick undo) — keep the note
+    if(cur && cur.status === act){ setEntry(hid, tk, null, cur.note || ""); }
     else { const note = cur ? (cur.note || "") : ""; setEntry(hid, tk, act, note); }
     renderAll();
   }else if(act === "detail"){
@@ -1380,8 +1389,8 @@ function exportCsv(){
   state.habits.forEach(h => {
     Object.keys(state.log[h.id] || {}).sort().forEach(k => {
       const en = state.log[h.id][k];
-      if(!en || !en.status) return; // note-only entries re-import as skipped rows; leave them out
-      rows.push([csvEsc(h.name), csvEsc(k), csvEsc(en.status), csvEsc(en.note || "")].join(","));
+      if(!en || (!en.status && !en.note)) return; // skip fully-empty rows; note-only entries export with blank status
+      rows.push([csvEsc(h.name), csvEsc(k), csvEsc(en.status || ""), csvEsc(en.note || "")].join(","));
     });
   });
   download("habittrack-backup-" + todayKey() + ".csv", rows.join("\n"), "text/csv");
@@ -1423,22 +1432,13 @@ function importFile(file){
         });
         if(clean.length === 0) throw new Error("no valid habits in backup");
         d.habits = clean;
-        Object.keys(d.log).forEach(hid => {
-          if(!d.log[hid] || typeof d.log[hid] !== "object" || Array.isArray(d.log[hid])) throw new Error("bad log entry");
-          Object.keys(d.log[hid]).forEach(k => {
-            if(!isValidDateKey(k)) throw new Error("bad date key: " + k);
-            const e = d.log[hid][k];
-            const s = e && e.status;
-            if(s != null && ["done","partial","skip"].indexOf(s) === -1) throw new Error("bad status: " + s);
-            if(e && typeof e.note === "string" && e.note.length > 500) e.note = e.note.slice(0, 500);
-          });
-        });
         // drop orphaned log entries whose habit id is not in this backup
         const keep = {};
         d.habits.forEach(h => { keep[h.id] = true; });
-        Object.keys(d.log).forEach(hid => { if(!keep[hid]) delete d.log[hid]; });
+        // full sanitize: repairs/drops bad dates, statuses, notes (same as loadState)
+        const cleanLog = sanitizeLog(d.log, keep);
         if(!window.confirm("Replace everything on this device with the backup (" + d.habits.length + " habits)?")) return;
-        state = { habits: d.habits, log: d.log };
+        state = { habits: d.habits, log: cleanLog };
         saveState(); renderAll();
         msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Imported ' + d.habits.length + " habits." + (dropped ? " (" + dropped + " invalid entries skipped)" : "") + "</p>";
       }else{
@@ -1455,8 +1455,9 @@ function importFile(file){
           const name = (row[hi] || "").trim(), date = (row[di] || "").trim(), status = (row[si] || "").trim();
           const note = ni === -1 ? "" : (row[ni] || "");
           const h = state.habits.find(x => x.name === name);
-          if(!h || !isValidDateKey(date) || ["done","partial","skip"].indexOf(status) === -1){ skipped++; continue; }
-          setEntry(h.id, date, status, note.slice(0, 500));
+          if(!h || !isValidDateKey(date) || (status && ["done","partial","skip"].indexOf(status) === -1)){ skipped++; continue; }
+          if(!status && !note){ skipped++; continue; } // fully-empty row: nothing to store
+          setEntry(h.id, date, status || null, note.slice(0, 500));
           merged++;
         }
         renderAll();
@@ -1483,6 +1484,7 @@ function renderWeekChart(){
     let sched = 0, done = 0, part = 0;
     state.habits.forEach(h => {
       if(!isScheduled(h, d)) return;
+      if(d < parseKey(h.created)) return; // don't show phantom misses before the habit existed
       sched++;
       const s = entryStatus(h.id, key);
       if(s === "done"){ done++; total++; }
