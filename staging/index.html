@@ -39,7 +39,7 @@
   APP QUEUE — add one row per staged app:
   -->
   <table>
-    <thead><tr><th>App</th><th>Testing</th><th>SEO</th><th>Images</th><th>100%</th><th>Published</th><th>Staged</th><th>Notes</th></tr></thead>
+    <thead><tr><th>App</th><th>Testing</th><th>SEO</th><th>Images</th><th>AI verified 100%</th><th>Published</th><th>Staged</th><th>Notes</th></tr></thead>
     <tbody>
       <tr>
         <td><a href="./w9track/">W9Track — Contractor W-9 &amp; 1099 Tracker</a></td>
@@ -241,10 +241,10 @@ document.querySelectorAll('button.pill').forEach(function(b){
         ? 'Yes — the unpublished Gumroad draft has been created and the folder has moved to the done folder.'
         : 'Not yet — the unpublished Gumroad draft has not been created. The app stays in staging until the Published pill is checked.';
     } else if (kind === 'done100') {
-      title = app + ' — 100% done?';
+      title = app + ' — AI verified 100%?';
       text = state === 'passed'
-        ? 'Yes — 100% done: every possible test passed and the app is literally ready to be posted to Gumroad complete.'
-        : 'No — not 100% done yet. This is only marked at the point right before the Gumroad draft is posted.';
+        ? 'Yes — AI verified 100%: an AI reviewed and tested everything and confirmed the app is fully functional — all tests passed, SEO final and AI-tested, images verified, and the app is literally ready to be posted to Gumroad complete.'
+        : 'No — AI has not verified everything yet. This is only marked after AI confirms the app is fully functional, right before the Gumroad draft is posted.';
     }
     document.getElementById('pill-title').textContent = title;
     document.getElementById('pill-text').textContent = text;
