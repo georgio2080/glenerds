@@ -4,6 +4,45 @@ Build log for the single-file offline app at `index.html` (this directory).
 Built 2026-09-19 per `~/workspace/microtool-research/free-loop/app9-quotecraft-SPEC.md`.
 Everything written from scratch (IP clean-room); no external requests; works from file://.
 
+## 2026-09-20 — functional-bench fixes (parent adjudicated ChatGPT/Grok/Gemini findings)
+- **Exact-decimal money math.** New `lineCents(qty, unitCents)` helper computes line
+  totals in integer space from the decimal representation of qty, eliminating the
+  IEEE 754 half-cent-down error Grok proved (e.g. 4.1 × $3.25 was $13.32, now the
+  correct $13.33). Used in `calcTotals`, the items table, the print view, and the
+  flat-discount cap check. Verified in node against Grok's swept failing cases.
+- **Exact-decimal `toCents`.** Currency strings are now parsed decimally instead of
+  via binary float, so `$10.005` correctly becomes 1001¢ (was 1000¢).
+- **UI entry now matches import caps.** Add-item form rejects qty > 1,000,000 and
+  unit price > $1,000,000, mirroring `cleanQty`/`cleanUnitCents` (ChatGPT #4/#5).
+- **Percent discounts clamped to 2 decimals** on live entry and import
+  (ChatGPT #1).
+- **Totals panel now shows the actual taxed base.** Added a "Taxable subtotal (after
+  discount)" row next to the existing before-discount row, so the tax figure is
+  fully explained (ChatGPT #7). `calcTotals` returns `taxableAfterDiscount`.
+- **Import accounting is honest.** `cleanQuote` now counts dropped line items
+  (over the 500 cap + failed validations) into `stats.dropped`, which
+  `sanitizeState` folds into the reported `skipped` total (Grok #2). Duplicate
+  imported item ids are regenerated so edit/delete can't hit the wrong rows
+  (Grok #6 / ChatGPT #10).
+- **Delete-while-editing no longer strands the form.** The item delete handler
+  clears the stale `editId` and resets the button to "Add item" (Grok #3).
+- **Clear-all resets the full default state**, including `editedByUser:false`
+  (ChatGPT #3).
+- **Export is sanitized.** `exportJSON` runs state through `sanitizeState` before
+  serializing, so hand-edited localStorage can't leak malformed data
+  (ChatGPT #9).
+- **Print view item table gains a Tax column** (Yes/— per line), so customers can
+  see why tax was charged (ChatGPT #11).
+- **Import status via inline live region** (`#data-status`, role=status) instead of
+  `alert()` dialogs (ChatGPT #16).
+- **Debounced persistence.** Keystroke handlers (`bindEditor`, business-profile
+  inputs) now use `saveSoon()` (400 ms debounce); discrete actions still save
+  immediately (ChatGPT #15).
+- Findings reviewed and explicitly NOT changed: invalid-date entry visibly reverts
+  the field to the last valid date (acceptable); `storageOK` latch is intentional
+  (avoids throwing on every keystroke once storage fails); sparse quote numbers
+  after import are not a defect; `renderAll` editor reopen is harmless.
+
 ## What was built
 - **Business profile:** name, phone, email, tagline (text branding only) — prints on
   every customer quote. Persists on every keystroke.

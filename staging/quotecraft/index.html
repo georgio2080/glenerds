@@ -445,6 +445,7 @@ footer.site a{color:var(--muted)}
         <input type="file" id="file-import" accept="application/json,.json" class="sr-only" aria-label="Choose JSON backup file">
       </div>
       <p class="footnote">Import replaces everything and is confirm-gated. Every record is sanitized; invalid records are skipped.</p>
+      <div class="err" id="data-status" role="status"></div>
     </div>
     <div class="card">
       <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.4 5.4 1.9-5.4 1.9L12 17.6l-1.9-5.4L4.7 10.3l5.4-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg></span>Demo &amp; reset</h2>
@@ -492,9 +493,42 @@ function fmt(cents){ return moneyFmt.format(cents/100); }
 /* dollars (string/number) -> integer cents; null if not a finite number */
 function toCents(v){
   if(typeof v === "string"){ v = v.replace(/[$,\s]/g,""); }
-  var n = Number(v);
-  if(!Number.isFinite(n)) return null;
-  return Math.round(n*100);
+  var s = String(v);
+  var neg = false;
+  if(s.charAt(0) === "-"){ neg = true; s = s.slice(1); }
+  /* exact decimal parse: avoids binary-float artifacts like 10.005*100 = 1000.4999... */
+  if(!/^\d*(\.\d*)?$/.test(s) || s === "" || s === ".") return null;
+  var parts = s.split(".");
+  var dollars = parts[0] === "" ? 0 : parseInt(parts[0], 10);
+  if(!Number.isSafeInteger(dollars)) return null;
+  var mills = parseInt(((parts[1] || "") + "000").slice(0, 3), 10);
+  var totalMills = dollars * 1000 + mills;
+  if(!Number.isSafeInteger(totalMills)) return null;
+  var cents = Math.round(totalMills / 10); /* half-up on the thousandth */
+  return neg ? -cents : cents;
+}
+/* exact line total in cents: qty (decimal) x unitCents (integer).
+   Avoids IEEE 754 half-cent-down errors, e.g. 4.1 x 325c = 1332.4999... -> 1332
+   instead of the correct 1333. Falls back to float math at absurd magnitudes. */
+function lineCents(qty, unitCents){
+  var neg = qty < 0;
+  var s = String(Math.abs(qty));
+  var dot = s.indexOf(".");
+  var scale = 1, digits;
+  if(dot < 0){ digits = s; }
+  else{
+    var frac = s.slice(dot + 1);
+    if(frac.length > 9) frac = frac.slice(0, 9);
+    scale = Math.pow(10, frac.length);
+    digits = s.slice(0, dot) + frac;
+  }
+  var qi = Number(digits);
+  var prod = qi * unitCents;
+  if(Number.isSafeInteger(qi) && Number.isSafeInteger(prod)){
+    var c = Math.round(prod / scale);
+    return neg ? -c : c;
+  }
+  return Math.round(qty * unitCents);
 }
 function todayISO(){
   var d = new Date();
@@ -536,6 +570,14 @@ function loadRaw(){
   return s;
 }
 
+/* debounced persistence for keystroke-speed handlers (typing shouldn't
+   hammer localStorage on every keypress with a large quote database) */
+var saveT = null;
+function saveSoon(){
+  if(saveT) clearTimeout(saveT);
+  saveT = setTimeout(function(){ saveT = null; save(); }, 400);
+}
+
 /* ---------- state ---------- */
 var STATUSES = ["Draft","Sent","Accepted","Declined"];
 var state = { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNum:1, editedByUser:false };
@@ -544,8 +586,8 @@ var state = { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNu
 function calcTotals(q){
   var items = q.items || [];
   var lines = items.map(function(it){
-    /* qty may be fractional; unit price is whole cents */
-    var cents = Math.round(it.qty * it.unitCents);
+    /* qty may be fractional; unit price is whole cents — exact decimal math */
+    var cents = lineCents(it.qty, it.unitCents);
     return { taxable: it.taxable, cents: cents };
   });
   var subtotal = 0, taxableBase = 0;
@@ -573,6 +615,7 @@ function calcTotals(q){
     subtotal: subtotal,
     discount: discount,
     taxableSubtotal: taxableBase,
+    taxableAfterDiscount: taxableAfter,
     tax: tax,
     total: subtotal - discount + tax
   };
@@ -615,14 +658,20 @@ function cleanItem(raw){
            desc: desc, qty: qty, unitCents: unitCents,
            taxable: raw.taxable !== false };
 }
-function cleanQuote(raw, usedNums){
+function cleanQuote(raw, usedNums, stats){
   if(!raw || typeof raw !== "object") return null;
   var items = [];
+  var seenIds = {};
   if(Array.isArray(raw.items)){
     for(var i=0;i<raw.items.length && items.length<500;i++){
       var it = cleanItem(raw.items[i]);
-      if(it) items.push(it);
+      if(!it){ if(stats) stats.dropped++; continue; }
+      /* duplicate imported ids would make edit/delete hit the wrong rows */
+      if(seenIds[it.id]) it.id = uid();
+      seenIds[it.id] = true;
+      items.push(it);
     }
+    if(stats && raw.items.length > i) stats.dropped += raw.items.length - i;
   }
   var num = Number(raw.num);
   if(!Number.isInteger(num) || num < 1 || num > 999999 || usedNums.has(num)) return null;
@@ -631,6 +680,7 @@ function cleanQuote(raw, usedNums){
   if(dt !== "percent" && dt !== "flat") dt = "none";
   var dv = Number(raw.discountValue);
   if(!Number.isFinite(dv) || dv < 0) dv = 0;
+  if(dt === "percent") dv = Math.round(dv * 100) / 100;
   var tr = Number(raw.taxRate);
   if(!Number.isFinite(tr) || tr < 0) tr = 0;
   if(tr > 100) tr = 100;
@@ -667,8 +717,9 @@ function sanitizeState(raw){
   var quotes = [];
   if(Array.isArray(raw.quotes)){
     for(var i=0;i<raw.quotes.length;i++){
-      var q = cleanQuote(raw.quotes[i], used);
-      if(q) quotes.push(q); else skipped++;
+      var stats = { dropped: 0 };
+      var q = cleanQuote(raw.quotes[i], used, stats);
+      if(q){ quotes.push(q); skipped += stats.dropped; } else skipped++;
     }
   }else{ skipped++; }
   var nextNum = Number(raw.nextNum);
@@ -770,7 +821,7 @@ function renderItems(q){
     tr.appendChild(el("td",{class:"num"},String(it.qty)));
     tr.appendChild(el("td",{class:"num"},fmt(it.unitCents)));
     tr.appendChild(el("td",null,it.taxable ? "Yes" : "No"));
-    tr.appendChild(el("td",{class:"num"},fmt(Math.round(it.qty*it.unitCents))));
+    tr.appendChild(el("td",{class:"num"},fmt(lineCents(it.qty,it.unitCents))));
     var tdA = el("td");
     var bE = el("button",{type:"button",class:"small"},"Edit");
     bE.setAttribute("aria-label","Edit item "+it.desc);
@@ -787,6 +838,10 @@ function renderItems(q){
     bD.setAttribute("aria-label","Delete item "+it.desc);
     bD.addEventListener("click", function(){
       q.items = q.items.filter(function(x){ return x.id !== it.id; });
+      /* leaving a stale editId would make the next Save a silent no-op */
+      var addBtn = document.getElementById("btn-add-item");
+      delete addBtn.dataset.editId;
+      addBtn.textContent = "Add item";
       save(); renderItems(q); renderTotals(q);
     });
     tdA.appendChild(bE); tdA.appendChild(document.createTextNode(" ")); tdA.appendChild(bD);
@@ -808,6 +863,7 @@ function renderTotals(q){
   tb.appendChild(totalsRow("Subtotal", fmt(t.subtotal)));
   tb.appendChild(totalsRow("Discount", "−"+fmt(t.discount)));
   tb.appendChild(totalsRow("Taxable subtotal (before discount)", fmt(t.taxableSubtotal)));
+  tb.appendChild(totalsRow("Taxable subtotal (after discount)", fmt(t.taxableAfterDiscount)));
   tb.appendChild(totalsRow("Tax", fmt(t.tax)));
   tb.appendChild(totalsRow("Grand total", fmt(t.total), true));
 }
@@ -836,7 +892,7 @@ function buildPrintView(q){
   var table = el("table");
   var thead = el("thead");
   var hr = el("tr");
-  [["Description",""],["Qty","num"],["Unit price","num"],["Line total","num"]].forEach(function(c){
+  [["Description",""],["Qty","num"],["Unit price","num"],["Tax","num"],["Line total","num"]].forEach(function(c){
     var th = el("th", c[1] ? {class:"num",scope:"col"} : {scope:"col"}, c[0]);
     hr.appendChild(th);
   });
@@ -847,7 +903,8 @@ function buildPrintView(q){
     tr.appendChild(el("td",null,it.desc));
     tr.appendChild(el("td",{class:"num"},String(it.qty)));
     tr.appendChild(el("td",{class:"num"},fmt(it.unitCents)));
-    tr.appendChild(el("td",{class:"num"},fmt(Math.round(it.qty*it.unitCents))));
+    tr.appendChild(el("td",{class:"num"}, it.taxable ? "Yes" : "—"));
+    tr.appendChild(el("td",{class:"num"},fmt(lineCents(it.qty,it.unitCents))));
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
@@ -901,7 +958,10 @@ function loadDemo(){
 
 /* ---------- import / export ---------- */
 function exportJSON(){
-  var blob = new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  /* sanitize first: state may hold hand-edited localStorage or legacy data */
+  var clean = sanitizeState(state) || { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNum:1 };
+  var out = { business: clean.business, quotes: clean.quotes, nextNum: clean.nextNum };
+  var blob = new Blob([JSON.stringify(out,null,2)],{type:"application/json"});
   var a = el("a",{href:URL.createObjectURL(blob),download:"quotecraft-backup-"+todayISO()+".json"});
   document.body.appendChild(a);
   a.click();
@@ -909,12 +969,14 @@ function exportJSON(){
 }
 function importJSON(file){
   var rd = new FileReader();
+  var statusEl = document.getElementById("data-status");
+  function say(msg){ if(statusEl) statusEl.textContent = msg; }
   rd.onload = function(){
     try{
       var parsed = JSON.parse(String(rd.result));
       var clean = sanitizeState(parsed);
       if(!clean || (clean.quotes.length===0 && clean.skipped>0 && !clean.business.name)){
-        alert("No valid QuoteCraft records found in that file. Nothing was changed.");
+        say("No valid QuoteCraft records found in that file. Nothing was changed.");
         return;
       }
       if(!confirm("Replace ALL current data with this backup? ("+clean.quotes.length+" quotes, "+clean.skipped+" records skipped)")) return;
@@ -922,8 +984,8 @@ function importJSON(file){
       state.nextNum = Math.max(clean.nextNum, 1);
       cur.quoteId = null;
       save(); renderAll(); showView("list");
-      alert("Import complete: "+clean.quotes.length+" quotes restored ("+clean.skipped+" skipped).");
-    }catch(e){ alert("Could not read that file as JSON. Nothing was changed."); }
+      say("Import complete: "+clean.quotes.length+" quotes restored ("+clean.skipped+" skipped).");
+    }catch(e){ say("Could not read that file as JSON. Nothing was changed."); }
   };
   rd.readAsText(file);
 }
@@ -971,6 +1033,7 @@ function bindEditor(){
   }else{
     q.discountValue = Number.isFinite(dv) && dv >= 0 ? dv : 0;
   }
+  if(q.discountType === "percent") q.discountValue = Math.round(q.discountValue * 100) / 100;
   /* feedback when the discount is capped (mirrors the tax>100 message) */
   if(q.discountType === "percent" && q.discountValue > 100){
     dtErr.textContent += (dtErr.textContent ? " " : "") + "Discount percent can't be more than 100%.";
@@ -978,7 +1041,7 @@ function bindEditor(){
     q.discountValue = 100;
   }else if(q.discountType === "flat"){
     var subC = 0;
-    (q.items || []).forEach(function(it){ subC += Math.round(it.qty * it.unitCents); });
+    (q.items || []).forEach(function(it){ subC += lineCents(it.qty, it.unitCents); });
     if(toCents(q.discountValue) > subC){
       dtErr.textContent += (dtErr.textContent ? " " : "") + "Discount can't be more than the subtotal.";
       q.discountValue = subC / 100;
@@ -999,7 +1062,7 @@ function bindEditor(){
     q.taxRate = Number.isFinite(tr) && tr >= 0 ? tr : 0;
   }
   q.terms = cleanText(document.getElementById("f-terms").value, MAX.terms);
-  save();
+  saveSoon();
   renderTotals(q);
 }
 function addOrSaveItem(){
@@ -1022,7 +1085,9 @@ function addOrSaveItem(){
   }
   if(dup){ err.textContent = "Description must be unique within a quote."; return; }
   if(!Number.isFinite(qtyN) || qtyN <= 0){ err.textContent = "Quantity must be more than 0."; return; }
+  if(qtyN > 1000000){ err.textContent = "Quantity can't be more than 1,000,000."; return; }
   if(priceC === null || priceC < 0){ err.textContent = "Unit price must be 0 or more."; return; }
+  if(priceC > 100000000){ err.textContent = "Unit price can't be more than $1,000,000."; return; }
   var taxable = document.getElementById("ni-taxable").checked;
   if(editId){
     var it = null;
@@ -1106,7 +1171,7 @@ function bind(){
       b.phone = cleanText(document.getElementById("b-phone").value, 40);
       b.email = cleanText(document.getElementById("b-email").value, MAX.text);
       b.tagline = cleanText(document.getElementById("b-tagline").value, MAX.tagline);
-      save();
+      saveSoon();
     });
   });
   document.getElementById("btn-export").addEventListener("click", exportJSON);
@@ -1123,7 +1188,7 @@ function bind(){
   });
   document.getElementById("btn-clear").addEventListener("click", function(){
     if(!confirm("Delete ALL data — every quote and your business profile?")) return;
-    state = { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNum:1 };
+    state = { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNum:1, editedByUser:false };
     cur.quoteId = null;
     save(); renderAll(); showView("list");
   });
