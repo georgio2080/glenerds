@@ -559,6 +559,11 @@ function showStorageNotice(){
   var n = document.getElementById("storage-notice");
   if(n){ n.hidden = false; n.textContent = "Browser storage is unavailable — your data will be kept only until this tab closes."; }
 }
+/* corrupt localStorage: tell the user instead of silently resetting */
+function showCorruptNotice(){
+  var n = document.getElementById("storage-notice");
+  if(n){ n.hidden = false; n.textContent = "Your saved data was damaged and couldn't be read, so QuoteCraft started with a clean slate. Re-import a backup to recover your quotes."; }
+}
 function save(){
   var s = JSON.stringify(state);
   if(storageOK){ lsSet(s); if(!storageOK){ memFallback = s; showStorageNotice(); } }
@@ -714,12 +719,18 @@ function sanitizeState(raw){
     tagline: cleanText(b.tagline, MAX.tagline)
   };
   var used = new Set();
+  var seenQuoteIds = {};
   var quotes = [];
   if(Array.isArray(raw.quotes)){
     for(var i=0;i<raw.quotes.length;i++){
       var stats = { dropped: 0 };
       var q = cleanQuote(raw.quotes[i], used, stats);
-      if(q){ quotes.push(q); skipped += stats.dropped; } else skipped++;
+      if(q){
+        /* duplicate imported quote ids would make open/edit/delete hit the wrong quote */
+        if(seenQuoteIds[q.id]) q.id = uid();
+        seenQuoteIds[q.id] = true;
+        quotes.push(q); skipped += stats.dropped;
+      } else skipped++;
     }
   }else{ skipped++; }
   var nextNum = Number(raw.nextNum);
@@ -729,6 +740,7 @@ function sanitizeState(raw){
 }
 
 /* ---------- load ---------- */
+var corruptNotice = false;
 function initState(){
   var s = loadRaw();
   if(s){
@@ -736,7 +748,11 @@ function initState(){
       var parsed = JSON.parse(s);
       var clean = sanitizeState(parsed);
       if(clean){ state = clean; return; }
-    }catch(e){ /* fall through to fresh state */ }
+      /* stored string wasn't usable (wrong shape) */
+      corruptNotice = true;
+    }catch(e){ /* malformed JSON in storage */
+      corruptNotice = true;
+    }
   }
 }
 
@@ -914,6 +930,8 @@ function buildPrintView(q){
   var ptb = el("tbody");
   ptb.appendChild(totalsRow("Subtotal", fmt(t.subtotal)));
   ptb.appendChild(totalsRow("Discount", "−"+fmt(t.discount)));
+  ptb.appendChild(totalsRow("Taxable subtotal (before discount)", fmt(t.taxableSubtotal)));
+  ptb.appendChild(totalsRow("Taxable subtotal (after discount)", fmt(t.taxableAfterDiscount)));
   ptb.appendChild(totalsRow("Tax", fmt(t.tax)));
   ptb.appendChild(totalsRow("Grand total", fmt(t.total), true));
   pt.appendChild(ptb);
@@ -971,6 +989,11 @@ function importJSON(file){
   var rd = new FileReader();
   var statusEl = document.getElementById("data-status");
   function say(msg){ if(statusEl) statusEl.textContent = msg; }
+  /* size guard: readAsText/JSON.parse on a giant file would hang the tab */
+  if(file && file.size > 5 * 1024 * 1024){
+    say("That file is too large to import (over 5 MB). Nothing was changed.");
+    return;
+  }
   rd.onload = function(){
     try{
       var parsed = JSON.parse(String(rd.result));
@@ -1200,6 +1223,7 @@ initState();
 bind();
 renderAll();
 if(!storageOK){ showStorageNotice(); }
+else if(corruptNotice){ showCorruptNotice(); }
 showView("list");
 })();
 </script>

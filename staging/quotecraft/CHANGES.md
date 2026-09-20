@@ -231,3 +231,36 @@ Backup: `index.html.bak-2026-09-19-r2`.
 - **Gallery note:** gallery/2-editor-items.png still shows the pre-FIX-7 totals
   row label "Taxable subtotal" (now "Taxable subtotal (before discount)" in the
   UI). Layout, data, and totals unchanged; screenshot otherwise current.
+
+## 2026-09-20 (DeepSeek functional review adjudication — parent)
+- **DeepSeek false positives (stale source):** DeepSeek's leg fetched the
+  pre-push deployed source, so three of its "caveats" described the OLD code:
+  (a) claimed live-path qty/price caps were missing — they ARE enforced
+  (`qtyN > 1000000` and `priceC > 100000000` rejected in addOrSaveItem);
+  (b) quoted the old `Math.round(qty * unitCents)` line-total formula —
+  current code uses exact-decimal `lineCents()`;
+  (c) claimed `toCents("1.005") = 100` — the current string-based parser
+  returns 101 (correct half-up on the thousandth); `toCents("10.005") = 1001`
+  re-verified in Node. No code changes for any of these.
+- **FIX 9 — Print view totals parity:** buildPrintView() omitted the two
+  taxable-subtotal rows the screen totals panel shows (FIX 7 labels). Added
+  "Taxable subtotal (before discount)" and "Taxable subtotal (after discount)"
+  to the print totals table so the customer document matches the screen.
+- **FIX 10 — Import file-size guard:** `importJSON()` now rejects files over
+  5 MB with an inline status message before `readAsText`/`JSON.parse` — a
+  multi-hundred-MB file would otherwise hang the tab. 5 MB still admits
+  ~tens of thousands of quotes.
+- **FIX 11 — Duplicate imported quote IDs:** `sanitizeState()` now regenerates
+  quote IDs that collide with an already-imported quote's ID (mirrors the
+  existing item-ID dedup in `cleanQuote`), so open/edit/delete always hit the
+  right quote. (Grok's earlier item+quote ID report is now fully closed.)
+- **FIX 12 — Corrupt-data notice:** `initState()` silently fell back to fresh
+  state when saved localStorage data was malformed or the wrong shape. It now
+  sets a flag and the boot sequence shows the notice banner: "Your saved data
+  was damaged and couldn't be read, so QuoteCraft started with a clean slate.
+  Re-import a backup to recover your quotes."
+- **Verification:** extracted inline JS passes `node --check`; Node spot checks:
+  `toCents("1.005")=101`, `toCents("10.005")=1001`, `lineCents(4.1,325)=1333`.
+- DeepSeek's remaining verified PASS items (XSS/textContent-only rendering,
+  import validation + prototype-pollution posture, sanitizeState, localStorage
+  quota/banner behavior, qnum/fmt) held against the current source.
