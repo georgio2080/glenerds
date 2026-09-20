@@ -31,9 +31,9 @@ Productivity, Habits, Self Improvement, Health & Fitness, Planner, Tracker, Offl
 
 ## Description body
 
-Build streaks that actually stick. HabitTrack is a free daily habit tracker that lives entirely in your browser — no account, no ads, no tracking, no subscription. Your habits never leave your device.
+Build streaks that actually stick. HabitTrack is a free daily habit tracker that lives entirely in your browser — no account, no ads, no trackers, no subscription. Your habits never leave your device, and it works offline.
 
-💸 100% FREE — no upsells, no subscription, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
+💸 100% FREE — no upsells, no subscription, no account. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 **What's inside** (by Glenerds):
 - ✅ One-tap daily check-offs with streak + best-streak counters
@@ -50,7 +50,7 @@ Build streaks that actually stick. HabitTrack is a free daily habit tracker that
 
 **How streaks work:** done or partial days extend your streak · rest days pause it without breaking · a missed scheduled day resets it.
 
-**How it works:** no install, no internet, no account. Open the file, add a habit, tap the check-off each day. Everything is stored privately in your own browser — your data never leaves your device. JSON/CSV backup export/import included.
+**How it works:** no install, no account. Open the file — it works offline — add a habit, tap the check-off each day. Everything is stored privately in your own browser — your data never leaves your device. JSON/CSV backup export/import included.
 
 ---
 

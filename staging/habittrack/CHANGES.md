@@ -34,3 +34,9 @@
 - Fixed (copy/SEO bench, Gemini leg): page title trimmed to 51 chars so it
   survives SERP truncation; added canonical, Open Graph and Twitter card tags
   (og:image = square cover).
+- Fixed (copy/SEO bench, ChatGPT leg): keyword tagline is now an H2 (was a P)
+  for heading signal; merged the repeated "no account/no ads" sentences in the
+  listing; softened "no internet required" to "works offline" and "no tracking"
+  to "no trackers". Rejected: listing meta-description trim (actually 144
+  chars, not 154) and the "features section" (matches other shipped apps).
+  Verified: HabitKit free tier does cap at 4 habits (claim kept).
