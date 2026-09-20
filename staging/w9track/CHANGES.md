@@ -20,7 +20,7 @@
 - All user-derived text (contractor names) goes through textContent — no HTML injection surface.
 - Empty states: muted "no data yet" messages instead of empty charts.
 - Verified: JS syntax check + node DOM-stub smoke test (12 monthly bars, 3 donut segments, sorted top-6, XSS-safe names, corp excluded from progress bars, correct red/amber classes).
-- NOT yet live: waiting on the Grok QA leg before pushing (browser legs run sequentially on one shared profile).
+- Live since 2026-09-20 (commit 1d654c24, "Year at a glance" visual build + Gemini cosmetic fixes), all four browser QA legs (ChatGPT, Gemini, Grok, DeepSeek) passed clean.
 
 # W9Track — Build Log (CHANGES.md)
 
