@@ -549,17 +549,6 @@ a:focus-visible {
 .stat{background:var(--g-surface);border:1px solid var(--g-border);border-radius:var(--g-radius-md);padding:12px 14px;box-shadow:var(--g-shadow-sm)}
 .stat .n{font-size:1.35rem;font-weight:800;letter-spacing:-0.01em;display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
 .stat .l{font-size:.78rem;color:var(--g-muted);margin-top:2px}
-.weekchart{background:var(--g-surface);border:1px solid var(--g-border);border-radius:var(--g-radius-md);padding:12px 14px;margin:10px 0 4px;box-shadow:var(--g-shadow-sm)}
-.weekchart .wct{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
-.weekchart .wct b{font-size:.92rem}
-.weekchart .wct span{font-size:.78rem;color:var(--g-muted)}
-.weekchart .wcb{display:flex;gap:8px}
-.weekchart .wcd{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
-.weekchart .wctrack{width:100%;max-width:46px;height:64px;border-radius:6px;background:var(--g-good-soft);display:flex;flex-direction:column-reverse;overflow:hidden}
-.weekchart .wcdone{background:var(--g-good)}
-.weekchart .wcpart{background:var(--g-good);opacity:.35}
-.weekchart .wcl{font-size:.68rem;color:var(--g-muted);font-variant-numeric:tabular-nums;text-align:center;line-height:1.3}
-.weekchart .wcl.today{color:var(--g-text);font-weight:800}
 .habit-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .dot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
 .icon{font-size:1.35rem;line-height:1}
@@ -855,7 +844,6 @@ document.documentElement.setAttribute('data-theme',t);})();
   </div>
 
   <div class="stats" id="statsStrip" aria-live="polite"></div>
-  <div class="weekchart" id="weekChart" aria-label="Activity over the last 7 days"></div>
   <p class="streak-note"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-flame"/></svg><span><b>How streaks work:</b> done or partial days extend your streak · rest days pause it without breaking · a missed day resets it.</span></p>
 
   <div id="habitList"></div>
@@ -891,37 +879,13 @@ const LS_KEY = "habittrack.v1";
 const THEME_KEY = "habittrack.theme";
 let state = { habits: [], log: {} };
 
-function sanitizeLog(log, habitIds){
-  const out = {};
-  if(!log || typeof log !== "object") return out;
-  Object.keys(log).forEach(hid => {
-    if(!habitIds[hid]) return; // drop orphaned log entries
-    const entries = log[hid];
-    if(!entries || typeof entries !== "object" || Array.isArray(entries)) return;
-    const clean = {};
-    Object.keys(entries).forEach(k => {
-      if(!isValidDateKey(k)) return;
-      const e = entries[k];
-      if(!e || typeof e !== "object" || Array.isArray(e)) return;
-      const s = e.status;
-      if(s != null && ["done","partial","skip"].indexOf(s) === -1) return;
-      clean[k] = { status: s == null ? null : s, note: String(e.note || "").slice(0, 500) };
-    });
-    out[hid] = clean;
-  });
-  return out;
-}
 function loadState(){
   try{
     const raw = localStorage.getItem(LS_KEY);
     if(!raw) return;
     const d = JSON.parse(raw);
     if(!d || typeof d !== "object" || !Array.isArray(d.habits) || !d.log || typeof d.log !== "object") throw new Error("bad shape");
-    const habits = [];
-    d.habits.forEach(h => { const s = sanitizeHabit(h); if(s) habits.push(s); }); // repair/drop bad habits, never crash
-    const ids = {};
-    habits.forEach(h => { ids[h.id] = true; });
-    state = { habits: habits, log: sanitizeLog(d.log, ids) };
+    state = d;
   }catch(e){
     state = { habits: [], log: {} }; // corrupt storage -> safe defaults, no crash
   }
@@ -939,13 +903,6 @@ function parseKey(k){
   const p = k.split("-");
   return new Date(Number(p[0]), Number(p[1])-1, Number(p[2]));
 }
-function isValidDateKey(s){
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
-  const y = Number(s.slice(0,4)), m = Number(s.slice(5,7)), d = Number(s.slice(8,10));
-  if(m < 1 || m > 12 || d < 1 || d > 31) return false;
-  const dt = new Date(y, m-1, d);
-  return dt.getFullYear() === y && dt.getMonth() === m-1 && dt.getDate() === d;
-}
 function addDays(d, n){
   return new Date(d.getFullYear(), d.getMonth(), d.getDate()+n);
 }
@@ -958,23 +915,6 @@ function fmtDay(k){
 /* ============ habit model ============ */
 const COLORS = ["#0b6e4f","#1a73e8","#9334e6","#d93025","#e8710a","#f9ab00","#0097a7","#5c6bc0","#ec407a","#616161"];
 const ICONS = ["✅","🏃","📚","💧","🧘","💪","🎸","✍️","🌱","😴","🥗","🚭","💰","🧠","🎯","⭐"];
-/* Repair a habit from storage/import: fix trivially repairable fields, return null when unrecoverable. */
-function sanitizeHabit(h){
-  if(!h || typeof h !== "object" || Array.isArray(h)) return null;
-  if(!h.id || typeof h.id !== "string" || !h.id.trim()) return null;
-  const name = String(h.name == null ? "" : h.name).trim();
-  if(!name) return null;
-  const type = h.type === "weekly" ? "weekly" : "daily";
-  let weekdays = Array.isArray(h.weekdays)
-    ? h.weekdays.filter(w => Number.isInteger(w) && w >= 0 && w <= 6)
-    : [];
-  if(type === "weekly" && weekdays.length === 0) weekdays = [1,2,3,4,5];
-  const color = (typeof h.color === "string" && (COLORS.indexOf(h.color) !== -1 || /^#[0-9a-fA-F]{6}$/.test(h.color))) ? h.color : COLORS[0];
-  const icon = (typeof h.icon === "string" && ICONS.indexOf(h.icon) !== -1) ? h.icon : ICONS[0];
-  const allowPartial = h.allowPartial === undefined ? true : !!h.allowPartial;
-  const created = (typeof h.created === "string" && isValidDateKey(h.created)) ? h.created : todayKey();
-  return { id: h.id, name: name, type: type, weekdays: weekdays, color: color, icon: icon, allowPartial: allowPartial, created: created };
-}
 const I_FLAME = '<svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-flame"/></svg>';
 const I_FLAME_FLASH = '<svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-flame"/></svg>';
 const I_CHART = '<svg class="g-icon" aria-hidden="true"><use href="#g-i-chart"/></svg>';
@@ -1415,22 +1355,16 @@ function importFile(file){
       if(/\.json$/i.test(file.name) || text.trim().charAt(0) === "{"){
         const d = JSON.parse(text);
         if(!d || !Array.isArray(d.habits) || !d.log || typeof d.log !== "object") throw new Error("not a HabitTrack backup");
-        const clean = [];
-        let dropped = 0;
         d.habits.forEach(h => {
-          const s = sanitizeHabit(h);
-          if(s) clean.push(s); else dropped++;
+          if(!h.id || !h.name) throw new Error("habit entry missing id/name");
+          if(!h.created || !/^\d{4}-\d{2}-\d{2}$/.test(h.created)) h.created = todayKey();
         });
-        if(clean.length === 0) throw new Error("no valid habits in backup");
-        d.habits = clean;
         Object.keys(d.log).forEach(hid => {
           if(!d.log[hid] || typeof d.log[hid] !== "object" || Array.isArray(d.log[hid])) throw new Error("bad log entry");
           Object.keys(d.log[hid]).forEach(k => {
-            if(!isValidDateKey(k)) throw new Error("bad date key: " + k);
-            const e = d.log[hid][k];
-            const s = e && e.status;
+            if(!/^\d{4}-\d{2}-\d{2}$/.test(k)) throw new Error("bad date key: " + k);
+            const s = d.log[hid][k] && d.log[hid][k].status;
             if(s != null && ["done","partial","skip"].indexOf(s) === -1) throw new Error("bad status: " + s);
-            if(e && typeof e.note === "string" && e.note.length > 500) e.note = e.note.slice(0, 500);
           });
         });
         // drop orphaned log entries whose habit id is not in this backup
@@ -1440,7 +1374,7 @@ function importFile(file){
         if(!window.confirm("Replace everything on this device with the backup (" + d.habits.length + " habits)?")) return;
         state = { habits: d.habits, log: d.log };
         saveState(); renderAll();
-        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Imported ' + d.habits.length + " habits." + (dropped ? " (" + dropped + " invalid entries skipped)" : "") + "</p>";
+        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Imported ' + d.habits.length + " habits.</p>";
       }else{
         // CSV: match rows to habits by name, merge entries
         const rows = parseCsv(text);
@@ -1455,8 +1389,8 @@ function importFile(file){
           const name = (row[hi] || "").trim(), date = (row[di] || "").trim(), status = (row[si] || "").trim();
           const note = ni === -1 ? "" : (row[ni] || "");
           const h = state.habits.find(x => x.name === name);
-          if(!h || !isValidDateKey(date) || ["done","partial","skip"].indexOf(status) === -1){ skipped++; continue; }
-          setEntry(h.id, date, status, note.slice(0, 500));
+          if(!h || !/^\d{4}-\d{2}-\d{2}$/.test(date) || ["done","partial","skip"].indexOf(status) === -1){ skipped++; continue; }
+          setEntry(h.id, date, status, note);
           merged++;
         }
         renderAll();
@@ -1472,36 +1406,8 @@ function importFile(file){
   reader.readAsText(file);
 }
 
-function renderWeekChart(){
-  const el = document.getElementById("weekChart");
-  if(!el) return;
-  const now = new Date(), WD = ["S","M","T","W","T","F","S"];
-  let total = 0, bars = "";
-  for(let i=6;i>=0;i--){
-    const d = new Date(now); d.setDate(d.getDate()-i);
-    const key = localKey(d);
-    let sched = 0, done = 0, part = 0;
-    state.habits.forEach(h => {
-      if(!isScheduled(h, d)) return;
-      sched++;
-      const s = entryStatus(h.id, key);
-      if(s === "done"){ done++; total++; }
-      else if(s === "partial"){ part++; total++; }
-    });
-    const dh = sched ? Math.round(done/sched*100) : 0;
-    const ph = sched ? Math.round(part/sched*100) : 0;
-    const title = key + ": " + done + " done, " + part + " partial of " + sched + " scheduled";
-    bars += '<div class="wcd"><div class="wctrack" title="' + esc(title) + '">'
-      + '<div class="wcdone" style="height:' + dh + '%"></div>'
-      + '<div class="wcpart" style="height:' + ph + '%"></div>'
-      + '</div><div class="wcl' + (i === 0 ? " today" : "") + '">' + WD[d.getDay()] + "<br>" + d.getDate() + "</div></div>";
-  }
-  el.innerHTML = '<div class="wct"><b>Last 7 days</b><span>' + total + " check-ins</span></div>"
-    + '<div class="wcb">' + bars + "</div>";
-}
-
 /* ============ init ============ */
-function renderAll(){ renderStats(); renderWeekChart(); renderList(); }
+function renderAll(){ renderStats(); renderList(); }
 
 document.getElementById("themeBtn").addEventListener("click", () => {
   applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");

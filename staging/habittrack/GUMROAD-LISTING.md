@@ -19,7 +19,8 @@ Productivity, Habits, Self Improvement, Health & Fitness, Planner, Tracker, Offl
 `gallery/cover-square-1200.png` (alt: "HabitTrack — free habit tracker app, square product cover")
 
 ## Gallery (in order)
-1. `gallery/01-light-overview.png` — Full app, light mode: habits, streaks, stats
+1. `gallery/cover-1280x720.png` — Hero cover: populated app in browser frame
+2. `gallery/01-light-overview.png` — Full app, light mode: habits, streaks, stats
 2. `gallery/02-dark-overview.png` — Dark mode
 3. `gallery/04-heatmap-detail.png` — GitHub-style activity heatmap with rest days
 4. `gallery/05-new-habit.png` — Creating a habit: schedule, color, icon, partial credit
