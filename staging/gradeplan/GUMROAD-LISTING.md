@@ -1,7 +1,7 @@
 # GradePlan — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free Final Grade Calculator & GPA Calculator: What You Need on the Final Exam
+Final Grade & GPA Calculator for Students
 
 ## Permalink slug
 free-final-grade-calculator-gpa-calculator
@@ -19,48 +19,45 @@ gallery/cover-square-1200.png (also attach gallery/0-cover.png … 7-mobile.png 
 gradeplan-bundle.zip
 
 ## Tags
-final grade calculator, gpa calculator, grade calculator, what do i need on the final, weighted grade calculator, college gpa calculator, high school gpa calculator, semester grade calculator, final exam calculator, calculate my grade
+final grade calculator, gpa calculator, grade calculator, what do i need on the final, weighted grade calculator, college gpa calculator, high school gpa calculator, final exam calculator, cumulative gpa calculator, semester gpa calculator
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-🎓 Free Final Grade Calculator & GPA Calculator — GradePlan: What You Need on the Final Exam
+Free GPA calculator and final exam solver for students — GradePlan 🎓
 
-by Glenerds — free offline tools with no account, no subscription, no ads.
+Need to know what grade you need on your final? GradePlan calculates it instantly — including when your goal is mathematically impossible.
 
-"What do I need on the final to get an A?" Type in your current grade, the grade you want, and how much the final is worth — GradePlan solves for the exact score you need, shows every step of the math, and tells you honestly when the goal is mathematically impossible (and what your real ceiling is).
+Calculate your current grade, find the score you need on your final exam, and calculate your semester and cumulative GPA from letter grades and credit hours. Every result shows the full math with your numbers substituted, so you can verify it yourself and compare against your official syllabus.
 
-💸 100% FREE — no upsells, no account, no subscription, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
+Always free. No account, email signup, subscription, or hidden upgrade. No coding or setup required — open the file and get your answer in under a minute.
 
 ✨ WHAT IT DOES
 • 📝 FINAL EXAM SOLVER — current grade + desired grade + final weight → the exact score you need on the final
-• 🚫 HONEST IMPOSSIBLE VERDICT — if the math doesn't work, it says so and shows your real max with a perfect 100%
-• 🎉 GUARANTEE CHECK — already locked in your grade? It tells you the lowest final score you can afford
-• 📊 WEIGHTED COURSE GRADE — categories with weights and scores, auto-scaled if weights don't total 100%
-• 🏅 GPA CALCULATOR — courses with credits and letter grades, 4.0 scale, weighted/unweighted toggle (+1.0 Honors/AP)
+• 📉 KNOW YOUR REALISTIC OUTCOME — if the math doesn't work, it says so honestly and shows the highest grade a perfect 100% on the final can reach
+• 🛡️ PROTECT YOUR CURRENT GRADE — already locked in your goal? It tells you the lowest final score you can afford
+• 📊 WEIGHTED COURSE GRADE — categories with weights and scores; if your weights don't total 100%, they're scaled fairly
+• 🏅 GPA CALCULATOR — courses with credits and letter grades on a 4.0 scale, with a weighted toggle for Honors/AP (+1.0; an F still counts as 0)
 • 🔍 SHOW YOUR WORK — every formula printed with your numbers substituted, step by step
 • 🌙 DARK MODE — toggle, respects your system setting, remembers your choice
 • 💾 SAVES YOUR INPUTS — everything stored privately in your browser, picks up where you left off
-• 📱 MOBILE-FRIENDLY — works great on your phone between classes
+• 📱 PHONE, TABLET, COMPUTER — use it from any device, no internet needed
+
+⚠️ Estimates for planning only — always confirm with your official syllabus or registrar.
 
 📦 WHAT YOU GET
-• GradePlan as a single HTML file — double-click to open in any browser
+• GradePlan as a single offline file — a private copy you can keep forever; double-click to open in any browser
 • 8 screenshot walkthrough images
 • README with quick-start guide
-• Free updates forever
-
-🖥️ HOW IT WORKS
-No install, no internet, no account. Open the file and calculate instantly — the full formula is shown under every result so you can verify it yourself. Everything is stored privately in your own browser — your data never leaves your device.
+• Future improvements will remain free
 
 🔒 PRIVACY
-GradePlan is fully offline. No trackers, no analytics, no external requests. Unlike the big grade-calculator sites stuck in 2009: no ads, no cookie banners, no account funnel.
+GradePlan is fully offline. No trackers, no analytics, no external requests, no ads, no cookie banners. Everything is stored privately in your own browser — your grades never leave your device.
 
 🛠️ MORE FROM GLENERDS
-• [HomeRoom](https://glenerds.gumroad.com) (homeschool lesson planner & attendance tracker) and [DebtPayoff](https://glenerds.gumroad.com) (student-loan payoff planner) — free offline tools by Glenerds
+• HomeRoom (homeschool lesson planner & attendance tracker) and DebtPayoff (student-loan payoff planner) — free offline tools by Glenerds
 • Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT
 Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.
-
-⚠️ Estimates for planning only — always confirm with your official syllabus or registrar.
 
 by Glenerds — free offline tools with no account, no subscription, no ads: https://glenerds.gumroad.com
