@@ -20,14 +20,18 @@ $0 (free tool)
 - ✅ Smart validation — required fields are checked so you never hand over a half-filled receipt
 - 🌙 Dark mode, works on phone/tablet/computer
 
-**Private by design:** 100% offline single HTML file. No account, no subscription, no tracking — your tenants' details never leave your device. Free forever.
+**Private by design:** 100% offline single HTML file. No account, no ads, no subscription, no tracking — your tenants' details never leave your device. Free forever.
 
-**More by Glenerds:** free offline tools for your household and business — find them all in the Glenerds store: https://glenerds.gumroad.com
+**How it works:** download the ZIP, unzip it, and open the HTML file in any browser — on your phone, tablet, or computer. No install, no server, no account needed. Fill in the receipt, preview it live, hit print.
+
+**More from Glenerds:** free offline tools for renters, landlords, and movers — [RenewOrMove](https://glenerds.gumroad.com) (should-you-renew-your-lease cost calculator) and [HomeInventory](https://glenerds.gumroad.com) (insurance-ready home inventory) — plus the whole collection in the Glenerds store: https://glenerds.gumroad.com
 
 By Glenerds. https://glenerds.gumroad.com
 
+_This tool is 100% free. If you were ever charged for this product, contact us for a full refund._
+
 ## Thumbnail/gallery
-Square cover + gallery screenshots from `gallery/` (receipt form, live preview, dark mode, mobile).
+Thumbnail: `gallery/cover-square-1200.png` (verified). Gallery screenshots from `gallery/` (receipt form, live preview, dark mode, mobile).
 
 ## Tags
 rent receipt, landlord receipt, rent receipt generator, printable rent receipt, rental receipt template, landlord tools, property management

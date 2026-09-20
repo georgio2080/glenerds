@@ -13,7 +13,7 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/0-cover.png (also attach gallery/1-dashboard.png … 7-contractors-list.png as product images)
+gallery/cover-square-1200.png (also attach gallery/1-dashboard.png … 7-contractors-list.png as product images)
 
 ## Product file
 w9track-bundle.zip
@@ -50,7 +50,7 @@ No install, no internet, no account. Open the file, add your contractors once, l
 🔒 PRIVACY BY DESIGN
 W9Track never stores SSN or EIN numbers — only whether a W-9 is on file and the date received. Fully offline: no trackers, no analytics, no external requests.
 
-🛠️ MORE FROM GLENERDS — made by Glenerds
+🛠️ MORE FROM GLENERDS — made by Glenerds → https://glenerds.gumroad.com
 • Also hiring contractors? QuoteCraft — free contractor estimate & quote builder → https://glenerds.gumroad.com
 • Browse all Glenerds tools → https://glenerds.gumroad.com
 

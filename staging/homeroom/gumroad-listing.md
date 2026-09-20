@@ -23,9 +23,11 @@ $0 (free tool)
 
 **Private by design:** 100% offline single HTML file. No account, no subscription, no tracking — your family's data never leaves your device. Export a JSON backup any time. Print a clean summary for your records.
 
-**More by Glenerds:** a growing collection of free offline tools for your family — find them all in the Glenerds store: https://glenerds.gumroad.com
+**More by Glenerds:** families also use [GradePlan](https://glenerds.gumroad.com) — grade & GPA planning — and [HomeInventory](https://glenerds.gumroad.com) — catalog everything in your home. Find them all in the Glenerds store: https://glenerds.gumroad.com
 
 Free forever — by Glenerds. https://glenerds.gumroad.com
 
+*If you were ever charged for this product, contact us for a full refund — HomeRoom is and always will be free.*
+
 ## Thumbnail/gallery
-Square cover + gallery screenshots from `gallery/` (today view, weekly planner, attendance, gradebook, dark mode, mobile).
+Thumbnail: `gallery/cover-square-1200.png` (verified present). Square cover + gallery screenshots from `gallery/` (today view, weekly planner, attendance, gradebook, dark mode, mobile).

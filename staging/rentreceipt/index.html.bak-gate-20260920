@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rent Receipt Generator &mdash; Free Printable Landlord Receipts</title>
+<meta name="description" content="Free rent receipt generator: create a printable landlord receipt in seconds. Enter tenant and rent details, then print — 100% offline, no account, no subscription, your data never leaves this device. By Glenerds.">
+<script>
+/* Pre-theme: set data-theme before first paint to avoid flash */
+(function(){try{
+  var t=localStorage.getItem("rentreceipt-theme");
+  if(t){try{t=JSON.parse(t);}catch(e){}}
+  if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
+  document.documentElement.setAttribute("data-theme",t);
+}catch(e){}})();
+</script>
+<style>
+:root,[data-theme="light"]{
+  --bg:#f3f1fa; --card:#ffffff; --text:#1e1b2e; --muted:#6b6584;
+  --border:#e4e0f3; --input-bg:#ffffff; --input-border:#d8d3ea;
+  --chip-bg:#f0edfb; --header-grad:linear-gradient(135deg,#0f766e 0%,#0e7490 55%,#0369a1 100%);
+  --primary:#0f766e; --primary2:#0e7490; --btn-text:#ffffff;
+  --shadow:0 8px 24px rgba(15,118,110,.10);
+  --good:#15803d; --good-bg:#dcfce7; --warn:#b45309; --warn-bg:#fef3c7;
+  --danger:#dc2626; --danger-bg:#fee2e2;
+}
+[data-theme="dark"]{
+  --bg:#0c1117; --card:#141b24; --text:#eef3f7; --muted:#9fb0c3;
+  --border:#26313e; --input-bg:#1b2531; --input-border:#34414f;
+  --chip-bg:#1c2733; --primary:#2dd4bf; --primary2:#22d3ee; --btn-text:#06201d;
+  --shadow:0 8px 24px rgba(0,0,0,.35);
+  --good:#4ade80; --good-bg:#14532d; --warn:#fbbf24; --warn-bg:#451a03;
+  --danger:#f87171; --danger-bg:#450a0a;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.5}
+.hero{position:sticky;top:0;z-index:50;background:var(--header-grad);color:#fff;
+  padding:14px 20px;box-shadow:0 4px 18px rgba(3,69,102,.35)}
+.hero-inner{max-width:1024px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.logo-badge{width:48px;height:48px;flex:0 0 48px;border-radius:14px;background:rgba(255,255,255,.16);
+  display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.35)}
+.logo-badge svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
+.hero .tagline{margin:2px 0 0;font-size:.85rem;opacity:.88}
+.theme-pill{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.85rem}
+.theme-pill:hover{background:rgba(255,255,255,.24)}
+.theme-pill svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
+[data-theme="light"] .icon-sun{display:none}
+[data-theme="dark"] .icon-moon{display:none}
+main{max-width:1024px;margin:0 auto;padding:20px 16px 60px}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media (max-width:820px){.layout{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.card-head{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.icon-chip{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:var(--chip-bg);
+  display:flex;align-items:center;justify-content:center}
+.icon-chip svg{width:19px;height:19px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-head h2{margin:0;font-size:1.12rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--input-border);
+  border-radius:10px;background:var(--input-bg);color:var(--text);font-size:.95rem}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--primary2);border-color:var(--primary2)}
+.err{font-size:.8rem;color:var(--danger);margin-top:4px;min-height:1.1em}
+.field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--danger)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;cursor:pointer;
+  font-size:.92rem;font-weight:600;padding:10px 16px;margin:4px 8px 4px 0}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
+  box-shadow:0 4px 14px rgba(15,118,110,.35)}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-secondary{background:transparent;border:1px solid var(--input-border);color:var(--text)}
+.btn-secondary:hover{border-color:var(--primary)}
+.btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
+.btn-danger:hover{background:var(--danger-bg)}
+.btn-sm{padding:6px 10px;font-size:.8rem;border-radius:8px}
+/* ---- Printable receipt ---- */
+.receipt-paper{background:#fff;color:#111;border:1px solid #ddd;border-radius:8px;padding:28px 30px;
+  font-family:Georgia,"Times New Roman",serif;box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.receipt-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #111;
+  padding-bottom:12px;margin-bottom:16px}
+.receipt-head h2{margin:0;font-size:1.7rem;letter-spacing:2px;text-transform:uppercase;font-family:inherit}
+.receipt-num{font-size:.85rem;color:#444;text-align:right;font-family:-apple-system,Helvetica,Arial,sans-serif}
+.receipt-num strong{font-size:1.05rem;color:#111}
+.receipt-rows{margin:0 0 16px;font-family:-apple-system,Helvetica,Arial,sans-serif}
+.receipt-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px dotted #ccc;font-size:.95rem}
+.receipt-row .k{flex:0 0 150px;color:#555;font-size:.82rem;text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+.receipt-row .v{flex:1;color:#111;word-break:break-word}
+.receipt-amount{display:flex;justify-content:space-between;align-items:center;background:#f5f5f5;
+  border:1px solid #ddd;border-radius:6px;padding:12px 16px;margin:0 0 16px}
+.receipt-amount .lbl{font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;color:#555;font-family:-apple-system,Helvetica,Arial,sans-serif}
+.receipt-amount .val{font-size:1.6rem;font-weight:700;color:#111}
+.receipt-sig{display:flex;justify-content:space-between;margin-top:34px;gap:24px;
+  font-family:-apple-system,Helvetica,Arial,sans-serif}
+.sig-line{flex:1;border-top:1px solid #888;padding-top:6px;font-size:.78rem;color:#555}
+.receipt-foot{margin-top:18px;font-size:.75rem;color:#777;text-align:center;
+  font-family:-apple-system,Helvetica,Arial,sans-serif;border-top:1px solid #ddd;padding-top:10px}
+.hist-item{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border);font-size:.9rem}
+.hist-item:last-child{border-bottom:none}
+.hist-item .grow{flex:1;min-width:0}
+.hist-item .num{font-weight:700}
+.hist-item .meta{font-size:.8rem;color:var(--muted)}
+.empty{color:var(--muted);font-size:.9rem;text-align:center;padding:18px 0}
+.promo{border-left:4px solid var(--primary);padding:14px 18px}
+.promo p{margin:0;font-size:.95rem}
+.promo a{color:var(--primary);font-weight:700}
+footer{max-width:1024px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:.85rem}
+footer a{color:var(--primary)}
+footer>div{margin-bottom:6px}
+.disclaimer{font-size:.75rem;opacity:.85}
+/* ---- Print: only the receipt ---- */
+@media print{
+  @page{size:letter;margin:12mm}
+  body{background:#fff}
+  .hero,.no-print,footer{display:none!important}
+  main{max-width:none;margin:0;padding:0}
+  .layout{display:block}
+  .receipt-paper{box-shadow:none;border:none;border-radius:0;margin:0;padding:10px;page-break-inside:avoid}
+  .card{box-shadow:none;border:none}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="logo-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9h12M6 13h12M6 17h7"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg></div>
+    <div>
+      <h1>Free Rent Receipt Generator</h1>
+      <p class="tagline">Create and print professional rent receipts. Works offline &mdash; your data never leaves this device.</p>
+    </div>
+    <button class="theme-pill" id="themeToggle" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span>Theme</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="layout">
+    <!-- FORM -->
+    <section class="card no-print" aria-label="Receipt details">
+      <div class="card-head">
+        <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
+        <h2>Receipt details</h2>
+      </div>
+      <form id="receiptForm" novalidate>
+        <div class="grid2">
+          <div class="field" data-f="landlord">
+            <label for="landlord">Landlord name *</label>
+            <input type="text" id="landlord" maxlength="80" autocomplete="off">
+            <div class="err"></div>
+          </div>
+          <div class="field" data-f="tenant">
+            <label for="tenant">Tenant name *</label>
+            <input type="text" id="tenant" maxlength="80" autocomplete="off">
+            <div class="err"></div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field" data-f="amount">
+            <label for="amount">Amount (USD) *</label>
+            <input type="number" id="amount" min="0" step="0.01" inputmode="decimal">
+            <div class="err"></div>
+          </div>
+          <div class="field" data-f="datePaid">
+            <label for="datePaid">Date paid *</label>
+            <input type="date" id="datePaid">
+            <div class="err"></div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field" data-f="method">
+            <label for="method">Payment method *</label>
+            <select id="method">
+              <option value="Cash">Cash</option>
+              <option value="Check">Check</option>
+              <option value="Bank transfer">Bank transfer</option>
+              <option value="Money order">Money order</option>
+              <option value="Other">Other</option>
+            </select>
+            <div class="err"></div>
+          </div>
+          <div class="field" data-f="receiptNo">
+            <label for="receiptNo">Receipt #</label>
+            <input type="text" id="receiptNo" maxlength="20" autocomplete="off">
+            <div class="err"></div>
+          </div>
+        </div>
+        <div class="field" data-f="period">
+          <label for="period">Period covered <span style="font-weight:400;text-transform:none">(e.g. June 2026)</span></label>
+          <input type="text" id="period" maxlength="60" autocomplete="off">
+          <div class="err"></div>
+        </div>
+        <div class="field" data-f="address">
+          <label for="address">Property address</label>
+          <textarea id="address" rows="2" maxlength="200"></textarea>
+          <div class="err"></div>
+        </div>
+        <div class="field" data-f="memo">
+          <label for="memo">Memo / notes</label>
+          <textarea id="memo" rows="2" maxlength="200"></textarea>
+          <div class="err"></div>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" id="saveBtn"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Save receipt</span></button>
+          <button type="button" class="btn btn-secondary" id="printBtn"><svg viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span>Print receipt</span></button>
+          <button type="button" class="btn btn-secondary" id="clearFormBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 14h10l1-14"/></svg><span>New</span></button>
+        </div>
+        <div class="err" id="formErr" role="alert"></div>
+        <p style="font-size:.8rem;color:var(--muted);margin:10px 0 0">Saving a receipt stores it in this browser&rsquo;s history below. Your draft is auto-saved as you type.</p>
+      </form>
+    </section>
+
+    <!-- PREVIEW -->
+    <section class="card" id="previewCard" aria-label="Receipt preview">
+      <div class="card-head no-print">
+        <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M1 4h14M1 8h14M1 12h9"/></svg></div>
+        <h2>Live preview</h2>
+      </div>
+      <div id="printArea">
+        <div class="receipt-paper" id="receiptPaper" aria-label="Receipt preview">
+          <div class="receipt-head">
+            <h2>Rent Receipt</h2>
+            <div class="receipt-num">RECEIPT #<br><strong id="pvNum">—</strong></div>
+          </div>
+          <div class="receipt-rows">
+            <div class="receipt-row"><span class="k">Received from</span><span class="v" id="pvTenant">—</span></div>
+            <div class="receipt-row"><span class="k">Landlord / payee</span><span class="v" id="pvLandlord">—</span></div>
+            <div class="receipt-row"><span class="k">Property address</span><span class="v" id="pvAddress">—</span></div>
+            <div class="receipt-row"><span class="k">Period covered</span><span class="v" id="pvPeriod">—</span></div>
+            <div class="receipt-row"><span class="k">Date paid</span><span class="v" id="pvDate">—</span></div>
+            <div class="receipt-row"><span class="k">Payment method</span><span class="v" id="pvMethod">—</span></div>
+            <div class="receipt-row"><span class="k">Memo</span><span class="v" id="pvMemo">—</span></div>
+          </div>
+          <div class="receipt-amount">
+            <span class="lbl">Amount received</span>
+            <span class="val" id="pvAmount">—</span>
+          </div>
+          <div class="receipt-sig">
+            <div class="sig-line">Landlord signature / date</div>
+            <div class="sig-line">Tenant signature / date</div>
+          </div>
+          <div class="receipt-foot">This receipt was generated with the free RentReceipt generator &mdash; no account, no sign-up, no data sent anywhere.</div>
+        </div>
+      </div>
+      <p class="no-print" style="font-size:.82rem;color:var(--muted);margin:12px 0 0">The preview updates as you type. Printing outputs only the receipt, fitted to one page.</p>
+    </section>
+  </div>
+
+  <!-- HISTORY -->
+  <section class="card no-print" aria-label="Receipt history">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/></svg></div>
+      <h2>Receipt history</h2>
+    </div>
+    <div id="historyList"></div>
+  </section>
+
+  <!-- CROSS-PROMO -->
+  <section class="card promo no-print" aria-label="Related tool">
+    <p>Disputing deposit deductions? Check out <a href="https://glenerds.gumroad.com/l/depositcheck">DepositCheck</a> &mdash; $9 one-time, offline.</p>
+  </section>
+</main>
+
+<footer>
+  <div>RentReceipt &mdash; Free Rent Receipt Generator. Your data never leaves this device.</div>
+  <div>by <a href="https://glenerds.github.io/glenerds/">Glenerds</a></div>
+  <div class="disclaimer">For record-keeping only &mdash; not legal or tax advice. Verify payment details with both parties before relying on a receipt.</div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var K={theme:"rentreceipt-theme",hist:"rentreceipt-history",draft:"rentreceipt-draft",next:"rentreceipt-next-num"};
+var $=function(id){return document.getElementById(id);};
+var F=["landlord","tenant","amount","datePaid","method","receiptNo","period","address","memo"];
+
+function load(key,fallback){try{var v=localStorage.getItem(key);return v==null?fallback:JSON.parse(v);}catch(e){return fallback;}}
+function store(key,val){try{localStorage.setItem(key,key===K.theme?val:JSON.stringify(val));}catch(e){}}
+
+function fmtMoney(n){return "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function fmtDate(iso){try{var d=new Date(iso+"T12:00:00");if(isNaN(d))return iso;
+  return d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});}catch(e){return iso;}}
+
+function formData(){
+  var o={};
+  F.forEach(function(f){o[f]=$(f).value.trim();});
+  return o;
+}
+function setForm(o){
+  F.forEach(function(f){$(f).value=o[f]||"";});
+  updatePreview();
+}
+
+function nextReceiptNo(){
+  var n=parseInt(load(K.next,1),10);
+  if(!isFinite(n)||n<1)n=1;
+  return "RR-"+String(n).padStart(4,"0");
+}
+function bumpNext(){
+  var n=parseInt(load(K.next,1),10);
+  if(!isFinite(n)||n<1)n=1;
+  store(K.next,n+1);
+}
+
+/* ---------- preview ---------- */
+function updatePreview(){
+  var d=formData();
+  var amt=parseFloat(d.amount);
+  $("pvNum").textContent=d.receiptNo||nextReceiptNo();
+  $("pvTenant").textContent=d.tenant||"—";
+  $("pvLandlord").textContent=d.landlord||"—";
+  $("pvAddress").textContent=d.address||"—";
+  $("pvPeriod").textContent=d.period||"—";
+  $("pvDate").textContent=d.datePaid?fmtDate(d.datePaid):"—";
+  $("pvMethod").textContent=d.method||"—";
+  $("pvMemo").textContent=d.memo||"—";
+  $("pvAmount").textContent=(isFinite(amt)&&amt>0)?fmtMoney(amt):"—";
+  saveDraft();
+}
+function saveDraft(){store(K.draft,formData());}
+
+/* ---------- validation ---------- */
+function validate(d){
+  var errs={};
+  if(!d.landlord)errs.landlord="Landlord name is required.";
+  if(!d.tenant)errs.tenant="Tenant name is required.";
+  var amt=parseFloat(d.amount);
+  if(d.amount===""||!isFinite(amt))errs.amount="Enter a valid amount.";
+  else if(amt<=0)errs.amount="Amount must be greater than zero.";
+  else if(amt>1000000)errs.amount="Amount looks unusually large — please check it.";
+  if(!d.datePaid)errs.datePaid="Date paid is required.";
+  else{
+    var t=new Date(d.datePaid+"T12:00:00");
+    if(isNaN(t))errs.datePaid="Enter a valid date.";
+    else{
+      var now=new Date();now.setHours(0,0,0,0);
+      var max=new Date(now);max.setFullYear(max.getFullYear()+1);
+      var min=new Date(2000,0,1);
+      if(t>max)errs.datePaid="Date paid can\u2019t be more than a year in the future.";
+      else if(t<min)errs.datePaid="Date paid must be after Jan 1, 2000.";
+    }
+  }
+  if(!d.method)errs.method="Choose a payment method.";
+  return errs;
+}
+function showErrors(errs){
+  var any=false;
+  F.forEach(function(f){
+    var box=document.querySelector('.field[data-f="'+f+'"]');
+    if(!box)return;
+    var e=errs[f];
+    box.classList.toggle("invalid",!!e);
+    var slot=box.querySelector(".err");
+    if(slot)slot.textContent=e||"";
+    if(e)any=true;
+  });
+  $("formErr").textContent=any?"Fix the highlighted fields before saving.":"";
+  return !any;
+}
+
+/* ---------- history ---------- */
+function getHistory(){var h=load(K.hist,[]);return Array.isArray(h)?h:[];}
+function setHistory(h){store(K.hist,h);}
+function renderHistory(){
+  var list=$("historyList"),h=getHistory();
+  list.innerHTML="";
+  if(!h.length){list.innerHTML='<div class="empty">No saved receipts yet. Fill out the form and hit \u201cSave receipt\u201d.</div>';return;}
+  var shown=h.slice().reverse();
+  shown.forEach(function(r){
+    var div=document.createElement("div");
+    div.className="hist-item";
+    div.innerHTML='<div class="grow"><div class="num">'+esc(r.receiptNo||"—")+'</div>'+
+      '<div class="meta">'+esc(r.tenant||"")+' · '+(isFinite(r.amount)?fmtMoney(r.amount):"")+' · '+(r.datePaid?esc(fmtDate(r.datePaid)):"")+'</div></div>';
+    var rp=document.createElement("button");
+    rp.type="button";rp.className="btn btn-secondary btn-sm";rp.textContent="Reprint";
+    rp.addEventListener("click",function(){setForm(r);window.print();});
+    var del=document.createElement("button");
+    del.type="button";del.className="btn btn-danger btn-sm";del.textContent="Delete";
+    del.addEventListener("click",function(){
+      if(confirm("Delete receipt "+(r.receiptNo||"")+"? This can\u2019t be undone.")){
+        setHistory(getHistory().filter(function(x){return x.id!==r.id;}));
+        renderHistory();
+      }
+    });
+    div.appendChild(rp);div.appendChild(del);
+    list.appendChild(div);
+  });
+}
+
+/* ---------- events ---------- */
+F.forEach(function(f){
+  $(f).addEventListener("input",function(){updatePreview();});
+  $(f).addEventListener("change",function(){updatePreview();});
+});
+$("saveBtn").addEventListener("click",function(){
+  var d=formData(),errs=validate(d);
+  if(!showErrors(errs))return;
+  var rec=Object.assign({},d,{amount:parseFloat(d.amount),id:"r"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36)});
+  if(!rec.receiptNo)rec.receiptNo=nextReceiptNo();
+  var h=getHistory();h.push(rec);setHistory(h);
+  if(!d.receiptNo){
+    bumpNext();
+  }else{
+    /* custom number matching RR-NNNN: keep the auto counter ahead of it */
+    var m=d.receiptNo.match(/^RR-(\d+)$/i);
+    if(m){
+      var num=parseInt(m[1],10),cur=parseInt(load(K.next,1),10);
+      if(num>=cur)store(K.next,num+1);
+    }
+  }
+  $("receiptNo").value=nextReceiptNo();
+  renderHistory();updatePreview();
+  $("formErr").textContent="";
+});
+$("printBtn").addEventListener("click",function(){
+  updatePreview();
+  window.print();
+});
+$("clearFormBtn").addEventListener("click",function(){
+  F.forEach(function(f){$(f).value="";});
+  $("method").value="Cash";
+  $("receiptNo").value=nextReceiptNo();
+  showErrors({});updatePreview();
+});
+$("themeToggle").addEventListener("click",function(){
+  var cur=document.documentElement.getAttribute("data-theme")==="dark"?"dark":"light";
+  var nxt=cur==="dark"?"light":"dark";
+  document.documentElement.setAttribute("data-theme",nxt);
+  store(K.theme,nxt);
+});
+
+/* ---------- init ---------- */
+(function init(){
+  var draft=load(K.draft,null);
+  if(draft&&typeof draft==="object"){
+    F.forEach(function(f){if(typeof draft[f]==="string")$(f).value=draft[f];});
+  }
+  if(!$("receiptNo").value)$("receiptNo").value=nextReceiptNo();
+  if(!$("method").value)$("method").value="Cash";
+  renderHistory();
+  updatePreview();
+})();
+})();
+</script>
+</body>
+</html>

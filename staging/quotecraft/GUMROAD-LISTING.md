@@ -13,7 +13,7 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/0-cover.png (also attach gallery/1-quotes-list.png … 7-dark-mode.png as product images)
+gallery/cover-square-1200.png (also attach gallery/1-quotes-list.png … 7-mobile.png as product images)
 
 ## Product file
 quotecraft-bundle.zip
@@ -52,8 +52,9 @@ No install, no internet, no account. Open the file, set up your business profile
 🔒 PRIVACY
 QuoteCraft is fully offline. No trackers, no analytics, no external requests.
 
-🛠️ MORE FROM GLENERDS
-• More free + paid tools by Glenerds → https://glenerds.gumroad.com
+🛠️ MORE FROM GLENERDS — made by Glenerds → https://glenerds.gumroad.com
+• Also hiring contractors? W9Track — free W-9 & 1099 threshold tracker → https://glenerds.gumroad.com
+• Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT
 Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.

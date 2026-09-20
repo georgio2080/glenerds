@@ -33,6 +33,7 @@ TripBudget is a trip budget planner built for people who plan their trips like t
 
 - **100% offline** — a single HTML file. Works on the plane, abroad with no data, anywhere. No account, no sign-up, no spreadsheet skills required.
 - **No subscription** — pay once, use forever. Your data never leaves your device; there are no servers, no analytics, no tracking.
+- **One-time purchase** — no subscription, no monthly fee. Buy it once and it's yours forever.
 - **Exact money math** — amounts are calculated to the cent, so your totals always reconcile.
 
 **Who it's for**
@@ -47,8 +48,14 @@ Type-A travel planners, budget honeymooners, family vacation organizers, backpac
 
 Open the file, plan the trip, enjoy the trip. ✈️
 
-**More from Glenerds** — simple offline tools that respect your privacy: https://glenerds.gumroad.com
+*Affiliates welcome — 30% commission. Sign up here: [INSERT-AFFILIATE-SIGNUP-URL]*
+
+**More from Glenerds** — budgeters also like [RenoTrack](https://glenerds.gumroad.com) (home renovation budget tracker) and [DebtPayoff](https://glenerds.gumroad.com) (debt payoff planner): https://glenerds.gumroad.com
 
 ---
 
-*by Glenerds — simple offline tools that respect your privacy.*
+*by Glenerds — simple offline tools that respect your privacy. Store: https://glenerds.gumroad.com*
+
+## Thumbnail
+
+`gallery/cover-square-1200.png` (verified present)

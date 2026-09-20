@@ -24,12 +24,16 @@ $0 (free tool)
 
 **Private by design:** 100% offline single HTML file. No account, no ads, no subscription, no tracking — your debt numbers never leave your device. Free forever.
 
-**More by Glenerds:** free offline tools for your money — RenewOrMove (lease vs moving calculator) and TripBudget (travel budget planner), plus the whole collection in the Glenerds store: https://glenerds.gumroad.com
+**How it works:** download the ZIP, unzip it, and open the HTML file in any browser — on your phone, tablet, or computer. No install, no server, no account needed. Your data stays saved in your browser automatically.
+
+**More from Glenerds:** free offline tools for your money and home — [RenoTrack](https://glenerds.gumroad.com) (home renovation budget tracker) and [HomeInventory](https://glenerds.gumroad.com) (insurance-ready home inventory) — plus the whole collection in the Glenerds store: https://glenerds.gumroad.com
 
 By Glenerds. https://glenerds.gumroad.com
 
+_This tool is 100% free. If you were ever charged for this product, contact us for a full refund._
+
 ## Thumbnail/gallery
-Square cover + gallery screenshots from `gallery/` (debt list, strategy comparison, payoff schedule, dark mode, mobile).
+Thumbnail: `gallery/cover-square-1200.png` (verified). Gallery screenshots from `gallery/` (debt list, strategy comparison, payoff schedule, dark mode, mobile).
 
 ## Tags
 debt payoff calculator, debt snowball calculator, debt avalanche, payoff strategy, become debt free, debt payoff planner, interest calculator

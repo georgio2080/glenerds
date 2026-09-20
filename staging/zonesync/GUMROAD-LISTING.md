@@ -13,7 +13,7 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/0-cover.png (also attach gallery/1-overview.png … 7-team-members.png as product images)
+gallery/cover-square-1200.png (also attach gallery/1-overview.png … 7-team-members.png as product images)
 
 ## Product file
 zonesync-bundle.zip
@@ -49,8 +49,9 @@ No install, no internet, no account. Open the file, add your team once, and inst
 🔒 PRIVACY
 ZoneSync is fully offline. No trackers, no analytics, no external requests.
 
-🛠️ MORE FROM GLENERDS
-Made by Glenerds — browse all Glenerds tools → https://glenerds.gumroad.com
+🛠️ MORE FROM GLENERDS — made by Glenerds → https://glenerds.gumroad.com
+• Also building better routines? HabitTrack — free habit tracker with daily streaks & heatmap → https://glenerds.gumroad.com
+• Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT
 Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.

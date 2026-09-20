@@ -8,6 +8,10 @@ Vegetable Garden Planting Calendar by Zone — Seed Starting & Frost Date Schedu
 
 $9 (one-time purchase, no subscription)
 
+## Thumbnail
+
+gallery/cover-square-1200.png
+
 ## Description
 
 Never wonder "is it too late to plant this?" again. GardenCal builds your entire growing
@@ -36,12 +40,20 @@ direct sow, when you'll harvest, and what to plant for fall.
 Perfect for first-time gardeners, raised-bed growers, homesteaders, and anyone who wants
 the whole season planned in five minutes.
 
-*By Glenerds — simple offline tools for people who make things.*
+**How it works**
+
+Download the ZIP, open the single HTML file in any browser — no install, no account,
+no internet. Pick your zone (or enter your frost dates), choose your crops, and the
+calendar builds itself. Your picks save on your device and stay yours forever.
+
+*By Glenerds — simple offline tools for people who make things: https://glenerds.gumroad.com*
 
 ---
 
-Related Glenerds tools: RecipeCost — recipe costing & pricing for home bakers — plus more
-one-time-purchase offline tools at the Glenerds store: https://glenerds.gumroad.com
+Related Glenerds tools: [RecipeCost](https://glenerds.gumroad.com) — recipe costing & pricing
+for home bakers; [CraftCost](https://glenerds.gumroad.com) — pricing calculator for
+handmade & craft sellers. More one-time-purchase offline tools at the Glenerds store:
+https://glenerds.gumroad.com
 
 *Affiliates welcome — 30% commission, auto-approved. Share GardenCal with your gardening
 audience and earn on every sale: https://glenerds.gumroad.com/affiliates*

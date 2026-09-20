@@ -13,7 +13,7 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/0-cover.png (also attach gallery/1-inputs.png … 7-katch-mcardle.png as product images)
+gallery/cover-square-1200.png (also attach gallery/0-cover.png … 7-katch-mcardle.png as product images)
 
 ## Product file
 macrotrack-bundle.zip
@@ -52,6 +52,7 @@ No install, no internet, no account. Open the file, enter your details, and your
 MacroTrack is fully offline. No trackers, no analytics, no external requests. Unlike the big calculator sites: no ads, no cookie banners, no account funnel.
 
 🛠️ MORE FROM GLENERDS
+• [HabitTrack](https://glenerds.gumroad.com) — free daily habit tracker with streaks, by Glenerds
 • Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT

@@ -16,7 +16,7 @@ $0 (free)
 Productivity, Habits, Self Improvement, Health & Fitness, Planner, Tracker, Offline Tool
 
 ## Cover image
-`gallery/01-light-overview.png` (alt: "HabitTrack free habit tracker — daily streaks, completion rates and one-tap check-offs")
+`gallery/cover-square-1200.png` (alt: "HabitTrack — free habit tracker app, square product cover")
 
 ## Gallery (in order)
 1. `gallery/01-light-overview.png` — Full app, light mode: habits, streaks, stats
@@ -31,6 +31,8 @@ Productivity, Habits, Self Improvement, Health & Fitness, Planner, Tracker, Offl
 ## Description body
 
 Build streaks that actually stick. HabitTrack is a free daily habit tracker that lives entirely in your browser — no account, no ads, no tracking, no subscription. Your habits never leave your device.
+
+💸 100% FREE — no upsells, no subscription, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 **What's inside** (by Glenerds):
 - ✅ One-tap daily check-offs with streak + best-streak counters
@@ -47,6 +49,8 @@ Build streaks that actually stick. HabitTrack is a free daily habit tracker that
 
 **How streaks work:** done or partial days extend your streak · rest days pause it without breaking · a missed scheduled day resets it.
 
+**How it works:** no install, no internet, no account. Open the file, add a habit, tap the check-off each day. Everything is stored privately in your own browser — your data never leaves your device. JSON/CSV backup export/import included.
+
 ---
 
-**More free tools by Glenerds:** MacroTrack (free TDEE + macro calculator), GradePlan (free final grade calculator), SplitFair, TicketMath, PackTrack, SubAudit, QuoteCraft, TurnoverCheck, MoveInProof, W9Track, ZoneSync — https://glenerds.gumroad.com
+**More free tools by Glenerds:** ZoneSync (free time-zone overlap calculator), MacroTrack (free TDEE + macro calculator) — https://glenerds.gumroad.com

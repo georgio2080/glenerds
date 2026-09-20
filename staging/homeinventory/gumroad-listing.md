@@ -21,14 +21,18 @@ $0 (free tool)
 - 💾 JSON backup export/import
 - 🌙 Dark mode, works on phone/tablet/computer
 
-**Private by design:** 100% offline single HTML file. No account, no subscription, no tracking — your belongings data never leaves your device. Free forever.
+**Private by design:** 100% offline single HTML file. No account, no ads, no subscription, no tracking — your belongings data never leaves your device. Free forever.
 
-**More by Glenerds:** free offline tools for your home — RenoTrack (home renovation budget tracker) and the Rent Receipt Generator (printable landlord receipts), plus the whole collection in the Glenerds store: https://glenerds.gumroad.com
+**How it works:** download the ZIP, unzip it, and open the HTML file in any browser — on your phone, tablet, or computer. No install, no server, no account needed. Your data stays saved in your browser automatically.
+
+**More from Glenerds:** free offline tools for your home — [RenoTrack](https://glenerds.gumroad.com) (home renovation budget tracker) and [Rent Receipt Generator](https://glenerds.gumroad.com) (printable landlord receipts) — plus the whole collection in the Glenerds store: https://glenerds.gumroad.com
 
 By Glenerds. https://glenerds.gumroad.com
 
+_This tool is 100% free. If you were ever charged for this product, contact us for a full refund._
+
 ## Thumbnail/gallery
-Square cover + gallery screenshots from `gallery/` (room dashboard, item catalog, claim report, dark mode, mobile).
+Thumbnail: `gallery/cover-square-1200.png` (verified). Gallery screenshots from `gallery/` (room dashboard, item catalog, claim report, dark mode, mobile).
 
 ## Tags
 home inventory, insurance claim inventory, belongings tracker, home inventory app, personal property inventory, insurance documentation, room by room inventory

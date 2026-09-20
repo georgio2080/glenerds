@@ -8,6 +8,10 @@ Recipe Cost Calculator for Home Bakers — Food Costing, Pricing & Profit Margin
 
 $9 (one-time purchase, no subscription)
 
+## Thumbnail
+
+gallery/cover-square-1200.png
+
 ## Description
 
 Stop guessing what your bakes cost. RecipeCost tells home bakers and cottage-food sellers
@@ -35,11 +39,18 @@ exactly what each recipe costs to make — and exactly what to charge.
 Perfect for home bakeries, cottage-food businesses, farmers-market sellers, and anyone who
 sells cakes, cookies, bread, or desserts and wants to price with confidence.
 
-*By Glenerds — simple offline tools for people who make things.*
+**How it works**
+
+Download the ZIP, open the single HTML file in any browser — no install, no account,
+no internet. Your ingredient library and recipes save on your device and stay yours
+forever.
+
+*By Glenerds — simple offline tools for people who make things: https://glenerds.gumroad.com*
 
 ---
 
-Related Glenerds tools: [CraftCost](https://glenerds.gumroad.com) — pricing calculator for
+Related Glenerds tools: [GardenCal](https://glenerds.gumroad.com) — vegetable garden planting
+calendar by zone; [CraftCost](https://glenerds.gumroad.com) — pricing calculator for
 handmade & craft sellers. More one-time-purchase tools at https://glenerds.gumroad.com
 
 *Affiliates welcome — 30% commission, auto-approved. Share RecipeCost with your baking

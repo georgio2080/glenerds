@@ -13,7 +13,7 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/0-cover.png (also attach gallery/1-final-work.png … 7-mobile.png as product images)
+gallery/cover-square-1200.png (also attach gallery/0-cover.png … 7-mobile.png as product images)
 
 ## Product file
 gradeplan-bundle.zip
@@ -55,10 +55,12 @@ No install, no internet, no account. Open the file and calculate instantly — t
 GradePlan is fully offline. No trackers, no analytics, no external requests. Unlike the big grade-calculator sites stuck in 2009: no ads, no cookie banners, no account funnel.
 
 🛠️ MORE FROM GLENERDS
-• HomeRoom (homeschool lesson planner & attendance tracker) and DebtPayoff (student-loan payoff planner) — free offline tools by Glenerds
+• [HomeRoom](https://glenerds.gumroad.com) (homeschool lesson planner & attendance tracker) and [DebtPayoff](https://glenerds.gumroad.com) (student-loan payoff planner) — free offline tools by Glenerds
 • Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT
 Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.
 
 ⚠️ Estimates for planning only — always confirm with your official syllabus or registrar.
+
+by Glenerds — free offline tools with no account, no subscription, no ads: https://glenerds.gumroad.com

@@ -20,14 +20,18 @@ $0 (free tool)
 - ⌨️ Live results — recalculates as you type
 - 🌙 Dark mode, works on phone/tablet/computer
 
-**Private by design:** 100% offline single HTML file. No account, no subscription, no tracking — your rent numbers never leave your device. Your inputs are saved in your browser automatically. Free forever.
+**Private by design:** 100% offline single HTML file. No account, no ads, no subscription, no tracking — your rent numbers never leave your device. Your inputs are saved in your browser automatically. Free forever.
 
-**More by Glenerds:** free offline tools for your money and your move — DebtPayoff (debt payoff planner) and TripBudget (travel budget planner), plus the whole collection in the Glenerds store: https://glenerds.gumroad.com
+**How it works:** download the ZIP, unzip it, and open the HTML file in any browser — on your phone, tablet, or computer. No install, no server, no account needed. Just enter your rent numbers and see your answer live.
+
+**More from Glenerds:** free offline tools for renters and movers — [Rent Receipt Generator](https://glenerds.gumroad.com) (printable landlord receipts) and [HomeInventory](https://glenerds.gumroad.com) (insurance-ready home inventory) — plus the whole collection in the Glenerds store: https://glenerds.gumroad.com
 
 By Glenerds. https://glenerds.gumroad.com
 
+_This tool is 100% free. If you were ever charged for this product, contact us for a full refund._
+
 ## Thumbnail/gallery
-Square cover + gallery screenshots from `gallery/` (rent inputs, moving costs, verdict/break-even, dark mode, mobile).
+Thumbnail: `gallery/cover-square-1200.png` (verified). Gallery screenshots from `gallery/` (rent inputs, moving costs, verdict/break-even, dark mode, mobile).
 
 ## Tags
 renew lease or move, should i renew my lease, moving cost calculator, lease renewal calculator, break even moving, rent increase, apartment moving costs

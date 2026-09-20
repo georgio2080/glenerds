@@ -45,6 +45,8 @@ Open it on your phone at the property with zero bars and it just works.
 - **One-time purchase** — pay once, use it forever. No subscription, no monthly
   fee, free updates for life.
 
+*Affiliates welcome — 30% commission. Sign up here: [INSERT-AFFILIATE-SIGNUP-URL]*
+
 **Who it's for:** homeowners managing their own remodel, house flippers
 juggling multiple properties, and anyone who's been burned by renovation
 costs creeping 20% over "the plan."
@@ -53,13 +55,17 @@ costs creeping 20% over "the plan."
 any modern browser (Chrome, Edge, Firefox, Safari) on Mac, Windows, or phone.
 Free updates for life.
 
-**More from Glenerds** — also check out HomeInventory (catalog everything in
-your home), TripBudget (travel budget planner), and DebtPayoff (debt payoff
+**More from Glenerds** — also check out [HomeInventory](https://glenerds.gumroad.com) (catalog everything in
+your home), [TripBudget](https://glenerds.gumroad.com) (travel budget planner), and [DebtPayoff](https://glenerds.gumroad.com) (debt payoff
 planner): https://glenerds.gumroad.com
 
 ---
 
-*by Glenerds — simple offline tools that respect your privacy.*
+*by Glenerds — simple offline tools that respect your privacy. Store: https://glenerds.gumroad.com*
+
+## Thumbnail
+
+`gallery/cover-square-1200.png` (verified present)
 
 ---
 
