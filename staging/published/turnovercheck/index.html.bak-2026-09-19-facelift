@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="TurnoverCheck — offline Airbnb turnover checklist and damage log for short-term-rental hosts. Works fully offline.">
+<title>TurnoverCheck — Turnover Checklist &amp; Damage Log</title>
+<style>
+/* ---- theme tokens ---- */
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --text:#17202a; --muted:#5d6b7a;
+  --border:#d9e0e8; --accent:#0b7a6e; --accent-text:#ffffff;
+  --accent-soft:rgba(11,122,110,.12);
+  --danger:#b3261e; --danger-soft:#fdecea;
+  --warn:#8a5a00; --warn-soft:#fff4dd;
+  --input-bg:#ffffff; --radius:10px; --tap:44px;
+  --shadow:0 1px 3px rgba(16,24,40,.10);
+}
+html[data-theme="dark"]{
+  --bg:#101315; --card:#1a1f24; --text:#e9edf1; --muted:#9aa7b4;
+  --border:#2b333c; --accent:#35c9b8; --accent-text:#06231f;
+  --accent-soft:rgba(53,201,184,.14);
+  --danger:#ff9d94; --danger-soft:#3a1d1a;
+  --warn:#e8b93e; --warn-soft:#33290f;
+  --input-bg:#14181d;
+  --shadow:0 1px 3px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.5;
+}
+a{color:var(--accent)}
+/* ---- layout ---- */
+.wrap{max-width:760px; margin:0 auto; padding:0 14px 90px}
+header.top{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 0 6px}
+.brand h1{font-size:1.35rem; margin:0; letter-spacing:.2px}
+.brand p{margin:2px 0 0; color:var(--muted); font-size:.85rem}
+/* ---- theme toggle ---- */
+.theme-btn{
+  min-height:var(--tap); min-width:var(--tap); padding:8px 14px;
+  border:1px solid var(--border); border-radius:999px; background:var(--card);
+  color:var(--text); font-size:.9rem; cursor:pointer;
+}
+.theme-btn:hover{border-color:var(--accent)}
+/* ---- tabs ---- */
+.tabs{display:flex; gap:8px; margin:10px 0 14px; position:sticky; top:0; z-index:5;
+  background:var(--bg); padding:8px 0}
+.tab{
+  flex:1; min-height:52px; border:1px solid var(--border); border-radius:var(--radius);
+  background:var(--card); color:var(--text); font-size:1rem; font-weight:600; cursor:pointer;
+}
+.tab[aria-selected="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-text)}
+.tab:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  outline:3px solid var(--accent); outline-offset:2px;
+}
+/* ---- cards ---- */
+.card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:14px; margin:0 0 14px}
+.card h2{font-size:1.05rem; margin:0 0 10px}
+.card h3{font-size:1rem; margin:0}
+/* ---- progress ---- */
+.progress{height:14px; border:1px solid var(--border); border-radius:999px; background:var(--input-bg); overflow:hidden}
+.progress > div{height:100%; width:0; background:var(--accent); transition:width .25s ease}
+.overall-row{display:flex; align-items:center; gap:10px; margin:8px 0}
+.overall-row .progress{flex:1}
+.pct{font-weight:700; min-width:52px; text-align:right; font-variant-numeric:tabular-nums}
+/* ---- summary (aria-live) ---- */
+.summary{border-left:4px solid var(--accent); background:var(--accent-soft);
+  border-radius:0 var(--radius) var(--radius) 0; padding:10px 12px; margin:10px 0; font-size:.95rem}
+/* ---- storage-failure banner ---- */
+.warn-banner{border-left:4px solid var(--warn); background:var(--warn-soft); color:var(--text);
+  border-radius:0 var(--radius) var(--radius) 0; padding:10px 12px; margin:10px 0; font-size:.9rem; font-weight:600}
+/* ---- buttons / inputs ---- */
+button{font:inherit; color:var(--text)}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  min-height:var(--tap); padding:10px 16px; border-radius:var(--radius);
+  border:1px solid var(--border); background:var(--card); cursor:pointer; font-weight:600;
+}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-text)}
+.btn.danger{color:var(--danger); border-color:var(--danger)}
+.btn.danger.armed{background:var(--danger); color:#fff}
+.btn.small{min-height:40px; padding:6px 10px; font-size:.85rem; font-weight:500}
+.btn:disabled{opacity:.5; cursor:not-allowed}
+.btn-row{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0}
+label{display:block; font-weight:600; font-size:.9rem; margin:10px 0 4px}
+input[type="text"], input[type="search"], select, textarea{
+  width:100%; min-height:var(--tap); padding:10px 12px; font:inherit; color:var(--text);
+  background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius);
+}
+textarea{min-height:88px; resize:vertical}
+.hint{color:var(--muted); font-size:.82rem; margin:4px 0 0; font-weight:400}
+.inline{display:flex; gap:8px; align-items:center}
+.inline > input, .inline > select{flex:1}
+/* ---- rooms / tasks ---- */
+.room-head{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:6px}
+.room-head h3{flex:1 1 auto}
+.room-count{color:var(--muted); font-size:.85rem; font-variant-numeric:tabular-nums; white-space:nowrap}
+.timer-chip{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border);
+  border-radius:999px; padding:4px 6px 4px 12px; font-variant-numeric:tabular-nums; font-size:.9rem}
+.timer-chip .t{font-weight:700}
+.task-list{list-style:none; margin:8px 0; padding:0}
+.task{display:flex; align-items:center; gap:4px; border-top:1px solid var(--border); padding:2px 0}
+.task-check{flex:1; display:flex; align-items:center; gap:10px; min-height:var(--tap);
+  padding:8px 4px; cursor:pointer; font-weight:400; margin:0}
+.task-check input{width:22px; height:22px; flex:none; accent-color:var(--accent); margin:0}
+.task-check .txt{flex:1; overflow-wrap:anywhere}
+.task-check input:checked + .txt{text-decoration:line-through; color:var(--muted)}
+.task-ops{display:flex; gap:2px}
+.icon-btn{min-width:40px; min-height:40px; border:1px solid transparent; background:none;
+  border-radius:8px; cursor:pointer; font-size:1rem; color:var(--muted); padding:4px 6px}
+.icon-btn:hover{border-color:var(--border); color:var(--text)}
+.icon-btn.del:hover{color:var(--danger); border-color:var(--danger)}
+.add-row{display:flex; gap:8px; margin-top:8px}
+.add-row input{flex:1}
+.room-ops{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+/* ---- incidents ---- */
+.incident{border:1px solid var(--border); border-radius:var(--radius); padding:12px; margin:0 0 10px; background:var(--input-bg)}
+.incident-top{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:6px}
+.sev{font-size:.75rem; font-weight:700; letter-spacing:.4px; text-transform:uppercase;
+  border-radius:999px; padding:3px 10px; border:1px solid}
+.sev.minor{color:var(--accent); border-color:var(--accent)}
+.sev.moderate{color:var(--warn); border-color:var(--warn)}
+.sev.major{color:var(--danger); border-color:var(--danger)}
+.incident .meta{color:var(--muted); font-size:.82rem; margin:2px 0}
+.incident .desc{margin:6px 0 0; overflow-wrap:anywhere; white-space:pre-wrap}
+.incident .ops{display:flex; gap:8px; margin-top:10px}
+.empty{color:var(--muted); font-size:.92rem; padding:8px 0}
+/* ---- report ---- */
+.report-pre{background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius);
+  padding:12px; white-space:pre-wrap; overflow-wrap:anywhere; font-size:.85rem; max-height:320px; overflow:auto}
+.copy-ok{color:var(--accent); font-weight:600; font-size:.9rem}
+/* ---- data section ---- */
+.data-grid{display:flex; flex-wrap:wrap; gap:8px}
+/* ---- footer ---- */
+footer.site{margin-top:26px; padding:16px 0 30px; text-align:center; color:var(--muted); font-size:.85rem}
+/* ---- visually hidden ---- */
+.vh{position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+@media (min-width:640px){
+  .brand h1{font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="storage-warn" class="warn-banner" hidden role="alert">Browser storage failed — your changes are only kept until this tab closes.</div>
+  <header class="top">
+    <div class="brand">
+      <h1>TurnoverCheck</h1>
+      <p>Turnover checklist &amp; damage log — works offline</p>
+    </div>
+    <button type="button" class="theme-btn" id="theme-toggle" aria-pressed="false">Dark mode</button>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="TurnoverCheck sections">
+    <button type="button" class="tab" role="tab" id="tab-checklist" aria-controls="panel-checklist" aria-selected="true">Checklist</button>
+    <button type="button" class="tab" role="tab" id="tab-log" aria-controls="panel-log" aria-selected="false" tabindex="-1">Damage Log</button>
+  </nav>
+
+  <main>
+    <!-- ============ TAB 1: CHECKLIST ============ -->
+    <section id="panel-checklist" role="tabpanel" aria-labelledby="tab-checklist">
+      <div class="card">
+        <h2>Turnover progress</h2>
+        <div class="btn-row" style="margin-top:0">
+          <button type="button" class="btn primary" id="btn-start">Start turnover</button>
+          <button type="button" class="btn" id="btn-restart" hidden>Restart clock</button>
+        </div>
+        <p class="hint" id="started-line" style="margin:0 0 8px"></p>
+        <div class="overall-row">
+          <div class="progress" role="progressbar" aria-label="Overall checklist progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="overall-bar"><div id="overall-fill"></div></div>
+          <span class="pct" id="overall-pct">0%</span>
+        </div>
+        <div class="summary" id="summary" aria-live="polite"></div>
+      </div>
+
+      <div id="rooms"></div>
+
+      <div class="card">
+        <h2>Add a room</h2>
+        <div class="add-row">
+          <label class="vh" for="new-room-name">New room name</label>
+          <input type="text" id="new-room-name" maxlength="60" placeholder="Room name (e.g. Guest Suite)" autocomplete="off">
+          <button type="button" class="btn primary" id="btn-add-room">Add</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Data</h2>
+        <div class="data-grid">
+          <button type="button" class="btn" id="btn-export">Export JSON</button>
+          <button type="button" class="btn" id="btn-import">Import JSON</button>
+          <input type="file" id="file-import" accept="application/json,.json" class="vh" aria-label="Choose JSON file to import">
+          <button type="button" class="btn" id="btn-demo">Load demo data</button>
+          <button type="button" class="btn danger" id="btn-clear">Clear all data</button>
+        </div>
+        <p class="hint">Export downloads a backup file. Import replaces everything currently here. Demo loads a sample turnover with two incidents. Clear wipes the app back to a fresh checklist.</p>
+        <p class="hint" id="data-msg" role="status"></p>
+      </div>
+    </section>
+
+    <!-- ============ TAB 2: DAMAGE LOG ============ -->
+    <section id="panel-log" role="tabpanel" aria-labelledby="tab-log" hidden>
+      <div class="card">
+        <h2>Log an incident</h2>
+        <label for="prop-name">Property name</label>
+        <input type="text" id="prop-name" maxlength="120" placeholder="e.g. Lakeview Cabin" autocomplete="off">
+        <p class="hint">Used in the incident report header.</p>
+
+        <label for="inc-room">Room</label>
+        <select id="inc-room"></select>
+
+        <label for="inc-item">Item / area</label>
+        <input type="text" id="inc-item" maxlength="120" placeholder="e.g. Kitchen faucet" autocomplete="off">
+
+        <div class="inline">
+          <div style="flex:1">
+            <label for="inc-type">Type</label>
+            <select id="inc-type">
+              <option value="damage">Damage</option>
+              <option value="missing">Missing item</option>
+              <option value="excessive cleaning">Excessive cleaning</option>
+            </select>
+          </div>
+          <div style="flex:1">
+            <label for="inc-sev">Severity</label>
+            <select id="inc-sev">
+              <option value="minor">Minor</option>
+              <option value="moderate">Moderate</option>
+              <option value="major">Major</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="inc-desc">Description</label>
+        <textarea id="inc-desc" maxlength="2000" placeholder="What happened, condition found, anything the next guest should know..."></textarea>
+
+        <label for="inc-photo">Photo reference <span class="hint" style="display:inline">(optional text note — no photo is uploaded)</span></label>
+        <input type="text" id="inc-photo" maxlength="120" placeholder="e.g. IMG_2041" autocomplete="off">
+
+        <div class="btn-row">
+          <button type="button" class="btn primary" id="btn-inc-save">Add incident</button>
+          <button type="button" class="btn" id="btn-inc-cancel" hidden>Cancel edit</button>
+        </div>
+        <p class="hint" id="inc-msg" role="status"></p>
+      </div>
+
+      <div class="card">
+        <h2>Incidents <span class="hint" style="display:inline" id="inc-count"></span></h2>
+        <div id="incidents"></div>
+      </div>
+
+      <div class="card">
+        <h2>Incident report</h2>
+        <div class="btn-row" style="margin-top:0">
+          <button type="button" class="btn primary" id="btn-report">Generate report</button>
+          <button type="button" class="btn" id="btn-copy" disabled>Copy report</button>
+        </div>
+        <div class="report-pre" id="report-out" aria-label="Generated incident report" hidden></div>
+        <p class="hint copy-ok" id="copy-msg" role="status"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
+  </footer>
+</div>
+<script>
+'use strict';
+/* TurnoverCheck v1 — single-file offline app. No external requests. */
+
+/* ---------- constants ---------- */
+var LS_KEY = 'turnovercheck-state-v1';
+var THEME_KEY = 'turnovercheck-theme';
+var INCIDENT_TYPES = ['damage', 'missing', 'excessive cleaning'];
+var SEVERITIES = ['minor', 'moderate', 'major'];
+var MAX = {
+  rooms: 40, tasks: 120, incidents: 500,
+  roomName: 60, taskText: 200, item: 120, desc: 2000, photo: 120, property: 120
+};
+
+/* ---------- tiny DOM helpers (no innerHTML anywhere) ---------- */
+function $(sel) { return document.querySelector(sel); }
+function el(tag, cls, text) {
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+function uid() {
+  return 'id' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function fmtClock(ms) {
+  var s = Math.floor(ms / 1000);
+  var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+  s = s % 60;
+  return (h > 0 ? h + ':' + pad2(m) : m) + ':' + pad2(s);
+}
+function fmtDur(ms) {
+  var m = Math.round(ms / 60000);
+  if (m < 1) return 'under a minute';
+  var h = Math.floor(m / 60);
+  m = m % 60;
+  if (h === 0) return m + (m === 1 ? ' minute' : ' minutes');
+  var hs = h + (h === 1 ? ' hour' : ' hours');
+  return m === 0 ? hs : hs + ' ' + m + (m === 1 ? ' min' : ' mins');
+}
+function fmtDateTime(ts) {
+  var d = new Date(ts);
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) +
+    ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+}
+function fmtTime(ts) {
+  var d = new Date(ts), ap = d.getHours() >= 12 ? 'PM' : 'AM';
+  var h = d.getHours() % 12; if (h === 0) h = 12;
+  return h + ':' + pad2(d.getMinutes()) + ' ' + ap;
+}
+
+/* ---------- default checklist ---------- */
+function mkRoom(name, tasks) {
+  return {
+    id: uid(), name: name,
+    tasks: tasks.map(function (t) { return { id: uid(), text: t, done: false }; }),
+    timer: { elapsed: 0, running: false, since: 0 }
+  };
+}
+function defaultRooms() {
+  return [
+    mkRoom('Kitchen', [
+      'Wipe counters and stovetop',
+      'Clean microwave inside and out',
+      'Empty and wipe out fridge',
+      'Wash dishes or run the dishwasher',
+      'Take out trash and replace liner',
+      'Restock coffee, soap, and paper towels',
+      'Sweep and mop floor',
+      'Check under sink for leaks'
+    ]),
+    mkRoom('Living Room', [
+      'Dust all surfaces',
+      'Vacuum or mop floors',
+      'Fluff and arrange pillows and throws',
+      'Clean mirrors and glass',
+      'Check remotes have working batteries',
+      'Restock guest info binder',
+      'Check all lights work',
+      'Check windows are closed and locked'
+    ]),
+    mkRoom('Bedroom(s)', [
+      'Change sheets and pillowcases',
+      'Make the bed',
+      'Dust nightstands and dresser',
+      'Vacuum floor',
+      'Check closets for left-behind items',
+      'Check under the bed',
+      'Restock extra blankets'
+    ]),
+    mkRoom('Bathroom(s)', [
+      'Clean toilet',
+      'Clean shower and tub',
+      'Clean sink and mirror',
+      'Replace with fresh towels',
+      'Restock toilet paper and soap',
+      'Empty trash',
+      'Mop floor',
+      'Check drains for hair'
+    ]),
+    mkRoom('Laundry', [
+      'Start guest laundry if needed',
+      'Check washer and dryer are empty',
+      'Wipe down machines',
+      'Restock detergent'
+    ]),
+    mkRoom('Outdoor / Entry', [
+      'Sweep porch and entry',
+      'Check outdoor lights work',
+      'Empty outdoor trash',
+      'Check grill is off and covered',
+      'Lock all doors',
+      'Set thermostat'
+    ])
+  ];
+}
+
+/* ---------- state ---------- */
+function blankState() {
+  return { version: 1, property: '', startedAt: 0, completedAt: 0, rooms: defaultRooms(), incidents: [] };
+}
+var state = blankState();
+
+var storageOK = true;
+function showStorageWarn() {
+  var w = document.getElementById('storage-warn');
+  if (w) w.hidden = false;
+}
+
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  catch (e) { storageOK = false; showStorageWarn(); /* keep running in memory */ }
+}
+function load() {
+  var raw = null;
+  try { raw = localStorage.getItem(LS_KEY); } catch (e) { storageOK = false; showStorageWarn(); return; }
+  if (!raw) return;
+  try {
+    var parsed = JSON.parse(raw);
+    var clean = sanitizeImport(parsed);
+    if (clean) state = clean;
+  } catch (e) { /* corrupt: keep defaults */ }
+}
+
+/* ---------- import sanitization ---------- */
+function sStr(v, capLen) {
+  return (typeof v === 'string') ? v.slice(0, capLen) : '';
+}
+function sNum(v) {
+  return (typeof v === 'number' && isFinite(v) && v >= 0) ? v : 0;
+}
+function sBool(v) { return v === true; }
+function sanitizeImport(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  var data = (raw.data && typeof raw.data === 'object') ? raw.data : raw;
+  var out = {
+    version: 1,
+    property: sStr(data.property, MAX.property),
+    startedAt: sNum(data.startedAt),
+    completedAt: sNum(data.completedAt),
+    rooms: [], incidents: []
+  };
+  if (Array.isArray(data.rooms)) {
+    data.rooms.slice(0, MAX.rooms).forEach(function (r) {
+      if (!r || typeof r !== 'object') return;
+      var name = sStr(r.name, MAX.roomName).trim();
+      if (!name) return;
+      var room = {
+        id: (typeof r.id === 'string' && r.id) ? r.id.slice(0, 40) : uid(),
+        name: name, tasks: [],
+        timer: { elapsed: 0, running: false, since: 0 }
+      };
+      if (r.timer && typeof r.timer === 'object') {
+        room.timer.elapsed = Math.min(sNum(r.timer.elapsed), 30 * 86400000);
+        room.timer.running = sBool(r.timer.running);
+        room.timer.since = sNum(r.timer.since);
+        if (room.timer.running && !room.timer.since) room.timer.running = false;
+      }
+      if (Array.isArray(r.tasks)) {
+        r.tasks.slice(0, MAX.tasks).forEach(function (t) {
+          if (!t || typeof t !== 'object') return;
+          var text = sStr(t.text, MAX.taskText).trim();
+          if (!text) return;
+          room.tasks.push({
+            id: (typeof t.id === 'string' && t.id) ? t.id.slice(0, 40) : uid(),
+            text: text, done: sBool(t.done)
+          });
+        });
+      }
+      out.rooms.push(room);
+    });
+  }
+  if (Array.isArray(data.incidents)) {
+    data.incidents.slice(0, MAX.incidents).forEach(function (x) {
+      if (!x || typeof x !== 'object') return;
+      var item = sStr(x.item, MAX.item).trim();
+      if (!item) return;
+      out.incidents.push({
+        id: (typeof x.id === 'string' && x.id) ? x.id.slice(0, 40) : uid(),
+        room: sStr(x.room, MAX.roomName),
+        item: item,
+        type: INCIDENT_TYPES.indexOf(x.type) >= 0 ? x.type : 'damage',
+        severity: SEVERITIES.indexOf(x.severity) >= 0 ? x.severity : 'minor',
+        description: sStr(x.description, MAX.desc),
+        photoNote: sStr(x.photoNote, MAX.photo).trim(),
+        ts: sNum(x.ts) || Date.now()
+      });
+    });
+  }
+  out.incidents.sort(function (a, b) { return b.ts - a.ts; });
+  return out;
+}
+
+/* ---------- theme ---------- */
+function getTheme() {
+  try {
+    var s = localStorage.getItem(THEME_KEY);
+    if (s === 'light' || s === 'dark') return s;
+  } catch (e) {}
+  return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+}
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  var btn = $('#theme-toggle');
+  var dark = t === 'dark';
+  btn.textContent = dark ? 'Light mode' : 'Dark mode';
+  btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+}
+function initTheme() {
+  applyTheme(getTheme());
+  $('#theme-toggle').addEventListener('click', function () {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+}
+
+/* ---------- tabs (keyboard operable) ---------- */
+var TAB_IDS = ['tab-checklist', 'tab-log'];
+function selectTab(id, focusTab) {
+  TAB_IDS.forEach(function (tid) {
+    var tab = document.getElementById(tid);
+    var panel = document.getElementById(tab.getAttribute('aria-controls'));
+    var on = tid === id;
+    tab.setAttribute('aria-selected', on ? 'true' : 'false');
+    tab.tabIndex = on ? 0 : -1;
+    panel.hidden = !on;
+    if (on && focusTab) tab.focus();
+  });
+}
+function initTabs() {
+  TAB_IDS.forEach(function (tid, i) {
+    var tab = document.getElementById(tid);
+    tab.addEventListener('click', function () { selectTab(tid, false); });
+    tab.addEventListener('keydown', function (e) {
+      var j = null;
+      if (e.key === 'ArrowRight') j = (i + 1) % TAB_IDS.length;
+      else if (e.key === 'ArrowLeft') j = (i - 1 + TAB_IDS.length) % TAB_IDS.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = TAB_IDS.length - 1;
+      if (j !== null) { e.preventDefault(); selectTab(TAB_IDS[j], true); }
+    });
+  });
+}
+
+/* ---------- confirm-arm helper (inline, no dialogs) ---------- */
+function armConfirm(btn, label, fn) {
+  if (btn.dataset.armed === '1') {
+    clearTimeout(btn._armT);
+    delete btn.dataset.armed;
+    btn.classList.remove('armed');
+    btn.textContent = btn._orig;
+    fn();
+    return;
+  }
+  btn._orig = btn.textContent;
+  btn.dataset.armed = '1';
+  btn.classList.add('armed');
+  btn.textContent = label;
+  btn._armT = setTimeout(function () {
+    delete btn.dataset.armed;
+    btn.classList.remove('armed');
+    btn.textContent = btn._orig;
+  }, 6000);
+}
+
+/* ---------- checklist progress ---------- */
+function roomCounts(r) {
+  var done = r.tasks.filter(function (t) { return t.done; }).length;
+  return { done: done, total: r.tasks.length };
+}
+function overallCounts() {
+  var done = 0, total = 0;
+  state.rooms.forEach(function (r) {
+    var c = roomCounts(r);
+    done += c.done; total += c.total;
+  });
+  return { done: done, total: total };
+}
+function checkCompletion() {
+  var c = overallCounts();
+  if (c.total > 0 && c.done === c.total && !state.completedAt) {
+    state.completedAt = Date.now();
+    save();
+  } else if (c.done < c.total && state.completedAt) {
+    state.completedAt = 0;
+    save();
+  }
+}
+
+/* ---------- timers ---------- */
+function roomElapsed(r) {
+  var e = r.timer.elapsed || 0;
+  if (r.timer.running) e += Date.now() - r.timer.since;
+  return e;
+}
+var timerTick = null;
+function startTimerTick() {
+  if (timerTick) return;
+  timerTick = setInterval(function () {
+    var nodes = document.querySelectorAll('.js-timer');
+    for (var i = 0; i < nodes.length; i++) {
+      var room = findRoom(nodes[i].getAttribute('data-room'));
+      if (room) nodes[i].textContent = fmtClock(roomElapsed(room));
+    }
+  }, 1000);
+}
+function findRoom(id) {
+  for (var i = 0; i < state.rooms.length; i++) {
+    if (state.rooms[i].id === id) return state.rooms[i];
+  }
+  return null;
+}
+
+/* ---------- checklist render ---------- */
+function renderSummary() {
+  var box = $('#summary');
+  box.textContent = '';
+  var c = overallCounts();
+  if (c.total === 0) {
+    box.appendChild(document.createTextNode('No tasks yet — add tasks to a room to begin.'));
+    return;
+  }
+  if (state.completedAt) {
+    var dur = state.completedAt - (state.startedAt || state.completedAt);
+    var p1 = el('strong', null, 'Turnover complete: ');
+    box.appendChild(p1);
+    box.appendChild(document.createTextNode(
+      c.done + ' of ' + c.total + ' tasks finished in ' + fmtDur(dur) + '.'
+    ));
+    if (state.startedAt) {
+      box.appendChild(el('br'));
+      box.appendChild(document.createTextNode('Started ' + fmtDateTime(state.startedAt) + '.'));
+    }
+  } else if (state.startedAt) {
+    var pct = Math.round(100 * c.done / c.total);
+    box.appendChild(document.createTextNode(
+      'Turnover in progress — ' + c.done + ' of ' + c.total + ' tasks (' + pct + '%). Started ' + fmtDateTime(state.startedAt) + '.'
+    ));
+  } else {
+    box.appendChild(document.createTextNode(
+      'Press "Start turnover" when you arrive, then work through the checklist room by room.'
+    ));
+  }
+}
+
+function renderChecklist() {
+  var c = overallCounts();
+  var pct = c.total === 0 ? 0 : Math.round(100 * c.done / c.total);
+  $('#overall-fill').style.width = pct + '%';
+  $('#overall-pct').textContent = pct + '%';
+  $('#overall-bar').setAttribute('aria-valuenow', String(pct));
+
+  var sl = $('#started-line');
+  sl.textContent = '';
+  if (state.startedAt) {
+    sl.appendChild(document.createTextNode('Turnover started ' + fmtDateTime(state.startedAt) + '.'));
+    $('#btn-start').hidden = true;
+    $('#btn-restart').hidden = false;
+  } else {
+    $('#btn-start').hidden = false;
+    $('#btn-restart').hidden = true;
+  }
+  renderSummary();
+
+  var host = $('#rooms');
+  host.textContent = '';
+  if (state.rooms.length === 0) {
+    var p = el('p', 'empty', 'No rooms yet. Add your first room below.');
+    host.appendChild(p);
+  }
+  state.rooms.forEach(function (room) { host.appendChild(renderRoom(room)); });
+  startTimerTick();
+}
+
+function renderRoom(room) {
+  var card = el('article', 'card');
+  card.setAttribute('data-room-id', room.id);
+
+  var head = el('div', 'room-head');
+  head.appendChild(el('h3', null, room.name));
+  var rc = roomCounts(room);
+  head.appendChild(el('span', 'room-count', rc.done + '/' + rc.total + ' done'));
+
+  var chip = el('span', 'timer-chip');
+  var t = el('span', 't js-timer', fmtClock(roomElapsed(room)));
+  t.setAttribute('data-room', room.id);
+  chip.appendChild(t);
+  var tbtn = el('button', 'btn small', room.timer.running ? 'Stop' : 'Start');
+  tbtn.type = 'button';
+  tbtn.setAttribute('aria-label', (room.timer.running ? 'Stop' : 'Start') + ' timer for ' + room.name);
+  tbtn.addEventListener('click', function () {
+    if (room.timer.running) {
+      room.timer.elapsed = roomElapsed(room);
+      room.timer.running = false;
+      room.timer.since = 0;
+    } else {
+      room.timer.running = true;
+      room.timer.since = Date.now();
+    }
+    save(); renderChecklist();
+  });
+  chip.appendChild(tbtn);
+  head.appendChild(chip);
+  card.appendChild(head);
+
+  var ul = el('ul', 'task-list');
+  room.tasks.forEach(function (task, idx) { ul.appendChild(renderTask(room, task, idx)); });
+  card.appendChild(ul);
+
+  var addRow = el('div', 'add-row');
+  var inp = el('input');
+  inp.type = 'text'; inp.maxLength = MAX.taskText; inp.placeholder = 'New task';
+  inp.setAttribute('aria-label', 'New task for ' + room.name);
+  inp.autocomplete = 'off';
+  var addBtn = el('button', 'btn primary', 'Add');
+  addBtn.type = 'button';
+  function doAdd() {
+    var v = inp.value.trim();
+    if (!v) return;
+    if (room.tasks.length >= MAX.tasks) return;
+    room.tasks.push({ id: uid(), text: v.slice(0, MAX.taskText), done: false });
+    save(); renderChecklist();
+  }
+  addBtn.addEventListener('click', doAdd);
+  inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') doAdd(); });
+  addRow.appendChild(inp); addRow.appendChild(addBtn);
+  card.appendChild(addRow);
+
+  var ops = el('div', 'room-ops');
+  var rn = el('button', 'btn small', 'Rename room');
+  rn.type = 'button';
+  rn.addEventListener('click', function () {
+    inp.focus();
+    renameRoom(room, card);
+  });
+  var del = el('button', 'btn small danger', 'Remove room');
+  del.type = 'button';
+  del.addEventListener('click', function () {
+    armConfirm(del, 'Tap again to remove', function () {
+      state.rooms = state.rooms.filter(function (r) { return r.id !== room.id; });
+      checkCompletion(); save(); renderAll();
+    });
+  });
+  ops.appendChild(rn); ops.appendChild(del);
+  card.appendChild(ops);
+  return card;
+}
+
+function renameRoom(room, card) {
+  var head = card.querySelector('.room-head h3');
+  var input = document.createElement('input');
+  input.type = 'text'; input.value = room.name; input.maxLength = MAX.roomName;
+  input.setAttribute('aria-label', 'Room name');
+  head.textContent = '';
+  head.appendChild(input);
+  input.focus(); input.select();
+  function commit() {
+    var v = input.value.trim().slice(0, MAX.roomName);
+    if (v) { room.name = v; save(); }
+    renderAll();
+  }
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') commit();
+    else if (e.key === 'Escape') renderAll();
+  });
+  input.addEventListener('blur', commit);
+}
+
+function renderTask(room, task, idx) {
+  var li = el('li', 'task');
+  var lab = el('label', 'task-check');
+  var cb = document.createElement('input');
+  cb.type = 'checkbox'; cb.checked = task.done;
+  cb.setAttribute('aria-label', task.text);
+  cb.addEventListener('change', function () {
+    task.done = cb.checked;
+    checkCompletion(); save(); renderChecklist();
+  });
+  lab.appendChild(cb);
+  lab.appendChild(el('span', 'txt', task.text));
+  li.appendChild(lab);
+
+  var ops = el('div', 'task-ops');
+  var up = el('button', 'icon-btn', '↑');
+  up.type = 'button'; up.title = 'Move up'; up.setAttribute('aria-label', 'Move task up: ' + task.text);
+  up.disabled = idx === 0;
+  up.addEventListener('click', function () {
+    if (idx > 0) {
+      room.tasks.splice(idx, 1);
+      room.tasks.splice(idx - 1, 0, task);
+      save(); renderChecklist();
+    }
+  });
+  var down = el('button', 'icon-btn', '↓');
+  down.type = 'button'; down.title = 'Move down'; down.setAttribute('aria-label', 'Move task down: ' + task.text);
+  down.disabled = idx === room.tasks.length - 1;
+  down.addEventListener('click', function () {
+    if (idx < room.tasks.length - 1) {
+      room.tasks.splice(idx, 1);
+      room.tasks.splice(idx + 1, 0, task);
+      save(); renderChecklist();
+    }
+  });
+  var del = el('button', 'icon-btn del', '×');
+  del.type = 'button'; del.title = 'Delete task'; del.setAttribute('aria-label', 'Delete task: ' + task.text);
+  del.addEventListener('click', function () {
+    room.tasks = room.tasks.filter(function (t) { return t.id !== task.id; });
+    checkCompletion(); save(); renderChecklist();
+  });
+  ops.appendChild(up); ops.appendChild(down); ops.appendChild(del);
+  li.appendChild(ops);
+  return li;
+}
+
+/* ---------- checklist actions ---------- */
+function initChecklist() {
+  $('#btn-start').addEventListener('click', function () {
+    state.startedAt = Date.now();
+    state.completedAt = 0;
+    save(); renderChecklist();
+  });
+  $('#btn-restart').addEventListener('click', function () {
+    var b = $('#btn-restart');
+    armConfirm(b, 'Tap again to restart', function () {
+      state.startedAt = Date.now();
+      state.completedAt = 0;
+      state.rooms.forEach(function (r) {
+        r.timer.elapsed = 0; r.timer.running = false; r.timer.since = 0;
+      });
+      save(); renderChecklist();
+    });
+  });
+  $('#btn-add-room').addEventListener('click', addRoom);
+  $('#new-room-name').addEventListener('keydown', function (e) { if (e.key === 'Enter') addRoom(); });
+  function addRoom() {
+    var inp = $('#new-room-name');
+    var v = inp.value.trim().slice(0, MAX.roomName);
+    if (!v || state.rooms.length >= MAX.rooms) return;
+    state.rooms.push({ id: uid(), name: v, tasks: [], timer: { elapsed: 0, running: false, since: 0 } });
+    inp.value = '';
+    save(); renderAll();
+  }
+}
+
+/* ---------- reset for next guest ---------- */
+function resetTurnover() {
+  state.startedAt = 0;
+  state.completedAt = 0;
+  state.rooms.forEach(function (r) {
+    r.tasks.forEach(function (t) { t.done = false; });
+    r.timer = { elapsed: 0, running: false, since: 0 };
+  });
+  save(); renderAll();
+}
+function addResetButton() {
+  var row = document.querySelector('#panel-checklist .card .btn-row');
+  var b = el('button', 'btn', 'Reset for next guest');
+  b.type = 'button'; b.id = 'btn-reset-turnover';
+  b.addEventListener('click', function () {
+    armConfirm(b, 'Tap again to reset', resetTurnover);
+  });
+  row.appendChild(b);
+}
+
+/* ---------- damage log ---------- */
+var editingId = null;
+
+function renderLog() {
+  var sel = $('#inc-room');
+  var prev = sel.value;
+  sel.textContent = '';
+  state.rooms.forEach(function (r) {
+    var o = document.createElement('option');
+    o.value = r.name; o.textContent = r.name;
+    sel.appendChild(o);
+  });
+  var other = document.createElement('option');
+  other.value = 'Other'; other.textContent = 'Other';
+  sel.appendChild(other);
+  if (prev) {
+    var found = false;
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === prev) { found = true; break; }
+    }
+    sel.value = found ? prev : 'Other';
+  }
+
+  var host = $('#incidents');
+  host.textContent = '';
+  $('#inc-count').textContent = state.incidents.length ? '(' + state.incidents.length + ')' : '';
+  if (state.incidents.length === 0) {
+    host.appendChild(el('p', 'empty', 'No incidents logged yet.'));
+    return;
+  }
+  state.incidents.forEach(function (inc) { host.appendChild(renderIncident(inc)); });
+}
+
+function renderIncident(inc) {
+  var d = el('div', 'incident');
+  var top = el('div', 'incident-top');
+  top.appendChild(el('span', 'sev ' + inc.severity, inc.severity));
+  var title = el('strong', null, (inc.room ? inc.room + ' — ' : '') + inc.item);
+  top.appendChild(title);
+  d.appendChild(top);
+  d.appendChild(el('p', 'meta', cap(inc.type) + ' · Reported ' + fmtDateTime(inc.ts)));
+  if (inc.description) d.appendChild(el('p', 'desc', inc.description));
+  if (inc.photoNote) d.appendChild(el('p', 'meta', 'Photo ref: ' + inc.photoNote));
+
+  var ops = el('div', 'ops');
+  var edit = el('button', 'btn small', 'Edit');
+  edit.type = 'button';
+  edit.setAttribute('aria-label', 'Edit incident: ' + inc.item);
+  edit.addEventListener('click', function () { startEdit(inc.id); });
+  var del = el('button', 'btn small danger', 'Delete');
+  del.type = 'button';
+  del.setAttribute('aria-label', 'Delete incident: ' + inc.item);
+  del.addEventListener('click', function () {
+    armConfirm(del, 'Tap again to delete', function () {
+      state.incidents = state.incidents.filter(function (x) { return x.id !== inc.id; });
+      if (editingId === inc.id) cancelEdit();
+      save(); renderLog(); clearReport();
+    });
+  });
+  ops.appendChild(edit); ops.appendChild(del);
+  d.appendChild(ops);
+  return d;
+}
+
+function incMsg(t) {
+  var m = $('#inc-msg');
+  m.textContent = t;
+  if (t) setTimeout(function () { if (m.textContent === t) m.textContent = ''; }, 4000);
+}
+
+function startEdit(id) {
+  var inc = null;
+  for (var i = 0; i < state.incidents.length; i++) {
+    if (state.incidents[i].id === id) { inc = state.incidents[i]; break; }
+  }
+  if (!inc) return;
+  editingId = id;
+  $('#inc-room').value = inc.room;
+  if ($('#inc-room').value !== inc.room) {
+    var o = document.createElement('option');
+    o.value = inc.room; o.textContent = inc.room;
+    $('#inc-room').insertBefore(o, $('#inc-room').firstChild);
+    $('#inc-room').value = inc.room;
+  }
+  $('#inc-item').value = inc.item;
+  $('#inc-type').value = inc.type;
+  $('#inc-sev').value = inc.severity;
+  $('#inc-desc').value = inc.description;
+  $('#inc-photo').value = inc.photoNote;
+  $('#btn-inc-save').textContent = 'Save changes';
+  $('#btn-inc-cancel').hidden = false;
+  $('#inc-item').focus();
+  selectTab('tab-log', false);
+}
+function cancelEdit() {
+  editingId = null;
+  $('#inc-room').selectedIndex = 0;
+  $('#inc-item').value = '';
+  $('#inc-type').value = 'damage';
+  $('#inc-sev').value = 'minor';
+  $('#inc-desc').value = '';
+  $('#inc-photo').value = '';
+  $('#btn-inc-save').textContent = 'Add incident';
+  $('#btn-inc-cancel').hidden = true;
+}
+
+function initLog() {
+  $('#prop-name').addEventListener('change', function () {
+    state.property = this.value.trim().slice(0, MAX.property);
+    save();
+  });
+  $('#btn-inc-save').addEventListener('click', function () {
+    var item = $('#inc-item').value.trim().slice(0, MAX.item);
+    if (!item) { incMsg('Item / area is required.'); $('#inc-item').focus(); return; }
+    if (state.incidents.length >= MAX.incidents && !editingId) { incMsg('Incident log is full.'); return; }
+    var rec = {
+      id: editingId || uid(),
+      room: $('#inc-room').value,
+      item: item,
+      type: $('#inc-type').value,
+      severity: $('#inc-sev').value,
+      description: $('#inc-desc').value.trim().slice(0, MAX.desc),
+      photoNote: $('#inc-photo').value.trim().slice(0, MAX.photo),
+      ts: Date.now()
+    };
+    if (editingId) {
+      for (var i = 0; i < state.incidents.length; i++) {
+        if (state.incidents[i].id === editingId) {
+          rec.ts = state.incidents[i].ts;
+          state.incidents[i] = rec;
+          break;
+        }
+      }
+      incMsg('Incident updated.');
+    } else {
+      state.incidents.unshift(rec);
+      incMsg('Incident added.');
+    }
+    cancelEdit();
+    save(); renderLog(); clearReport();
+  });
+  $('#btn-inc-cancel').addEventListener('click', cancelEdit);
+  $('#btn-report').addEventListener('click', function () {
+    var txt = buildReport();
+    var out = $('#report-out');
+    out.textContent = txt;
+    out.hidden = false;
+    $('#btn-copy').disabled = false;
+    $('#copy-msg').textContent = '';
+  });
+  $('#btn-copy').addEventListener('click', function () {
+    var txt = $('#report-out').textContent;
+    copyText(txt, function (ok) {
+      $('#copy-msg').textContent = ok ? 'Copied to clipboard.' : 'Copy failed — select the text above manually.';
+    });
+  });
+}
+
+/* The generated report is a snapshot of the incident list at generation time —
+   invalidate it whenever incidents change so stale text never lingers. */
+function clearReport() {
+  var out = $('#report-out');
+  out.textContent = '';
+  out.hidden = true;
+  $('#btn-copy').disabled = true;
+  $('#copy-msg').textContent = '';
+}
+
+function buildReport() {
+  var lines = [];
+  lines.push('TURNOVER INCIDENT REPORT');
+  lines.push('Property: ' + (state.property || '(not set)'));
+  lines.push('Date: ' + fmtDateTime(state.startedAt || Date.now()).slice(0, 10));
+  lines.push('Generated: ' + fmtDateTime(Date.now()));
+  lines.push('');
+  if (state.incidents.length === 0) {
+    lines.push('No incidents recorded.');
+  } else {
+    var ordered = state.incidents.slice().sort(function (a, b) { return a.ts - b.ts; });
+    ordered.forEach(function (inc, i) {
+      lines.push((i + 1) + '. [' + inc.severity.toUpperCase() + '] ' + (inc.room ? inc.room + ' — ' : '') + inc.item);
+      lines.push('   Type: ' + cap(inc.type));
+      lines.push('   Reported: ' + fmtDateTime(inc.ts));
+      if (inc.description) lines.push('   Details: ' + inc.description);
+      if (inc.photoNote) lines.push('   Photo ref: ' + inc.photoNote);
+      lines.push('');
+    });
+    var n = { minor: 0, moderate: 0, major: 0 };
+    state.incidents.forEach(function (x) { if (n[x.severity] !== undefined) n[x.severity]++; });
+    lines.push('Total incidents: ' + state.incidents.length +
+      ' (' + n.minor + ' minor, ' + n.moderate + ' moderate, ' + n.major + ' major)');
+  }
+  return lines.join('\n');
+}
+
+function copyText(t, cb) {
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = t;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    cb(ok);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(t).then(function () { cb(true); }, fallback);
+  } else {
+    fallback();
+  }
+}
+
+/* ---------- data: export / import / demo / clear ---------- */
+function dataMsg(t) {
+  var m = $('#data-msg');
+  m.textContent = t;
+  if (t) setTimeout(function () { if (m.textContent === t) m.textContent = ''; }, 6000);
+}
+
+function initData() {
+  $('#btn-export').addEventListener('click', function () {
+    var payload = { app: 'turnovercheck', version: 1, exportedAt: Date.now(), data: state };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    var d = new Date();
+    a.download = 'turnovercheck-' + d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()) +
+      '-' + pad2(d.getHours()) + pad2(d.getMinutes()) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+    dataMsg('Backup downloaded.');
+  });
+
+  $('#btn-import').addEventListener('click', function () {
+    var b = $('#btn-import');
+    armConfirm(b, 'Tap again to import', function () { $('#file-import').click(); });
+  });
+  $('#file-import').addEventListener('change', function () {
+    var f = this.files && this.files[0];
+    this.value = '';
+    if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      try {
+        var clean = sanitizeImport(JSON.parse(rd.result));
+        if (!clean || clean.rooms.length === 0) { dataMsg('Import failed: no valid rooms found.'); return; }
+        state = clean;
+        editingId = null;
+        save(); renderAll(); clearReport();
+        dataMsg('Import complete.');
+      } catch (e) {
+        dataMsg('Import failed: not valid JSON.');
+      }
+    };
+    rd.onerror = function () { dataMsg('Import failed: could not read file.'); };
+    rd.readAsText(f);
+  });
+
+  $('#btn-demo').addEventListener('click', function () {
+    var b = $('#btn-demo');
+    armConfirm(b, 'Tap again to load demo', function () {
+      state = demoState();
+      editingId = null;
+      save(); renderAll(); clearReport();
+      dataMsg('Demo data loaded.');
+    });
+  });
+
+  $('#btn-clear').addEventListener('click', function () {
+    var b = $('#btn-clear');
+    armConfirm(b, 'Tap again to clear ALL', function () {
+      state = blankState();
+      editingId = null;
+      save(); renderAll(); clearReport();
+      dataMsg('All data cleared.');
+    });
+  });
+}
+
+function demoState() {
+  var s = blankState();
+  var now = Date.now();
+  s.property = 'Demo: Lakeview Cabin';
+  s.startedAt = now - 95 * 60000;
+  s.rooms[0].tasks.forEach(function (t, i) { t.done = i < 5; });
+  s.rooms[1].tasks.forEach(function (t, i) { t.done = i < 3; });
+  s.rooms[3].tasks.forEach(function (t, i) { t.done = i < 2; });
+  s.rooms[0].timer = { elapsed: 42 * 60000, running: false, since: 0 };
+  s.incidents = [
+    {
+      id: uid(), room: 'Kitchen', item: 'Stove knob', type: 'damage', severity: 'moderate',
+      description: 'Front-right burner knob cracked; still turns but feels loose.', photoNote: 'IMG_2041',
+      ts: now - 70 * 60000
+    },
+    {
+      id: uid(), room: 'Bedroom(s)', item: 'Bathrobe', type: 'missing', severity: 'minor',
+      description: 'One white bathrobe missing from the closet hook.', photoNote: '',
+      ts: now - 40 * 60000
+    }
+  ];
+  return s;
+}
+
+/* ---------- render all + init ---------- */
+function renderAll() {
+  $('#prop-name').value = state.property || '';
+  renderChecklist();
+  renderLog();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  load();
+  initTheme();
+  initTabs();
+  initChecklist();
+  addResetButton();
+  initLog();
+  initData();
+  renderAll();
+  window.addEventListener('beforeunload', save);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') save();
+  });
+});
+</script>
+</body>
+</html>

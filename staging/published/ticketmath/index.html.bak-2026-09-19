@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TicketMath — Event Ticket Tier &amp; Revenue Projector</title>
+<meta name="description" content="TicketMath: a free offline calculator for event organizers. Model venue capacity, fixed costs, and up to 4 ticket tiers to find break-even points and projected profit.">
+<style>
+:root{
+  --bg:#ffffff; --fg:#1a1a1a; --muted:#5b5b5b;
+  --card:#f6f7f9; --border:#d9dce1; --accent:#0b6e4f;
+  --accent-fg:#ffffff; --danger:#b3261e; --warn:#8a5a00;
+  --good:#0b6e4f; --bad:#b3261e;
+  --input-bg:#ffffff; --focus:#0b6e4f;
+}
+html[data-theme="dark"]{
+  --bg:#14161a; --fg:#e8eaed; --muted:#a8adb5;
+  --card:#1e2228; --border:#3a4048; --accent:#3ddc97;
+  --accent-fg:#0b2417; --danger:#ff8a80; --warn:#ffca6a;
+  --good:#3ddc97; --bad:#ff8a80;
+  --input-bg:#101318; --focus:#3ddc97;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:720px;margin:0 auto;padding:0 16px 48px}
+header.top{max-width:720px;margin:0 auto;padding:20px 16px 8px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header.top h1{margin:0;font-size:1.5rem}
+.tagline{margin:2px 0 0;color:var(--muted);font-size:.95rem}
+h2{font-size:1.15rem;margin:28px 0 12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0}
+label{display:block;font-weight:600;margin:12px 0 4px}
+input[type="text"],input[type="number"],input[type="date"],select{
+  width:100%;min-height:44px;padding:10px 12px;font-size:16px;border:1px solid var(--border);
+  border-radius:8px;background:var(--input-bg);color:var(--fg)}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+button{min-height:44px;padding:10px 16px;font-size:16px;border-radius:8px;border:1px solid var(--border);
+  background:var(--input-bg);color:var(--fg);cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-fg);border-color:transparent;font-weight:700}
+button.danger{color:var(--danger);border-color:var(--danger)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.row > *{flex:1 1 0;min-width:0}
+.row .shrink{flex:0 0 auto}
+.cost-row,.tier-card{border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0;background:var(--bg)}
+.cost-row .row{align-items:flex-end}
+.tier-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.tier-head h3{margin:0;font-size:1rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}}
+.sell-row{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+input[type="range"]{flex:1 1 160px;min-height:44px;accent-color:var(--accent)}
+.sell-num{width:84px;flex:0 0 auto}
+.err{color:var(--danger);font-weight:600;margin:8px 0}
+.note{color:var(--muted);font-size:.92rem}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.95rem}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border)}
+th{font-weight:700}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.profit-good{color:var(--good);font-weight:700}
+.profit-bad{color:var(--bad);font-weight:700}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.kpi div{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.kpi dt{font-size:.85rem;color:var(--muted);margin:0}
+.kpi dd{margin:4px 0 0;font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums}
+.be-box{background:var(--bg);border:2px solid var(--accent);border-radius:10px;padding:14px;margin:12px 0}
+.be-box p{margin:6px 0}
+.chart-wrap{overflow-x:auto}
+svg text{fill:var(--muted);font-size:12px}
+.status{margin:12px 0;padding:10px 12px;border-radius:8px}
+.status[hidden]{display:none}
+.status.error{background:var(--card);border:1px solid var(--danger);color:var(--danger);font-weight:600}
+.status.ok{background:var(--card);border:1px solid var(--accent);font-weight:600}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+footer.site{max-width:720px;margin:0 auto;padding:24px 16px 40px;text-align:center;color:var(--muted);font-size:.9rem;border-top:1px solid var(--border)}
+footer.site a{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>TicketMath</h1>
+    <p class="tagline">Event ticket tier &amp; revenue projector</p>
+  </div>
+  <button id="theme-toggle" type="button" aria-pressed="false">Dark mode</button>
+</header>
+
+<main>
+  <div id="status" class="status" role="alert" hidden></div>
+
+  <section aria-labelledby="h-event">
+    <h2 id="h-event">Event</h2>
+    <div class="card">
+      <label for="event-name">Event name</label>
+      <input id="event-name" type="text" maxlength="200" autocomplete="off" placeholder="e.g. Spring Benefit Concert">
+      <div class="grid2">
+        <div>
+          <label for="capacity">Venue capacity (tickets)</label>
+          <input id="capacity" type="number" min="0" step="1" inputmode="numeric" value="150">
+        </div>
+        <div>
+          <label for="event-date">Date (optional)</label>
+          <input id="event-date" type="date">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-costs">
+    <h2 id="h-costs">Fixed costs</h2>
+    <div class="card">
+      <div id="cost-list"></div>
+      <div class="btnrow">
+        <button id="add-cost" type="button">Add cost line</button>
+      </div>
+      <p class="note">Total fixed costs: <strong id="costs-total">$0.00</strong></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-tiers">
+    <h2 id="h-tiers">Ticket tiers (up to 4)</h2>
+    <div id="tier-list"></div>
+    <p class="err" id="alloc-error" hidden></p>
+    <div class="btnrow">
+      <button id="add-tier" type="button">Add tier</button>
+    </div>
+    <p class="note">Total allocation: <strong id="alloc-total">0</strong> of <strong id="alloc-cap">150</strong> capacity.</p>
+  </section>
+
+  <section aria-labelledby="h-results">
+    <h2 id="h-results">Results</h2>
+    <div class="card" aria-live="polite" id="results-live">
+      <dl class="kpi">
+        <div><dt>Total fixed costs</dt><dd id="kpi-costs">$0.00</dd></div>
+        <div><dt>Total allocation</dt><dd id="kpi-alloc">0 tickets</dd></div>
+        <div><dt>Full-house revenue</dt><dd id="kpi-rev">$0.00</dd></div>
+      </dl>
+      <div class="be-box">
+        <h3 style="margin:0 0 6px;font-size:1rem">Break-even</h3>
+        <p id="be-main" style="font-weight:700"></p>
+        <p class="note" id="be-note"></p>
+      </div>
+      <h3 style="font-size:1rem;margin:18px 0 4px">Sell-through scenario</h3>
+      <dl class="kpi">
+        <div><dt>Projected revenue</dt><dd id="kpi-projrev">$0.00</dd></div>
+        <div><dt>Projected profit / loss</dt><dd id="kpi-profit">$0.00</dd></div>
+      </dl>
+      <table id="tier-table">
+        <caption class="sr">Per-tier revenue at current sell-through</caption>
+        <thead><tr>
+          <th scope="col">Tier</th><th scope="col" class="num">Price</th>
+          <th scope="col" class="num">Allocation</th><th scope="col" class="num">Sell-through</th>
+          <th scope="col" class="num">Revenue</th>
+        </tr></thead>
+        <tbody id="tier-tbody"></tbody>
+      </table>
+      <h3 style="font-size:1rem;margin:18px 0 4px">Per-tier contribution (full allocation)</h3>
+      <table id="contrib-table">
+        <caption class="sr">Each tier's revenue and share of total revenue at full allocation</caption>
+        <thead><tr>
+          <th scope="col">Tier</th><th scope="col" class="num">Revenue</th><th scope="col" class="num">Share</th>
+        </tr></thead>
+        <tbody id="contrib-tbody"></tbody>
+      </table>
+      <h3 style="font-size:1rem;margin:18px 0 4px">Revenue per tier (current sell-through)</h3>
+      <div class="chart-wrap" id="chart-wrap"></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-data">
+    <h2 id="h-data">Data</h2>
+    <div class="card">
+      <div class="btnrow">
+        <button id="demo-btn" type="button">Load demo data</button>
+        <button id="export-btn" type="button">Export JSON</button>
+        <button id="import-btn" type="button">Import JSON</button>
+        <button id="clear-btn" type="button" class="danger">Clear all</button>
+      </div>
+      <input id="import-file" type="file" accept="application/json,.json" class="sr" tabindex="-1" aria-hidden="true">
+      <p class="note">Everything is stored only in this browser (localStorage). Export to back up or move your numbers.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site">by <a href="https://glenerds.gumroad.com">Glenerds</a></footer>
+
+<script>
+"use strict";
+/* TicketMath — single-file offline event ticket projector. All hand-written. */
+
+/* ---------- constants ---------- */
+var LS_KEY = "ticketmath-state-v1";
+var THEME_KEY = "ticketmath-theme";
+var SVG_NS = "http://www.w3.org/2000/svg";
+var MAX_TIERS = 4;
+var NAME_PRESETS = ["Early Bird", "General", "VIP", "Student"];
+var usd = new Intl.NumberFormat("en-US", {style:"currency", currency:"USD"});
+var uidCounter = 1;
+
+function nextId(){ return "id" + (uidCounter++) + "-" + Date.now().toString(36); }
+
+/* ---------- tiny DOM helpers (no innerHTML anywhere) ---------- */
+function el(tag, attrs, text){
+  var n = document.createElement(tag);
+  if (attrs) for (var k in attrs){
+    if (k === "class") n.className = attrs[k];
+    else if (k === "for") n.htmlFor = attrs[k];
+    else n.setAttribute(k, attrs[k]);
+  }
+  if (text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+function svgEl(tag, attrs, text){
+  var n = document.createElementNS(SVG_NS, tag);
+  if (attrs) for (var k in attrs) n.setAttribute(k, attrs[k]);
+  if (text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+function clear(n){ while (n.firstChild) n.removeChild(n.firstChild); }
+
+/* ---------- state ---------- */
+function defaultState(){
+  return {
+    event: {name:"", capacity:150, date:""},
+    costs: [
+      {id: nextId(), name:"Venue rental", amount:0},
+      {id: nextId(), name:"Marketing", amount:0}
+    ],
+    tiers: [
+      {id: nextId(), name:"Early Bird", price:0, allocation:0, sellThrough:100}
+    ]
+  };
+}
+var state = defaultState();
+
+/* ---------- sanitizers (used for user input AND imports) ---------- */
+function asText(v, max){ v = String(v == null ? "" : v); return v.length > max ? v.slice(0, max) : v; }
+function asFinite(v){ var n = Number(v); return (typeof n === "number" && isFinite(n)) ? n : 0; }
+function asMoney(v){ var n = asFinite(v); if (n < 0) n = 0; if (n > 1e12) n = 1e12; return Math.round(n*100)/100; }
+function asCount(v){ var n = Math.floor(asFinite(v)); if (n < 0) n = 0; if (n > 1e9) n = 1e9; return n; }
+function asPct(v){ var n = asFinite(v); if (n < 0) n = 0; if (n > 100) n = 100; return Math.round(n*10)/10; }
+
+function sanitizeImport(raw){
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {ok:false, error:"Import must be a JSON object."};
+  var cap = asCount(raw.event && raw.event.capacity);
+  var out = {
+    event: {
+      name: asText(raw.event && raw.event.name, 200),
+      capacity: cap,
+      date: asText(raw.event && raw.event.date, 30)
+    },
+    costs: [], tiers: []
+  };
+  if (!Array.isArray(raw.costs)) return {ok:false, error:"Import is missing a valid costs list."};
+  if (!Array.isArray(raw.tiers)) return {ok:false, error:"Import is missing a valid tiers list."};
+  if (raw.costs.length > 50) return {ok:false, error:"Too many cost lines (max 50)."};
+  if (raw.tiers.length > MAX_TIERS) return {ok:false, error:"Too many tiers (max 4)."};
+  for (var i = 0; i < raw.costs.length; i++){
+    var c = raw.costs[i];
+    if (!c || typeof c !== "object") return {ok:false, error:"Cost line " + (i+1) + " is invalid."};
+    out.costs.push({id: nextId(), name: asText(c.name, 100), amount: asMoney(c.amount)});
+  }
+  var allocSum = 0;
+  for (var j = 0; j < raw.tiers.length; j++){
+    var t = raw.tiers[j];
+    if (!t || typeof t !== "object") return {ok:false, error:"Tier " + (j+1) + " is invalid."};
+    var a = asCount(t.allocation);
+    if (a > cap) return {ok:false, error:"Tier " + (j+1) + " allocation exceeds venue capacity (" + cap + ")."};
+    allocSum += a;
+    out.tiers.push({
+      id: nextId(),
+      name: asText(t.name, 60),
+      price: asMoney(t.price),
+      allocation: a,
+      sellThrough: asPct(t.sellThrough == null ? 100 : t.sellThrough)
+    });
+  }
+  if (allocSum > cap) return {ok:false, error:"Total allocation (" + allocSum + ") exceeds venue capacity (" + cap + ")."};
+  return {ok:true, state: out};
+}
+
+/* ---------- persistence ---------- */
+function save(){
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      event: state.event, costs: state.costs, tiers: state.tiers
+    }));
+  } catch (e) { /* storage full or blocked — app keeps working in memory */ }
+}
+function load(){
+  var raw = null;
+  try { raw = localStorage.getItem(LS_KEY); } catch (e) { return; }
+  if (!raw) return;
+  try {
+    var r = sanitizeImport(JSON.parse(raw));
+    if (r.ok) state = r.state;
+  } catch (e) { /* corrupt save — keep defaults */ }
+}
+
+/* ---------- math ---------- */
+function totalCosts(){ return state.costs.reduce(function(s,c){ return s + c.amount; }, 0); }
+function totalAlloc(){ return state.tiers.reduce(function(s,t){ return s + t.allocation; }, 0); }
+function fullRevenue(){ return state.tiers.reduce(function(s,t){ return s + t.price * t.allocation; }, 0); }
+function projRevenue(){ return state.tiers.reduce(function(s,t){ return s + t.price * t.allocation * t.sellThrough/100; }, 0); }
+function breakEven(){
+  var F = totalCosts(), A = totalAlloc(), R = fullRevenue();
+  if (F <= 0) return {kind:"zero-cost", text:"No fixed costs — you break even immediately.", note:"Sell tickets = pure profit."};
+  if (A <= 0 || R <= 0) return {kind:"impossible", text:"Break-even cannot be computed.", note:"Weighted average ticket price is $0 (free or unallocated tickets) — raise prices or allocate tickets first."};
+  var w = R / A;
+  var N = Math.ceil(F / w - 1e-9); /* epsilon guards float error like 65.0000000001 */
+  var pct = (N / A * 100);
+  var main = "Sell " + N + " of " + A + " allocated tickets (~" + (Math.round(pct*10)/10) + "%)";
+  var note = "Weighted average ticket price: " + usd.format(w) + ". Fixed costs: " + usd.format(F) + ".";
+  if (N > A) note += " Break-even needs more tickets than allocated — raise prices or increase allocation.";
+  return {kind:"ok", text:main, note:note};
+}
+
+/* ---------- rendering: event ---------- */
+var $ = function(id){ return document.getElementById(id); };
+var nameInput = $("event-name"), capInput = $("capacity"), dateInput = $("event-date");
+
+function renderEvent(){
+  nameInput.value = state.event.name;
+  capInput.value = String(state.event.capacity);
+  dateInput.value = state.event.date;
+}
+
+/* ---------- rendering: costs ---------- */
+function renderCosts(){
+  var list = $("cost-list"); clear(list);
+  state.costs.forEach(function(c, idx){
+    var row = el("div", {class:"cost-row"});
+    var r = el("div", {class:"row"});
+    var nameWrap = el("div");
+    nameWrap.appendChild(el("label", {for:"cost-name-"+c.id}, "Cost name"));
+    var ni = el("input", {type:"text", id:"cost-name-"+c.id, maxlength:"100", autocomplete:"off"});
+    ni.value = c.name;
+    ni.addEventListener("input", function(){ c.name = asText(ni.value, 100); save(); renderResults(); });
+    nameWrap.appendChild(ni);
+    var amtWrap = el("div");
+    amtWrap.appendChild(el("label", {for:"cost-amt-"+c.id}, "Amount ($)"));
+    var ai = el("input", {type:"number", id:"cost-amt-"+c.id, min:"0", step:"0.01", inputmode:"decimal"});
+    ai.value = c.amount === 0 ? "" : String(c.amount);
+    ai.placeholder = "0.00";
+    ai.addEventListener("input", function(){ c.amount = asMoney(ai.value); save(); renderResults(); });
+    amtWrap.appendChild(ai);
+    var btnWrap = el("div", {class:"shrink"});
+    var del = el("button", {type:"button", "aria-label":"Remove cost line " + (c.name || (idx+1))}, "Remove");
+    del.addEventListener("click", function(){
+      state.costs = state.costs.filter(function(x){ return x.id !== c.id; });
+      save(); renderCosts(); renderResults();
+    });
+    btnWrap.appendChild(del);
+    r.appendChild(nameWrap); r.appendChild(amtWrap); r.appendChild(btnWrap);
+    row.appendChild(r); list.appendChild(row);
+  });
+  $("costs-total").textContent = usd.format(totalCosts());
+}
+
+/* ---------- rendering: tiers ---------- */
+function tierById(id){ return state.tiers.find(function(t){ return t.id === id; }); }
+
+function renderTiers(){
+  var list = $("tier-list"); clear(list);
+  state.tiers.forEach(function(t, idx){
+    var card = el("div", {class:"tier-card"});
+    var head = el("div", {class:"tier-head"});
+    head.appendChild(el("h3", null, "Tier " + (idx+1)));
+    var del = el("button", {type:"button", "aria-label":"Remove tier " + (t.name || (idx+1))}, "Remove");
+    del.addEventListener("click", function(){
+      state.tiers = state.tiers.filter(function(x){ return x.id !== t.id; });
+      save(); renderTiers(); renderResults();
+    });
+    head.appendChild(del); card.appendChild(head);
+
+    card.appendChild(el("label", {for:"tier-name-"+t.id}, "Tier name"));
+    var nameSel = el("select", {id:"tier-name-"+t.id});
+    var customOpt = null;
+    NAME_PRESETS.forEach(function(p){
+      var o = el("option", {value:p}, p);
+      nameSel.appendChild(o);
+    });
+    customOpt = el("option", {value:"__custom"}, "Custom…");
+    nameSel.appendChild(customOpt);
+    var customWrap = el("div");
+    var customInput = el("input", {type:"text", id:"tier-custom-"+t.id, maxlength:"60", autocomplete:"off", placeholder:"Custom tier name"});
+    customWrap.appendChild(customInput);
+    if (NAME_PRESETS.indexOf(t.name) >= 0){
+      nameSel.value = t.name; customWrap.style.display = "none";
+    } else {
+      nameSel.value = "__custom"; customInput.value = t.name; customWrap.style.display = "";
+    }
+    nameSel.addEventListener("change", function(){
+      if (nameSel.value === "__custom"){ customWrap.style.display = ""; customInput.focus(); }
+      else { customWrap.style.display = "none"; t.name = nameSel.value; save(); renderResults(); }
+    });
+    customInput.addEventListener("input", function(){ t.name = asText(customInput.value, 60); save(); renderResults(); });
+    card.appendChild(nameSel); card.appendChild(customWrap);
+
+    var g = el("div", {class:"grid2"});
+    var pw = el("div");
+    pw.appendChild(el("label", {for:"tier-price-"+t.id}, "Price ($)"));
+    var pi = el("input", {type:"number", id:"tier-price-"+t.id, min:"0", step:"0.01", inputmode:"decimal"});
+    pi.value = t.price === 0 ? "" : String(t.price); pi.placeholder = "0.00";
+    pi.addEventListener("input", function(){ t.price = asMoney(pi.value); save(); renderResults(); });
+    pw.appendChild(pi);
+    var aw = el("div");
+    aw.appendChild(el("label", {for:"tier-alloc-"+t.id}, "Allocation (tickets)"));
+    var ai = el("input", {type:"number", id:"tier-alloc-"+t.id, min:"0", step:"1", inputmode:"numeric"});
+    ai.value = t.allocation === 0 ? "" : String(t.allocation); ai.placeholder = "0";
+    ai.addEventListener("input", function(){ t.allocation = asCount(ai.value); save(); renderTiersMeta(); renderResults(); });
+    aw.appendChild(ai);
+    g.appendChild(pw); g.appendChild(aw); card.appendChild(g);
+
+    var sr = el("div", {class:"sell-row"});
+    var sLabel = el("label", {for:"tier-sell-"+t.id, style:"flex:0 0 auto;margin:0"}, "Sell-through");
+    var slider = el("input", {type:"range", id:"tier-sell-"+t.id, min:"0", max:"100", step:"1"});
+    slider.value = String(Math.round(t.sellThrough));
+    slider.setAttribute("aria-valuetext", Math.round(t.sellThrough) + " percent");
+    var snum = el("input", {type:"number", id:"tier-sellnum-"+t.id, class:"sell-num", min:"0", max:"100", step:"1",
+      "aria-label":"Sell-through percent for " + (t.name || "tier " + (idx+1))});
+    snum.value = String(Math.round(t.sellThrough));
+    slider.addEventListener("input", function(){
+      t.sellThrough = asPct(slider.value);
+      snum.value = String(Math.round(t.sellThrough));
+      slider.setAttribute("aria-valuetext", Math.round(t.sellThrough) + " percent");
+      save(); renderResults();
+    });
+    snum.addEventListener("input", function(){
+      t.sellThrough = asPct(snum.value);
+      slider.value = String(Math.round(t.sellThrough));
+      slider.setAttribute("aria-valuetext", Math.round(t.sellThrough) + " percent");
+      save(); renderResults();
+    });
+    sr.appendChild(sLabel); sr.appendChild(slider); sr.appendChild(snum);
+    sr.appendChild(el("span", {class:"note", style:"flex:0 0 auto"}, "%"));
+    card.appendChild(sr);
+
+    list.appendChild(card);
+  });
+  var addBtn = $("add-tier");
+  addBtn.disabled = state.tiers.length >= MAX_TIERS;
+  renderTiersMeta();
+}
+
+function renderTiersMeta(){
+  var A = totalAlloc(), cap = state.event.capacity;
+  $("alloc-total").textContent = String(A);
+  $("alloc-cap").textContent = String(cap);
+  var err = $("alloc-error");
+  if (A > cap){
+    err.textContent = "Total allocation (" + A + ") exceeds venue capacity (" + cap + "). Reduce allocations.";
+    err.hidden = false;
+  } else { err.textContent = ""; err.hidden = true; }
+}
+
+/* ---------- rendering: results ---------- */
+function renderResults(){
+  var F = totalCosts(), A = totalAlloc(), R = fullRevenue();
+  var PR = projRevenue(), profit = PR - F;
+  $("kpi-costs").textContent = usd.format(F);
+  $("kpi-alloc").textContent = A + " ticket" + (A === 1 ? "" : "s");
+  $("kpi-rev").textContent = usd.format(R);
+  $("kpi-projrev").textContent = usd.format(PR);
+  var pe = $("kpi-profit");
+  pe.textContent = usd.format(profit);
+  pe.className = profit < 0 ? "profit-bad" : "profit-good";
+  var be = breakEven();
+  $("be-main").textContent = be.text;
+  $("be-note").textContent = be.note;
+  $("costs-total").textContent = usd.format(F);
+  renderTiersMeta();
+
+  var tb = $("tier-tbody"); clear(tb);
+  state.tiers.forEach(function(t){
+    var rev = t.price * t.allocation * t.sellThrough/100;
+    var tr = el("tr");
+    tr.appendChild(el("td", null, t.name || "(unnamed)"));
+    tr.appendChild(el("td", {class:"num"}, usd.format(t.price)));
+    tr.appendChild(el("td", {class:"num"}, String(t.allocation)));
+    tr.appendChild(el("td", {class:"num"}, (Math.round(t.sellThrough*10)/10) + "%"));
+    tr.appendChild(el("td", {class:"num"}, usd.format(rev)));
+    tb.appendChild(tr);
+  });
+
+  var cb = $("contrib-tbody"); clear(cb);
+  state.tiers.forEach(function(t){
+    var rev = t.price * t.allocation;
+    var tr = el("tr");
+    tr.appendChild(el("td", null, t.name || "(unnamed)"));
+    tr.appendChild(el("td", {class:"num"}, usd.format(rev)));
+    tr.appendChild(el("td", {class:"num"}, R > 0 ? (Math.round(rev/R*1000)/10) + "%" : "—"));
+    cb.appendChild(tr);
+  });
+
+  renderChart();
+}
+
+/* ---------- SVG bar chart (hand-rolled with DOM APIs only) ---------- */
+function renderChart(){
+  var wrap = $("chart-wrap"); clear(wrap);
+  var W = 640, H = 260, padL = 64, padR = 16, padT = 16, padB = 56;
+  var svg = svgEl("svg", {viewBox:"0 0 " + W + " " + H, width:"100%", role:"img",
+    "aria-label":"Bar chart of projected revenue per ticket tier"});
+  wrap.appendChild(svg);
+  if (state.tiers.length === 0){
+    svg.appendChild(svgEl("text", {x:W/2, y:H/2, "text-anchor":"middle"}, "Add a tier to see the chart"));
+    return;
+  }
+  var revs = state.tiers.map(function(t){ return t.price * t.allocation * t.sellThrough/100; });
+  var max = Math.max.apply(null, revs.concat([0]));
+  var plotW = W - padL - padR, plotH = H - padT - padB;
+  var baseline = padT + plotH;
+  /* axes */
+  svg.appendChild(svgEl("line", {x1:padL, y1:padT, x2:padL, y2:baseline, stroke:"currentColor", "stroke-width":"1", opacity:"0.4"}));
+  svg.appendChild(svgEl("line", {x1:padL, y1:baseline, x2:padL+plotW, y2:baseline, stroke:"currentColor", "stroke-width":"1", opacity:"0.4"}));
+  var n = state.tiers.length;
+  var slot = plotW / n, bw = Math.min(72, slot * 0.6);
+  state.tiers.forEach(function(t, i){
+    var cx = padL + slot * (i + 0.5);
+    var h = max > 0 ? (revs[i] / max) * plotH : 0;
+    var y = baseline - h;
+    var accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#0b6e4f";
+    svg.appendChild(svgEl("rect", {
+      x: (cx - bw/2).toFixed(1), y: y.toFixed(1), width: bw.toFixed(1),
+      height: Math.max(h, 2).toFixed(1), fill: accent, rx: "4"
+    }));
+    var lbl = svgEl("text", {x:cx.toFixed(1), y:(y - 8).toFixed(1), "text-anchor":"middle", "font-weight":"bold"},
+      usd.format(revs[i]));
+    svg.appendChild(lbl);
+    var name = t.name || ("Tier " + (i+1));
+    var nm = svgEl("text", {x:cx.toFixed(1), y:(baseline + 20).toFixed(1), "text-anchor":"middle"}, name);
+    svg.appendChild(nm);
+    var pct = svgEl("text", {x:cx.toFixed(1), y:(baseline + 38).toFixed(1), "text-anchor":"middle"},
+      Math.round(t.sellThrough) + "% sold");
+    svg.appendChild(pct);
+  });
+  if (max === 0){
+    svg.appendChild(svgEl("text", {x:padL + plotW/2, y:padT + plotH/2, "text-anchor":"middle"}, "No revenue yet — set prices and allocations"));
+  }
+}
+
+/* ---------- status ---------- */
+function showStatus(kind, msg){
+  var s = $("status");
+  s.className = "status " + kind;
+  s.textContent = msg;
+  s.hidden = false;
+}
+function hideStatus(){ var s = $("status"); s.hidden = true; s.textContent = ""; }
+
+/* ---------- export / import ---------- */
+function exportJSON(){
+  var payload = JSON.stringify({app:"ticketmath", version:1, event:state.event, costs:state.costs, tiers:state.tiers}, null, 2);
+  var blob = new Blob([payload], {type:"application/json"});
+  var a = el("a", {href: URL.createObjectURL(blob), download:"ticketmath-export.json"});
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  showStatus("ok", "Exported ticketmath-export.json");
+}
+
+function importFile(file){
+  var reader = new FileReader();
+  reader.onload = function(){
+    try {
+      var r = sanitizeImport(JSON.parse(reader.result));
+      if (!r.ok){ showStatus("error", "Import rejected: " + r.error); return; }
+      state = r.state;
+      save(); renderAll();
+      showStatus("ok", "Import successful.");
+    } catch (e){ showStatus("error", "Import rejected: not valid JSON."); }
+  };
+  reader.onerror = function(){ showStatus("error", "Could not read the file."); };
+  reader.readAsText(file);
+}
+
+/* ---------- demo / clear ---------- */
+function loadDemo(){
+  state = {
+    event: {name:"Spring Benefit Concert", capacity:150, date:""},
+    costs: [
+      {id: nextId(), name:"Venue rental", amount:2000},
+      {id: nextId(), name:"Marketing", amount:800}
+    ],
+    tiers: [
+      {id: nextId(), name:"Early Bird", price:25, allocation:40, sellThrough:100},
+      {id: nextId(), name:"General", price:40, allocation:80, sellThrough:100},
+      {id: nextId(), name:"VIP", price:75, allocation:30, sellThrough:100}
+    ]
+  };
+  save(); renderAll();
+  showStatus("ok", "Demo data loaded (150-cap venue, 3 tiers).");
+}
+function clearAll(){
+  if (!window.confirm("Clear everything and reset TicketMath to defaults?")) return;
+  try { localStorage.removeItem(LS_KEY); } catch (e) {}
+  state = defaultState();
+  save(); renderAll(); hideStatus();
+}
+
+/* ---------- theme ---------- */
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  var btn = $("theme-toggle");
+  var dark = t === "dark";
+  btn.textContent = dark ? "Light mode" : "Dark mode";
+  btn.setAttribute("aria-pressed", dark ? "true" : "false");
+  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+}
+function initTheme(){
+  var saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+  if (saved === "dark" || saved === "light") applyTheme(saved);
+  else applyTheme(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  renderChart(); /* re-pick accent color from CSS vars */
+}
+
+/* ---------- render all / init ---------- */
+function renderAll(){
+  renderEvent(); renderCosts(); renderTiers(); renderResults();
+}
+
+nameInput.addEventListener("input", function(){ state.event.name = asText(nameInput.value, 200); save(); });
+capInput.addEventListener("input", function(){
+  state.event.capacity = asCount(capInput.value);
+  save(); renderTiersMeta(); renderResults();
+});
+dateInput.addEventListener("input", function(){ state.event.date = asText(dateInput.value, 30); save(); });
+
+$("add-cost").addEventListener("click", function(){
+  if (state.costs.length >= 50){ showStatus("error", "Maximum 50 cost lines."); return; }
+  state.costs.push({id: nextId(), name:"", amount:0});
+  save(); renderCosts(); renderResults();
+});
+$("add-tier").addEventListener("click", function(){
+  if (state.tiers.length >= MAX_TIERS) return;
+  state.tiers.push({id: nextId(), name:NAME_PRESETS[state.tiers.length] || "Tier " + (state.tiers.length+1),
+    price:0, allocation:0, sellThrough:100});
+  save(); renderTiers(); renderResults();
+});
+$("demo-btn").addEventListener("click", loadDemo);
+$("clear-btn").addEventListener("click", clearAll);
+$("export-btn").addEventListener("click", exportJSON);
+$("import-btn").addEventListener("click", function(){ $("import-file").click(); });
+$("import-file").addEventListener("change", function(e){
+  if (e.target.files && e.target.files[0]) importFile(e.target.files[0]);
+  e.target.value = "";
+});
+$("theme-toggle").addEventListener("click", function(){
+  applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  renderChart();
+});
+
+load();
+initTheme();
+renderAll();
+</script>
+</body>
+</html>

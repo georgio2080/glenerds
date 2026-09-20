@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="SplitFair — split utility bills fairly among roommates: equal, by room size, or by occupancy. Single-file offline tool.">
+<title>SplitFair — Roommate Utility Split Calculator</title>
+<script>
+/* Early theme set (prevents flash); mirrors the stored preference logic below. */
+(function(){try{var t=localStorage.getItem("splitfair.theme.v1");if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+</script>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface-2: #efede9;
+    --text: #1e1c19;
+    --muted: #6a655c;
+    --border: #dcd8cf;
+    --accent: #0b5cad;
+    --accent-strong: #084a8c;
+    --on-accent: #ffffff;
+    --good: #146c38;
+    --warn: #8a5200;
+    --radius: 10px;
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #141311;
+    --surface: #1e1c19;
+    --surface-2: #272420;
+    --text: #ece9e2;
+    --muted: #a9a49a;
+    --border: #3a372f;
+    --accent: #8bbdf2;
+    --accent-strong: #a8cdf5;
+    --on-accent: #0c1a28;
+    --good: #82dda6;
+    --warn: #e8b84b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header.top h1 { font-size: 1.35rem; margin: 0; }
+  header.top p { margin: 2px 0 0; color: var(--muted); font-size: 0.9rem; }
+  main { max-width: 860px; margin: 0 auto; padding: 16px 16px 48px; }
+  section.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  h2 { font-size: 1.15rem; margin: 0 0 10px; }
+  h3 { font-size: 1rem; margin: 14px 0 8px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+  .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .field label { font-size: 0.85rem; color: var(--muted); }
+  input, select {
+    font: inherit;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    min-height: 44px;
+    max-width: 100%;
+  }
+  input[type="number"] { width: 7em; }
+  input[type="text"] { min-width: 10em; }
+  button {
+    font: inherit;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+  }
+  button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+  }
+  button.danger { color: var(--bad, #b3261e); border-color: var(--bad, #b3261e); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .person-row, .bill-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: var(--surface);
+  }
+  .person-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+  .bill-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+  .bill-meta { font-size: 0.85rem; color: var(--muted); margin: 6px 0; }
+  .note { font-size: 0.85rem; color: var(--muted); }
+  .math-note {
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-top: 8px;
+  }
+  table { border-collapse: collapse; width: 100%; margin-top: 8px; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+  th { background: var(--surface-2); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tfoot td { font-weight: 700; }
+  .total-good { color: var(--good); }
+  .settle-list { list-style: none; padding: 0; margin: 8px 0 0; }
+  .settle-list li {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+  footer {
+    text-align: center;
+    padding: 24px 16px 32px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  footer a { color: var(--muted); }
+  .empty { color: var(--muted); font-style: italic; }
+  .occ-table input[type="number"] { width: 5.5em; }
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>SplitFair</h1>
+    <p>Fair utility bill splitting for roommates. Works offline.</p>
+  </div>
+  <button type="button" id="themeToggle" aria-pressed="false">Dark mode</button>
+</header>
+
+<main>
+  <section class="card" aria-labelledby="peopleH">
+    <h2 id="peopleH">People</h2>
+    <p class="note">Room square footage is optional — leave it blank or 0 and that bill splits equally by default.</p>
+    <div id="peopleList"></div>
+    <button type="button" id="addPerson" class="primary">Add person</button>
+  </section>
+
+  <section class="card" aria-labelledby="billsH">
+    <h2 id="billsH">Bills</h2>
+    <div class="toolbar">
+      <div class="field">
+        <label for="newBillType">Bill type</label>
+        <select id="newBillType">
+          <option value="Electric">Electric</option>
+          <option value="Gas">Gas</option>
+          <option value="Internet">Internet</option>
+          <option value="Water">Water</option>
+          <option value="Trash">Trash</option>
+          <option value="__custom">Custom…</option>
+        </select>
+      </div>
+      <div class="field" id="customNameWrap" hidden>
+        <label for="newBillCustom">Custom name</label>
+        <input type="text" id="newBillCustom" maxlength="60" placeholder="e.g. Yard service">
+      </div>
+      <div class="field">
+        <label for="newBillAmount">Amount ($)</label>
+        <input type="number" id="newBillAmount" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+      </div>
+      <div class="field">
+        <label for="newBillStart">Period start</label>
+        <input type="date" id="newBillStart">
+      </div>
+      <div class="field">
+        <label for="newBillEnd">Period end</label>
+        <input type="date" id="newBillEnd">
+      </div>
+      <div class="field">
+        <label for="newBillMethod">Split method</label>
+        <select id="newBillMethod">
+          <option value="equal">Equal</option>
+          <option value="sqft">By square footage</option>
+          <option value="occupancy">By occupancy</option>
+        </select>
+      </div>
+      <button type="button" id="addBill" class="primary">Add bill</button>
+    </div>
+    <p class="note">Occupancy rule: each guest day counts as 0.5 occupant-day. A person’s weight is their days present plus half their guest days.</p>
+    <div id="billList"></div>
+  </section>
+
+  <section class="card" aria-labelledby="resultsH">
+    <h2 id="resultsH">Results</h2>
+    <div id="results" aria-live="polite"></div>
+  </section>
+
+  <section class="card" aria-labelledby="dataH">
+    <h2 id="dataH">Data</h2>
+    <div class="toolbar">
+      <button type="button" id="loadDemo">Load demo data</button>
+      <button type="button" id="exportBtn">Export JSON</button>
+      <button type="button" id="importBtn">Import JSON</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="visually-hidden" aria-label="Choose JSON file to import">
+      <button type="button" id="clearAll" class="danger">Clear all</button>
+    </div>
+    <p class="note">Everything is stored only in this browser (localStorage). Export to keep a backup.</p>
+  </section>
+</main>
+
+<footer>
+  <a href="https://glenerds.gumroad.com">by Glenerds</a>
+</footer>
+
+<script>
+"use strict";
+/* SplitFair — single-file offline roommate bill splitter. No external requests. */
+
+/* ---------- constants ---------- */
+var STATE_KEY = "splitfair.state.v1";
+var THEME_KEY = "splitfair.theme.v1";
+var METHODS = { equal: true, sqft: true, occupancy: true };
+var BILL_TYPES = ["Electric", "Gas", "Internet", "Water", "Trash"];
+var MAX_NAME = 60;
+var MAX_SQFT = 100000;
+var MAX_AMOUNT = 1000000000;
+var MAX_DAYS = 366;
+var uidCounter = 0;
+
+function uid() {
+  uidCounter += 1;
+  return "id" + Date.now().toString(36) + uidCounter.toString(36);
+}
+
+function money(cents) {
+  var sign = cents < 0 ? "-" : "";
+  var abs = Math.abs(Math.round(cents));
+  return sign + "$" + (abs / 100).toFixed(2);
+}
+
+/* ---------- state ---------- */
+var state = { people: [], bills: [] };
+
+function blankState() { return { people: [], bills: [] }; }
+
+function save() {
+  try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function load() {
+  try {
+    var raw = localStorage.getItem(STATE_KEY);
+    if (!raw) return;
+    var parsed = JSON.parse(raw);
+    var clean = sanitizeState(parsed);
+    if (clean) state = clean;
+  } catch (e) {}
+}
+
+/* ---------- sanitization (import + storage) ---------- */
+function cleanNum(v, min, max) {
+  var n = Number(v);
+  if (!isFinite(n)) return null;
+  if (n < min || n > max) return null;
+  return n;
+}
+
+function cleanStr(v) {
+  if (typeof v !== "string") return null;
+  var s = v.trim().replace(/[\u0000-\u001F\u007F]/g, "");
+  if (s.length === 0 || s.length > MAX_NAME) return null;
+  return s;
+}
+
+function cleanDateStr(v) {
+  if (typeof v !== "string") return "";
+  var s = v.trim();
+  if (s === "") return "";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return "";
+  return s;
+}
+
+function sanitizePerson(p) {
+  if (!p || typeof p !== "object") return null;
+  var name = cleanStr(p.name);
+  if (!name) return null;
+  var sqft = cleanNum(p.sqft, 0, MAX_SQFT);
+  return { id: typeof p.id === "string" && p.id.length <= 40 ? p.id : uid(),
+           name: name, sqft: sqft === null ? 0 : sqft };
+}
+
+function sanitizeBill(b) {
+  if (!b || typeof b !== "object") return null;
+  var name = cleanStr(b.name);
+  if (!name) return null;
+  var amount = cleanNum(b.amount, 0, MAX_AMOUNT);
+  if (amount === null) return null;
+  var method = METHODS[b.method] ? b.method : "equal";
+  var occ = {};
+  if (b.occupancy && typeof b.occupancy === "object") {
+    for (var k in b.occupancy) {
+      if (!Object.prototype.hasOwnProperty.call(b.occupancy, k)) continue;
+      var row = b.occupancy[k];
+      if (!row || typeof row !== "object") continue;
+      /* days:null is the "unset" sentinel meaning "default to the period
+         length" — it must survive sanitizing. cleanNum(null) would coerce to
+         0 via Number(null)===0, turning "use default" into an explicit 0. */
+      var daysRaw = row.days;
+      var days = (daysRaw === null || daysRaw === undefined || daysRaw === "")
+        ? null : cleanNum(daysRaw, 0, MAX_DAYS);
+      var guests = cleanNum(row.guests, 0, MAX_DAYS);
+      occ[String(k).slice(0, 40)] = {
+        days: days === null ? null : days,
+        guests: guests === null ? 0 : guests
+      };
+    }
+  }
+  return { id: typeof b.id === "string" && b.id.length <= 40 ? b.id : uid(),
+           name: name, amount: amount,
+           start: cleanDateStr(b.start), end: cleanDateStr(b.end),
+           method: method, occupancy: occ };
+}
+
+function sanitizeState(s) {
+  if (!s || typeof s !== "object") return null;
+  if (!Array.isArray(s.people) || !Array.isArray(s.bills)) return null;
+  var people = [];
+  for (var i = 0; i < s.people.length && people.length < 50; i++) {
+    var p = sanitizePerson(s.people[i]);
+    if (p) people.push(p);
+  }
+  var bills = [];
+  for (var j = 0; j < s.bills.length && bills.length < 200; j++) {
+    var b = sanitizeBill(s.bills[j]);
+    if (b) bills.push(b);
+  }
+  return { people: people, bills: bills };
+}
+
+/* ---------- math ---------- */
+function periodDays(bill) {
+  if (!bill.start || !bill.end) return null;
+  var s = new Date(bill.start + "T12:00:00");
+  var e = new Date(bill.end + "T12:00:00");
+  if (isNaN(s.getTime()) || isNaN(e.getTime()) || e < s) return null;
+  return Math.round((e - s) / 86400000) + 1;
+}
+
+/* Returns { shares: {personId: cents}, note: string, methodUsed: string } */
+function computeBill(bill) {
+  var amountCents = Math.round(bill.amount * 100);
+  var people = state.people;
+  var shares = {};
+  var note = "";
+  var methodUsed = bill.method;
+
+  function weightsOf(fn) {
+    var w = [];
+    for (var i = 0; i < people.length; i++) w.push(fn(people[i]));
+    return w;
+  }
+
+  var weights;
+  if (bill.method === "sqft") {
+    weights = weightsOf(function (p) { return p.sqft; });
+    var totalSqft = 0;
+    for (var i = 0; i < weights.length; i++) totalSqft += weights[i];
+    if (totalSqft <= 0) {
+      methodUsed = "equal";
+      weights = weightsOf(function () { return 1; });
+      note = "No square footage entered, so this bill split equally.";
+    } else {
+      note = "Weighted by room square footage (total " + totalSqft + " sq ft).";
+    }
+  } else if (bill.method === "occupancy") {
+    var pDays = periodDays(bill);
+    weights = weightsOf(function (p) {
+      var row = bill.occupancy[p.id] || { days: null, guests: 0 };
+      var days = (row.days === null || row.days === undefined) ? (pDays === null ? 0 : pDays) : row.days;
+      return days + 0.5 * row.guests;
+    });
+    var totalW = 0;
+    for (var j = 0; j < weights.length; j++) totalW += weights[j];
+    if (totalW <= 0) {
+      methodUsed = "equal";
+      weights = weightsOf(function () { return 1; });
+      note = "No occupancy entered, so this bill split equally.";
+    } else {
+      note = "Weighted by occupant-days: days present + 0.5 per guest day.";
+    }
+  } else {
+    weights = weightsOf(function () { return 1; });
+    note = "Split evenly among all people.";
+  }
+
+  var totalW2 = 0;
+  for (var k = 0; k < weights.length; k++) totalW2 += weights[k];
+
+  var raw = [];
+  var rounded = [];
+  for (var m = 0; m < people.length; m++) {
+    var share = totalW2 > 0 ? (amountCents * weights[m]) / totalW2 : 0;
+    raw.push(share);
+    rounded.push(Math.round(share));
+  }
+  var sumRounded = 0;
+  for (var n = 0; n < rounded.length; n++) sumRounded += rounded[n];
+  var drift = amountCents - sumRounded;
+
+  /* Assign rounding drift to the largest share (first wins ties). */
+  var mathDetail = "";
+  if (rounded.length > 0) {
+    var maxIdx = 0;
+    for (var q = 1; q < rounded.length; q++) {
+      if (rounded[q] > rounded[maxIdx]) maxIdx = q;
+    }
+    if (drift !== 0) {
+      rounded[maxIdx] += drift;
+      mathDetail = " Rounding: shares rounded to the nearest cent left a " +
+        money(Math.abs(drift)) + (drift > 0 ? " shortfall" : " overage") +
+        "; it was assigned to " + people[maxIdx].name + ", the largest share.";
+    }
+  }
+
+  for (var t = 0; t < people.length; t++) shares[people[t].id] = rounded[t];
+  note += mathDetail;
+  return { shares: shares, note: note, methodUsed: methodUsed, amountCents: amountCents };
+}
+
+/* ---------- DOM helpers (no innerHTML anywhere) ---------- */
+function el(tag, attrs, text) {
+  var node = document.createElement(tag);
+  if (attrs) {
+    for (var k in attrs) {
+      if (!Object.prototype.hasOwnProperty.call(attrs, k)) continue;
+      if (k === "class") node.className = attrs[k];
+      else if (k === "hidden") { if (attrs[k]) node.setAttribute("hidden", ""); }
+      else node.setAttribute(k, attrs[k]);
+    }
+  }
+  if (text !== undefined && text !== null) node.textContent = text;
+  return node;
+}
+
+function labelFor(id, text) {
+  var l = el("label", { "for": id }, text);
+  return l;
+}
+
+function findPerson(id) {
+  for (var i = 0; i < state.people.length; i++) {
+    if (state.people[i].id === id) return state.people[i];
+  }
+  return null;
+}
+
+/* ---------- render: people ---------- */
+var peopleList = document.getElementById("peopleList");
+
+function renderPeople() {
+  peopleList.textContent = "";
+  if (state.people.length === 0) {
+    peopleList.appendChild(el("p", { "class": "empty" }, "No people yet — add everyone sharing the bills."));
+  }
+  state.people.forEach(function (p, idx) {
+    var row = el("div", { "class": "person-row" });
+
+    var nameField = el("div", { "class": "field" });
+    var nameId = "personName-" + p.id;
+    nameField.appendChild(labelFor(nameId, "Name"));
+    var nameInput = el("input", { type: "text", id: nameId, maxlength: String(MAX_NAME), value: p.name, "aria-label": "Person " + (idx + 1) + " name" });
+    nameInput.addEventListener("change", function () {
+      var v = cleanStr(nameInput.value);
+      if (v) { p.name = v; nameInput.value = v; save(); renderResults(); }
+      else { nameInput.value = p.name; }
+    });
+    nameField.appendChild(nameInput);
+    row.appendChild(nameField);
+
+    var sqftField = el("div", { "class": "field" });
+    var sqftId = "personSqft-" + p.id;
+    sqftField.appendChild(labelFor(sqftId, "Room sq ft (optional)"));
+    var sqftInput = el("input", { type: "number", id: sqftId, min: "0", max: String(MAX_SQFT), step: "1", inputmode: "numeric", value: p.sqft ? String(p.sqft) : "", "aria-label": p.name + " room square footage" });
+    function applySqft() {
+      var raw = sqftInput.value.trim();
+      if (raw === "") { p.sqft = 0; }
+      else {
+        var n = cleanNum(raw, 0, MAX_SQFT);
+        if (n === null) { sqftInput.value = p.sqft ? String(p.sqft) : ""; return; }
+        p.sqft = n;
+      }
+      save(); renderResults();
+    }
+    sqftInput.addEventListener("input", applySqft);
+    sqftInput.addEventListener("change", applySqft);
+    sqftField.appendChild(sqftInput);
+    row.appendChild(sqftField);
+
+    var del = el("button", { type: "button", "aria-label": "Remove " + p.name }, "Remove");
+    del.addEventListener("click", function () {
+      state.people = state.people.filter(function (x) { return x.id !== p.id; });
+      state.bills.forEach(function (b) { delete b.occupancy[p.id]; });
+      save(); renderPeople(); renderBills(); renderResults();
+    });
+    row.appendChild(del);
+
+    peopleList.appendChild(row);
+  });
+}
+
+/* ---------- render: bills ---------- */
+var billList = document.getElementById("billList");
+var newBillType = document.getElementById("newBillType");
+var customNameWrap = document.getElementById("customNameWrap");
+var newBillCustom = document.getElementById("newBillCustom");
+
+newBillType.addEventListener("change", function () {
+  if (newBillType.value === "__custom") customNameWrap.removeAttribute("hidden");
+  else customNameWrap.setAttribute("hidden", "");
+});
+
+function billDisplayName(bill) { return bill.name; }
+
+function renderBills() {
+  billList.textContent = "";
+  if (state.bills.length === 0) {
+    billList.appendChild(el("p", { "class": "empty" }, "No bills yet — add your first utility bill above."));
+    return;
+  }
+  state.bills.forEach(function (bill) {
+    var card = el("div", { "class": "bill-card" });
+
+    var head = el("div", { "class": "bill-head" });
+
+    var nameField = el("div", { "class": "field" });
+    var nameId = "billName-" + bill.id;
+    nameField.appendChild(labelFor(nameId, "Bill name"));
+    var nameInput = el("input", { type: "text", id: nameId, maxlength: String(MAX_NAME), value: bill.name });
+    nameInput.addEventListener("change", function () {
+      var v = cleanStr(nameInput.value);
+      if (v) { bill.name = v; nameInput.value = v; save(); renderResults(); }
+      else { nameInput.value = bill.name; }
+    });
+    nameField.appendChild(nameInput);
+    head.appendChild(nameField);
+
+    var amtField = el("div", { "class": "field" });
+    var amtId = "billAmt-" + bill.id;
+    amtField.appendChild(labelFor(amtId, "Amount ($)"));
+    var amtInput = el("input", { type: "number", id: amtId, min: "0", max: String(MAX_AMOUNT), step: "0.01", inputmode: "decimal", value: String(bill.amount) });
+    function applyAmt() {
+      var n = cleanNum(amtInput.value, 0, MAX_AMOUNT);
+      if (n === null) return;
+      bill.amount = n;
+      save(); renderResults();
+    }
+    amtInput.addEventListener("input", applyAmt);
+    amtInput.addEventListener("change", function () {
+      var n = cleanNum(amtInput.value, 0, MAX_AMOUNT);
+      if (n === null) { amtInput.value = String(bill.amount); return; }
+      bill.amount = n; save(); renderResults();
+    });
+    amtField.appendChild(amtInput);
+    head.appendChild(amtField);
+
+    var sField = el("div", { "class": "field" });
+    var sId = "billStart-" + bill.id;
+    sField.appendChild(labelFor(sId, "Period start"));
+    var sInput = el("input", { type: "date", id: sId, value: bill.start });
+    sInput.addEventListener("change", function () {
+      bill.start = cleanDateStr(sInput.value); save(); renderBills(); renderResults();
+    });
+    sField.appendChild(sInput);
+    head.appendChild(sField);
+
+    var eField = el("div", { "class": "field" });
+    var eId = "billEnd-" + bill.id;
+    eField.appendChild(labelFor(eId, "Period end"));
+    var eInput = el("input", { type: "date", id: eId, value: bill.end });
+    eInput.addEventListener("change", function () {
+      bill.end = cleanDateStr(eInput.value); save(); renderBills(); renderResults();
+    });
+    eField.appendChild(eInput);
+    head.appendChild(eField);
+
+    var mField = el("div", { "class": "field" });
+    var mId = "billMethod-" + bill.id;
+    mField.appendChild(labelFor(mId, "Split method"));
+    var mSelect = el("select", { id: mId });
+    [["equal", "Equal"], ["sqft", "By square footage"], ["occupancy", "By occupancy"]].forEach(function (opt) {
+      var o = el("option", { value: opt[0] }, opt[1]);
+      if (bill.method === opt[0]) o.setAttribute("selected", "");
+      mSelect.appendChild(o);
+    });
+    mSelect.addEventListener("change", function () {
+      bill.method = METHODS[mSelect.value] ? mSelect.value : "equal";
+      save(); renderBills(); renderResults();
+    });
+    mField.appendChild(mSelect);
+    head.appendChild(mField);
+
+    var del = el("button", { type: "button", "aria-label": "Delete bill " + bill.name }, "Delete");
+    del.addEventListener("click", function () {
+      state.bills = state.bills.filter(function (x) { return x.id !== bill.id; });
+      save(); renderBills(); renderResults();
+    });
+    head.appendChild(del);
+
+    card.appendChild(head);
+
+    var meta = el("p", { "class": "bill-meta" });
+    var pDays = periodDays(bill);
+    var metaText = "Method: " +
+      (bill.method === "equal" ? "Equal" : bill.method === "sqft" ? "By square footage" : "By occupancy");
+    if (pDays !== null) metaText += " · Period: " + pDays + " days (" + bill.start + " to " + bill.end + ")";
+    else metaText += " · Period dates not set";
+    meta.textContent = metaText;
+    card.appendChild(meta);
+
+    if (bill.method === "occupancy") {
+      card.appendChild(renderOccupancyTable(bill));
+    }
+
+    billList.appendChild(card);
+  });
+}
+
+function renderOccupancyTable(bill) {
+  var wrap = el("div");
+  wrap.appendChild(el("h3", null, "Occupancy for this bill"));
+  var pDays = periodDays(bill);
+  var hint = el("p", { "class": "note" },
+    pDays !== null
+      ? "Days present defaults to the period length (" + pDays + " days). Each guest day counts as 0.5 occupant-day."
+      : "Set the bill dates so days present can default to the period length. Each guest day counts as 0.5 occupant-day.");
+  wrap.appendChild(hint);
+
+  if (state.people.length === 0) {
+    wrap.appendChild(el("p", { "class": "empty" }, "Add people first."));
+    return wrap;
+  }
+
+  var table = el("table", { "class": "occ-table" });
+  var thead = el("thead");
+  var hr = el("tr");
+  hr.appendChild(el("th", { scope: "col" }, "Person"));
+  hr.appendChild(el("th", { scope: "col" }, "Days present"));
+  hr.appendChild(el("th", { scope: "col" }, "Guest days"));
+  thead.appendChild(hr);
+  table.appendChild(thead);
+  var tbody = el("tbody");
+
+  state.people.forEach(function (p) {
+    var row = bill.occupancy[p.id] || { days: null, guests: 0 };
+    if (!bill.occupancy[p.id]) bill.occupancy[p.id] = row;
+
+    var tr = el("tr");
+    var th = el("th", { scope: "row" }, p.name);
+    tr.appendChild(th);
+
+    var daysTd = el("td");
+    var daysId = "occDays-" + bill.id + "-" + p.id;
+    var daysInput = el("input", {
+      type: "number", id: daysId, min: "0", max: String(MAX_DAYS), step: "1",
+      inputmode: "numeric", "aria-label": p.name + " days present"
+    });
+    if (row.days !== null && row.days !== undefined) daysInput.value = String(row.days);
+    else daysInput.setAttribute("placeholder", pDays !== null ? String(pDays) : "0");
+    function applyDays() {
+      var raw = daysInput.value.trim();
+      if (raw === "") { row.days = null; }
+      else {
+        var n = cleanNum(raw, 0, MAX_DAYS);
+        if (n === null) return;
+        row.days = n;
+      }
+      save(); renderResults();
+    }
+    daysInput.addEventListener("input", applyDays);
+    daysInput.addEventListener("change", applyDays);
+    daysTd.appendChild(daysInput);
+    tr.appendChild(daysTd);
+
+    var guestTd = el("td");
+    var guestId = "occGuest-" + bill.id + "-" + p.id;
+    var guestInput = el("input", {
+      type: "number", id: guestId, min: "0", max: String(MAX_DAYS), step: "1",
+      inputmode: "numeric", value: String(row.guests || 0),
+      "aria-label": p.name + " guest days"
+    });
+    function applyGuests() {
+      var n = cleanNum(guestInput.value, 0, MAX_DAYS);
+      if (n === null) return;
+      row.guests = n;
+      save(); renderResults();
+    }
+    guestInput.addEventListener("input", applyGuests);
+    guestInput.addEventListener("change", applyGuests);
+    guestTd.appendChild(guestInput);
+    tr.appendChild(guestTd);
+
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  return wrap;
+}
+
+/* ---------- render: results ---------- */
+var resultsEl = document.getElementById("results");
+
+function renderResults() {
+  resultsEl.textContent = "";
+
+  if (state.people.length === 0) {
+    resultsEl.appendChild(el("p", { "class": "empty" }, "Add people and bills to see the split."));
+    return;
+  }
+  if (state.bills.length === 0) {
+    resultsEl.appendChild(el("p", { "class": "empty" }, "Add a bill to see the split."));
+    return;
+  }
+
+  var totals = {};
+  state.people.forEach(function (p) { totals[p.id] = 0; });
+  var grandTotal = 0;
+
+  state.bills.forEach(function (bill) {
+    var calc = computeBill(bill);
+
+    var h = el("h3", null, bill.name + " — " + money(calc.amountCents));
+    resultsEl.appendChild(h);
+
+    var table = el("table");
+    var thead = el("thead");
+    var hr = el("tr");
+    hr.appendChild(el("th", { scope: "col" }, "Person"));
+    hr.appendChild(el("th", { scope: "col", "class": "num" }, "Owes"));
+    thead.appendChild(hr);
+    table.appendChild(thead);
+
+    var tbody = el("tbody");
+    var billSum = 0;
+    state.people.forEach(function (p) {
+      var share = calc.shares[p.id] || 0;
+      totals[p.id] += share;
+      billSum += share;
+      var tr = el("tr");
+      tr.appendChild(el("th", { scope: "row" }, p.name));
+      tr.appendChild(el("td", { "class": "num" }, money(share)));
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    var tfoot = el("tfoot");
+    var fr = el("tr");
+    fr.appendChild(el("td", null, "Bill total"));
+    var checkTd = el("td", { "class": "num total-good" }, money(billSum));
+    fr.appendChild(checkTd);
+    tfoot.appendChild(fr);
+    table.appendChild(tfoot);
+    resultsEl.appendChild(table);
+
+    resultsEl.appendChild(el("p", { "class": "math-note" }, calc.note));
+    grandTotal += billSum;
+  });
+
+  /* Totals */
+  resultsEl.appendChild(el("h3", null, "Totals across all bills"));
+  var tTable = el("table");
+  var tThead = el("thead");
+  var tHr = el("tr");
+  tHr.appendChild(el("th", { scope: "col" }, "Person"));
+  tHr.appendChild(el("th", { scope: "col", "class": "num" }, "Total owes"));
+  tThead.appendChild(tHr);
+  tTable.appendChild(tThead);
+  var tBody = el("tbody");
+  state.people.forEach(function (p) {
+    var tr = el("tr");
+    tr.appendChild(el("th", { scope: "row" }, p.name));
+    tr.appendChild(el("td", { "class": "num" }, money(totals[p.id])));
+    tBody.appendChild(tr);
+  });
+  tTable.appendChild(tBody);
+  var tFoot = el("tfoot");
+  var gfr = el("tr");
+  gfr.appendChild(el("td", null, "Grand total"));
+  gfr.appendChild(el("td", { "class": "num total-good" }, money(grandTotal)));
+  tFoot.appendChild(gfr);
+  tTable.appendChild(tFoot);
+  resultsEl.appendChild(tTable);
+
+  /* Settle up */
+  resultsEl.appendChild(el("h3", null, "Settle up"));
+  var list = el("ul", { "class": "settle-list" });
+  state.people.forEach(function (p) {
+    var li = el("li");
+    li.appendChild(el("span", null, p.name + " owes"));
+    li.appendChild(el("strong", null, money(totals[p.id])));
+    list.appendChild(li);
+  });
+  resultsEl.appendChild(list);
+}
+
+/* ---------- actions ---------- */
+document.getElementById("addPerson").addEventListener("click", function () {
+  state.people.push({ id: uid(), name: "Person " + (state.people.length + 1), sqft: 0 });
+  save(); renderPeople(); renderBills(); renderResults();
+});
+
+document.getElementById("addBill").addEventListener("click", function () {
+  var type = newBillType.value;
+  var name = type === "__custom" ? cleanStr(newBillCustom.value) : type;
+  if (!name) {
+    if (type === "__custom") { newBillCustom.focus(); return; }
+    name = "Bill";
+  }
+  var amtEl = document.getElementById("newBillAmount");
+  var amount = cleanNum(amtEl.value, 0, MAX_AMOUNT);
+  if (amount === null) amount = 0;
+  var start = cleanDateStr(document.getElementById("newBillStart").value);
+  var end = cleanDateStr(document.getElementById("newBillEnd").value);
+  var method = document.getElementById("newBillMethod").value;
+  if (!METHODS[method]) method = "equal";
+  state.bills.push({
+    id: uid(), name: name, amount: amount, start: start, end: end,
+    method: method, occupancy: {}
+  });
+  amtEl.value = "";
+  newBillCustom.value = "";
+  save(); renderBills(); renderResults();
+});
+
+function demoData() {
+  var a = { id: uid(), name: "Alex", sqft: 140 };
+  var j = { id: uid(), name: "Jordan", sqft: 110 };
+  var s = { id: uid(), name: "Sam", sqft: 90 };
+  var electric = {
+    id: uid(), name: "Electric", amount: 120, start: "2026-09-01", end: "2026-09-30",
+    method: "sqft", occupancy: {}
+  };
+  var internet = {
+    id: uid(), name: "Internet", amount: 75, start: "2026-09-01", end: "2026-09-30",
+    method: "occupancy", occupancy: {}
+  };
+  internet.occupancy[a.id] = { days: 30, guests: 0 };
+  internet.occupancy[j.id] = { days: 22, guests: 4 };
+  internet.occupancy[s.id] = { days: 15, guests: 2 };
+  return { people: [a, j, s], bills: [electric, internet] };
+}
+
+document.getElementById("loadDemo").addEventListener("click", function () {
+  if (state.people.length || state.bills.length) {
+    if (!window.confirm("Replace current data with the demo?")) return;
+  }
+  state = demoData();
+  save(); renderPeople(); renderBills(); renderResults();
+});
+
+document.getElementById("clearAll").addEventListener("click", function () {
+  if (!window.confirm("Delete all people and bills? This cannot be undone.")) return;
+  state = blankState();
+  save(); renderPeople(); renderBills(); renderResults();
+});
+
+document.getElementById("exportBtn").addEventListener("click", function () {
+  var blob = new Blob([JSON.stringify({ version: 1, people: state.people, bills: state.bills }, null, 2)],
+    { type: "application/json" });
+  var a = el("a", { href: URL.createObjectURL(blob), download: "splitfair-export.json" });
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+});
+
+var importFile = document.getElementById("importFile");
+document.getElementById("importBtn").addEventListener("click", function () { importFile.click(); });
+importFile.addEventListener("change", function () {
+  var f = importFile.files && importFile.files[0];
+  if (!f) return;
+  var reader = new FileReader();
+  reader.onload = function () {
+    try {
+      var parsed = JSON.parse(String(reader.result));
+      var clean = sanitizeState(parsed);
+      if (!clean) { window.alert("Import failed: file is not valid SplitFair data."); return; }
+      state = clean;
+      save(); renderPeople(); renderBills(); renderResults();
+    } catch (e) {
+      window.alert("Import failed: could not read that file.");
+    }
+    importFile.value = "";
+  };
+  reader.readAsText(f);
+});
+
+/* ---------- theme ---------- */
+var themeToggle = document.getElementById("themeToggle");
+function currentTheme() { return document.documentElement.getAttribute("data-theme") || "light"; }
+function paintThemeButton() {
+  var dark = currentTheme() === "dark";
+  themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
+  themeToggle.textContent = dark ? "Light mode" : "Dark mode";
+}
+themeToggle.addEventListener("click", function () {
+  var next = currentTheme() === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  paintThemeButton();
+});
+paintThemeButton();
+
+/* ---------- init ---------- */
+load();
+renderPeople();
+renderBills();
+renderResults();
+</script>
+</body>
+</html>

@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Free apartment move-in checklist and damage logger: document your rental's condition room by room with photos, print a timestamped handover report. Offline, single-file tool (MoveInProof).">
+<title>Free Apartment Move-In Checklist & Damage Logger (MoveInProof)</title>
+<script>
+/* Early theme set (prevents flash); mirrors the stored preference logic below. */
+(function(){try{var t=localStorage.getItem("moveinproof.theme.v1");if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+</script>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #edf0f7;
+    --surface: #ffffff;
+    --surface-2: #f3f5fb;
+    --text: #1a2233;
+    --muted: #5b6b82;
+    --border: #dbe2ef;
+    --accent1: #6366f1;
+    --accent2: #8b5cf6;
+    --accent: #6a5cf0;
+    --accent-strong: #5a4fe0;
+    --on-accent: #ffffff;
+    --accent-soft: rgba(99,102,241,.10);
+    --good: #146c38;
+    --warn: #9a5b00;
+    --bad: #c0271b;
+    --chip: #e9eefb;
+    --radius: 14px;
+    --tap: 44px;
+    --shadow: 0 2px 10px rgba(31,42,83,.09);
+    --grad: linear-gradient(135deg, var(--accent1), var(--accent2));
+    --ic-plus: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%3E%3Cpath%20d%3D%27M12%205v14M5%2012h14%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    --ic-pencil: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M17%203a2.8%202.8%200%201%201%204%204L7.5%2020.5%202%2022l1.5-5.5Z%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    --ic-trash: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M3%206h18%27%2F%3E%3Cpath%20d%3D%27M8%206V4a2%202%200%200%201%202-2h4a2%202%200%200%201%202%202v2%27%2F%3E%3Cpath%20d%3D%27M19%206l-1%2014a2%202%200%200%201-2%202H8a2%202%200%200%201-2-2L5%206%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    --ic-check: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M20%206%209%2017l-5-5%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    --ic-x: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%3E%3Cpath%20d%3D%27M18%206%206%2018M6%206l12%2012%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    --ic-camera: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M23%2019a2%202%200%200%201-2%202H3a2%202%200%200%201-2-2V8a2%202%200%200%201%202-2h4l2-3h6l2%203h4a2%202%200%200%201%202%202Z%27%2F%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2713%27%20r%3D%274%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    --ic-alert: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M10.3%203.9%201.8%2018a2%202%200%200%200%201.7%203h17a2%202%200%200%200%201.7-3L13.7%203.9a2%202%200%200%200-3.4%200Z%27%2F%3E%3Cpath%20d%3D%27M12%209v4%27%2F%3E%3Cpath%20d%3D%27M12%2017h.01%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0c1017;
+    --surface: #151c2a;
+    --surface-2: #1b2334;
+    --text: #e9eef8;
+    --muted: #94a2bb;
+    --border: #26314a;
+    --accent1: #818cf8;
+    --accent2: #a78bfa;
+    --accent: #8b7cf6;
+    --accent-strong: #9a8cf7;
+    --on-accent: #10131c;
+    --accent-soft: rgba(129,140,248,.14);
+    --good: #82dda6;
+    --warn: #fbbf24;
+    --bad: #f87171;
+    --chip: #1d2740;
+    --shadow: 0 2px 10px rgba(0,0,0,.5);
+  }
+  * { box-sizing: border-box; }
+  html, body { overflow-x: clip; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  a { color: var(--accent); }
+  /* ---- hero header ---- */
+  header.top {
+    background: var(--grad);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(99,102,241,.35);
+    padding: 0;
+    border: none;
+  }
+  .hero-inner {
+    max-width: 46rem; margin: 0 auto; padding: 1.1rem 1rem;
+    display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: center; gap: .8rem; }
+  .logo-badge {
+    flex: none; width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .logo-badge svg { width: 26px; height: 26px; color: #fff; }
+  .brand h1 { margin: 0; font-size: 1.4rem; letter-spacing: .2px; color: #fff; }
+  .brand p { margin: 2px 0 0; color: rgba(255,255,255,.85); font-size: .85rem; }
+  .theme-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    min-height: var(--tap); padding: 8px 16px;
+    border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: rgba(255,255,255,.14);
+    color: #fff; font-family: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,.26); }
+  .theme-btn svg { width: 18px; height: 18px; flex: none; }
+  html[data-theme="light"] .icon-sun { display: none; }
+  html[data-theme="dark"] .icon-moon { display: none; }
+  main { max-width: 46rem; margin: 0 auto; padding: 1rem; display: grid; gap: 1rem; }
+  section.card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 1.25rem;
+  }
+  section.card h2 { margin: 0 0 .75rem; font-size: 1.15rem; display: flex; align-items: center; gap: .6rem; }
+  .hicon {
+    flex: none; width: 32px; height: 32px; border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .hicon svg { width: 18px; height: 18px; }
+  .field { margin-bottom: .8rem; }
+  label.flabel { display: block; font-weight: 600; font-size: .92rem; margin-bottom: .3rem; }
+  input[type="text"], input[type="date"], textarea, select {
+    width: 100%; min-height: var(--tap); padding: .6rem .7rem; font: inherit; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  }
+  textarea { min-height: 88px; resize: vertical; }
+  input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible, .filebtn:focus-within {
+    outline: 3px solid var(--accent); outline-offset: 2px;
+  }
+  /* ---- buttons ---- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    min-height: var(--tap); padding: .65rem 1.1rem; border-radius: 12px; font: inherit; font-weight: 700;
+    cursor: pointer; border: 1px solid var(--border); text-decoration: none;
+    background: var(--surface); color: var(--text); box-shadow: var(--shadow);
+  }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+  .btn-primary { background: var(--grad); border-color: transparent; color: #fff; box-shadow: 0 4px 14px rgba(99,102,241,.35); }
+  .btn-primary:hover { filter: brightness(1.07); border-color: transparent; }
+  .btn-secondary { background: var(--surface-2); color: var(--text); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-danger { background: transparent; color: var(--bad); border-color: var(--bad); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: .6rem; margin: .5rem 0; }
+  .filebtn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    min-height: var(--tap); padding: .6rem 1rem; border-radius: 12px; font: inherit; font-weight: 600;
+    background: var(--surface-2); color: var(--text); border: 1px dashed var(--border); cursor: pointer;
+  }
+  .filebtn::before {
+    content: ""; width: 18px; height: 18px; flex: none; background-color: var(--accent);
+    -webkit-mask: var(--ic-camera) no-repeat center/contain; mask: var(--ic-camera) no-repeat center/contain;
+  }
+  /* CSS-injected icons for JS-generated buttons (survive textContent swaps, adapt to dark mode) */
+  .def-edit::before, .def-delete::before, .room-del::before, .d-add::before,
+  .de-save::before, .de-cancel::before, .ph-del::before {
+    content: ""; width: 16px; height: 16px; flex: none; background-color: currentColor;
+    -webkit-mask: var(--ic) no-repeat center/contain; mask: var(--ic) no-repeat center/contain;
+  }
+  .def-edit { --ic: var(--ic-pencil); }
+  .def-delete { --ic: var(--ic-trash); }
+  .room-del { --ic: var(--ic-trash); }
+  .d-add { --ic: var(--ic-plus); }
+  .de-save { --ic: var(--ic-check); }
+  .de-cancel { --ic: var(--ic-x); }
+  .ph-del { --ic: var(--ic-x); }
+  .visually-hidden {
+    position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .room-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; background: var(--surface); box-shadow: var(--shadow); }
+  .room-card > h3 { display: flex; align-items: center; gap: .5rem; font-size: 1rem; margin: 1rem 0 .5rem; }
+  .room-card > h3::before {
+    content: ""; width: 18px; height: 18px; flex: none; background-color: var(--warn);
+    -webkit-mask: var(--ic-alert) no-repeat center/contain; mask: var(--ic-alert) no-repeat center/contain;
+  }
+  .room-head { display: flex; gap: .6rem; align-items: center; margin-bottom: .8rem; flex-wrap: wrap; }
+  .room-head input.room-name { flex: 1 1 12rem; font-size: 1.05rem; font-weight: 700; }
+  fieldset.rating { border: 1px solid var(--border); border-radius: 10px; padding: .6rem .8rem; margin: 0 0 .8rem; }
+  fieldset.rating legend { font-weight: 600; font-size: .92rem; padding: 0 .4rem; }
+  .rating-opts { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .rating-opts label {
+    display: inline-flex; align-items: center; gap: .4rem; min-height: var(--tap); padding: .4rem .8rem;
+    border: 1px solid var(--border); border-radius: 999px; cursor: pointer; font-size: .92rem; background: var(--surface);
+  }
+  .rating-opts input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); margin: 0; }
+  .defect { border: 1px solid var(--border); border-left: 4px solid var(--warn); border-radius: 10px; padding: .8rem; margin: .7rem 0; background: var(--surface); }
+  .defect-head { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: .4rem; }
+  .defect-head strong { font-size: 1.02rem; }
+  .chip { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 700; text-transform: capitalize;
+    padding: .15rem .6rem; border-radius: 999px; background: var(--chip); color: var(--text); }
+  .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background-color: currentColor; flex: none; }
+  .chip.sev-minor { background: var(--chip); color: var(--good); }
+  .chip.sev-moderate { background: var(--chip); color: var(--warn); }
+  .chip.sev-major { background: var(--chip); color: var(--bad); }
+  .defect-meta { color: var(--muted); font-size: .85rem; margin: .3rem 0; }
+  .defect p.desc { margin: .4rem 0; white-space: pre-wrap; }
+  .defect-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
+  .btn-sm { min-height: 40px; padding: .45rem .8rem; font-size: .9rem; border-radius: 10px; }
+  .add-defect { border: 1px dashed var(--border); border-radius: 10px; padding: .8rem; margin-top: .8rem; background: var(--surface-2); }
+  .add-defect h4 { margin: 0 0 .6rem; font-size: .95rem; display: flex; align-items: center; gap: .5rem; }
+  .add-defect h4::before {
+    content: ""; width: 18px; height: 18px; flex: none; background-color: var(--accent);
+    -webkit-mask: var(--ic-plus) no-repeat center/contain; mask: var(--ic-plus) no-repeat center/contain;
+  }
+  .form-grid { display: grid; gap: .6rem; grid-template-columns: 1fr; }
+  @media (min-width: 560px) { .form-grid.two { grid-template-columns: 1fr 1fr; } }
+  .ph-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: .5rem; margin: .6rem 0; }
+  figure.ph-thumb { margin: 0; position: relative; }
+  figure.ph-thumb img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); display: block; }
+  .ph-del {
+    position: absolute; top: 4px; right: 4px; min-height: 40px; min-width: 40px; border-radius: 10px;
+    background: rgba(0,0,0,.65); color: #fff; border: 1px solid rgba(255,255,255,.4); font-size: .8rem; cursor: pointer; padding: .3rem .5rem;
+    display: inline-flex; align-items: center; justify-content: center; gap: .3rem;
+  }
+  .sec-label { font-weight: 600; font-size: .9rem; margin: .8rem 0 .2rem; color: var(--muted); }
+  #msg { min-height: 1.5em; margin-top: .6rem; font-size: .92rem; color: var(--muted); }
+  #msg.alert { color: var(--bad); font-weight: 600; }
+  /* Report */
+  #report .rep-block { margin-bottom: 1.2rem; }
+  #report dl.rep-head { display: grid; grid-template-columns: auto 1fr; gap: .25rem .8rem; margin: 0; }
+  #report dl.rep-head dt { font-weight: 700; color: var(--muted); font-size: .9rem; }
+  #report dl.rep-head dd { margin: 0; }
+  .rep-room { border: 1px solid var(--border); border-radius: 10px; padding: .8rem; margin: .8rem 0; break-inside: avoid; page-break-inside: avoid; background: var(--surface); }
+  .rep-room h3 { margin: 0 0 .3rem; }
+  .rep-defect { margin: .6rem 0; padding-top: .6rem; border-top: 1px solid var(--border); }
+  .rep-thumbs { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .4rem; }
+  .rep-thumbs img { width: 120px; height: 120px; object-fit: cover; border: 1px solid var(--border); border-radius: 8px; }
+  .sig-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; margin-top: 1.5rem; }
+  @media (min-width: 560px) { .sig-grid { grid-template-columns: 1fr 1fr; } }
+  .sig-box { border: 1px solid var(--border); border-radius: 10px; padding: .8rem; }
+  .sig-line { border-bottom: 1px solid var(--text); min-height: 2.2rem; margin: .6rem 0 .2rem; }
+  .sig-cap { font-size: .8rem; color: var(--muted); }
+  footer.site { text-align: center; color: var(--muted); font-size: .85rem; padding: 1.5rem 1rem 2rem; }
+  @media print {
+    html[data-theme="dark"] {
+      --bg: #ffffff; --surface: #ffffff; --surface-2: #f2f2f2; --text: #111111;
+      --muted: #444444; --border: #999999; --accent: #000000; --on-accent: #ffffff;
+      --good: #0a5a2a; --warn: #6a3d00; --bad: #8f1d16; --chip: #eeeeee;
+    }
+    header.top, #propSection, #roomsSection, #actionsSection, footer.site { display: none !important; }
+    main { max-width: none; padding: 0; display: block; }
+    section.card { border: none; box-shadow: none; padding: 0; }
+    body { background: #fff; }
+    .rep-thumbs img { width: 110px; height: 110px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="hero-inner">
+    <div class="brand">
+      <span class="logo-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>
+      <div>
+        <h1>MoveInProof</h1>
+        <p>Document your move-in condition, room by room — with photos, before you unpack.</p>
+      </div>
+    </div>
+    <button type="button" class="theme-btn" id="themeToggle" aria-pressed="false"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span id="themeLabel">Dark mode</span></button>
+  </div>
+</header>
+
+<main>
+  <section class="card" id="propSection" aria-labelledby="propH">
+    <h2 id="propH"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 22V12h6v10"/></svg></span>Property</h2>
+    <div class="field">
+      <label class="flabel" for="f-address">Property address</label>
+      <input type="text" id="f-address" autocomplete="off" placeholder="123 Main St, Apt 4B, Bloomington, IN">
+    </div>
+    <div class="form-grid two">
+      <div class="field">
+        <label class="flabel" for="f-landlord">Landlord / manager name</label>
+        <input type="text" id="f-landlord" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-tenants">Tenant name(s)</label>
+        <input type="text" id="f-tenants" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-lease">Lease start date</label>
+        <input type="date" id="f-lease">
+      </div>
+      <div class="field">
+        <label class="flabel" for="f-movein">Move-in date</label>
+        <input type="date" id="f-movein">
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="roomsSection" aria-labelledby="roomsH">
+    <h2 id="roomsH"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>Rooms</h2>
+    <div id="roomsList"></div>
+    <div class="add-defect">
+      <h4>Add a room</h4>
+      <div class="room-head" style="margin-bottom:0">
+        <label class="visually-hidden" for="addRoomName">New room name</label>
+        <input type="text" id="addRoomName" class="room-name" placeholder="e.g. Garage, Office, Patio">
+        <button type="button" class="btn btn-primary" id="addRoomBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add room</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="actionsSection" aria-labelledby="actH">
+    <h2 id="actH"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>Report and data</h2>
+    <div class="btn-row">
+      <button type="button" class="btn btn-primary" id="printBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print handover report</button>
+      <button type="button" class="btn btn-secondary" id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Export backup (JSON)</button>
+      <button type="button" class="btn btn-secondary" id="importBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>Import backup</button>
+      <input type="file" id="importFile" class="visually-hidden" accept="application/json,.json" tabindex="-1">
+      <button type="button" class="btn btn-secondary" id="demoBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.7 5.7 1.9-5.7 1.9L12 18.2l-1.9-5.7L4.4 10.6l5.7-1.9Z"/><path d="M19 15l.9 2.6 2.6.9-2.6.9L19 22l-.9-2.6-2.6-.9 2.6-.9Z"/></svg>Load demo data</button>
+      <button type="button" class="btn btn-danger" id="clearBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear everything</button>
+    </div>
+    <p id="msg" aria-live="polite"></p>
+  </section>
+
+  <section class="card" id="reportSection" aria-labelledby="repH" aria-live="polite">
+    <h2 id="repH"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span>Handover report</h2>
+    <p class="sec-label">This report updates automatically as you document each room. Print it on move-in day and have both parties sign.</p>
+    <div id="report"></div>
+  </section>
+</main>
+
+<footer class="site">
+  <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
+</footer>
+
+<script>
+"use strict";
+/* ============================================================
+   MoveInProof — move-in damage logger. Single-file offline app.
+   Security: user/imported strings are rendered ONLY via
+   textContent and DOM APIs. Photos are rendered ONLY via
+   img.src assignment, allowlisted to data:image/jpeg and
+   data:image/png. No innerHTML anywhere in this file.
+   ============================================================ */
+
+var LS_KEY = "moveinproof.state.v1";
+var LS_THEME = "moveinproof.theme.v1";
+var RATINGS = ["Excellent", "Good", "Fair", "Poor"];
+var TYPES = ["scuff", "stain", "crack", "dent", "missing", "broken", "dirty", "other"];
+var SEVS = ["minor", "moderate", "major"];
+var MAX_STR = 2000;
+
+/* ---------- tiny DOM helpers ---------- */
+function h(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined && text !== null) e.textContent = text;
+  return e;
+}
+function uid() {
+  return "x" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function fmtTs(iso) {
+  try { return new Date(iso).toLocaleString(); } catch (e) { return String(iso || ""); }
+}
+function esc2cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ---------- sanitizers (import path + storage) ---------- */
+function cap(v, max) {
+  if (v === null || v === undefined) return "";
+  return String(v).slice(0, max || MAX_STR);
+}
+function enumPick(v, allowed, dflt) {
+  return allowed.indexOf(v) !== -1 ? v : dflt;
+}
+function isPhotoURL(v) {
+  return typeof v === "string" &&
+    (v.indexOf("data:image/jpeg") === 0 || v.indexOf("data:image/png") === 0);
+}
+function sanPhotos(a) {
+  var out = [];
+  if (!Array.isArray(a)) return out;
+  for (var i = 0; i < a.length && out.length < 60; i++) {
+    if (isPhotoURL(a[i])) out.push(String(a[i]).slice(0, 6 * 1024 * 1024));
+  }
+  return out;
+}
+function sanitizeState(o) {
+  o = (o && typeof o === "object") ? o : {};
+  var hd = (o.header && typeof o.header === "object") ? o.header : {};
+  var st = {
+    header: {
+      address: cap(hd.address, 300),
+      landlord: cap(hd.landlord, 160),
+      leaseStart: cap(hd.leaseStart, 20),
+      moveIn: cap(hd.moveIn, 20),
+      tenants: cap(hd.tenants, 240)
+    },
+    rooms: []
+  };
+  var rooms = Array.isArray(o.rooms) ? o.rooms : [];
+  for (var i = 0; i < rooms.length && st.rooms.length < 60; i++) {
+    var r = rooms[i];
+    if (!r || typeof r !== "object") continue;
+    var room = {
+      id: cap(r.id, 40) || uid(),
+      name: cap(r.name, 80) || "Room",
+      rating: enumPick(r.rating, RATINGS, ""),
+      notes: cap(r.notes, 3000),
+      photos: sanPhotos(r.photos),
+      defects: []
+    };
+    var defs = Array.isArray(r.defects) ? r.defects : [];
+    for (var j = 0; j < defs.length && room.defects.length < 200; j++) {
+      var d = defs[j];
+      if (!d || typeof d !== "object") continue;
+      room.defects.push({
+        id: cap(d.id, 40) || uid(),
+        item: cap(d.item, 120),
+        type: enumPick(d.type, TYPES, "other"),
+        severity: enumPick(d.severity, SEVS, "minor"),
+        desc: cap(d.desc, 3000),
+        ts: cap(d.ts, 40),
+        photos: sanPhotos(d.photos)
+      });
+    }
+    st.rooms.push(room);
+  }
+  return st;
+}
+
+/* ---------- state ---------- */
+function blankState() {
+  return { header: { address: "", landlord: "", leaseStart: "", moveIn: todayStr(), tenants: "" }, rooms: [] };
+}
+function seedRooms() {
+  return ["Living Room", "Kitchen", "Bedroom", "Bathroom", "Hallway", "Exterior/Balcony"].map(function (n) {
+    return { id: uid(), name: n, rating: "", notes: "", photos: [], defects: [] };
+  });
+}
+function loadState() {
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if (raw) return sanitizeState(JSON.parse(raw));
+  } catch (e) { /* corrupt or unavailable: start fresh */ }
+  var st = blankState();
+  st.rooms = seedRooms();
+  return st;
+}
+var state = loadState();
+var editingDefectId = null;
+
+function saveState() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+    return true;
+  } catch (e) {
+    var largest = findLargestPhoto();
+    say("Storage is full — the last change was not saved. " +
+      (largest ? ("The largest photo (" + largest.kb + " KB) is attached to " + largest.where +
+        ". Delete it or other photos to free space.") :
+        "Delete some photos to free space."), true);
+    return false;
+  }
+}
+function findLargestPhoto() {
+  var best = null;
+  function consider(url, where) {
+    var bytes = Math.round(String(url).length * 3 / 4);
+    if (!best || bytes > best.bytes) best = { bytes: bytes, kb: Math.round(bytes / 1024), where: where };
+  }
+  state.rooms.forEach(function (r) {
+    r.photos.forEach(function (u) { consider(u, "the room '" + r.name + "'"); });
+    r.defects.forEach(function (d) {
+      d.photos.forEach(function (u) { consider(u, "the defect '" + (d.item || "untitled") + "' in '" + r.name + "'"); });
+    });
+  });
+  return best;
+}
+
+/* ---------- messaging ---------- */
+var msgEl = null;
+function say(text, isAlert) {
+  if (!msgEl) msgEl = document.getElementById("msg");
+  msgEl.textContent = text;
+  msgEl.classList.toggle("alert", !!isAlert);
+}
+
+/* ---------- theme ---------- */
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  var btn = document.getElementById("themeToggle");
+  btn.setAttribute("aria-pressed", t === "dark" ? "true" : "false");
+  document.getElementById("themeLabel").textContent = t === "dark" ? "Light mode" : "Dark mode";
+  try { localStorage.setItem(LS_THEME, t); } catch (e) {}
+}
+function initTheme() {
+  var t = "light";
+  try {
+    t = localStorage.getItem(LS_THEME) || t;
+    if (t !== "dark" && t !== "light") t = "light";
+  } catch (e) {}
+  applyTheme(t);
+  document.getElementById("themeToggle").addEventListener("click", function () {
+    var cur = document.documentElement.getAttribute("data-theme");
+    applyTheme(cur === "dark" ? "light" : "dark");
+  });
+}
+
+/* ---------- photos ---------- */
+function readFile(f) {
+  return new Promise(function (resolve, reject) {
+    var r = new FileReader();
+    r.onload = function () { resolve(String(r.result)); };
+    r.onerror = function () { reject(new Error("read failed")); };
+    r.readAsDataURL(f);
+  });
+}
+function downscale(dataURL) {
+  return new Promise(function (resolve, reject) {
+    var img = new Image();
+    img.onload = function () {
+      try {
+        var max = 1200;
+        var s = Math.min(1, max / Math.max(img.width, img.height));
+        var cw = Math.max(1, Math.round(img.width * s));
+        var ch = Math.max(1, Math.round(img.height * s));
+        var c = document.createElement("canvas");
+        c.width = cw; c.height = ch;
+        c.getContext("2d").drawImage(img, 0, 0, cw, ch);
+        var out = c.toDataURL("image/jpeg", 0.7);
+        if (!isPhotoURL(out)) { reject(new Error("encode failed")); return; }
+        resolve(out);
+      } catch (e) { reject(e); }
+    };
+    img.onerror = function () { reject(new Error("decode failed")); };
+    img.src = dataURL;
+  });
+}
+function attachPhotos(files, getTarget, ctxLabel) {
+  var chain = Promise.resolve();
+  var okCount = 0;
+  files.forEach(function (f) {
+    chain = chain.then(function () { return readFile(f); })
+      .then(function (url) {
+        if (!isPhotoURL(url)) throw new Error("unsupported");
+        return downscale(url);
+      })
+      .then(function (small) {
+        getTarget().push(small);
+        okCount++;
+        if (saveState()) { renderRooms(); renderReport(); }
+      })
+      .catch(function () { /* counted below */ });
+  });
+  chain.then(function () {
+    if (okCount === files.length) say(okCount === 1 ? "Photo attached." : okCount + " photos attached.");
+    else if (okCount > 0) say(okCount + " of " + files.length + " photos attached; the rest were an unsupported format.", true);
+    else say("No photos attached — unsupported image format.", true);
+  });
+}
+function photoInput(labelText, getTarget, cls) {
+  var label = h("label", "filebtn" + (cls ? " " + cls : ""), labelText);
+  var input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.multiple = true;
+  input.className = "visually-hidden";
+  input.setAttribute("aria-label", labelText);
+  input.addEventListener("change", function () {
+    var files = Array.prototype.slice.call(input.files || []);
+    if (files.length) attachPhotos(files, getTarget, labelText);
+    input.value = "";
+  });
+  label.appendChild(input);
+  return label;
+}
+function photoGrid(photos, onDelete) {
+  var wrap = h("div", "ph-grid");
+  photos.forEach(function (url, i) {
+    var fig = h("figure", "ph-thumb");
+    var img = document.createElement("img");
+    img.src = url;              /* allowlisted dataURL only — never innerHTML */
+    img.alt = "Attached photo " + (i + 1);
+    var del = h("button", "ph-del btn-sm", "Remove");
+    del.type = "button";
+    del.setAttribute("aria-label", "Delete photo " + (i + 1));
+    del.addEventListener("click", function () { onDelete(i); });
+    fig.appendChild(img);
+    fig.appendChild(del);
+    wrap.appendChild(fig);
+  });
+  return wrap;
+}
+
+/* ---------- rooms + defects rendering ---------- */
+function ratingFieldset(room) {
+  var fs = h("fieldset", "rating");
+  fs.appendChild(h("legend", null, "Overall condition"));
+  var opts = h("div", "rating-opts");
+  RATINGS.forEach(function (r) {
+    var lab = h("label");
+    var radio = document.createElement("input");
+    radio.type = "radio";
+    radio.name = "rating-" + room.id;
+    radio.value = r;
+    if (room.rating === r) radio.checked = true;
+    radio.setAttribute("aria-label", room.name + " condition: " + r);
+    radio.addEventListener("change", function () {
+      room.rating = r;
+      saveState();
+      renderReport();
+    });
+    lab.appendChild(radio);
+    lab.appendChild(document.createTextNode(r));
+    opts.appendChild(lab);
+  });
+  fs.appendChild(opts);
+  return fs;
+}
+
+function defectCard(room, d) {
+  if (editingDefectId === d.id) return defectEditCard(room, d);
+  var card = h("div", "defect");
+  card.setAttribute("data-defect", d.id);
+  var head = h("div", "defect-head");
+  head.appendChild(h("strong", null, d.item || "(untitled)"));
+  head.appendChild(h("span", "chip", esc2cap(d.type)));
+  head.appendChild(h("span", "chip sev-" + d.severity, d.severity));
+  card.appendChild(head);
+  if (d.ts) card.appendChild(h("div", "defect-meta", "Logged " + fmtTs(d.ts)));
+  if (d.desc) card.appendChild(h("p", "desc", d.desc));
+  if (d.photos.length) {
+    card.appendChild(h("div", "sec-label", "Photos"));
+    card.appendChild(photoGrid(d.photos, function (i) {
+      d.photos.splice(i, 1);
+      saveState(); renderRooms(); renderReport();
+      say("Photo deleted.");
+    }));
+  }
+  card.appendChild(photoInput("Add photo", function () { return d.photos; }));
+  var acts = h("div", "defect-actions");
+  var editBtn = h("button", "btn btn-secondary btn-sm def-edit", "Edit");
+  editBtn.type = "button";
+  editBtn.addEventListener("click", function () { editingDefectId = d.id; renderRooms(); });
+  var delBtn = h("button", "btn btn-danger btn-sm def-delete", "Delete");
+  delBtn.type = "button";
+  delBtn.addEventListener("click", function () {
+    var ix = room.defects.indexOf(d);
+    if (ix !== -1) room.defects.splice(ix, 1);
+    saveState(); renderRooms(); renderReport();
+    say("Defect deleted.");
+  });
+  acts.appendChild(editBtn);
+  acts.appendChild(delBtn);
+  card.appendChild(acts);
+  return card;
+}
+
+function defectEditCard(room, d) {
+  var card = h("div", "defect");
+  card.setAttribute("data-defect", d.id);
+  card.appendChild(h("div", "sec-label", "Edit defect"));
+  var grid = h("div", "form-grid");
+  var fItem = h("div", "field");
+  fItem.appendChild(h("label", "flabel", "Item / area"));
+  var iItem = document.createElement("input");
+  iItem.type = "text"; iItem.className = "de-item"; iItem.value = d.item;
+  fItem.appendChild(iItem); grid.appendChild(fItem);
+  var fType = h("div", "field");
+  fType.appendChild(h("label", "flabel", "Defect type"));
+  var sType = document.createElement("select"); sType.className = "de-type";
+  TYPES.forEach(function (t) {
+    var o = document.createElement("option"); o.value = t; o.textContent = esc2cap(t);
+    if (t === d.type) o.selected = true; sType.appendChild(o);
+  });
+  fType.appendChild(sType); grid.appendChild(fType);
+  var fSev = h("div", "field");
+  fSev.appendChild(h("label", "flabel", "Severity"));
+  var sSev = document.createElement("select"); sSev.className = "de-sev";
+  SEVS.forEach(function (s) {
+    var o = document.createElement("option"); o.value = s; o.textContent = esc2cap(s);
+    if (s === d.severity) o.selected = true; sSev.appendChild(o);
+  });
+  fSev.appendChild(sSev); grid.appendChild(fSev);
+  var fDesc = h("div", "field");
+  fDesc.appendChild(h("label", "flabel", "Description"));
+  var tDesc = document.createElement("textarea"); tDesc.className = "de-desc"; tDesc.value = d.desc;
+  fDesc.appendChild(tDesc); grid.appendChild(fDesc);
+  card.appendChild(grid);
+  var acts = h("div", "defect-actions");
+  var saveBtn = h("button", "btn btn-primary btn-sm de-save", "Save changes");
+  saveBtn.type = "button";
+  saveBtn.addEventListener("click", function () {
+    d.item = cap(iItem.value, 120);
+    d.type = enumPick(sType.value, TYPES, "other");
+    d.severity = enumPick(sSev.value, SEVS, "minor");
+    d.desc = cap(tDesc.value, 3000);
+    editingDefectId = null;
+    saveState(); renderRooms(); renderReport();
+    say("Defect updated.");
+  });
+  var cancelBtn = h("button", "btn btn-secondary btn-sm de-cancel", "Cancel");
+  cancelBtn.type = "button";
+  cancelBtn.addEventListener("click", function () { editingDefectId = null; renderRooms(); });
+  acts.appendChild(saveBtn);
+  acts.appendChild(cancelBtn);
+  card.appendChild(acts);
+  return card;
+}
+
+function addDefectForm(room) {
+  var box = h("div", "add-defect");
+  box.appendChild(h("h4", null, "Log a defect"));
+  var grid = h("div", "form-grid");
+  var fItem = h("div", "field");
+  fItem.appendChild(h("label", "flabel", "Item / area"));
+  var iItem = document.createElement("input");
+  iItem.type = "text"; iItem.className = "d-item"; iItem.placeholder = "e.g. South wall, Stove, Carpet";
+  fItem.appendChild(iItem); grid.appendChild(fItem);
+  var fType = h("div", "field");
+  fType.appendChild(h("label", "flabel", "Defect type"));
+  var sType = document.createElement("select"); sType.className = "d-type";
+  TYPES.forEach(function (t) {
+    var o = document.createElement("option"); o.value = t; o.textContent = esc2cap(t); sType.appendChild(o);
+  });
+  fType.appendChild(sType); grid.appendChild(fType);
+  var fSev = h("div", "field");
+  fSev.appendChild(h("label", "flabel", "Severity"));
+  var sSev = document.createElement("select"); sSev.className = "d-sev";
+  SEVS.forEach(function (s) {
+    var o = document.createElement("option"); o.value = s; o.textContent = esc2cap(s); sSev.appendChild(o);
+  });
+  fSev.appendChild(sSev); grid.appendChild(fSev);
+  var fDesc = h("div", "field");
+  fDesc.appendChild(h("label", "flabel", "Description"));
+  var tDesc = document.createElement("textarea"); tDesc.className = "d-desc";
+  tDesc.placeholder = "What do you see? Where exactly?";
+  fDesc.appendChild(tDesc); grid.appendChild(fDesc);
+  box.appendChild(grid);
+  var addBtn = h("button", "btn btn-secondary d-add", "Add defect");
+  addBtn.type = "button";
+  addBtn.addEventListener("click", function () {
+    var item = cap(iItem.value, 120).trim();
+    if (!item) { say("Give the defect an item or area first.", true); iItem.focus(); return; }
+    room.defects.push({
+      id: uid(),
+      item: item,
+      type: enumPick(sType.value, TYPES, "other"),
+      severity: enumPick(sSev.value, SEVS, "minor"),
+      desc: cap(tDesc.value, 3000),
+      ts: new Date().toISOString(),
+      photos: []
+    });
+    saveState(); renderRooms(); renderReport();
+    say("Defect logged at " + fmtTs(new Date().toISOString()) + ".");
+  });
+  box.appendChild(addBtn);
+  return box;
+}
+
+function roomCard(room) {
+  var card = h("div", "room-card");
+  card.setAttribute("data-room", room.id);
+  var head = h("div", "room-head");
+  var nameInput = document.createElement("input");
+  nameInput.type = "text"; nameInput.className = "room-name"; nameInput.value = room.name;
+  nameInput.setAttribute("aria-label", "Room name");
+  nameInput.addEventListener("change", function () {
+    room.name = cap(nameInput.value, 80).trim() || "Room";
+    saveState(); renderReport();
+  });
+  head.appendChild(nameInput);
+  var delRoom = h("button", "btn btn-danger btn-sm room-del", "Delete room");
+  delRoom.type = "button";
+  delRoom.addEventListener("click", function () {
+    if (!window.confirm("Delete the room '" + room.name + "' and all its defects and photos?")) return;
+    var ix = state.rooms.indexOf(room);
+    if (ix !== -1) state.rooms.splice(ix, 1);
+    saveState(); renderRooms(); renderReport();
+    say("Room deleted.");
+  });
+  head.appendChild(delRoom);
+  card.appendChild(head);
+  card.appendChild(ratingFieldset(room));
+  var fNotes = h("div", "field");
+  fNotes.appendChild(h("label", "flabel", "Notes"));
+  var tNotes = document.createElement("textarea");
+  tNotes.className = "room-notes";
+  tNotes.value = room.notes;
+  tNotes.placeholder = "General condition of this room…";
+  tNotes.addEventListener("change", function () {
+    room.notes = cap(tNotes.value, 3000);
+    saveState(); renderReport();
+  });
+  fNotes.appendChild(tNotes);
+  card.appendChild(fNotes);
+  if (room.photos.length) {
+    card.appendChild(h("div", "sec-label", "Room photos"));
+    card.appendChild(photoGrid(room.photos, function (i) {
+      room.photos.splice(i, 1);
+      saveState(); renderRooms(); renderReport();
+      say("Photo deleted.");
+    }));
+  }
+  card.appendChild(photoInput("Add room photo", function () { return room.photos; }));
+  card.appendChild(h("h3", null, "Damage / defects (" + room.defects.length + ")"));
+  room.defects.forEach(function (d) { card.appendChild(defectCard(room, d)); });
+  card.appendChild(addDefectForm(room));
+  return card;
+}
+
+function renderRooms() {
+  var list = document.getElementById("roomsList");
+  while (list.firstChild) list.removeChild(list.firstChild);
+  if (!state.rooms.length) {
+    var p = h("p", null, "No rooms yet. Add your first room below to start documenting.");
+    p.style.color = "var(--muted)";
+    list.appendChild(p);
+    return;
+  }
+  state.rooms.forEach(function (r) { list.appendChild(roomCard(r)); });
+}
+
+/* ---------- report ---------- */
+function renderReport() {
+  var rep = document.getElementById("report");
+  while (rep.firstChild) rep.removeChild(rep.firstChild);
+  var block = h("div", "rep-block");
+  block.appendChild(h("h3", null, "Move-In Condition Report"));
+  block.appendChild(h("p", "defect-meta", "Generated " + new Date().toLocaleString()));
+  var dl = h("dl", "rep-head");
+  [["Property address", state.header.address], ["Landlord / manager", state.header.landlord],
+   ["Tenant name(s)", state.header.tenants], ["Lease start", state.header.leaseStart],
+   ["Move-in date", state.header.moveIn]].forEach(function (pair) {
+    dl.appendChild(h("dt", null, pair[0]));
+    dl.appendChild(h("dd", null, pair[1] || "—"));
+  });
+  block.appendChild(dl);
+  rep.appendChild(block);
+
+  state.rooms.forEach(function (r, ri) {
+    var rb = h("div", "rep-room");
+    rb.appendChild(h("h3", null, (ri + 1) + ". " + r.name));
+    rb.appendChild(h("p", "defect-meta", "Overall condition: " + (r.rating || "not rated")));
+    if (r.notes) rb.appendChild(h("p", null, "Notes: " + r.notes));
+    if (r.photos.length) {
+      var rt = h("div", "rep-thumbs");
+      r.photos.forEach(function (u, i) {
+        var img = document.createElement("img");
+        img.src = u; img.alt = r.name + " photo " + (i + 1);
+        rt.appendChild(img);
+      });
+      rb.appendChild(rt);
+    }
+    if (!r.defects.length) {
+      rb.appendChild(h("p", "defect-meta", "No defects logged."));
+    }
+    r.defects.forEach(function (d, di) {
+      var dd = h("div", "rep-defect");
+      var line = h("p", null, (di + 1) + ". " + (d.item || "(untitled)") + " — " +
+        esc2cap(d.type) + " (" + d.severity + ")" + (d.ts ? ", logged " + fmtTs(d.ts) : ""));
+      dd.appendChild(line);
+      if (d.desc) dd.appendChild(h("p", "desc", d.desc));
+      if (d.photos.length) {
+        var dt = h("div", "rep-thumbs");
+        d.photos.forEach(function (u, i) {
+          var img = document.createElement("img");
+          img.src = u; img.alt = "Defect photo " + (i + 1);
+          dt.appendChild(img);
+        });
+        dd.appendChild(dt);
+      }
+      rb.appendChild(dd);
+    });
+    rep.appendChild(rb);
+  });
+
+  var sig = h("div", "rep-block");
+  sig.appendChild(h("h3", null, "Signatures"));
+  var grid = h("div", "sig-grid");
+  [["Tenant", state.header.tenants], ["Landlord / manager", state.header.landlord]].forEach(function (pair) {
+    var box = h("div", "sig-box");
+    box.appendChild(h("strong", null, pair[0]));
+    box.appendChild(h("div", "sig-cap", "Printed name"));
+    box.appendChild(h("div", "sig-line", pair[1] || ""));
+    box.appendChild(h("div", "sig-cap", "Signature"));
+    box.appendChild(h("div", "sig-line"));
+    box.appendChild(h("div", "sig-cap", "Date"));
+    box.appendChild(h("div", "sig-line"));
+    grid.appendChild(box);
+  });
+  sig.appendChild(grid);
+  rep.appendChild(sig);
+}
+
+/* ---------- header binding (once; no re-render needed) ---------- */
+function syncHeaderInputsToState() {
+  /* A prefilled value (browser autofill, prefill script) can sit in an input
+     without ever firing a change event. Pull the visible values into state so
+     the handover report renders them on load instead of waiting for re-type. */
+  var map = { "f-address": "address", "f-landlord": "landlord", "f-tenants": "tenants",
+              "f-lease": "leaseStart", "f-movein": "moveIn" };
+  var changed = false;
+  Object.keys(map).forEach(function (id) {
+    var v = cap(document.getElementById(id).value, 300);
+    if (v !== state.header[map[id]]) { state.header[map[id]] = v; changed = true; }
+  });
+  if (changed) saveState();
+}
+function bindHeader() {
+  var map = { "f-address": "address", "f-landlord": "landlord", "f-tenants": "tenants",
+              "f-lease": "leaseStart", "f-movein": "moveIn" };
+  Object.keys(map).forEach(function (id) {
+    var input = document.getElementById(id);
+    if (!input.value) input.value = state.header[map[id]] || "";
+    input.addEventListener("change", function () {
+      state.header[map[id]] = cap(input.value, 300);
+      saveState();
+      renderReport();
+    });
+  });
+}
+
+/* ---------- export / import ---------- */
+function doExport() {
+  try {
+    var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "moveinproof-export.json";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { try { URL.revokeObjectURL(a.href); } catch (e) {} a.remove(); }, 500);
+    say("Backup exported.");
+  } catch (e) { say("Export failed.", true); }
+}
+function bindImport() {
+  var file = document.getElementById("importFile");
+  document.getElementById("importBtn").addEventListener("click", function () { file.click(); });
+  file.addEventListener("change", function () {
+    var f = file.files && file.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var obj = JSON.parse(String(r.result));
+        state = sanitizeState(obj);
+        editingDefectId = null;
+        saveState(); renderAll();
+        say("Import complete.");
+      } catch (e) { say("Import failed: not a valid MoveInProof backup.", true); }
+    };
+    r.onerror = function () { say("Import failed: could not read the file.", true); };
+    r.readAsText(f);
+    file.value = "";
+  });
+}
+
+/* ---------- demo / clear ---------- */
+function makeDefect(item, type, severity, desc) {
+  return { id: uid(), item: item, type: type, severity: severity, desc: desc,
+           ts: new Date().toISOString(), photos: [] };
+}
+function loadDemo() {
+  state = {
+    header: { address: "123 Example St, Apt 4B, Bloomington, IN", landlord: "Example Property Mgmt",
+              leaseStart: todayStr(), moveIn: todayStr(), tenants: "Demo Tenant" },
+    rooms: [
+      { id: uid(), name: "Living Room", rating: "Good", notes: "Fresh paint; carpet worn near entry.",
+        photos: [], defects: [
+          makeDefect("South wall", "scuff", "minor", "Scuff marks near the front door, about 2 ft long."),
+          makeDefect("Window sill", "crack", "moderate", "Hairline crack along the sill, east window.") ] },
+      { id: uid(), name: "Kitchen", rating: "Fair", notes: "Appliances older; grout discolored.",
+        photos: [], defects: [
+          makeDefect("Countertop", "stain", "moderate", "Dark ring stain near the sink, roughly 4 in across.") ] }
+    ]
+  };
+  editingDefectId = null;
+  saveState(); renderAll();
+  say("Demo data loaded: 2 rooms, 3 defects. Demo includes no photos.");
+}
+function clearAll() {
+  if (!window.confirm("Delete ALL rooms, defects, photos and the property header? This cannot be undone.")) return;
+  state = blankState();
+  editingDefectId = null;
+  saveState(); renderAll();
+  say("Everything cleared.");
+}
+
+/* ---------- init ---------- */
+function renderAll() {
+  bindHeaderValues();
+  renderRooms();
+  renderReport();
+}
+function bindHeaderValues() {
+  var map = { "f-address": "address", "f-landlord": "landlord", "f-tenants": "tenants",
+              "f-lease": "leaseStart", "f-movein": "moveIn" };
+  Object.keys(map).forEach(function (id) {
+    document.getElementById(id).value = state.header[map[id]] || "";
+  });
+}
+document.addEventListener("DOMContentLoaded", function () {
+  initTheme();
+  bindHeader();
+  syncHeaderInputsToState();
+  renderRooms();
+  renderReport();
+  document.getElementById("addRoomBtn").addEventListener("click", function () {
+    var input = document.getElementById("addRoomName");
+    var name = cap(input.value, 80).trim();
+    if (!name) { say("Type a room name first.", true); input.focus(); return; }
+    state.rooms.push({ id: uid(), name: name, rating: "", notes: "", photos: [], defects: [] });
+    input.value = "";
+    saveState(); renderRooms(); renderReport();
+    say("Room '" + name + "' added.");
+  });
+  document.getElementById("addRoomName").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); document.getElementById("addRoomBtn").click(); }
+  });
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
+  document.getElementById("exportBtn").addEventListener("click", doExport);
+  bindImport();
+  document.getElementById("demoBtn").addEventListener("click", loadDemo);
+  document.getElementById("clearBtn").addEventListener("click", clearAll);
+});
+</script>
+</body>
+</html>

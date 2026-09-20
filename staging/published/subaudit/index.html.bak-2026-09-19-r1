@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="SubAudit — audit your recurring subscriptions, see where the money leaks, and find out what cancelling would save. Single-file offline tool.">
+<title>SubAudit — Subscription Audit Dashboard</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f6f5f2;
+    --surface: #ffffff;
+    --surface-2: #efede8;
+    --text: #1d1c1a;
+    --muted: #68645b;
+    --border: #dcd8cd;
+    --accent: #0b5cad;
+    --accent-strong: #084a8c;
+    --on-accent: #ffffff;
+    --good: #146c38;
+    --warn: #8a5200;
+    --bad: #b3261e;
+    --chip: #e9f1f9;
+    --bar: #0b5cad;
+    --bar-track: #e3e0d7;
+    --radius: 10px;
+    --shadow: 0 1px 2px rgba(0,0,0,.06);
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #141311;
+    --surface: #1e1c19;
+    --surface-2: #262420;
+    --text: #ece9e1;
+    --muted: #a9a49a;
+    --border: #3a372f;
+    --accent: #8bbdf2;
+    --accent-strong: #a8cdf5;
+    --on-accent: #0c1a28;
+    --good: #82dda6;
+    --warn: #e8b84b;
+    --bad: #f0968d;
+    --chip: #222b35;
+    --bar: #8bbdf2;
+    --bar-track: #2e2b25;
+    --shadow: 0 1px 2px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  html, body { overflow-x: clip; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  a { color: var(--accent); }
+  header.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  header.top h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.01em; }
+  header.top p { margin: .15rem 0 0; color: var(--muted); font-size: .92rem; }
+  main { max-width: 1080px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+  section.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  section.card > h2 { margin: 0 0 1rem; font-size: 1.1rem; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: .9rem;
+  }
+  .stat {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .9rem 1rem;
+  }
+  .stat .label { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .3rem; }
+  .stat .value { font-size: 1.45rem; font-weight: 700; line-height: 1.2; }
+  .stat .sub { font-size: .85rem; color: var(--muted); margin-top: .2rem; }
+  button, .btn {
+    font: inherit;
+    cursor: pointer;
+    border-radius: 8px;
+    padding: .55rem 1rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+  }
+  button:hover, .btn:hover { border-color: var(--accent); }
+  button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+  }
+  button.primary:hover { background: var(--accent-strong); }
+  button.danger { color: var(--bad); }
+  button.danger:hover { border-color: var(--bad); }
+  button.small { padding: .3rem .65rem; font-size: .85rem; }
+  input[type="text"], input[type="search"], input[type="number"], input[type="date"], select, textarea {
+    font: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .5rem .65rem;
+    max-width: 100%;
+  }
+  textarea { resize: vertical; min-height: 3.2rem; }
+  label { font-size: .88rem; font-weight: 600; display: block; margin-bottom: .3rem; }
+  .hint { font-size: .8rem; color: var(--muted); margin-top: .25rem; }
+  .error { color: var(--bad); font-size: .9rem; font-weight: 600; margin: .75rem 0 0; min-height: 1.4em; }
+  .empty { color: var(--muted); font-size: .95rem; padding: .75rem 0; margin: 0; }
+  /* Renewal watch */
+  .renew-list { list-style: none; margin: 0; padding: 0; }
+  .renew-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .65rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .renew-list li:last-child { border-bottom: none; }
+  .renew-name { font-weight: 600; }
+  .renew-meta { color: var(--muted); font-size: .88rem; }
+  .badge {
+    display: inline-block;
+    padding: .15rem .6rem;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .badge.soon { background: var(--chip); color: var(--accent-strong, var(--accent)); border: 1px solid var(--accent); }
+  [data-theme="dark"] .badge.soon { color: var(--accent); }
+  .badge.overdue { background: transparent; color: var(--bad); border: 1px solid var(--bad); }
+  .badge.today { background: var(--warn); color: #fff; border: 1px solid var(--warn); }
+  [data-theme="dark"] .badge.today { color: #1d1c1a; }
+  /* Category bars */
+  .cat-row { margin-bottom: .9rem; }
+  .cat-head { display: flex; justify-content: space-between; gap: 1rem; font-size: .92rem; margin-bottom: .3rem; }
+  .cat-name { font-weight: 600; }
+  .cat-nums { color: var(--muted); white-space: nowrap; }
+  .bar-track { background: var(--bar-track); border-radius: 6px; height: 10px; overflow: hidden; }
+  .bar { background: var(--bar); height: 100%; border-radius: 6px; min-width: 2px; }
+  /* Savings */
+  .savings-hero { display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .savings-hero .big { font-size: 1.7rem; font-weight: 700; color: var(--good); }
+  .savings-hero .cap { font-size: .82rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .cancel-list { list-style: none; margin: .5rem 0 0; padding: 0; }
+  .cancel-list li {
+    display: flex; justify-content: space-between; gap: 1rem;
+    padding: .45rem 0; border-bottom: 1px solid var(--border); font-size: .95rem;
+  }
+  .cancel-list li:last-child { border-bottom: none; }
+  /* Controls */
+  .controls {
+    display: flex; flex-wrap: wrap; gap: .9rem; align-items: flex-end; margin-bottom: 1rem;
+  }
+  .controls .field { display: flex; flex-direction: column; }
+  .controls .spacer { flex: 1; }
+  /* Table */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; min-width: 760px; position: relative; }
+  caption { text-align: left; padding: .6rem .9rem; color: var(--muted); font-size: .85rem; }
+  th, td { text-align: left; padding: .6rem .75rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  thead th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--surface-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-2); }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  td .cycle-suffix { color: var(--muted); font-size: .82rem; }
+  .row-actions { display: flex; gap: .4rem; }
+  input[type="checkbox"].trim-check { width: 1.15rem; height: 1.15rem; accent-color: var(--accent); cursor: pointer; }
+  .muted { color: var(--muted); }
+  /* Data section */
+  .data-row { display: flex; flex-wrap: wrap; gap: .75rem; }
+  /* Dialog */
+  dialog {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--text);
+    padding: 0;
+    width: min(500px, calc(100vw - 2rem));
+    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+  }
+  dialog::backdrop { background: rgba(0,0,0,.5); }
+  .dlg-body { padding: 1.5rem; }
+  .dlg-body h2 { margin: 0 0 1rem; font-size: 1.15rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .dlg-actions { display: flex; justify-content: flex-end; gap: .6rem; margin-top: 1.25rem; }
+  footer.page {
+    text-align: center;
+    color: var(--muted);
+    font-size: .85rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  @media (max-width: 560px) {
+    main { padding: 1rem 0.9rem 2.5rem; }
+    section.card { padding: 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .savings-hero { gap: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>SubAudit</h1>
+    <p>See exactly what your subscriptions cost — and what cancelling would save.</p>
+  </div>
+  <button type="button" id="themeToggle" aria-pressed="false" aria-label="Toggle dark mode">Dark mode: off</button>
+</header>
+
+<main>
+  <section class="card" aria-labelledby="dashHeading">
+    <h2 id="dashHeading">Dashboard</h2>
+    <div class="stats" id="totals" aria-live="polite" aria-atomic="true">
+      <div class="stat"><div class="label">Monthly burn</div><div class="value" id="statMonthly">$0.00</div></div>
+      <div class="stat"><div class="label">Annual burn</div><div class="value" id="statAnnual">$0.00</div></div>
+      <div class="stat"><div class="label">Active subscriptions</div><div class="value" id="statCount">0</div></div>
+      <div class="stat"><div class="label">Most expensive</div><div class="value" id="statTop">—</div><div class="sub" id="statTopSub"></div></div>
+      <div class="stat"><div class="label">Average per subscription</div><div class="value" id="statAvg">$0.00</div><div class="sub">per month</div></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="renewHeading">
+    <h2 id="renewHeading">Renewal watch <span class="muted" style="font-weight:400;font-size:.85rem;">(next 14 days)</span></h2>
+    <div id="renewBody"></div>
+  </section>
+
+  <section class="card" aria-labelledby="catHeading">
+    <h2 id="catHeading">Spending by category</h2>
+    <div id="catBody"></div>
+  </section>
+
+  <section class="card" aria-labelledby="trimHeading">
+    <h2 id="trimHeading">Trim mode — what-if savings</h2>
+    <p class="hint" style="margin-top:-0.5rem;">Check <strong>Trim</strong> next to any subscription below to see what cancelling it would save.</p>
+    <div id="savingsBody"></div>
+  </section>
+
+  <section class="card" aria-labelledby="listHeading">
+    <h2 id="listHeading">Your subscriptions</h2>
+    <div class="controls">
+      <div class="field">
+        <label for="searchInput">Search</label>
+        <input type="search" id="searchInput" placeholder="Search by name" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="sortSelect">Sort by</label>
+        <select id="sortSelect">
+          <option value="cost-desc">Cost: highest first</option>
+          <option value="cost-asc">Cost: lowest first</option>
+          <option value="renewal">Renewal: soonest first</option>
+          <option value="name">Name: A to Z</option>
+          <option value="category">Category</option>
+        </select>
+      </div>
+      <div class="spacer"></div>
+      <button type="button" class="primary" id="addBtn">Add subscription</button>
+    </div>
+    <div class="table-wrap">
+      <table id="subTable">
+        <caption id="tableCaption">All subscriptions, normalized to monthly cost.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Trim</th>
+            <th scope="col">Name</th>
+            <th scope="col" class="num">Cost</th>
+            <th scope="col">Cycle</th>
+            <th scope="col">Category</th>
+            <th scope="col">Renews</th>
+            <th scope="col" class="num">Per month</th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="subTbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="dataHeading">
+    <h2 id="dataHeading">Backup &amp; demo data</h2>
+    <p class="hint" style="margin-top:-0.5rem;">Everything is stored only in this browser. Export a backup before clearing or switching devices.</p>
+    <div class="data-row">
+      <button type="button" id="exportBtn">Export JSON</button>
+      <button type="button" id="importBtn">Import JSON</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="sr-only" aria-hidden="true" tabindex="-1">
+      <button type="button" id="demoBtn">Load demo data</button>
+      <button type="button" class="danger" id="clearBtn">Clear all</button>
+    </div>
+    <p class="error" id="dataMsg" role="status" aria-live="polite"></p>
+  </section>
+</main>
+
+<dialog id="subDialog" aria-labelledby="dialogTitle">
+  <div class="dlg-body">
+    <h2 id="dialogTitle">Add subscription</h2>
+    <form id="subForm" novalidate>
+      <div class="form-grid">
+        <div class="full">
+          <label for="fName">Name</label>
+          <input type="text" id="fName" maxlength="100" required autocomplete="off" placeholder="e.g. StreamFlix">
+        </div>
+        <div>
+          <label for="fCost">Cost (USD)</label>
+          <input type="number" id="fCost" min="0" max="1000000" step="0.01" inputmode="decimal" required placeholder="9.99">
+        </div>
+        <div>
+          <label for="fCycle">Billing cycle</label>
+          <select id="fCycle">
+            <option value="weekly">Weekly</option>
+            <option value="monthly" selected>Monthly</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+        <div>
+          <label for="fCategory">Category</label>
+          <select id="fCategory"></select>
+        </div>
+        <div>
+          <label for="fRenewal">Next renewal <span class="muted" style="font-weight:400;">(optional)</span></label>
+          <input type="date" id="fRenewal">
+        </div>
+        <div class="full">
+          <label for="fNotes">Notes <span class="muted" style="font-weight:400;">(optional)</span></label>
+          <textarea id="fNotes" maxlength="500" placeholder="Plan details, who uses it, why you keep it…"></textarea>
+        </div>
+      </div>
+      <p class="error" id="formError" role="alert"></p>
+      <div class="dlg-actions">
+        <button type="button" id="cancelBtn">Cancel</button>
+        <button type="submit" class="primary" id="saveBtn">Save</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<footer class="page">
+  <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
+</footer>
+
+<script>
+"use strict";
+/* SubAudit — single-file offline subscription audit dashboard.
+   All rendering uses DOM APIs + textContent; user/imported data is never
+   interpolated into HTML strings. */
+
+/* ---------- constants ---------- */
+var LS_DATA = "subaudit.data.v1";
+var LS_THEME = "subaudit.theme.v1";
+var CYCLES = ["weekly", "monthly", "quarterly", "yearly"];
+var CYCLE_LABEL = { weekly: "Weekly", monthly: "Monthly", quarterly: "Quarterly", yearly: "Yearly" };
+var CYCLE_SHORT = { weekly: "/wk", monthly: "/mo", quarterly: "/qtr", yearly: "/yr" };
+/* monthly normalization factors */
+var CYCLE_FACTOR = { weekly: 52 / 12, monthly: 1, quarterly: 4 / 12, yearly: 1 / 12 };
+var CATEGORIES = ["Streaming", "Software & Apps", "Memberships", "News & Media", "Utilities", "Insurance", "Health & Fitness", "Other"];
+var MAX_COST = 1000000;
+var MAX_NAME = 100;
+var MAX_NOTES = 500;
+var RENEW_WINDOW_DAYS = 14;
+
+var money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+var dateFmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
+
+/* ---------- state ---------- */
+var subs = [];
+var editingId = null;
+var searchTerm = "";
+var sortKey = "cost-desc";
+var storageOK = true;
+var memStore = {};
+
+/* ---------- tiny DOM helper (no HTML strings from data) ---------- */
+function el(tag, className, text) {
+  var n = document.createElement(tag);
+  if (className) n.className = className;
+  if (text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+
+/* ---------- storage (localStorage with in-memory fallback) ---------- */
+function storeGet(key) {
+  try { return window.localStorage.getItem(key); }
+  catch (e) { storageOK = false; return (key in memStore) ? memStore[key] : null; }
+}
+function storeSet(key, value) {
+  try { window.localStorage.setItem(key, value); }
+  catch (e) { storageOK = false; memStore[key] = value; }
+}
+function saveData() {
+  storeSet(LS_DATA, JSON.stringify({ v: 1, subs: subs }));
+}
+function loadData() {
+  var raw = storeGet(LS_DATA);
+  if (!raw) { subs = []; return; }
+  try {
+    var parsed = JSON.parse(raw);
+    var arr = Array.isArray(parsed) ? parsed : parsed.subs;
+    if (!Array.isArray(arr)) { subs = []; return; }
+    subs = [];
+    for (var i = 0; i < arr.length; i++) {
+      var s = sanitizeSub(arr[i]);
+      if (s) subs.push(s);
+    }
+  } catch (e) { subs = []; }
+}
+
+/* ---------- ids ---------- */
+function uid() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+  return "id-" + Date.now().toString(36) + "-" + Math.floor(Math.random() * 1e9).toString(36);
+}
+
+/* ---------- money / date math ---------- */
+function monthlyOf(s) { return s.cost * CYCLE_FACTOR[s.cycle]; }
+function annualOf(s) { return monthlyOf(s) * 12; }
+
+function parseISODate(str) {
+  if (typeof str !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(str)) return null;
+  var p = str.split("-");
+  var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  if (d.getFullYear() !== Number(p[0]) || d.getMonth() !== Number(p[1]) - 1 || d.getDate() !== Number(p[2])) return null;
+  return d;
+}
+function startOfToday() {
+  var t = new Date();
+  t.setHours(0, 0, 0, 0);
+  return t;
+}
+function daysUntilRenewal(sub) {
+  var d = parseISODate(sub.renewal);
+  if (!d) return null;
+  return Math.round((d.getTime() - startOfToday().getTime()) / 86400000);
+}
+function isoOfDate(d) {
+  var m = String(d.getMonth() + 1), day = String(d.getDate());
+  return d.getFullYear() + "-" + (m.length < 2 ? "0" + m : m) + "-" + (day.length < 2 ? "0" + day : day);
+}
+
+/* ---------- validation / sanitization ---------- */
+function sanitizeSub(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  var name = typeof raw.name === "string" ? raw.name.trim().slice(0, MAX_NAME) : "";
+  if (!name) return null;
+  var cost = Number(raw.cost);
+  if (!isFinite(cost) || cost < 0 || cost > MAX_COST) return null;
+  cost = Math.round(cost * 100) / 100;
+  var cycle = CYCLES.indexOf(raw.cycle) !== -1 ? raw.cycle : "monthly";
+  var category = CATEGORIES.indexOf(raw.category) !== -1 ? raw.category : "Other";
+  var renewal = "";
+  if (typeof raw.renewal === "string" && raw.renewal !== "") {
+    if (!parseISODate(raw.renewal)) return null;
+    renewal = raw.renewal;
+  }
+  var notes = typeof raw.notes === "string" ? raw.notes.slice(0, MAX_NOTES) : "";
+  return {
+    id: typeof raw.id === "string" && raw.id ? String(raw.id).slice(0, 64) : uid(),
+    name: name,
+    cost: cost,
+    cycle: cycle,
+    category: category,
+    renewal: renewal,
+    notes: notes,
+    trim: raw.trim === true
+  };
+}
+
+/* ---------- filtering / sorting ---------- */
+function visibleSubs() {
+  var q = searchTerm.trim().toLowerCase();
+  var list = subs.filter(function (s) {
+    return !q || s.name.toLowerCase().indexOf(q) !== -1;
+  });
+  var by = sortKey;
+  list.sort(function (a, b) {
+    if (by === "cost-asc") return monthlyOf(a) - monthlyOf(b);
+    if (by === "cost-desc") return monthlyOf(b) - monthlyOf(a);
+    if (by === "name") return a.name.localeCompare(b.name);
+    if (by === "category") return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
+    if (by === "renewal") {
+      var da = daysUntilRenewal(a), db = daysUntilRenewal(b);
+      if (da === null && db === null) return 0;
+      if (da === null) return 1;
+      if (db === null) return -1;
+      return da - db;
+    }
+    return 0;
+  });
+  return list;
+}
+
+/* ---------- render: dashboard ---------- */
+function renderDashboard() {
+  var monthly = 0, annual = 0, top = null, topMonthly = 0;
+  for (var i = 0; i < subs.length; i++) {
+    var m = monthlyOf(subs[i]);
+    monthly += m;
+    if (top === null || m > topMonthly) { top = subs[i]; topMonthly = m; }
+  }
+  annual = monthly * 12;
+  document.getElementById("statMonthly").textContent = money.format(monthly);
+  document.getElementById("statAnnual").textContent = money.format(annual);
+  document.getElementById("statCount").textContent = String(subs.length);
+  if (top) {
+    document.getElementById("statTop").textContent = top.name;
+    document.getElementById("statTopSub").textContent = money.format(topMonthly) + " per month";
+  } else {
+    document.getElementById("statTop").textContent = "—";
+    document.getElementById("statTopSub").textContent = "";
+  }
+  document.getElementById("statAvg").textContent = money.format(subs.length ? monthly / subs.length : 0);
+}
+
+/* ---------- render: renewal watch ---------- */
+function renderRenewals() {
+  var body = document.getElementById("renewBody");
+  clear(body);
+  var upcoming = [], overdue = [];
+  for (var i = 0; i < subs.length; i++) {
+    var d = daysUntilRenewal(subs[i]);
+    if (d === null) continue;
+    if (d < 0) overdue.push({ s: subs[i], days: d });
+    else if (d <= RENEW_WINDOW_DAYS) upcoming.push({ s: subs[i], days: d });
+  }
+  overdue.sort(function (a, b) { return a.days - b.days; });
+  upcoming.sort(function (a, b) { return a.days - b.days; });
+
+  if (!overdue.length && !upcoming.length) {
+    body.appendChild(el("p", "empty", subs.length
+      ? "No renewals in the next " + RENEW_WINDOW_DAYS + " days. Add a renewal date to a subscription to get warned before it charges."
+      : "Add subscriptions with renewal dates and this watchlist will warn you before each charge."));
+    return;
+  }
+  function addGroup(items, heading) {
+    body.appendChild(el("h3", null, heading)).style.cssText = "font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:1rem 0 .25rem;";
+    var ul = el("ul", "renew-list");
+    items.forEach(function (it) {
+      var li = el("li");
+      var left = el("div");
+      left.appendChild(el("div", "renew-name", it.s.name));
+      var d = parseISODate(it.s.renewal);
+      var meta = el("div", "renew-meta", dateFmt.format(d) + " · " + money.format(it.s.cost) + CYCLE_SHORT[it.s.cycle] + " · " + it.s.category);
+      left.appendChild(meta);
+      li.appendChild(left);
+      var badge;
+      if (it.days < 0) {
+        var n = -it.days;
+        badge = el("span", "badge overdue", "Overdue " + n + (n === 1 ? " day" : " days"));
+      } else if (it.days === 0) {
+        badge = el("span", "badge today", "Renews today");
+      } else {
+        badge = el("span", "badge soon", "In " + it.days + (it.days === 1 ? " day" : " days"));
+      }
+      li.appendChild(badge);
+      ul.appendChild(li);
+    });
+    body.appendChild(ul);
+  }
+  if (overdue.length) addGroup(overdue, "Overdue");
+  if (upcoming.length) addGroup(upcoming, "Coming up");
+}
+
+/* ---------- render: categories ---------- */
+function renderCategories() {
+  var body = document.getElementById("catBody");
+  clear(body);
+  if (!subs.length) {
+    body.appendChild(el("p", "empty", "No subscriptions yet — category totals will appear here."));
+    return;
+  }
+  var totals = {};
+  for (var i = 0; i < subs.length; i++) {
+    var c = subs[i].category;
+    totals[c] = (totals[c] || 0) + monthlyOf(subs[i]);
+  }
+  var rows = Object.keys(totals).map(function (c) { return { cat: c, monthly: totals[c] }; });
+  rows.sort(function (a, b) { return b.monthly - a.monthly; });
+  var max = rows.length ? rows[0].monthly : 1;
+  rows.forEach(function (r) {
+    var row = el("div", "cat-row");
+    var head = el("div", "cat-head");
+    head.appendChild(el("span", "cat-name", r.cat));
+    head.appendChild(el("span", "cat-nums", money.format(r.monthly) + "/mo · " + money.format(r.monthly * 12) + "/yr"));
+    row.appendChild(head);
+    var track = el("div", "bar-track");
+    track.setAttribute("role", "img");
+    track.setAttribute("aria-label", r.cat + ": " + money.format(r.monthly) + " per month");
+    var bar = el("div", "bar");
+    var pct = max > 0 ? Math.max(1.5, (r.monthly / max) * 100) : 1.5;
+    bar.style.width = pct.toFixed(1) + "%";
+    track.appendChild(bar);
+    row.appendChild(track);
+    body.appendChild(row);
+  });
+}
+
+/* ---------- render: savings ---------- */
+function renderSavings() {
+  var body = document.getElementById("savingsBody");
+  clear(body);
+  var trimmed = subs.filter(function (s) { return s.trim; });
+  trimmed.sort(function (a, b) { return monthlyOf(b) - monthlyOf(a); });
+  var mSave = 0;
+  trimmed.forEach(function (s) { mSave += monthlyOf(s); });
+  var hero = el("div", "savings-hero");
+  var mWrap = el("div");
+  mWrap.appendChild(el("div", "cap", "Projected monthly savings"));
+  mWrap.appendChild(el("div", "big", money.format(mSave)));
+  var aWrap = el("div");
+  aWrap.appendChild(el("div", "cap", "Projected annual savings"));
+  aWrap.appendChild(el("div", "big", money.format(mSave * 12)));
+  hero.appendChild(mWrap);
+  hero.appendChild(aWrap);
+  body.appendChild(hero);
+  if (!trimmed.length) {
+    body.appendChild(el("p", "empty", "Nothing marked for trimming yet — your projected savings are $0.00."));
+    return;
+  }
+  body.appendChild(el("h3", null, "Cancel list (" + trimmed.length + ")")).style.cssText =
+    "font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 .25rem;";
+  var ul = el("ul", "cancel-list");
+  trimmed.forEach(function (s) {
+    var li = el("li");
+    li.appendChild(el("span", null, s.name));
+    li.appendChild(el("span", null, money.format(monthlyOf(s)) + "/mo"));
+    ul.appendChild(li);
+  });
+  body.appendChild(ul);
+}
+
+/* ---------- render: table ---------- */
+function findSub(id) {
+  for (var i = 0; i < subs.length; i++) if (subs[i].id === id) return subs[i];
+  return null;
+}
+function renderTable() {
+  var tbody = document.getElementById("subTbody");
+  clear(tbody);
+  var list = visibleSubs();
+  document.getElementById("tableCaption").textContent =
+    list.length === subs.length
+      ? "All " + subs.length + " subscriptions, normalized to monthly cost."
+      : "Showing " + list.length + " of " + subs.length + " subscriptions, normalized to monthly cost.";
+  if (!list.length) {
+    var tr = el("tr");
+    var td = el("td", "empty");
+    td.setAttribute("colspan", "8");
+    td.style.textAlign = "center";
+    td.style.padding = "1.5rem";
+    td.textContent = subs.length
+      ? "No subscriptions match your search."
+      : "No subscriptions yet. Add your first one, or load demo data to explore.";
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+    return;
+  }
+  list.forEach(function (s) {
+    var tr = el("tr");
+    /* trim checkbox */
+    var tdTrim = el("td");
+    var chk = el("input", "trim-check");
+    chk.type = "checkbox";
+    chk.checked = !!s.trim;
+    chk.setAttribute("aria-label", "Consider cancelling " + s.name);
+    chk.addEventListener("change", function () {
+      var sub = findSub(s.id);
+      if (sub) { sub.trim = chk.checked; saveData(); renderDashboard(); renderSavings(); }
+    });
+    tdTrim.appendChild(chk);
+    tr.appendChild(tdTrim);
+    /* name */
+    tr.appendChild(el("td", null, s.name));
+    /* cost */
+    var tdCost = el("td", "num");
+    tdCost.appendChild(document.createTextNode(money.format(s.cost)));
+    var suf = el("span", "cycle-suffix", CYCLE_SHORT[s.cycle]);
+    tdCost.appendChild(document.createTextNode(" "));
+    tdCost.appendChild(suf);
+    tr.appendChild(tdCost);
+    /* cycle, category */
+    tr.appendChild(el("td", null, CYCLE_LABEL[s.cycle]));
+    tr.appendChild(el("td", null, s.category));
+    /* renewal */
+    var tdRen = el("td");
+    var d = parseISODate(s.renewal);
+    if (d) {
+      tdRen.appendChild(document.createTextNode(dateFmt.format(d)));
+      var days = daysUntilRenewal(s);
+      if (days !== null && days < 0) {
+        tdRen.appendChild(document.createTextNode(" "));
+        tdRen.appendChild(el("span", "badge overdue", "Overdue"));
+      } else if (days !== null && days <= RENEW_WINDOW_DAYS) {
+        tdRen.appendChild(document.createTextNode(" "));
+        tdRen.appendChild(el("span", "badge soon", days === 0 ? "Today" : days + "d"));
+      }
+    } else {
+      tdRen.appendChild(el("span", "muted", "—"));
+    }
+    tr.appendChild(tdRen);
+    /* per month */
+    tr.appendChild(el("td", "num", money.format(monthlyOf(s))));
+    /* actions */
+    var tdAct = el("td");
+    var acts = el("div", "row-actions");
+    var editBtn = el("button", "small", "Edit");
+    editBtn.type = "button";
+    editBtn.setAttribute("aria-label", "Edit " + s.name);
+    editBtn.addEventListener("click", function () { openDialog(s.id); });
+    var delBtn = el("button", "small danger", "Delete");
+    delBtn.type = "button";
+    delBtn.setAttribute("aria-label", "Delete " + s.name);
+    delBtn.addEventListener("click", function () { deleteSub(s.id); });
+    acts.appendChild(editBtn);
+    acts.appendChild(delBtn);
+    tdAct.appendChild(acts);
+    tr.appendChild(tdAct);
+    tbody.appendChild(tr);
+  });
+}
+function renderAll() {
+  renderDashboard();
+  renderRenewals();
+  renderCategories();
+  renderSavings();
+  renderTable();
+}
+
+/* ---------- dialog: add / edit ---------- */
+var dialog, form, formError;
+function openDialog(id) {
+  editingId = id || null;
+  var sub = id ? findSub(id) : null;
+  document.getElementById("dialogTitle").textContent = sub ? "Edit subscription" : "Add subscription";
+  document.getElementById("fName").value = sub ? sub.name : "";
+  document.getElementById("fCost").value = sub ? (Math.round(sub.cost * 100) / 100).toFixed(2) : "";
+  document.getElementById("fCycle").value = sub ? sub.cycle : "monthly";
+  document.getElementById("fCategory").value = sub ? sub.category : "Other";
+  document.getElementById("fRenewal").value = sub ? sub.renewal : "";
+  document.getElementById("fNotes").value = sub ? sub.notes : "";
+  formError.textContent = "";
+  dialog.showModal();
+  document.getElementById("fName").focus();
+}
+function closeDialog() { dialog.close(); }
+function onFormSubmit(e) {
+  e.preventDefault();
+  formError.textContent = "";
+  var name = document.getElementById("fName").value.trim();
+  var costRaw = document.getElementById("fCost").value.trim();
+  var cost = costRaw === "" ? NaN : Number(costRaw);
+  var cycle = document.getElementById("fCycle").value;
+  var category = document.getElementById("fCategory").value;
+  var renewal = document.getElementById("fRenewal").value;
+  var notes = document.getElementById("fNotes").value;
+
+  if (!name) { formError.textContent = "Please enter a name."; return; }
+  if (name.length > MAX_NAME) { formError.textContent = "Name is too long (max " + MAX_NAME + " characters)."; return; }
+  if (!isFinite(cost) || cost < 0) { formError.textContent = "Cost must be a number of 0 or more."; return; }
+  if (cost > MAX_COST) { formError.textContent = "That cost looks like a typo — please enter at most " + money.format(MAX_COST) + "."; return; }
+  if (CYCLES.indexOf(cycle) === -1) { formError.textContent = "Please choose a billing cycle."; return; }
+  if (CATEGORIES.indexOf(category) === -1) category = "Other";
+  if (renewal && !parseISODate(renewal)) { formError.textContent = "Please enter a valid renewal date."; return; }
+  if (notes.length > MAX_NOTES) { formError.textContent = "Notes are too long (max " + MAX_NOTES + " characters)."; return; }
+
+  cost = Math.round(cost * 100) / 100;
+  if (editingId) {
+    var sub = findSub(editingId);
+    if (!sub) { formError.textContent = "That subscription no longer exists."; return; }
+    sub.name = name; sub.cost = cost; sub.cycle = cycle;
+    sub.category = category; sub.renewal = renewal; sub.notes = notes;
+  } else {
+    subs.push({ id: uid(), name: name, cost: cost, cycle: cycle, category: category, renewal: renewal, notes: notes, trim: false });
+  }
+  saveData();
+  renderAll();
+  refreshDataStatus();
+  closeDialog();
+}
+function deleteSub(id) {
+  var sub = findSub(id);
+  if (!sub) return;
+  if (!window.confirm("Delete \"" + sub.name + "\"? This cannot be undone.")) return;
+  subs = subs.filter(function (s) { return s.id !== id; });
+  saveData();
+  renderAll();
+  refreshDataStatus();
+}
+
+/* ---------- export / import ---------- */
+function dataMessage(text, isError) {
+  var m = document.getElementById("dataMsg");
+  m.textContent = text;
+  m.style.color = isError ? "var(--bad)" : "var(--good)";
+}
+/* keep the Backup & demo status line truthful after any data mutation */
+function refreshDataStatus() {
+  dataMessage(subs.length + " subscription" + (subs.length === 1 ? "" : "s") + " stored locally.");
+}
+function exportJSON() {
+  if (!subs.length) { dataMessage("Nothing to export — add a subscription first.", true); return; }
+  var payload = { app: "subaudit", version: 1, exported: new Date().toISOString(), subs: subs };
+  var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  var a = document.createElement("a");
+  a.href = window.URL.createObjectURL(blob);
+  a.download = "subaudit-backup-" + isoOfDate(new Date()) + ".json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.setTimeout(function () { window.URL.revokeObjectURL(a.href); }, 5000);
+  dataMessage("Exported " + subs.length + " subscription" + (subs.length === 1 ? "" : "s") + ".");
+}
+function importJSONFile(file) {
+  dataMessage("");
+  var reader = new FileReader();
+  reader.onerror = function () { dataMessage("Could not read that file.", true); };
+  reader.onload = function () {
+    var parsed;
+    try { parsed = JSON.parse(reader.result); }
+    catch (e) { dataMessage("That file is not valid JSON.", true); return; }
+    var arr = Array.isArray(parsed) ? parsed : parsed.subs;
+    if (!Array.isArray(arr)) { dataMessage("No subscription list found in that file.", true); return; }
+    var clean = [], skipped = 0, seen = {};
+    for (var i = 0; i < arr.length; i++) {
+      var s = sanitizeSub(arr[i]);
+      if (!s || seen[s.id]) { skipped++; continue; }
+      seen[s.id] = true;
+      clean.push(s);
+    }
+    if (!clean.length) { dataMessage("No valid subscriptions found (" + skipped + " skipped). Nothing was changed.", true); return; }
+    if (!window.confirm("Replace your current " + subs.length + " subscription(s) with " + clean.length + " imported one(s)?")) return;
+    subs = clean;
+    saveData();
+    renderAll();
+    dataMessage("Imported " + clean.length + " subscription" + (clean.length === 1 ? "" : "s") + (skipped ? " (" + skipped + " invalid skipped)." : "."));
+  };
+  reader.readAsText(file);
+}
+
+/* ---------- demo data / clear ---------- */
+function demoData() {
+  function offset(days) {
+    var t = new Date();
+    t.setDate(t.getDate() + days);
+    return isoOfDate(t);
+  }
+  var rows = [
+    { name: "StreamFlix", cost: 15.49, cycle: "monthly", category: "Streaming", renewal: offset(5), notes: "4K plan, shared with family" },
+    { name: "MusicBox", cost: 11.99, cycle: "monthly", category: "Streaming", renewal: offset(21), notes: "" },
+    { name: "CloudVault 2TB", cost: 119.99, cycle: "yearly", category: "Software & Apps", renewal: offset(9), notes: "Family storage plan" },
+    { name: "NewsDaily", cost: 4.99, cycle: "weekly", category: "News & Media", renewal: offset(-3), notes: "" },
+    { name: "FitTrack Pro", cost: 29.99, cycle: "quarterly", category: "Health & Fitness", renewal: "", notes: "Gym tracking app" },
+    { name: "GamePass Club", cost: 9.99, cycle: "monthly", category: "Memberships", renewal: offset(14), notes: "" }
+  ];
+  return rows.map(function (r) {
+    return { id: uid(), name: r.name, cost: r.cost, cycle: r.cycle, category: r.category, renewal: r.renewal, notes: r.notes, trim: false };
+  });
+}
+
+/* ---------- theme ---------- */
+var themeToggle;
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeToggle.setAttribute("aria-pressed", t === "dark" ? "true" : "false");
+  themeToggle.textContent = "Dark mode: " + (t === "dark" ? "on" : "off");
+  storeSet(LS_THEME, t);
+}
+function initTheme() {
+  var t = storeGet(LS_THEME);
+  if (t !== "light" && t !== "dark") {
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  applyTheme(t);
+}
+
+/* ---------- init ---------- */
+function init() {
+  dialog = document.getElementById("subDialog");
+  form = document.getElementById("subForm");
+  formError = document.getElementById("formError");
+  themeToggle = document.getElementById("themeToggle");
+
+  var catSel = document.getElementById("fCategory");
+  CATEGORIES.forEach(function (c) {
+    var o = document.createElement("option");
+    o.value = c;
+    o.textContent = c;
+    catSel.appendChild(o);
+  });
+
+  initTheme();
+  loadData();
+  renderAll();
+  if (!storageOK) {
+    dataMessage("Browser storage is unavailable in this context — your data will work during this session but will not be saved between visits.", true);
+  }
+
+  document.getElementById("addBtn").addEventListener("click", function () { openDialog(null); });
+  document.getElementById("cancelBtn").addEventListener("click", closeDialog);
+  form.addEventListener("submit", onFormSubmit);
+  dialog.addEventListener("click", function (e) {
+    if (e.target === dialog) closeDialog();
+  });
+
+  document.getElementById("searchInput").addEventListener("input", function (e) {
+    searchTerm = e.target.value;
+    renderTable();
+  });
+  document.getElementById("sortSelect").addEventListener("change", function (e) {
+    sortKey = e.target.value;
+    renderTable();
+  });
+  themeToggle.addEventListener("click", function () {
+    var cur = document.documentElement.getAttribute("data-theme");
+    applyTheme(cur === "dark" ? "light" : "dark");
+  });
+
+  document.getElementById("exportBtn").addEventListener("click", exportJSON);
+  document.getElementById("importBtn").addEventListener("click", function () {
+    document.getElementById("importFile").click();
+  });
+  document.getElementById("importFile").addEventListener("change", function (e) {
+    if (e.target.files && e.target.files[0]) importJSONFile(e.target.files[0]);
+    e.target.value = "";
+  });
+  document.getElementById("demoBtn").addEventListener("click", function () {
+    if (subs.length && !window.confirm("Replace your current " + subs.length + " subscription(s) with demo data?")) return;
+    subs = demoData();
+    saveData();
+    renderAll();
+    dataMessage("Demo data loaded (" + subs.length + " subscriptions).");
+  });
+  document.getElementById("clearBtn").addEventListener("click", function () {
+    if (!subs.length) { dataMessage("Nothing to clear.", true); return; }
+    if (!window.confirm("Delete all " + subs.length + " subscriptions? This cannot be undone.")) return;
+    subs = [];
+    saveData();
+    renderAll();
+    dataMessage("All subscriptions cleared.");
+  });
+}
+
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+else init();
+</script>
+</body>
+</html>

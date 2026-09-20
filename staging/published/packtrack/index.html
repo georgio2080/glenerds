@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PackTrack — Moving Box Inventory Indexer</title>
+<meta name="description" content="PackTrack: track your moving boxes room by room, search contents instantly, print box labels. Free offline tool by Glenerds.">
+<style>
+/* ============ Theme variables ============ */
+:root {
+  color-scheme: light;
+  --bg: #f2f3fa;
+  --bg-elev: #ffffff;
+  --bg-input: #ffffff;
+  --text: #1a1d29;
+  --text-muted: #5d6478;
+  --border: #e3e5f0;
+  --accent: #6366f1;
+  --accent-2: #8b5cf6;
+  --accent-ink: #ffffff;
+  --accent-soft: #eceffd;
+  --grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #9333ea 100%);
+  --danger: #dc2626;
+  --danger-soft: #fde8e8;
+  --ok: #15803d;
+  --ok-soft: #e2f5e8;
+  --warn: #b45309;
+  --warn-soft: #fdf0d9;
+  --fragile: #be123c;
+  --fragile-soft: #ffe4ec;
+  --tag-blue: #dbeafe; --tag-green: #dcfce7; --tag-red: #fee2e2;
+  --tag-yellow: #fef3c7; --tag-purple: #ede9fe; --tag-gray: #e8eaf1;
+  --shadow: 0 2px 10px rgba(79,70,229,.08);
+  --shadow-lg: 0 8px 28px rgba(79,70,229,.14);
+  --radius: 16px;
+  --chip1-bg: #e3e8ff; --chip1-ic: #4f46e5;
+  --chip2-bg: #d9f7f0; --chip2-ic: #0d9488;
+  --chip3-bg: #ddf6e3; --chip3-ic: #15803d;
+  --chip4-bg: #fdeccd; --chip4-ic: #b45309;
+  --chip5-bg: #ece4fd; --chip5-ic: #7c3aed;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11131c;
+  --bg-elev: #1a1d2b;
+  --bg-input: #222636;
+  --text: #eaecf5;
+  --text-muted: #a3a9c0;
+  --border: #2d3247;
+  --accent: #818cf8;
+  --accent-2: #a78bfa;
+  --accent-ink: #141221;
+  --accent-soft: #262b4d;
+  --grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #9333ea 100%);
+  --danger: #f87171;
+  --danger-soft: #3d2226;
+  --ok: #4ade80;
+  --ok-soft: #173324;
+  --warn: #fbbf24;
+  --warn-soft: #3a2d15;
+  --fragile: #fb7185;
+  --fragile-soft: #3d2129;
+  --tag-blue: #1e3a5f; --tag-green: #1d4a2c; --tag-red: #5b2626;
+  --tag-yellow: #5b4718; --tag-purple: #3d3260; --tag-gray: #333947;
+  --shadow: 0 2px 10px rgba(0,0,0,.35);
+  --shadow-lg: 0 8px 28px rgba(0,0,0,.5);
+  --chip1-bg: #2b3160; --chip1-ic: #a5b4fc;
+  --chip2-bg: #143d3a; --chip2-ic: #5eead4;
+  --chip3-bg: #173d27; --chip3-ic: #86efac;
+  --chip4-bg: #4a3512; --chip4-ic: #fcd34d;
+  --chip5-bg: #372a63; --chip5-ic: #c4b5fd;
+}
+
+/* ============ Base ============ */
+* { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  background-image: radial-gradient(1200px 300px at 50% -80px, rgba(124,58,237,.10), transparent 70%);
+  color: var(--text);
+  line-height: 1.5;
+}
+html[data-theme="dark"] body {
+  background-image: radial-gradient(1200px 300px at 50% -80px, rgba(124,58,237,.16), transparent 70%);
+}
+.skip-link { position: absolute; left: -9999px; }
+.skip-link:focus { left: 8px; top: 8px; background: var(--accent); color: var(--accent-ink); padding: 8px 12px; border-radius: 8px; z-index: 99; }
+
+/* ============ Header ============ */
+.app-header {
+  background: var(--grad);
+  color: #fff;
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 10;
+  box-shadow: 0 4px 20px rgba(79,70,229,.35);
+}
+.brand { display: flex; align-items: center; gap: 13px; }
+.logo-badge {
+  width: 46px; height: 46px; border-radius: 14px; flex: none;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.35);
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+}
+.logo-badge svg { width: 26px; height: 26px; color: #fff; }
+.app-header h1 { font-size: 1.5rem; margin: 0; letter-spacing: -.02em; color: #fff; }
+.app-header .tagline { color: rgba(255,255,255,.85); font-size: .88rem; margin: 2px 0 0; }
+.theme-toggle {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.4);
+  color: #fff; border-radius: 999px; padding: 8px 16px;
+  font-weight: 600; cursor: pointer; box-shadow: none;
+}
+.theme-toggle:hover { background: rgba(255,255,255,.28); border-color: rgba(255,255,255,.6); }
+.theme-toggle svg { width: 17px; height: 17px; }
+.theme-toggle .ic-sun { display: none; }
+html[data-theme="dark"] .theme-toggle .ic-sun { display: inline; }
+html[data-theme="dark"] .theme-toggle .ic-moon { display: none; }
+
+/* ============ Controls ============ */
+button, input[type="text"], input[type="number"], select, textarea {
+  font: inherit;
+  color: var(--text);
+}
+input[type="text"], input[type="number"], input[type="search"], select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  transition: border-color .15s, box-shadow .15s;
+}
+input[type="text"]:focus, input[type="number"]:focus, input[type="search"]:focus, select:focus, button:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+button {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  display: inline-flex; align-items: center; gap: 7px;
+  font-weight: 600;
+  transition: transform .08s, box-shadow .15s, border-color .15s;
+}
+button:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); }
+button:active { transform: translateY(1px); }
+button.primary {
+  background: var(--grad); color: #fff; border: none; font-weight: 700;
+  box-shadow: 0 4px 14px rgba(124,58,237,.4);
+}
+button.primary:hover { box-shadow: 0 6px 20px rgba(124,58,237,.55); filter: brightness(1.05); }
+button.danger { color: var(--danger); border-color: var(--danger); }
+button.small { padding: 5px 10px; font-size: .85rem; border-radius: 8px; }
+button[disabled] { opacity: .5; cursor: not-allowed; }
+button svg { width: 15px; height: 15px; flex: none; }
+
+main { max-width: 1024px; margin: 0 auto; padding: 20px 16px 32px; }
+section { margin-bottom: 30px; }
+section > h2 {
+  font-size: 1.2rem; margin: 0 0 12px; letter-spacing: -.01em;
+  display: flex; align-items: center; gap: 10px;
+}
+.hicon {
+  width: 34px; height: 34px; border-radius: 11px; flex: none;
+  background: var(--grad); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(124,58,237,.35);
+}
+.hicon svg { width: 19px; height: 19px; }
+
+.card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* ============ Dashboard ============ */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.stat {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 14px;
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 11px;
+  align-items: center;
+  box-shadow: var(--shadow);
+  transition: transform .12s, box-shadow .15s;
+}
+.stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.stat::before {
+  content: ""; grid-row: 1 / span 2;
+  width: 42px; height: 42px; border-radius: 13px;
+  background: var(--chip-bg, var(--chip1-bg)) var(--chip-ic) center / 23px 23px no-repeat;
+}
+.stat:nth-child(1) { --chip-bg: var(--chip1-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpath d='M3.3 7l8.7 5 8.7-5'/%3E%3Cpath d='M12 22V12'/%3E%3C/svg%3E"); }
+.stat:nth-child(2) { --chip-bg: var(--chip2-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d9488' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M8 6h13M8 12h13M8 18h13'/%3E%3Cpath d='M3 6h.01M3 12h.01M3 18h.01'/%3E%3C/svg%3E"); }
+.stat:nth-child(3) { --chip-bg: var(--chip3-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2315803d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8.5 12.5l2.5 2.5 4.5-5'/%3E%3C/svg%3E"); }
+.stat:nth-child(4) { --chip-bg: var(--chip4-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b45309' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='10' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 7.9-.8'/%3E%3C/svg%3E"); }
+.stat:nth-child(5) { --chip-bg: var(--chip5-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237c3aed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z'/%3E%3Cpath d='M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(1) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a5b4fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpath d='M3.3 7l8.7 5 8.7-5'/%3E%3Cpath d='M12 22V12'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(2) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235eead4' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M8 6h13M8 12h13M8 18h13'/%3E%3Cpath d='M3 6h.01M3 12h.01M3 18h.01'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(3) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386efac' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8.5 12.5l2.5 2.5 4.5-5'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(4) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fcd34d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='10' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 7.9-.8'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(5) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c4b5fd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z'/%3E%3Cpath d='M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z'/%3E%3C/svg%3E"); }
+.stat .num { font-size: 1.65rem; font-weight: 800; letter-spacing: -.02em; grid-column: 2; line-height: 1.15; }
+.stat .lbl { color: var(--text-muted); font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; grid-column: 2; }
+.room-counts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.room-pill {
+  background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 999px; padding: 5px 13px; font-size: .85rem; font-weight: 600;
+  box-shadow: var(--shadow);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.room-pill::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--grad);
+}
+.room-pill b { font-weight: 800; }
+.progress-wrap { margin-top: 14px; }
+progress {
+  width: 100%; height: 16px; accent-color: var(--ok);
+  -webkit-appearance: none; appearance: none;
+  border-radius: 999px; overflow: hidden;
+  background: var(--border);
+}
+progress::-webkit-progress-bar { background: var(--border); border-radius: 999px; }
+progress::-webkit-progress-value { background: linear-gradient(90deg, #22c55e, #10b981); border-radius: 999px; }
+progress::-moz-progress-bar { background: linear-gradient(90deg, #22c55e, #10b981); border-radius: 999px; }
+.progress-label { font-size: .88rem; color: var(--text-muted); margin-top: 6px; font-weight: 600; }
+
+/* ============ Search ============ */
+.search-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+.search-wrap input[type="search"] {
+  flex: 1 1 220px;
+  font-size: 1rem;
+  padding: 11px 14px 11px 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235d6478' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.3-4.3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 18px 18px;
+}
+.search-results { margin-top: 12px; display: grid; gap: 8px; }
+.search-hit { border-left: 4px solid var(--accent); }
+.search-hit .snip { color: var(--text-muted); font-size: .9rem; }
+mark { background: var(--warn-soft); color: var(--text); border-radius: 3px; padding: 0 3px; font-weight: 600; }
+html[data-theme="dark"] mark { background: #5b4718; }
+.empty { color: var(--text-muted); font-style: italic; }
+
+/* ============ New box form ============ */
+.new-box-form { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); align-items: end; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field > label { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); }
+.field label:not([for]) { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); }
+.checkbox-row { display: flex; align-items: center; gap: 9px; padding-bottom: 8px; font-weight: 600; }
+.checkbox-row input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--fragile); cursor: pointer; }
+.form-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.color-swatch-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-swatch {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid transparent; cursor: pointer; padding: 0;
+  box-shadow: var(--shadow);
+  transition: transform .1s;
+}
+.color-swatch:hover { transform: scale(1.12); }
+.color-swatch[aria-pressed="true"] { border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; }
+.color-swatch.none { background: var(--bg-input); border-color: var(--border); position: relative; }
+.color-swatch.none::after { content: "–"; color: var(--text-muted); font-weight: bold; }
+
+/* ============ Boxes list ============ */
+.boxes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.box-card { display: flex; flex-direction: column; gap: 10px; transition: transform .12s, box-shadow .15s; }
+.box-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.box-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.box-number { font-size: 1.3rem; font-weight: 800; letter-spacing: -.01em; }
+.box-room { color: var(--text-muted); font-size: .9rem; font-weight: 600; }
+.box-tag {
+  font-size: .75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+  background: var(--tag-gray); color: var(--text);
+  border: 1px solid var(--border);
+}
+.box-tag[data-color="blue"] { background: var(--tag-blue); border-color: transparent; }
+.box-tag[data-color="green"] { background: var(--tag-green); border-color: transparent; }
+.box-tag[data-color="red"] { background: var(--tag-red); border-color: transparent; }
+.box-tag[data-color="yellow"] { background: var(--tag-yellow); border-color: transparent; }
+.box-tag[data-color="purple"] { background: var(--tag-purple); border-color: transparent; }
+.box-fragile {
+  font-size: .72rem; font-weight: 800; color: var(--fragile);
+  background: var(--fragile-soft); border: 1px solid var(--fragile);
+  padding: 3px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: .05em;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.box-fragile::before {
+  content: ""; width: 13px; height: 13px; flex: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23be123c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/%3E%3Cpath d='M12 9v4M12 17h.01'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html[data-theme="dark"] .box-fragile::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fb7185' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/%3E%3Cpath d='M12 9v4M12 17h.01'/%3E%3C/svg%3E");
+}
+.box-status {
+  font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em;
+  padding: 3px 10px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.box-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.box-status.packed { color: var(--ok); background: var(--ok-soft); }
+.box-status.open { color: var(--warn); background: var(--warn-soft); }
+.item-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+.item-list li {
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border); border-radius: 9px; padding: 7px 9px;
+  font-size: .95rem; background: var(--bg-input);
+}
+.item-list li.unpacked .item-text { text-decoration: line-through; color: var(--text-muted); }
+.item-list li input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--ok); flex: none; cursor: pointer; }
+.item-list li .item-text { flex: 1; overflow-wrap: anywhere; }
+.item-remove { padding: 3px 9px; font-size: .8rem; }
+.item-remove::before {
+  content: ""; width: 12px; height: 12px; flex: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html[data-theme="dark"] .item-remove::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f87171' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E");
+}
+.add-item-row { display: flex; gap: 6px; }
+.add-item-row input { flex: 1; min-width: 0; }
+.add-item-row .small::before {
+  content: ""; width: 13px; height: 13px; flex: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.box-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.box-actions .small::before { content: ""; width: 14px; height: 14px; flex: none; background: center / contain no-repeat; }
+.box-actions .small:first-child::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='10' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E");
+}
+.box-actions .small:nth-child(2)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9V3h12v6'/%3E%3Crect x='4' y='9' width='16' height='8' rx='2'/%3E%3Cpath d='M6 14h12v7H6z'/%3E%3C/svg%3E");
+}
+.box-actions .small.danger::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2'/%3E%3Cpath d='M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] .box-actions .small:first-child::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23818cf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='10' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] .box-actions .small:nth-child(2)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23818cf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9V3h12v6'/%3E%3Crect x='4' y='9' width='16' height='8' rx='2'/%3E%3Cpath d='M6 14h12v7H6z'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] .box-actions .small.danger::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f87171' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2'/%3E%3Cpath d='M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13'/%3E%3C/svg%3E");
+}
+.item-count { font-size: .85rem; color: var(--text-muted); font-weight: 600; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.mode-toggle[aria-pressed="true"] { background: var(--grad); color: #fff; border: none; font-weight: 700; box-shadow: 0 4px 14px rgba(124,58,237,.4); }
+
+/* ============ Footer ============ */
+.app-footer {
+  border-top: 1px solid var(--border);
+  padding: 18px 16px 26px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: .85rem;
+}
+.app-footer a { color: var(--accent); font-weight: 700; text-decoration: none; }
+.app-footer a:hover { text-decoration: underline; }
+
+/* ============ Screen-only print label ============ */
+.print-label { display: none; }
+
+/* ============ Print stylesheet ============ */
+@media print {
+  body.printing-label > *:not(.print-label) { display: none !important; }
+  body.printing-label .print-label { display: block; }
+  .print-label { page-break-after: always; }
+  .pl-box {
+    width: 100%; min-height: 90vh;
+    border: 6px solid #000; border-radius: 12px;
+    padding: 40px 32px; text-align: center;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .pl-number { font-size: 140pt; font-weight: 900; line-height: 1; margin: 0; }
+  .pl-room { font-size: 40pt; font-weight: 700; margin: 12px 0 0; }
+  .pl-tag { font-size: 28pt; margin: 8px 0 0; }
+  .pl-fragile {
+    font-size: 48pt; font-weight: 900; color: #000; margin: 16px 0 0;
+    border: 4px solid #000; display: inline-block; padding: 4px 24px;
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+  .pl-items { text-align: left; font-size: 20pt; margin: 24px auto 0; max-width: 7in; }
+  .pl-items li { margin-bottom: 6px; }
+  .pl-count { font-size: 18pt; color: #333; margin-top: 12px; }
+}
+
+@media (max-width: 560px) {
+  .app-header { padding: 14px 14px; }
+  .logo-badge { width: 40px; height: 40px; }
+  .app-header h1 { font-size: 1.3rem; }
+  .theme-toggle { padding: 7px 12px; font-size: .85rem; }
+  .boxes-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="app-header">
+  <div class="brand">
+    <span class="logo-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7l8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+    <div>
+      <h1>PackTrack</h1>
+      <p class="tagline">Moving box inventory &mdash; know where everything is packed.</p>
+    </div>
+  </div>
+  <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span id="themeLabel">Dark mode</span></button>
+</header>
+
+<main id="main">
+
+  <!-- Dashboard -->
+  <section aria-labelledby="dash-h">
+    <h2 id="dash-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>Dashboard</h2>
+    <div class="stat-grid" id="stat-grid" role="group" aria-label="Totals"></div>
+    <div class="room-counts" id="room-counts" aria-label="Boxes per room"></div>
+    <div class="progress-wrap">
+      <progress id="unpack-progress" max="100" value="0" aria-label="Unpacking progress"></progress>
+      <div class="progress-label" id="unpack-label"></div>
+    </div>
+  </section>
+
+  <!-- Search -->
+  <section aria-labelledby="search-h">
+    <h2 id="search-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>Find an item</h2>
+    <div class="search-wrap">
+      <input type="search" id="search" placeholder="Type an item name, e.g. HDMI cable" aria-label="Search box contents" autocomplete="off">
+      <button type="button" id="search-clear">Clear</button>
+    </div>
+    <div class="search-results" id="search-results" aria-live="polite" aria-atomic="false"></div>
+  </section>
+
+  <!-- New box -->
+  <section aria-labelledby="newbox-h">
+    <h2 id="newbox-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M12 8v8M8 12h8"/></svg></span>Add a box</h2>
+    <form class="card new-box-form" id="new-box-form" novalidate>
+      <div class="field">
+        <label for="nb-number">Box number</label>
+        <input type="number" id="nb-number" min="1" max="9999" step="1" required>
+      </div>
+      <div class="field">
+        <label for="nb-room">Room</label>
+        <select id="nb-room"></select>
+      </div>
+      <div class="field">
+        <label for="nb-new-room">New room (optional)</label>
+        <input type="text" id="nb-new-room" maxlength="40" placeholder="e.g. Nursery">
+      </div>
+      <div class="field">
+        <label for="nb-label">Label / color tag</label>
+        <input type="text" id="nb-label" maxlength="40" placeholder="e.g. Books, cables">
+      </div>
+      <div class="field">
+        <label>Color tag</label>
+        <div class="color-swatch-row" id="nb-colors" role="group" aria-label="Color tag choice"></div>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="nb-fragile">
+        <label for="nb-fragile">Fragile</label>
+      </div>
+      <div class="form-actions" style="grid-column: 1 / -1;">
+        <button type="submit" class="primary">Add box</button>
+        <button type="reset" id="nb-reset">Reset</button>
+      </div>
+      <p class="empty" id="nb-error" role="alert" hidden style="grid-column: 1 / -1; color: var(--danger); font-style: normal;"></p>
+    </form>
+  </section>
+
+  <!-- Boxes -->
+  <section aria-labelledby="boxes-h">
+    <h2 id="boxes-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7l8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>Boxes</h2>
+    <div class="toolbar">
+      <button type="button" id="unpack-mode" class="mode-toggle" aria-pressed="false">Unpack mode: off</button>
+      <button type="button" id="print-all">Print all labels</button>
+      <span class="item-count" id="boxes-empty-note"></span>
+    </div>
+    <div class="boxes-grid" id="boxes-grid"></div>
+  </section>
+
+  <!-- Data -->
+  <section aria-labelledby="data-h">
+    <h2 id="data-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>Backup &amp; demo</h2>
+    <div class="card" style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button type="button" id="export-btn">Export JSON</button>
+      <button type="button" id="import-btn">Import JSON</button>
+      <input type="file" id="import-file" accept="application/json,.json" hidden aria-label="Choose JSON backup file">
+      <button type="button" id="demo-btn">Load demo data</button>
+      <button type="button" class="danger" id="clear-btn">Clear all data</button>
+    </div>
+    <p class="empty" id="export-status" role="status" aria-live="polite" style="margin:8px 0 0;"></p>
+    <p class="empty" id="data-note">Data is stored only in this browser (localStorage). Export a JSON backup before moving day.</p>
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
+</footer>
+
+<!-- Screen-hidden label printed on demand -->
+<div class="print-label" id="print-label" aria-hidden="true"></div>
+
+<script>
+"use strict";
+/* ===================== PackTrack =====================
+   Single-file, offline, zero external requests.
+   Security: no innerHTML with user/imported data anywhere.
+   All user strings enter the DOM via textContent or .value.
+------------------------------------------------------ */
+
+// ---------- Constants ----------
+const LS_KEY = "packtrack-v1";
+const THEME_KEY = "packtrack-theme";
+const DEFAULT_ROOMS = ["Living Room", "Kitchen", "Bedroom", "Bathroom", "Office", "Garage", "Storage", "Other"];
+const COLOR_TAGS = ["", "blue", "green", "red", "yellow", "purple"];
+const LIMITS = { numberMin: 1, numberMax: 9999, roomLen: 40, labelLen: 40, itemLen: 120, maxBoxes: 500, maxItemsPerBox: 300, maxRooms: 50 };
+
+// ---------- State ----------
+let state = { boxes: [], customRooms: [], nextNumber: 101 };
+let unpackMode = false;
+let selectedColor = "";
+
+// ---------- Sanitizers ----------
+function cleanStr(v, max) {
+  if (typeof v !== "string") return "";
+  return v.trim().slice(0, max);
+}
+function cleanNum(v, min, max, fallback) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return fallback;
+  const i = Math.floor(n);
+  if (i < min || i > max) return fallback;
+  return i;
+}
+function isValidColor(c) { return COLOR_TAGS.includes(c); }
+
+function sanitizeBox(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const number = cleanNum(raw.number, LIMITS.numberMin, LIMITS.numberMax, null);
+  if (number === null) return null;
+  const room = cleanStr(raw.room, LIMITS.roomLen) || "Other";
+  const label = cleanStr(raw.label, LIMITS.labelLen);
+  const color = isValidColor(raw.color) ? raw.color : "";
+  const fragile = raw.fragile === true;
+  const packed = raw.packed === true;
+  const items = [];
+  if (Array.isArray(raw.items)) {
+    for (const it of raw.items.slice(0, LIMITS.maxItemsPerBox)) {
+      const text = typeof it === "string" ? cleanStr(it, LIMITS.itemLen) : cleanStr(it && it.text, LIMITS.itemLen);
+      if (text) items.push({ text, unpacked: !!(it && typeof it === "object" && it.unpacked === true) });
+    }
+  }
+  return { number, room, label, color, fragile, packed, items };
+}
+
+function sanitizeState(raw) {
+  const out = { boxes: [], customRooms: [], nextNumber: 101 };
+  if (!raw || typeof raw !== "object") return out;
+  const seen = new Set();
+  if (Array.isArray(raw.boxes)) {
+    for (const b of raw.boxes.slice(0, LIMITS.maxBoxes)) {
+      const box = sanitizeBox(b);
+      if (box && !seen.has(box.number)) { seen.add(box.number); out.boxes.push(box); }
+    }
+  }
+  if (Array.isArray(raw.customRooms)) {
+    for (const r of raw.customRooms.slice(0, LIMITS.maxRooms)) {
+      const room = cleanStr(r, LIMITS.roomLen);
+      if (room && !DEFAULT_ROOMS.includes(room) && !out.customRooms.includes(room)) out.customRooms.push(room);
+    }
+  }
+  if (raw.nextNumber === undefined || raw.nextNumber === null) {
+    const max = out.boxes.reduce((m, b) => Math.max(m, b.number), 100);
+    out.nextNumber = Math.min(Math.max(max + 1, LIMITS.numberMin), LIMITS.numberMax);
+  } else {
+    out.nextNumber = cleanNum(raw.nextNumber, LIMITS.numberMin, LIMITS.numberMax, 101);
+  }
+  return out;
+}
+
+// ---------- Persistence ----------
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  catch (e) { /* storage full/blocked — app still works in memory */ }
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) state = sanitizeState(JSON.parse(raw));
+  } catch (e) { /* corrupted JSON — start fresh */ }
+}
+
+// ---------- DOM helpers (no innerHTML with user data) ----------
+function el(tag, className) {
+  const n = document.createElement(tag);
+  if (className) n.className = className;
+  return n;
+}
+function txt(parent, s) { parent.appendChild(document.createTextNode(s)); }
+function labeledValue(parent, labelText, value) {
+  const d = el("div");
+  const b = el("strong"); txt(b, labelText + ": ");
+  d.appendChild(b); txt(d, value);
+  parent.appendChild(d);
+}
+
+// ---------- Theme ----------
+function applyTheme(mode) {
+  document.documentElement.setAttribute("data-theme", mode);
+  const btn = document.getElementById("theme-toggle");
+  document.getElementById("themeLabel").textContent = mode === "dark" ? "Light mode" : "Dark mode";
+  btn.setAttribute("aria-label", mode === "dark" ? "Switch to light mode" : "Switch to dark mode");
+  try { localStorage.setItem(THEME_KEY, mode); } catch (e) {}
+}
+function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+  const mode = saved === "dark" || saved === "light"
+    ? saved
+    : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  applyTheme(mode);
+  document.getElementById("theme-toggle").addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    applyTheme(cur === "dark" ? "light" : "dark");
+  });
+}
+
+// ---------- Rooms ----------
+function allRooms() { return DEFAULT_ROOMS.concat(state.customRooms); }
+function refreshRoomSelect(keep) {
+  const sel = document.getElementById("nb-room");
+  while (sel.firstChild) sel.removeChild(sel.firstChild);
+  for (const r of allRooms()) {
+    const opt = document.createElement("option");
+    opt.value = r; opt.textContent = r;
+    sel.appendChild(opt);
+  }
+  if (keep && allRooms().includes(keep)) sel.value = keep;
+}
+
+// ---------- Dashboard ----------
+function renderDashboard() {
+  const grid = document.getElementById("stat-grid");
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
+  const boxes = state.boxes;
+  const totalItems = boxes.reduce((a, b) => a + b.items.length, 0);
+  const packed = boxes.filter(b => b.packed).length;
+  const unpackedBoxes = boxes.filter(b => b.packed && b.items.length && b.items.every(i => i.unpacked)).length;
+  const stats = [
+    ["Boxes", boxes.length],
+    ["Items", totalItems],
+    ["Packed", packed],
+    ["Open", boxes.length - packed],
+    ["Fully unpacked", unpackedBoxes]
+  ];
+  for (const [lbl, n] of stats) {
+    const s = el("div", "stat");
+    const num = el("div", "num"); txt(num, String(n));
+    const lab = el("div", "lbl"); txt(lab, lbl);
+    s.appendChild(num); s.appendChild(lab);
+    grid.appendChild(s);
+  }
+  const rc = document.getElementById("room-counts");
+  while (rc.firstChild) rc.removeChild(rc.firstChild);
+  for (const r of allRooms()) {
+    const c = boxes.filter(b => b.room === r).length;
+    if (!c) continue;
+    const pill = el("span", "room-pill");
+    txt(pill, r + " ");
+    const b = el("b"); txt(b, String(c));
+    pill.appendChild(b);
+    rc.appendChild(pill);
+  }
+  // unpack progress across packed boxes
+  let uTotal = 0, uDone = 0;
+  for (const b of boxes) { for (const i of b.items) { uTotal++; if (i.unpacked) uDone++; } }
+  const pct = uTotal ? Math.round((uDone / uTotal) * 100) : 0;
+  const bar = document.getElementById("unpack-progress");
+  bar.value = pct;
+  const lbl = document.getElementById("unpack-label");
+  lbl.textContent = "";
+  txt(lbl, uTotal ? `Unpacked ${uDone} of ${uTotal} items (${pct}%)` : "No items packed yet — add a box to get started.");
+}
+
+// ---------- Search ----------
+function highlightMatch(parent, text, query) {
+  const lower = text.toLowerCase(), q = query.toLowerCase();
+  let idx = 0, pos = lower.indexOf(q);
+  if (pos === -1) { txt(parent, text); return; }
+  while (pos !== -1) {
+    if (pos > idx) parent.appendChild(document.createTextNode(text.slice(idx, pos)));
+    const m = document.createElement("mark");
+    m.textContent = text.slice(pos, pos + q.length);
+    parent.appendChild(m);
+    idx = pos + q.length;
+    pos = lower.indexOf(q, idx);
+  }
+  if (idx < text.length) parent.appendChild(document.createTextNode(text.slice(idx)));
+}
+function runSearch() {
+  const q = document.getElementById("search").value.trim();
+  const out = document.getElementById("search-results");
+  while (out.firstChild) out.removeChild(out.firstChild);
+  if (!q) return;
+  const lower = q.toLowerCase();
+  let hits = 0;
+  for (const b of state.boxes) {
+    const matched = b.items.filter(i => i.text.toLowerCase().includes(lower));
+    const roomHit = b.room.toLowerCase().includes(lower) || (b.label && b.label.toLowerCase().includes(lower));
+    if (!matched.length && !roomHit) continue;
+    hits++;
+    const card = el("div", "card search-hit");
+    const head = el("div", "box-head");
+    const num = el("span", "box-number"); txt(num, "Box " + b.number);
+    const room = el("span", "box-room"); txt(room, b.room + (b.packed ? " · sealed" : " · open"));
+    head.appendChild(num); head.appendChild(room);
+    card.appendChild(head);
+    if (matched.length) {
+      const snip = el("div", "snip");
+      const show = matched.slice(0, 4);
+      show.forEach((i, k) => {
+        if (k) txt(snip, " · ");
+        highlightMatch(snip, i.text, q);
+      });
+      if (matched.length > 4) txt(snip, ` (+${matched.length - 4} more)`);
+      card.appendChild(snip);
+    } else {
+      const snip = el("div", "snip");
+      txt(snip, "Room/label match — no item matched.");
+      card.appendChild(snip);
+    }
+    out.appendChild(card);
+  }
+  if (!hits) {
+    const p = el("p", "empty"); txt(p, `No items found for "${q}".`);
+    out.appendChild(p);
+  }
+}
+
+// ---------- Box cards ----------
+function addItem(box, text) {
+  const t = cleanStr(text, LIMITS.itemLen);
+  if (!t || box.items.length >= LIMITS.maxItemsPerBox) return false;
+  box.items.push({ text: t, unpacked: false });
+  save();
+  return true;
+}
+function renderBoxes() {
+  const grid = document.getElementById("boxes-grid");
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
+  const note = document.getElementById("boxes-empty-note");
+  note.textContent = "";
+  if (!state.boxes.length) {
+    txt(note, "No boxes yet — add your first box above, or load the demo data below.");
+    return;
+  }
+  const sorted = state.boxes.slice().sort((a, b) => a.number - b.number);
+  for (const b of sorted) renderBoxCard(grid, b);
+}
+function renderBoxCard(grid, box) {
+  const card = el("article", "card box-card");
+
+  const head = el("div", "box-head");
+  const num = el("span", "box-number"); txt(num, "Box " + box.number);
+  const room = el("span", "box-room"); txt(room, box.room);
+  head.appendChild(num); head.appendChild(room);
+  if (box.label) {
+    const tag = el("span", "box-tag");
+    if (box.color) tag.setAttribute("data-color", box.color);
+    txt(tag, box.label);
+    head.appendChild(tag);
+  }
+  if (box.fragile) {
+    const f = el("span", "box-fragile"); txt(f, "Fragile");
+    head.appendChild(f);
+  }
+  const st = el("span", "box-status " + (box.packed ? "packed" : "open"));
+  txt(st, box.packed ? "Sealed" : "Open");
+  head.appendChild(st);
+  card.appendChild(head);
+
+  const cnt = el("span", "item-count");
+  txt(cnt, `${box.items.length} item${box.items.length === 1 ? "" : "s"}`);
+  card.appendChild(cnt);
+
+  // items
+  const list = el("ul", "item-list");
+  box.items.forEach((item, idx) => {
+    const li = el("li");
+    if (item.unpacked) li.className += " unpacked";
+    if (unpackMode) {
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = item.unpacked;
+      cb.setAttribute("aria-label", "Mark unpacked: " + item.text);
+      cb.addEventListener("change", () => { item.unpacked = cb.checked; save(); renderAll(); });
+      li.appendChild(cb);
+    }
+    const span = el("span", "item-text"); txt(span, item.text);
+    li.appendChild(span);
+    const rm = el("button", "item-remove small");
+    rm.type = "button";
+    txt(rm, "Remove");
+    rm.setAttribute("aria-label", "Remove item " + item.text);
+    rm.addEventListener("click", () => { box.items.splice(idx, 1); save(); renderAll(); runSearch(); });
+    li.appendChild(rm);
+    list.appendChild(li);
+  });
+  card.appendChild(list);
+
+  // add item
+  const addRow = el("div", "add-item-row");
+  const inp = document.createElement("input");
+  inp.type = "text";
+  inp.placeholder = "Add an item (Enter to add)";
+  inp.maxLength = LIMITS.itemLen;
+  inp.setAttribute("aria-label", "Add item to box " + box.number);
+  const addBtn = el("button", "small");
+  addBtn.type = "button";
+  txt(addBtn, "Add");
+  const commit = () => {
+    if (addItem(box, inp.value)) {
+      const num = box.number;
+      renderAll(); runSearch();
+      const fresh = document.querySelector('input[aria-label="Add item to box ' + num + '"]');
+      if (fresh) fresh.focus();
+    }
+  };
+  addBtn.addEventListener("click", commit);
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); commit(); } });
+  addRow.appendChild(inp); addRow.appendChild(addBtn);
+  card.appendChild(addRow);
+
+  // actions
+  const actions = el("div", "box-actions");
+  const sealBtn = el("button", "small");
+  sealBtn.type = "button";
+  txt(sealBtn, box.packed ? "Unseal" : "Seal box");
+  sealBtn.addEventListener("click", () => { box.packed = !box.packed; save(); renderAll(); runSearch(); });
+  actions.appendChild(sealBtn);
+
+  const printBtn = el("button", "small");
+  printBtn.type = "button";
+  txt(printBtn, "Print label");
+  printBtn.addEventListener("click", () => printLabel(box));
+  actions.appendChild(printBtn);
+
+  const delBtn = el("button", "small danger");
+  delBtn.type = "button";
+  txt(delBtn, "Delete box");
+  delBtn.addEventListener("click", () => {
+    if (window.confirm(`Delete Box ${box.number} and all its items?`)) {
+      state.boxes = state.boxes.filter(x => x !== box);
+      save(); renderAll(); runSearch();
+    }
+  });
+  actions.appendChild(delBtn);
+  card.appendChild(actions);
+
+  grid.appendChild(card);
+}
+
+// ---------- Print label ----------
+function buildLabel(labelHost, box) {
+  while (labelHost.firstChild) labelHost.removeChild(labelHost.firstChild);
+  const wrap = el("div", "pl-box");
+  const num = el("p", "pl-number"); txt(num, "Box " + box.number);
+  wrap.appendChild(num);
+  const room = el("p", "pl-room"); txt(room, box.room);
+  wrap.appendChild(room);
+  if (box.label) { const t = el("p", "pl-tag"); txt(t, box.label); wrap.appendChild(t); }
+  if (box.fragile) { const f = el("p", "pl-fragile"); txt(f, "Fragile"); wrap.appendChild(f); }
+  if (box.items.length) {
+    const ul = el("ul", "pl-items");
+    for (const i of box.items) { const li = el("li"); txt(li, i.text); ul.appendChild(li); }
+    wrap.appendChild(ul);
+  }
+  const c = el("p", "pl-count");
+  txt(c, box.items.length + " item" + (box.items.length === 1 ? "" : "s"));
+  wrap.appendChild(c);
+  labelHost.appendChild(wrap);
+}
+function printLabel(box) {
+  const host = document.getElementById("print-label");
+  buildLabel(host, box);
+  document.body.classList.add("printing-label");
+  window.print();
+  // remove class after print dialog closes so the app reappears
+  const done = () => {
+    document.body.classList.remove("printing-label");
+    window.removeEventListener("afterprint", done);
+  };
+  window.addEventListener("afterprint", done);
+  // fallback if afterprint never fires
+  setTimeout(() => document.body.classList.remove("printing-label"), 2000);
+}
+
+// ---------- Export / Import ----------
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "packtrack-backup.json";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  const st = document.getElementById("export-status");
+  st.textContent = "";
+  const n = state.boxes.length;
+  txt(st, `Exported ${n} box${n === 1 ? "" : "es"} — download started (packtrack-backup.json).`);
+}
+function importJSON(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = sanitizeState(JSON.parse(String(reader.result)));
+      state = parsed;
+      save();
+      refreshRoomSelect();
+      document.getElementById("nb-number").value = state.nextNumber;
+      renderAll(); runSearch();
+      alert("Import complete: " + state.boxes.length + " boxes loaded.");
+    } catch (e) {
+      alert("Import failed: that file is not a valid PackTrack backup.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ---------- Demo data ----------
+function loadDemo() {
+  if (state.boxes.length && !window.confirm("Replace current data with the demo set?")) return;
+  state = sanitizeState({
+    nextNumber: 105,
+    boxes: [
+      { number: 101, room: "Kitchen", label: "Pots & pans", color: "red", fragile: false, packed: true,
+        items: ["Cast iron skillet", "Saucepan set", "Wooden spoons", "Measuring cups", "Colander"] },
+      { number: 102, room: "Kitchen", label: "Glassware", color: "red", fragile: true, packed: false,
+        items: ["Wine glasses (6)", "Coffee mugs (4)", "Mixing bowls", "Plates"] },
+      { number: 103, room: "Bedroom", label: "Bedding", color: "blue", fragile: false, packed: true,
+        items: ["Duvet", "2 pillow sets", "Throw blanket", "Mattress pad"] },
+      { number: 104, room: "Office", label: "Desk gear", color: "green", fragile: true, packed: false,
+        items: ["Monitor", "HDMI cable", "Power strip", "Laptop stand", "USB-C cables", "Notebook"] }
+    ]
+  });
+  save();
+  refreshRoomSelect();
+  document.getElementById("nb-number").value = state.nextNumber;
+  renderAll(); runSearch();
+}
+
+// ---------- New box form ----------
+function initNewBoxForm() {
+  const form = document.getElementById("new-box-form");
+  const err = document.getElementById("nb-error");
+  document.getElementById("nb-number").value = state.nextNumber;
+
+  // color swatches
+  const row = document.getElementById("nb-colors");
+  const colors = { "": "No color", blue: "Blue", green: "Green", red: "Red", yellow: "Yellow", purple: "Purple" };
+  for (const c of COLOR_TAGS) {
+    const sw = el("button", "color-swatch" + (c === "" ? " none" : ""));
+    sw.type = "button";
+    sw.setAttribute("aria-pressed", c === selectedColor ? "true" : "false");
+    sw.setAttribute("aria-label", "Color tag: " + colors[c]);
+    sw.title = colors[c];
+    if (c) sw.style.background = { blue: "#3b82f6", green: "#22c55e", red: "#ef4444", yellow: "#eab308", purple: "#a855f7" }[c];
+    sw.addEventListener("click", () => {
+      selectedColor = c;
+      for (const s of row.children) s.setAttribute("aria-pressed", s === sw ? "true" : "false");
+    });
+    row.appendChild(sw);
+  }
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    err.hidden = true;
+    const numInput = document.getElementById("nb-number");
+    const number = cleanNum(numInput.value, LIMITS.numberMin, LIMITS.numberMax, null);
+    if (number === null) {
+      err.textContent = "Enter a box number between 1 and 9999.";
+      err.hidden = false; numInput.focus(); return;
+    }
+    if (state.boxes.some(b => b.number === number)) {
+      err.textContent = "Box " + number + " already exists. Pick another number.";
+      err.hidden = false; numInput.focus(); return;
+    }
+    if (state.boxes.length >= LIMITS.maxBoxes) {
+      err.textContent = "Box limit reached (500). Delete a box first.";
+      err.hidden = false; return;
+    }
+    const newRoom = cleanStr(document.getElementById("nb-new-room").value, LIMITS.roomLen);
+    let room = document.getElementById("nb-room").value;
+    if (newRoom) {
+      room = newRoom;
+      if (!allRooms().includes(room)) {
+        if (state.customRooms.length >= LIMITS.maxRooms) {
+          err.textContent = "Too many custom rooms — pick an existing one.";
+          err.hidden = false; return;
+        }
+        state.customRooms.push(room);
+        refreshRoomSelect(room);
+      }
+    }
+    const box = {
+      number,
+      room,
+      label: cleanStr(document.getElementById("nb-label").value, LIMITS.labelLen),
+      color: selectedColor,
+      fragile: document.getElementById("nb-fragile").checked,
+      packed: false,
+      items: []
+    };
+    state.boxes.push(box);
+    if (number >= state.nextNumber) state.nextNumber = number + 1;
+    save();
+    form.reset();
+    refreshRoomSelect(room);
+    document.getElementById("nb-number").value = state.nextNumber;
+    selectedColor = "";
+    for (const s of row.children) s.setAttribute("aria-pressed", s === row.children[0] ? "true" : "false");
+    renderAll(); runSearch();
+  });
+  form.addEventListener("reset", () => {
+    selectedColor = "";
+    for (const s of row.children) s.setAttribute("aria-pressed", s === row.children[0] ? "true" : "false");
+  });
+}
+
+// ---------- Toolbar ----------
+function initToolbar() {
+  const um = document.getElementById("unpack-mode");
+  um.addEventListener("click", () => {
+    unpackMode = !unpackMode;
+    um.setAttribute("aria-pressed", String(unpackMode));
+    um.textContent = "Unpack mode: " + (unpackMode ? "on" : "off");
+    renderAll();
+  });
+  document.getElementById("print-all").addEventListener("click", () => {
+    if (!state.boxes.length) { alert("No boxes to print yet."); return; }
+    const host = document.getElementById("print-label");
+    while (host.firstChild) host.removeChild(host.firstChild);
+    for (const b of state.boxes.slice().sort((a, x) => a.number - x.number)) buildLabel(host, b);
+    document.body.classList.add("printing-label");
+    window.print();
+    const done = () => { document.body.classList.remove("printing-label"); window.removeEventListener("afterprint", done); };
+    window.addEventListener("afterprint", done);
+    setTimeout(() => document.body.classList.remove("printing-label"), 2000);
+  });
+  document.getElementById("export-btn").addEventListener("click", exportJSON);
+  document.getElementById("import-btn").addEventListener("click", () => document.getElementById("import-file").click());
+  document.getElementById("import-file").addEventListener("change", e => {
+    if (e.target.files[0]) importJSON(e.target.files[0]);
+    e.target.value = "";
+  });
+  document.getElementById("demo-btn").addEventListener("click", loadDemo);
+  document.getElementById("clear-btn").addEventListener("click", () => {
+    if (!window.confirm("Delete ALL boxes and items? Export a backup first if you need it.")) return;
+    state = { boxes: [], customRooms: [], nextNumber: 101 };
+    save(); renderAll(); runSearch();
+    document.getElementById("nb-number").value = state.nextNumber;
+  });
+  document.getElementById("search-clear").addEventListener("click", () => {
+    document.getElementById("search").value = "";
+    runSearch();
+    document.getElementById("search").focus();
+  });
+  let searchTimer = null;
+  document.getElementById("search").addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(runSearch, 120);
+  });
+}
+
+// ---------- Render all ----------
+function renderAll() {
+  renderDashboard();
+  renderBoxes();
+  const st = document.getElementById("export-status");
+  if (st) st.textContent = "";
+}
+
+// ---------- Init ----------
+load();
+initTheme();
+refreshRoomSelect();
+initNewBoxForm();
+initToolbar();
+document.getElementById("nb-number").value = state.nextNumber;
+renderAll();
+// keyboard focus for search (only when not on a small screen keyboard trap)
+</script>
+</body>
+</html>
