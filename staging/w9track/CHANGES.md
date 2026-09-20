@@ -257,3 +257,15 @@ contractor card — both re-run against correct state and PASS.)
 - Threshold figures re-confirmed against live sources 2026-09-20 (Withum,
   Avalara, tincheck, Whiteford, Healio): $2,000 for 2026, inflation-adjusted
   from 2027 — matches the statute-backed entry above. No change needed.
+
+- Cross-year profile sync fix (ChatGPT functional leg, 2026-09-20): CONFIRMED the
+  major defect — adding a payment dated in a different tax year created a
+  same-id contractor clone in that year, but profile edits (rename, entity,
+  W-9 status/date, business, contact, notes) afterwards only touched the
+  current year's copy, leaving the copies diverged (e.g. W-9 marked received
+  in 2026 left the 2025 copy "W-9 missing"). Fix: new syncProfile() helper
+  propagates all profile fields to every same-id copy across all years; called
+  from the edit-form save handler and the Clear W-9 handler. Payments still
+  bucket per tax year by payment date (correct 1099 behavior). Logic verified
+  in node (profile propagated, other-year payments untouched); JS syntax
+  checked with node --check.

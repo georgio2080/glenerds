@@ -422,23 +422,6 @@ function yearData(y){
   return store.years[y];
 }
 
-/* Cross-year profile sync (ChatGPT QA 2026-09-20): a contractor is one
-   identity — payments live per tax year, but name/business/contact/entity/
-   W-9 status/date/notes must stay identical on every same-id copy. Editing
-   the profile in one year's view propagates to all other years. */
-function syncProfile(src){
-  Object.keys(store.years).forEach(function(y){
-    var list = store.years[y].contractors;
-    for(var i = 0; i < list.length; i++){
-      var o = list[i];
-      if(o !== src && o.id === src.id){
-        o.name = src.name; o.business = src.business; o.contact = src.contact;
-        o.entity = src.entity; o.w9 = src.w9; o.w9Date = src.w9Date; o.notes = src.notes;
-      }
-    }
-  });
-}
-
 /* ================= Helpers ================= */
 function el(tag, text, cls){
   var n = document.createElement(tag);
@@ -907,7 +890,6 @@ function renderContractors(){
       if(window.confirm("Clear the W-9 on file for " + c.name + "?")){
         c.w9 = false;
         c.w9Date = "";
-        syncProfile(c);
         saveStore(); renderAll();
       }
     });
@@ -1012,7 +994,6 @@ function openEdit(card, c, opts){
     if(c.w9 && !validDate(dval)){ window.alert("Enter the date the W-9 was received (or set W-9 to No)."); return; }
     c.w9Date = c.w9 ? dval : "";
     c.notes = nTa.value.trim().slice(0,500);
-    syncProfile(c);
     saveStore(); renderAll();
   });
   card.appendChild(form);
