@@ -1,7 +1,7 @@
 # QuoteCraft — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free Contractor Estimate & Quote Builder | Printable Template
+Free Estimate Template & Quote Builder for Contractors
 
 ## Permalink slug
 free-contractor-quote-builder
@@ -19,11 +19,11 @@ gallery/cover-square-1200.png (also attach gallery/1-quotes-list.png … 7-mobil
 quotecraft-bundle.zip
 
 ## Tags
-quote builder, estimate template, service quote, proposal maker, contractor estimate, freelance quote, job estimate, handyman quote, printable quote, proposal generator, handyman estimate template, freelance invoice maker, offline estimate app
+quote builder, estimate template, service quote, free estimate template, bid template, quotation template, printable quote, service estimate, contractor estimate, estimate template pdf
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-Free contractor estimate and quote builder app. Create printable job proposals, service estimates, and invoices offline instantly with no signup required.
+Free contractor estimate and quote builder app. Create printable job proposals and service estimates offline instantly with no signup required.
 
 🧾 QuoteCraft — Free Service Quote & Proposal Builder
 
@@ -36,13 +36,13 @@ Download this 100% free offline quote and estimate builder for contractors, hand
 • 🔢 Auto-numbering — Q-0001, Q-0002… numbers are never reused, even after deletes
 • 📝 Line items — description, quantity, unit price, per-item taxable flag
 • ➖ Discounts — none, percentage, or flat amount
-• 🧮 Tax-after-discount — applied to taxable lines with the discount pro-rated, in whole cents so totals match to the penny
+• 🧮 Tax-after-discount — applied to taxable lines with the discount prorated, in whole cents so totals match to the penny
 • 🖨️ Printable customer quote — your business header, line items, totals, signature lines
 • 🏢 Business profile — name, tagline, phone, email on every quote
 
 📦 WHAT YOU GET
 • QuoteCraft as a single HTML file — double-click to open in any browser
-• 8 screenshot walkthrough images
+• 8 walkthrough screenshot images
 • README with quick-start guide
 • Free updates forever
 
