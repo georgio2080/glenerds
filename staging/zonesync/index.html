@@ -604,6 +604,9 @@ function renderMembers() {
 }
 
 /* ---------------- overlap windows ---------------- */
+function accentBase() {
+  return currentTheme() === 'dark' ? '45, 212, 191' : '13, 110, 102';
+}
 function fmtHour(h) {
   h = ((h % 24) + 24) % 24;
   var ap = h < 12 ? 'AM' : 'PM';
