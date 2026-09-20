@@ -1,7 +1,7 @@
 # W9Track — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free Contractor W-9 Tracker & 1099 Payment Log for Small Business
+W9Track — Free W-9 Tracker & 1099 Payment Log
 
 ## Permalink slug
 free-contractor-w9-tracker-1099-threshold
@@ -19,42 +19,43 @@ gallery/cover-square-1200.png (also attach gallery/1-dashboard.png … 7-contrac
 w9track-bundle.zip
 
 ## Tags
-w-9 tracker, 1099, contractor management, small business, tax organizer, freelance payments, 1099-nec, bookkeeping, tax season, contractor compliance
+w-9 tracker, w9 tracker, 1099-nec, contractor w-9 tracker, 1099 tracker, contractor payment log, small business tax, tax season, contractor compliance, free w-9 tracker
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-📋 Free Contractor W-9 Tracker & 1099 Payment Log
+📋 W9Track — Free W-9 Tracker & 1099 Payment Log
 
-Paying independent contractors? Stop scrambling at tax season. W9Track helps you track every contractor, know exactly whose W-9 you have on file, log payments through the year — and get flagged the moment someone crosses the IRS Form 1099-NEC threshold ($600 for 2025 and earlier, $2,000 for 2026, inflation-adjusted from 2027). Runs as a single HTML file in any browser — no install, no internet, no account.
+Paying independent contractors? Stop scrambling at tax season. W9Track keeps your contractor records organized all year: track who has submitted a W-9, record payments, and see which contractors may need 1099-NEC reporting before tax time. Runs as a single HTML file in your browser — no install, no internet, no account required.
 
-💸 100% FREE — no upsells, no subscription, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
+💸 100% FREE — no upsells, no subscription, no catch.
 
 ✨ WHAT IT DOES
-• 📁 Tax-year organization — 2025, 2026, 2027, plus custom years
-• 👷 Contractor records — name, business, contact, entity type, notes
+• 📁 Tax-year organization — organize contractors by tax year, current and custom years
+• 👷 Contractor records — keep contractor details together: names, businesses, contacts, entity types, and notes
 • ✅ W-9 tracking — on file yes/no + date received
 • 💵 Payment log — per-contractor entries with year-to-date totals
-• 🚩 Automatic 1099 threshold flags — red when a contractor without a W-9 hits the threshold for the selected tax year ("Needs 1099"), amber when approaching it
-• 🏢 Corporation handling — corps marked generally exempt from 1099 reporting
+• 🚩 1099 reminders — quickly spot contractors who may need attention based on payment totals and W-9 status
+• 🏢 Entity-type tracking — mark corporations and other contractor details for easier recordkeeping
 • 📖 Plain-English 1099 threshold explainer built in (thresholds follow the tax year: $600 for 2025 and earlier, $2,000 for 2026, inflation-adjusted from 2027)
 
 📦 WHAT YOU GET
 • W9Track as a single HTML file — double-click to open in any browser
 • 8 screenshot walkthrough images
 • README with quick-start guide
-• Free updates forever
+• Free updates included
 
 🖥️ HOW IT WORKS
-No install, no internet, no account. Open the file, add your contractors once, log payments as you go. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
+Open the file, add your contractors once, log payments as you go. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
 
 🔒 PRIVACY BY DESIGN
-W9Track never stores SSN or EIN numbers — only whether a W-9 is on file and the date received. Fully offline: no trackers, no analytics, no external requests.
+Your contractor records stay private. W9Track works completely offline and never sends your data anywhere — no trackers, no analytics, no external requests. It never stores SSN or EIN numbers — only whether a W-9 is on file and the date received.
 
-🛠️ MORE FROM GLENERDS — made by Glenerds → https://glenerds.gumroad.com
-• Also hiring contractors? QuoteCraft — free contractor estimate & quote builder → https://glenerds.gumroad.com
-• Browse all Glenerds tools → https://glenerds.gumroad.com
+🛠️ MORE FROM GLENERDS
+Browse all free Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT
 Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.
 
-⚠️ Not tax advice — confirm filing requirements with your accountant.
+Download W9Track free and get your contractor paperwork organized today.
+
+⚠️ Not tax advice — W9Track organizes your records; it doesn't validate TINs, determine filing obligations, or file 1099s. Confirm filing requirements with your accountant.
