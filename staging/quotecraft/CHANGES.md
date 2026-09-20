@@ -185,3 +185,10 @@ Backup: `index.html.bak-2026-09-19-r2`.
 - **Regression retest:** full Playwright harness 11/11 PASS on the fixed source;
   targeted fix suite 8/8 PASS (tab refresh, both discount messages + clamps,
   import/editor date rejection, zero JS errors).
+- **FIX 8 — Cover re-crop (top-crop):** the 1280x720 center-crop clipped the
+  QuoteCraft header title. Regenerated as a top-crop from gallery/1-quotes-list.png
+  (verified byte-identical to the center-crop source before replacing); full
+  header, product name, tagline, and populated quotes table now visible.
+- **Gallery note:** gallery/2-editor-items.png still shows the pre-FIX-7 totals
+  row label "Taxable subtotal" (now "Taxable subtotal (before discount)" in the
+  UI). Layout, data, and totals unchanged; screenshot otherwise current.
