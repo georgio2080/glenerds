@@ -277,7 +277,7 @@ footer.site a { color: var(--muted); }
     </section>
 
     <section class="card" aria-labelledby="overlap-h">
-      <h2 id="overlap-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2.1"/></svg></span>Best overlap windows</h2>
+      <h2 id="overlap-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2.1"/></svg></span>Today's overlap windows</h2>
       <p class="status" id="overlap-note" style="margin-top:0;"></p>
       <ol class="overlap-list" id="overlap-list"></ol>
       <div class="overlap-strip-wrap" id="overlap-strip-wrap" hidden>
@@ -463,7 +463,9 @@ function tzParts(date, tz) {
 }
 /* Wall-clock time (y/mo/d h:mi) in tz -> UTC instant. Iterates
    U = W - off(U) to convergence so DST transitions resolve against the
-   real tz database. W (the wall time read as UTC) stays fixed. */
+   real tz database. W (the wall time read as UTC) stays fixed.
+   Fall-back ambiguity: a wall time that occurs twice converges on one of
+   the two occurrences, which the planner then treats as a single instant. */
 function zonedToUtc(y, mo, d, h, mi, tz) {
   var W = Date.UTC(y, mo - 1, d, h, mi || 0, 0);
   var u = W;
@@ -620,7 +622,7 @@ function renderOverlap() {
   overlapStripWrap.hidden = true;
   var n = state.members.length;
   if (!n) {
-    overlapNote.textContent = 'Add team members to see the best overlap windows.';
+    overlapNote.textContent = 'Add team members to see today\'s overlap windows.';
     return;
   }
   var today = viewerToday();
@@ -663,6 +665,7 @@ function renderOverlap() {
   var bestH = -1, bestC = 0;
   for (var h3 = 0; h3 < 24; h3++) {
     var seg = el('div', null, 'overlap-seg' + (counts[h3] === n ? ' full' : ''));
+    seg.setAttribute('aria-hidden', 'true');
     if (counts[h3] > 0) seg.style.backgroundColor = 'rgba(' + base + ', ' + (0.25 + 0.65 * (counts[h3] / n)).toFixed(2) + ')';
     seg.title = fmtHour(h3) + ': ' + (counts[h3] === n ? 'everyone' : counts[h3] + ' of ' + n) + ' free';
     overlapStrip.appendChild(seg);
@@ -747,6 +750,14 @@ function renderPlan() {
     return;
   }
   var utc = zonedToUtc(+dm[1], +dm[2], +dm[3], +tm[1], +tm[2], state.viewerTz);
+  /* Spring-forward gap: the wall time never occurred. Round-trip check. */
+  var rt = tzParts(new Date(utc), state.viewerTz);
+  if (rt.year !== +dm[1] || rt.month !== +dm[2] || rt.day !== +dm[3] ||
+      rt.hour !== +tm[1] || rt.minute !== +tm[2]) {
+    planResults.appendChild(el('p', 'That date and time does not exist in ' + state.viewerTz +
+      ' (daylight-saving time skips it). Pick another time.', 'status err'));
+    return;
+  }
   var table = el('table');
   table.setAttribute('aria-label', 'Per-member local meeting times');
   var thead = el('thead');
@@ -778,6 +789,7 @@ function renderPlan() {
   });
   table.appendChild(tbody);
   planResults.appendChild(table);
+  planResults.appendChild(el('p', 'Generated for viewer time zone: ' + state.viewerTz + '.', 'status'));
   planGenerated = true;
 }
 planForm.addEventListener('submit', function (ev) {
@@ -802,17 +814,32 @@ document.getElementById('btn-import').addEventListener('click', function () { fi
 fileInput.addEventListener('change', function () {
   var f = fileInput.files && fileInput.files[0];
   if (!f) return;
+  /* Import DoS guard: parsing happens before any size validation otherwise. */
+  if (f.size > 1000000) {
+    setDataStatus('Import file is too large (max 1 MB).', 'err');
+    fileInput.value = '';
+    return;
+  }
   var reader = new FileReader();
   reader.onload = function () {
     var ok = 0, bad = 0;
     try {
       var data = JSON.parse(reader.result);
       var list = data && Array.isArray(data.members) ? data.members : null;
-      if (!list) throw new Error('bad shape');
+      var tzOk = !!(data && validZone(data.viewerTz));
+      if (!list && !tzOk) throw new Error('bad shape');
+      /* Merge (not replace): say so up front so nobody is surprised. */
+      if (list && list.length && !window.confirm(
+          'Import ' + list.length + ' member(s) from this file? They will be ADDED to your ' +
+          'current team \u2014 existing members are kept, duplicates skipped.')) {
+        setDataStatus('Import cancelled.', '');
+        fileInput.value = '';
+        return;
+      }
       var seen = {};
       state.members.forEach(function (m) { seen[m.name.toLowerCase()] = true; });
       var room = MAX_MEMBERS - state.members.length;
-      list.forEach(function (m) {
+      if (list) list.forEach(function (m) {
         var s = sanitizeMember(m);
         var k = s ? s.name.toLowerCase() : null;
         if (s && k !== null && !seen[k] && room > 0) {
@@ -820,16 +847,19 @@ fileInput.addEventListener('change', function () {
           state.members.push(s); ok++;
         } else { bad++; }
       });
-      if (data && validZone(data.viewerTz)) {
+      if (tzOk) {
         state.viewerTz = data.viewerTz;
         viewerSel.value = state.viewerTz;
       }
       saveState();
       cancelEdit();
       renderAll();
-      setDataStatus('Imported ' + ok + ' member(s)' +
-        (bad ? ', skipped ' + bad + ' invalid ' + (bad === 1 ? 'entry' : 'entries') + '.' : '.'),
-        bad ? 'err' : 'ok');
+      var msg = list ?
+        ('Imported ' + ok + ' member(s)' +
+          (bad ? ', skipped ' + bad + ' invalid ' + (bad === 1 ? 'entry' : 'entries') + '.' : '.')) :
+        'No members in file.';
+      if (tzOk) msg += ' Viewer time zone set to ' + data.viewerTz + '.';
+      setDataStatus(msg, bad ? 'err' : 'ok');
     } catch (e) {
       setDataStatus('Import failed: not a valid ZoneSync JSON file.', 'err');
     }
