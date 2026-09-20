@@ -376,9 +376,9 @@ function simulate(strategy, extraMonthly){
       extra+=(dd.min-pay); /* freed minimum rolls into the extra pool */
     }
     for(oi=0;oi<order.length;oi++){ dd=byId[order[oi]];
-      if(!dd||dd.bal<=0.004||extra<=0) continue;
+      if(!dd||dd.bal<=0.004) continue;
       var p=Math.min(extra,dd.bal);
-      dd.bal-=p; mPaid+=p; extra-=p; /* leftover cascades to the next debt in order */
+      dd.bal-=p; mPaid+=p; extra-=p; break;
     }
     totalPaid+=mPaid;
     var bal=debts.reduce(function(s,x){return s+Math.max(0,x.bal);},0);
