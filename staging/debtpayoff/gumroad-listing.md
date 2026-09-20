@@ -36,4 +36,4 @@ _This tool is 100% free. If you were ever charged for this product, contact us f
 Thumbnail: `gallery/cover-square-1200.png` (verified). Gallery screenshots from `gallery/` (debt list, strategy comparison, payoff schedule, dark mode, mobile).
 
 ## Tags
-debt payoff calculator, debt snowball calculator, debt avalanche, payoff strategy, become debt free, debt payoff planner, interest calculator, debt free calculator, debt snowball method, debt payoff schedule
+debt payoff calculator, credit card payoff calculator, debt snowball calculator, debt avalanche, debt free date calculator, debt payoff planner, debt reduction calculator, debt snowball vs avalanche calculator, debt payoff schedule, credit card interest calculator
