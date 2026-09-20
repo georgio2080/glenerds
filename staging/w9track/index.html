@@ -641,7 +641,11 @@ function monthlyChart(contractors, year){
     wrap.appendChild(el("p", "No payment data for " + year + " yet — add a payment to see it here.", "empty"));
     return wrap;
   }
-  var W = 360, H = 196, padL = 42, padB = 20, padT = 10;
+  var W = 360, H = 196, padB = 20, padT = 10;
+  // Y-axis labels grow with the data ("$1,234,567"); size the gutter from the
+  // longest label so large monthly totals never clip the SVG's left edge
+  // (Gemini API re-review 2026-09-20).
+  var padL = Math.max(42, wholeDollars(max).length * 6 + 12);
   var plotW = W - padL - 8, plotH = H - padT - padB;
   var svg = svgEl("svg", {viewBox:"0 0 " + W + " " + H, role:"img",
     "aria-label":"Bar chart of payments by month for " + year + ". Highest month: " + money(max) + "."});
@@ -716,8 +720,10 @@ function donutChart(contractors){
     if(s.v <= 0) return;
     var len = s.v / contractors.length * CIRC;
     var seg = svgEl("circle", {cx:70, cy:70, r:R, class:"donut-seg",
-      "stroke-dasharray":len.toFixed(1) + " " + CIRC.toFixed(1),
-      "stroke-dashoffset":(-acc).toFixed(1)});
+      // toFixed(3): coarser rounding (e.g. toFixed(1)) leaves hairline gaps
+      // between segments (Gemini API re-review 2026-09-20).
+      "stroke-dasharray":len.toFixed(3) + " " + CIRC.toFixed(3),
+      "stroke-dashoffset":(-acc).toFixed(3)});
     seg.style.stroke = s.color;
     seg.appendChild(svgEl("title", null, s.label + ": " + s.v));
     g.appendChild(seg);

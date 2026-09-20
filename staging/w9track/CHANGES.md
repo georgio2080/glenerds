@@ -1,3 +1,7 @@
+## 2026-09-20 — Gemini API re-review of visual build + 2 cosmetic fixes
+- Re-review (full source, hand-verified findings): zero XSS (all user text via textContent/createElementNS), zero divide-by-zero/NaN paths, entity scrub correct, no behavior changes, no dark-mode/print breakage. All four previously-claimed findings were false positives (import cross-year routing exists, file-input cleared, scrub intent-correct, Math.max arrays tiny).
+- Fixed 2 genuine minors: (1) monthly-chart Y-axis gutter now scales from the longest label (wholeDollars(max)) so very large monthly totals can't clip the SVG's left edge — verified in harness ($1.23M -> padL 72, small data stays 42); (2) donut segments now use toFixed(3) precision so no hairline gaps (circumference gap 0.001 vs up to ~0.15 before).
+
 ## 2026-09-20 — Grok browser QA adjudicated (leg ran on pre-visual build)
 - Leg result: zero functional defects in everything it could exercise (thresholds 2024-2029 incl. exact $1,999.99/$2,000 boundaries, contractor add/edit, cross-year payment routing, W-9 flow, corp exemption, export, dark mode, add-year validation).
 - Finding A (missing "1099-exempt" pill on a corp card): NOT REPRODUCIBLE — disproven. The render path is deterministic: entity "corp" + no W-9 always renders the pill, the note, and the "Corporation" label (verified in node DOM harness). The leg's own dashboard-count evidence confirms the contractor was treated as exempt. Misread, no symptom to fix.
