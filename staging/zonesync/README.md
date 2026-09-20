@@ -1,20 +1,21 @@
-# ZoneSync — Remote Team Time-Zone Overlap Visualizer
+# ZoneSync — Remote Team Time-Zone Overlap Planner
 
 Stop doing time-zone math in your head. Add your distributed team members with
-their time zones and work hours, and ZoneSync shows you exactly when everyone
-is working — including the "golden hours" when the whole team overlaps.
+their time zones and work hours, and ZoneSync ranks the best meeting windows —
+plain-language "Best overlap windows" plus a 24-hour availability strip, all in
+your own time zone.
 
 ## What's inside
 - `index.html` — the complete app. Single file, works offline.
   Open it in any modern browser (double-click, or File → Open). No install,
   no account, no internet needed.
-- `gallery/` — 8 screenshots showing the app in action.
+- `gallery/` — 8 walkthrough images (cover + 7 screenshots) showing the app
+  in action.
 
 ## Features
 - Team members with IANA time zones and local work hours (overnight shifts work)
-- 24-hour color-coded overlap heatmap in your own time zone
-- Golden-hour detection: the exact windows when everyone is working
-- Per-hour working counts across the team
+- Ranked "Best overlap windows" in plain language, full-team overlap highlighted
+- 24-hour availability strip showing how many members are free each hour
 - Meeting planner: pick a time, see every member's local time + in/out status
 - DST-safe math via the browser's own internationalization engine
 - JSON backup export/import, demo data to explore

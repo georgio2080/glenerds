@@ -13,38 +13,37 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/cover-square-1200.png (also attach gallery/1-overview.png … 7-team-members.png as product images)
+gallery/cover-square-1200.png (also attach gallery/0-cover.png and gallery/1-overview.png … gallery/7-team-members.png as product images)
 
 ## Product file
 zonesync-bundle.zip
 
 ## Tags
-time zone, remote team, overlap calculator, meeting planner, distributed team, world clock, golden hour, async work, team coordination, work hours
+time zone, remote team, overlap calculator, meeting planner, distributed team, world clock, team coordination, work hours, find meeting time, remote work
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
 🌍 Free Time Zone Overlap Calculator — ZoneSync: Find Meeting Times for Remote Teams
 
-Stop doing time-zone math in your head. Add your distributed team members with their time zones and work hours, and ZoneSync shows you exactly when everyone is working — including the "golden hours" when the whole team overlaps.
+Stop doing time-zone math in your head. Add your distributed team members with their time zones and work hours, and ZoneSync shows you exactly when everyone is working — ranked best-first in plain language, with a 24-hour availability strip so you can see it at a glance.
 
 💸 100% FREE — no subscription, no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 ✨ WHAT IT DOES
 • 👥 Team members — name, time zone, local work hours (overnight shifts supported)
-• 🗺️ 24-hour overlap heatmap — color-coded, shown in your own time zone
-• ⭐ Golden-hour detection — the exact windows when everyone is working
-• 🔢 Per-hour working counts across the whole team
-• 📅 Meeting planner — pick a time, see every member's local time + in/out status
+• 🏆 Best overlap windows — ranked plain-language list ("9 AM – 12 PM — 2 of 3 free"), gold-highlighted when everyone overlaps
+• 📊 24-hour availability strip — color intensity shows how many teammates are free each hour, in your own time zone
+• 📅 Meeting planner — pick a time, see every member's local time + in/out-of-hours status
 • 🌐 DST-safe — uses your browser's own time-zone engine, no hand-rolled offsets
 
 📦 WHAT YOU GET
 • ZoneSync as a single HTML file — double-click to open in any browser
-• 8 screenshot walkthrough images
+• 8 walkthrough images (cover + 7 screenshots)
 • README with quick-start guide
 • Free updates forever
 
 🖥️ HOW IT WORKS
-No install, no internet, no account. Open the file, add your team once, and instantly see the overlap heatmap. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
+No install, no internet, no account. Open the file, add your team once, and instantly see the best overlap windows ranked by how many members are free. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
 
 🔒 PRIVACY
 ZoneSync is fully offline. No trackers, no analytics, no external requests.

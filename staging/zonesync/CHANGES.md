@@ -1,5 +1,36 @@
 # ZoneSync — build log
 
+## 2026-09-20 — overlap redesign + full AI re-verification (fix-without-asking)
+1. **Heatmap matrix removed.** The 24-column hover-dependent overlap heat map
+   was confusing (Glen's call); replaced with (a) a ranked plain-language
+   "Best overlap windows" list ("9 AM – 12 PM — 2 of 3 free", gold
+   "Everyone free" highlight, shift-hours tip when no window fits everyone)
+   and (b) a 24-hour availability strip whose per-hour color intensity
+   reflects how many members are free. Ranked rows intentionally have no
+   bars — the strip is the single visual.
+2. **Strip render bug (found by ChatGPT re-test, fixed same day).** The strip
+   rendered empty because the accent-color helper read a CSS variable that
+   resolved to an empty string. Fix: `accentBase()` now returns the RGB
+   triplet directly per theme. Verified live: 24 segments + 8 scale labels
+   render, darkness matches ranked-list counts exactly.
+3. **Print stylesheet added** (found by Gemini API source review): print
+   forces light colors, hides forms/buttons/theme toggle, removes sticky
+   headers and shadows, avoids splitting cards. Verified via print-media
+   emulation + Letter PDF render.
+4. **Add-member tz select reset** (found by ChatGPT re-test): after
+   save/cancel the time-zone dropdown reset to Africa/Abidjan (first list
+   entry); now resets to the viewer time zone.
+5. **Gallery + listing refreshed for the redesign:** 8 screenshots
+   re-captured with realistic demo data (incl. dark mode + 390px mobile),
+   hybrid cover rebuilt (real UI in browser frame + name + benefit line),
+   square 1200×1200 thumbnail rebuilt, GUMROAD-LISTING.md rewritten
+   (no heatmap/golden-hour mentions).
+Full AI battery re-run on the final build: ChatGPT (2 legs), Gemini
+(browser + API source review ×2), Grok, DeepSeek — zero open defects.
+Parent Playwright checks: mobile 390px (no overflow), print, export JSON
+bytes, 200-member cap enforcement, clear-all with confirm accepted,
+zero console/page errors.
+
 ## 2026-09-20 — audit fixes (fix-without-asking)
 1. **Import no longer duplicates members.** Re-importing an export (or any JSON
    containing a name already on the team, case-insensitive) now skips the
