@@ -234,7 +234,7 @@ svg.chart{width:100%;height:170px;display:block}
     </div>
     <div class="card">
       <h2>Laying activity — last 5 weeks</h2>
-      <p class="sub">Darker squares = more eggs that day. Tap a day for its count.</p>
+      <p class="sub" id="heatSub">Darker squares = more eggs that day. Tap a day for its count.</p>
       <div class="hm-flex">
         <div>
           <div class="hm-grid" id="heatGrid" role="group" aria-label="Egg laying activity by day"></div>
@@ -618,6 +618,7 @@ function drawHeat(){
   var dark=document.documentElement.getAttribute("data-theme")==="dark";
   var pal=dark?HM_DARK:HM_LIGHT;
   document.querySelectorAll(".hm-sw").forEach(function(s){s.style.background=pal[+s.getAttribute("data-lvl")];});
+  var heatSub=$("heatSub");if(heatSub)heatSub.textContent=(dark?"Lighter":"Darker")+" squares = more eggs that day. Tap a day for its count.";
   grid.innerHTML="";
   HM_DAYS.forEach(function(d){var s=document.createElement("span");s.className="hm-lbl";s.textContent=d;grid.appendChild(s);});
   var cells=[];
