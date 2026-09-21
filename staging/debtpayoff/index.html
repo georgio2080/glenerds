@@ -187,20 +187,25 @@ a.g-store-btn, header.hero .g-store-btn { color: #ffffff; }
 .stat.spot-card[aria-pressed="true"] { border-color: var(--g-accent, #4f46e5); box-shadow: 0 0 0 2px var(--g-accent, #4f46e5); }
 .chart-cap { font-size: .95rem; color: var(--muted); margin: 6px 0 0; }
 /* balance-share donut */
-.donut-wrap { display: grid; grid-template-columns: 190px 1fr; gap: 18px; align-items: center; margin-top: 14px; }
-.donut-wrap svg { width: 100%; max-width: 190px; height: auto; display: block; margin: 0 auto; }
+.donut-wrap { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; margin-top: 14px; }
+.donut-wrap svg { width: 240px; max-width: 100%; height: auto; display: block; }
 .donut-seg { cursor: pointer; transition: opacity .15s; }
 .donut-seg:focus { outline: none; filter: drop-shadow(0 0 4px var(--g-accent, #4f46e5)); }
-.donut-legend { display: grid; gap: 6px; }
-.dl-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
-  background: none; border: 1px solid transparent; border-radius: 8px; padding: 6px 8px;
-  color: var(--text); font-size: .95rem; cursor: pointer; }
+.donut-legend { display: grid; gap: 8px; justify-items: start; }
+.dl-item { display: block; width: 100%; max-width: 360px; text-align: left;
+  background: none; border: 1px solid transparent; border-radius: 10px; padding: 8px 10px;
+  color: var(--text); font-size: 1rem; cursor: pointer; }
 .dl-item:hover { border-color: var(--border); }
 .dl-item:focus { outline: none; }
 .dl-item:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 1px; }
 .dl-item[aria-pressed="true"] { border-color: var(--g-accent, #4f46e5); background: var(--zebra); }
+.dl-top { display: flex; align-items: baseline; gap: 8px; }
 .dl-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-.dl-item .dl-amt { margin-left: auto; font-weight: 700; white-space: nowrap; }
+.dl-name { font-weight: 600; }
+.dl-pct { color: var(--muted); font-size: .95rem; font-weight: 600; white-space: nowrap; }
+.dl-amt { margin-left: auto; font-weight: 800; white-space: nowrap; color: var(--g-accent, #4f46e5); }
+.dl-bar { height: 8px; border-radius: 4px; background: var(--zebra); margin-top: 6px; overflow: hidden; }
+.dl-fill { display: block; height: 100%; border-radius: 4px; }
 .donut-detail { font-size: 1.25rem; font-weight: 600; color: var(--text); margin-top: 10px; min-height: 1.4em; }
 .donut-detail strong { color: var(--g-accent, #4f46e5); font-weight: 800; }
 /* payoff-order timeline */
@@ -903,8 +908,9 @@ function renderDonut(){
     b.setAttribute("data-did",d.id);
     b.setAttribute("aria-pressed",spot===d.id?"true":"false");
     b.setAttribute("aria-label",d.name+" — click to spotlight");
-    b.innerHTML='<span class="dl-dot" style="background:'+col+'"></span><span class="dl-name"></span><span class="dl-amt"></span>';
+    b.innerHTML='<span class="dl-top"><span class="dl-dot" style="background:'+col+'"></span><span class="dl-name"></span><span class="dl-pct"></span><span class="dl-amt"></span></span><span class="dl-bar"><span class="dl-fill" style="background:'+col+';width:'+Math.round(frac*100)+'%"></span></span>';
     b.querySelector(".dl-name").textContent=d.name;
+    b.querySelector(".dl-pct").textContent=Math.round(frac*100)+"%";
     b.querySelector(".dl-amt").textContent=money(d.balance);
     (function(id){ b.addEventListener("click",function(){ toggleSpotDebt(id); }); })(d.id);
     leg.appendChild(b);
