@@ -14,6 +14,19 @@
 <script>
 (function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
 </script><link rel="stylesheet" href="../../style.css">
+<style>
+/* contest visual: profit/loss diverging bars, zero-centered */
+.bq-vis{display:grid;gap:8px;margin:14px 0 4px}
+.bq-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.bq-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bq-val{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.bq-track{grid-column:1/-1;position:relative;height:14px;border-radius:999px;background:var(--border);overflow:hidden}
+.bq-zero{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--ink);opacity:.35;transform:translateX(-1px)}
+.bq-fill{position:absolute;top:0;bottom:0}
+.bq-fill.pos{background:var(--accent);left:50%}
+.bq-fill.neg{background:#c0392b;right:50%}
+html[data-theme="dark"] .bq-fill.neg{background:#e57373}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -96,6 +109,7 @@ BBQ teams who suspect the trophies cost more than they pay. Free, offline, no ac
 <table><thead><tr><th>Contest</th><th>Spent</th><th>Won</th><th>Net</th><th></th></tr></thead>
 <tbody id="bq-rows"></tbody></table>
 <p id="bq-totals" style="font-size:1.1rem"></p>
+<div id="bq-vis" class="bq-vis" role="img" aria-label="Contest net results chart"></div>
 <p class="small">Everything is stored in this browser only. Multi-season tracking and CSV export live in the paid version.</p>
 </div>
 <p class="small" style="margin-top:1rem"><strong>Tracking a whole season?</strong> <a href="../../products/pitprofit/index.html">PitProfit</a> ranks every contest by true profit.</p>
@@ -144,6 +158,32 @@ BBQ teams who suspect the trophies cost more than they pay. Free, offline, no ac
       +'<strong>Total won: '+money(won)+'</strong> &nbsp;|&nbsp; <strong>Net: '
       +(netT>=0?'+':'−')+money(Math.abs(netT))+'</strong>';
     if(!data.contests.length){tb.innerHTML='<tr><td colspan="5" class="small">No contests logged yet.</td></tr>';}
+    /* net profit/loss diverging bars, zero-centered (visual representation) */
+    var bvis=document.getElementById('bq-vis');bvis.innerHTML='';
+    bvis.style.display=data.contests.length?'':'none';
+    if(data.contests.length){
+      var bnets=data.contests.map(function(c){
+        var s=c.entry+c.meat+c.fuel+c.lodge+c.sup;
+        return {name:c.name||'(unnamed)',net:c.pay-s};
+      }).sort(function(a,b){return b.net-a.net;});
+      var bmx=Math.max.apply(null,bnets.map(function(x){return Math.abs(x.net);}).concat([1]));
+      bnets.forEach(function(x){
+        var row=document.createElement('div');row.className='bq-row';
+        var nm=document.createElement('div');nm.className='bq-name';nm.textContent=x.name;
+        var vl=document.createElement('div');vl.className='bq-val';
+        vl.textContent=(x.net>=0?'+':'−')+money(Math.abs(x.net));
+        vl.style.color=x.net>=0?'var(--accent)':'';
+        var tr=document.createElement('div');tr.className='bq-track';
+        var fl=document.createElement('div');fl.className='bq-fill '+(x.net>=0?'pos':'neg');
+        fl.style.width=(Math.abs(x.net)/bmx*50).toFixed(1)+'%';
+        var z=document.createElement('div');z.className='bq-zero';
+        tr.appendChild(fl);tr.appendChild(z);row.appendChild(nm);row.appendChild(vl);row.appendChild(tr);
+        row.title=x.name+': net '+(x.net>=0?'+':'−')+money(Math.abs(x.net));
+        bvis.appendChild(row);
+      });
+      bvis.setAttribute('aria-label','Contest net results, best to worst: '+
+        bnets.map(function(x){return x.name+' '+(x.net>=0?'+':'−')+money(Math.abs(x.net));}).join('; '));
+    }
   }
   document.getElementById('bq-add').onclick=function(){
     var name=document.getElementById('bq-name').value.trim();
