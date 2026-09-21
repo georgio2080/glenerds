@@ -11,3 +11,7 @@
 - Hardened the sound engine: oscillator scheduling now happens after `AudioContext.resume()` resolves, so the first click always sounds.
 - Sound preference key corrected to `bbq-contest-cost-tracker.sound`.
 - Added the standard bottom cross-promo ("Like this tool? Check out our other apps →" to the Gumroad store), hidden in print.
+
+## 2026-09-21 — Sample icon locked to Glen's pick #14
+- Replaced the placeholder flask SVG in the sample-data toggle with Glen's chosen icon #14 (flask with 3 bubbles), verbatim from ~/workspace/your_files/icon-final-14.svg (stroke=currentColor, 18px render size via existing CSS).
+- No behavior change: snapshot/restore, aria labels, accent tint, Sound.click(), print hiding all unchanged.
