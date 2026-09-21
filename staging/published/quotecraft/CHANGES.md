@@ -1,5 +1,8 @@
 # QuoteCraft — CHANGES.md
 
+## 2026-09-21 — spotlight reset on quote switch (Gemini bench finding)
+- `openQuote` now clears `vizDonutSel`/`vizBarSel`, so a donut/bar spotlight from one quote never carries over cosmetically into the next opened quote. Bundle ZIP rebuilt (byte-match verified).
+
 ## 2026-09-21 — clickable visuals (Glen's chart-interaction rule)
 - **Donut slices, legend rows, and line-item bars are all clickable/tappable.** Clicking a color spotlights it: the associated number/label swaps into the donut center (or a caption under the bars), other segments dim, and the selected slice gets a shape-following drop-shadow glow. Clicking again releases back to the total. Full keyboard support (Tab + Enter/Space) with `role="button"` and accessible labels.
 - **Fat invisible hit rings** (36-unit transparent stroke, `pointer-events="stroke"`) make thin slices easy to tap on touch screens.

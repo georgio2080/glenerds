@@ -871,6 +871,7 @@ function getQuote(id){
 }
 function openQuote(id){
   cur.quoteId = id;
+  vizDonutSel = null; vizBarSel = null; /* clear any spotlight from the previous quote */
   var q = getQuote(id);
   if(!q){ showView("list"); return; }
   document.getElementById("edit-quote-title").textContent = qnum(q.num);
