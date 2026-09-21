@@ -1,63 +1,57 @@
-# GradePlan — Gumroad listing (UNPUBLISHED $0 draft)
+# HabitTrack — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Final Grade & GPA Calculator for Students
+Free Habit Tracker App: Daily Streaks, Heatmap & Rest Days — Works Offline
 
-## Permalink slug
-free-final-grade-calculator-gpa-calculator
+## URL slug
+`habittrack-free-habit-tracker`
+
+## Meta description
+Free habit tracker with daily streaks, a GitHub-style heatmap, rest days and partial credit. Unlimited habits, 100% offline, no account, no ads.
 
 ## Price
-$0
+$0 (free)
 
-## CTA preset
-I want this!
+## Category / tags
+Productivity, Habits, Self Improvement, Health & Fitness, Planner, Tracker, Offline Tool
 
-## Thumbnail
-gallery/cover-square-1200.png (also attach gallery/0-cover.png … 7-mobile.png as product images)
+## Cover image
+`gallery/cover-square-1200.png` (alt: "HabitTrack — free habit tracker app, square product cover")
 
-## Product file
-gradeplan-bundle.zip
+## Gallery (in order)
+1. `gallery/cover-1280x720.png` — Hero cover: populated app in browser frame
+2. `gallery/01-light-overview.png` — Full app, light mode: habits, streaks, stats
+3. `gallery/02-dark-overview.png` — Dark mode: same dense layout, dark theme
+4. `gallery/04-heatmap-detail.png` — GitHub-style activity heatmap with rest days
+5. `gallery/05-new-habit.png` — Creating a habit: schedule, color, icon, partial credit
+6. `gallery/06-day-editor.png` — Per-day editor: status + notes
+7. `gallery/07-backup.png` — JSON/CSV backup & restore
+8. `gallery/03-mobile.png` — Mobile layout
+9. `gallery/08-empty-state.png` — Clean first-run state
 
-## Tags
-final grade calculator, gpa calculator, grade calculator, what do i need on the final, weighted grade calculator, college gpa calculator, high school gpa calculator, final exam calculator, cumulative gpa calculator, semester gpa calculator
+## Description body
 
-## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
+Build streaks that actually stick. HabitTrack is a free daily habit tracker that lives entirely in your browser — no account, no ads, no trackers, no subscription. Your habits never leave your device, and it works offline.
 
-Free GPA calculator and final exam solver for students — GradePlan 🎓
+💸 100% FREE — no upsells, no subscription, no account.
 
-Need to know what grade you need on your final? GradePlan calculates it instantly — including when your goal is mathematically impossible.
+**What's inside** (by Glenerds):
+- ✅ One-tap daily check-offs with streak + best-streak counters
+- 📊 GitHub-style activity heatmap for every habit
+- ☾ Rest days that pause your streak without breaking it
+- ◐ Partial credit for half-done days (optional per habit)
+- 📅 Daily or weekly schedules (e.g. gym on Mon/Wed/Fri)
+- 📝 Per-day notes ("why did I miss Tuesday?")
+- 📈 Per-habit completion-rate stats
+- 💾 JSON + CSV backup, export and import — your data is yours
+- 🌙 Dark mode, works offline from a single file, mobile-friendly
 
-Calculate your current grade, find the score you need on your final exam, and calculate your semester and cumulative GPA from letter grades and credit hours. Every result shows the full math with your numbers substituted, so you can verify it yourself and compare against your official syllabus.
+**Honest comparison:** Loop is Android-only. Streaks (iOS) costs $5.99, is Apple-only, and caps you at 12 habits. HabitKit's free tier caps you at 4 habits. HabitTrack is unlimited, runs on any device with a browser, and is free forever — private by design, because there is no server.
 
-Always free. No account, email signup, subscription, or hidden upgrade. No coding or setup required — open the file and get your answer in under a minute.
+**How streaks work:** done or partial days extend your streak · rest days pause it without breaking · a missed scheduled day resets it.
 
-✨ WHAT IT DOES
-• 📝 FINAL EXAM SOLVER — current grade + desired grade + final weight → the exact score you need on the final
-• 📉 KNOW YOUR REALISTIC OUTCOME — if the math doesn't work, it says so honestly and shows the highest grade a perfect 100% on the final can reach
-• 🛡️ PROTECT YOUR CURRENT GRADE — already locked in your goal? It tells you the lowest final score you can afford
-• 📊 WEIGHTED COURSE GRADE — categories with weights and scores; if your weights don't total 100%, they're scaled fairly
-• 🏅 GPA CALCULATOR — courses with credits and letter grades on a 4.0 scale, with a weighted toggle for Honors/AP (+1.0; an F still counts as 0)
-• 🔍 SHOW YOUR WORK — every formula printed with your numbers substituted, step by step
-• 🌙 DARK MODE — toggle, respects your system setting, remembers your choice
-• 💾 SAVES YOUR INPUTS — everything stored privately in your browser, picks up where you left off
-• 📱 PHONE, TABLET, COMPUTER — use it from any device, no internet needed
+**How it works:** no install, no account. Open the file — it works offline — add a habit, tap the check-off each day. Everything is stored privately in your own browser — your data never leaves your device. JSON/CSV backup export/import included.
 
-⚠️ Estimates for planning only — always confirm with your official syllabus or registrar.
+---
 
-📦 WHAT YOU GET
-• GradePlan as a single offline file — a private copy you can keep forever; double-click to open in any browser
-• 8 screenshot walkthrough images
-• README with quick-start guide
-• Future improvements will remain free
-
-🔒 PRIVACY
-GradePlan is fully offline. No trackers, no analytics, no external requests, no ads, no cookie banners. Everything is stored privately in your own browser — your grades never leave your device.
-
-🛠️ MORE FROM GLENERDS
-• HomeRoom (homeschool lesson planner & attendance tracker) and DebtPayoff (student-loan payoff planner) — free offline tools by Glenerds
-• Browse all Glenerds tools → https://glenerds.gumroad.com
-
-📩 SUPPORT
-Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.
-
-by Glenerds — free offline tools with no account, no subscription, no ads: https://glenerds.gumroad.com
+**More free tools by Glenerds:** ZoneSync (free time-zone overlap calculator), MacroTrack (free TDEE + macro calculator) — https://glenerds.gumroad.com

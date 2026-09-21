@@ -1,29 +1,30 @@
-# RentReceipt — Free Rent Receipt Generator
+# HabitTrack — Free Habit Tracker with Streaks
 
-Your tenant paid rent and needs a receipt. Make a clean, professional,
-printable rent receipt in seconds — no landlord software, no account,
-no subscription.
+Build streaks that actually stick. HabitTrack is a free daily habit tracker
+with one-tap check-offs, streak + best-streak counters, a GitHub-style
+activity heatmap, rest days that pause your streak without breaking it, and
+optional partial credit for half-done days.
 
 ## What's inside
 - `index.html` — the complete app. Single file, works offline.
   Open it in any modern browser (double-click, or File → Open). No install,
   no account, no internet needed.
-- `gallery/` — screenshots showing the app in action.
+- `gallery/` — 8 screenshots showing the app in action.
 
 ## Features
-- Landlord receipt form: tenant name, landlord name, property address,
-  amount, date paid, payment method (cash/check/money order/etc.), receipt
-  number, and memo/notes
-- Live preview — see the receipt update as you type
-- Print-optimized: printing outputs only the receipt, sized for US Letter
-  paper (`@page` 12mm margins)
-- Receipt history — every receipt is saved in your browser automatically;
-  reprint or copy an old receipt any time
-- Validation on required fields (landlord name, tenant name, amount,
-  date paid, payment method) so you never print a half-filled receipt
+- Unlimited habits: one-tap Done / Partial / Rest-day check-offs
+- Current + best streak per habit, with rest days pausing the streak
+- GitHub-style activity heatmap with per-day editor and notes
+- Daily or weekly schedules (e.g. gym on Mon/Wed/Fri)
+- Per-habit completion-rate stats and a daily stats strip
+- Per-day notes ("why did I miss Tuesday?")
+- JSON + CSV backup export and import — your data is yours
 - Dark mode (follows your system, remembers your choice)
-- Privacy by design: 100% offline, no account, no tracking — your tenants'
-  details never leave your device
+- Mobile-friendly, privacy by design: everything stays in your browser.
+
+## How streaks work
+Done or partial days extend your streak · rest days pause it without
+breaking · a missed scheduled day resets it.
 
 ## Support
 Questions or issues: reply to your Gumroad receipt email.

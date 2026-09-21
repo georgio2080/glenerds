@@ -1,186 +1,660 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rent Receipt Generator &mdash; Free Printable Landlord Receipts</title>
-<meta name="description" content="Free rent receipt generator: create a printable landlord receipt in seconds. Enter tenant and rent details, then print — 100% offline, no account, no subscription, your data never leaves this device. By Glenerds.">
-<script>
-/* Pre-theme: set data-theme before first paint to avoid flash */
-(function(){try{
-  var t=localStorage.getItem("rentreceipt-theme");
-  if(t){try{t=JSON.parse(t);}catch(e){}}
-  if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
-  document.documentElement.setAttribute("data-theme",t);
-}catch(e){}})();
-</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a73e8'/%3E%3Ctext x='32' y='44' font-size='36' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9C%93%3C/text%3E%3C/svg%3E">
+<title>Free Habit Tracker — Build Streaks & Habits Offline</title>
+<meta name="description" content="Free habit tracker with streaks, heatmap, rest days and partial credit. 100% offline, no account, no ads — your habits never leave your device.">
+<link rel="canonical" href="https://glenerds.github.io/glenerds/staging/habittrack/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://glenerds.github.io/glenerds/staging/habittrack/">
+<meta property="og:title" content="Free Habit Tracker — Build Streaks & Habits Offline">
+<meta property="og:description" content="Free habit tracker with streaks, heatmap, rest days and partial credit. 100% offline, no account, no ads — your habits never leave your device.">
+<meta property="og:image" content="https://glenerds.github.io/glenerds/staging/habittrack/gallery/cover-square-1200.png">
+<meta name="twitter:card" content="summary_large_image">
 <style>
-:root,[data-theme="light"]{
-  --bg:#f3f1fa; --card:#ffffff; --text:#1e1b2e; --muted:#6b6584;
-  --border:#e4e0f3; --input-bg:#ffffff; --input-border:#d8d3ea;
-  --chip-bg:#f0edfb; --header-grad:linear-gradient(135deg,#0f766e 0%,#0e7490 55%,#0369a1 100%);
-  --primary:#0f766e; --primary2:#0e7490; --btn-text:#ffffff;
-  --btn-bg:#ffffff; --btn-border:#d8d3ea;
-  --shadow:0 8px 24px rgba(15,118,110,.10);
-  --good:#15803d; --good-bg:#dcfce7; --warn:#b45309; --warn-bg:#fef3c7;
-  --danger:#dc2626; --danger-bg:#fee2e2;
-  --ch1:#197b63; --ch2:#f06f52; --ch3:#c98f14; --ch4:#3478d4; --ch5:#c45e93;
-}
-[data-theme="dark"]{
-  --bg:#0c1117; --card:#141b24; --text:#eef3f7; --muted:#9fb0c3;
-  --border:#26313e; --input-bg:#1b2531; --input-border:#34414f;
-  --chip-bg:#1c2733; --primary:#2dd4bf; --primary2:#22d3ee; --btn-text:#06201d;
-  --btn-bg:#1a2431; --btn-border:#3a4a5e;
-  --shadow:0 8px 24px rgba(0,0,0,.35);
-  --good:#4ade80; --good-bg:#14532d; --warn:#fbbf24; --warn-bg:#451a03;
-  --danger:#f87171; --danger-bg:#450a0a;
-  --ch1:#58c9a7; --ch2:#ff8468; --ch3:#f5c555; --ch4:#68a5f2; --ch5:#e77eb5;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.5}
-.hero{position:static;background:none;color:var(--text);
-  padding:14px 20px 6px;box-shadow:none}
-.hero-inner{max-width:1024px;margin:0 auto;display:flex;align-items:center;gap:14px}
-.logo-badge{width:48px;height:48px;flex:0 0 48px;border-radius:14px;background:var(--primary);
-  display:flex;align-items:center;justify-content:center;border:none}
-.logo-badge svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
-.hero .tagline{margin:2px 0 0;font-size:.85rem;color:var(--muted);opacity:1}
-.theme-pill{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);
-  border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.85rem}
-.theme-pill:hover{background:rgba(255,255,255,.24)}
-.theme-pill svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
-/* Glenerds standard cluster: flask, dark-mode, sound — circular 44x44 icon-only on the hero gradient */
-.g-header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto}
-.g-round-btn{flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--btn-bg);border:1px solid var(--btn-border);color:var(--text);
-  border-radius:999px;cursor:pointer;font-size:1.1rem;
-  box-shadow:0 2px 8px rgba(0,0,0,.10);
-  transition:border-color .18s ease, transform .18s ease}
-.g-round-btn svg{width:26px;height:26px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.g-round-btn.theme-toggle,.g-round-btn.sound-toggle{font-size:1.65rem;line-height:1}
-.g-round-btn:hover{border-color:var(--primary)}.g-round-btn:active{transform:scale(.92);border-color:var(--primary)}
+/* ==========================================================================
+   GLENERDS DESIGN SYSTEM v1.0
+   --------------------------------------------------------------------------
+   One shared visual language for every Glenerds microtool.
+   Designed to be INLINED into each app's <style> block — keeps the
+   single-file property: zero network requests, file:// safe, no webfonts,
+   no CDNs, no frameworks, no build step.
 
-.g-round-btn:focus{outline:none}
-.g-round-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-.g-round-btn.sample-toggle[aria-pressed="true"]{color:var(--primary);border-color:var(--primary);
-  background:color-mix(in srgb, var(--primary) 12%, var(--card))}
-/* ---- Receipt insights (charts) ---- */
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:10px}
-.kpi{background:var(--chip-bg);border-radius:10px;padding:10px 12px}
-.kpi[role="button"]{cursor:pointer;border:1px solid transparent;transition:border-color .18s ease}
-.kpi[role="button"]:hover{border-color:var(--primary)}
-.kpi[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--primary2))}
-.kpi[role="button"][aria-pressed="true"]{border-color:var(--primary)}
-.kpi .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700}
-.kpi .v{font-size:1.28rem;font-weight:700}
-#kpiDet{margin-bottom:14px}
-.hist-item[role="button"]{cursor:pointer;border-radius:8px}
-.hist-item[role="button"]:hover{background:var(--chip-bg)}
-.hist-item[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--primary2))}
-.charts2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:700px){.charts2{grid-template-columns:1fr}}
-.ch-panel h3{margin:0 0 8px;font-size:.95rem}
-.ch-panel svg{width:100%;height:auto;display:block}
-svg .seg,svg .ch-bar{cursor:pointer}
-svg .seg:focus,svg .ch-bar:focus{outline:none;filter:drop-shadow(0 0 5px rgba(14,116,144,.9))}
-.ch-bar:focus{outline:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.28))}
-.ch-leg{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--input-border);
-  background:var(--input-bg);color:var(--text);border-radius:999px;padding:5px 12px;
-  font-size:.8rem;cursor:pointer;margin:3px 6px 3px 0}
-.ch-leg .sw{width:11px;height:11px;border-radius:3px;flex:none}
-.ch-leg[aria-pressed="true"]{border-color:var(--primary);box-shadow:0 0 0 2px rgba(14,116,144,.28)}
-.ch-leg:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
-.ch-det{margin-top:10px;font-size:.9rem;background:var(--chip-bg);border-radius:10px;padding:10px 14px;min-height:2.6em}
-@media(max-width:480px){.g-header-actions{gap:6px}}
-@media(max-width:520px){
-  .hero-inner{flex-wrap:wrap;row-gap:8px}
-  .g-header-actions{width:100%;justify-content:flex-end;margin-left:0}
+   Usage: paste this whole file inside a STYLE element in <head>, then use
+   the g- classes below. See INTEGRATION.md for the theme-toggle wiring.
+
+   Conventions:
+   - Every class is prefixed `g-` to avoid collisions.
+   - Theming is driven by `data-theme="light|dark"` on <html>.
+   - First load with no saved choice honors prefers-color-scheme.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --g-bg:            #f8fafc;   /* page background: soft cool white */
+  --g-surface:       #ffffff;   /* cards, panels */
+  --g-surface-2:     #f1f5f9;   /* recessed / inset areas, tab track */
+  --g-border:        #e2e8f0;   /* hairlines */
+  --g-border-strong: #cbd5e1;
+
+  /* Text */
+  --g-text:          #0f172a;   /* slate-900 */
+  --g-text-soft:     #334155;   /* slate-700 — secondary text */
+  --g-muted:         #64748b;   /* slate-500 — captions, hints */
+
+  /* Accent: refined indigo */
+  --g-accent:        #4f46e5;   /* indigo-600 */
+  --g-accent-hover:  #4338ca;   /* indigo-700 */
+  --g-accent-ink:    #ffffff;   /* text on accent */
+  --g-accent-soft:   #eef2ff;   /* indigo-50 — tinted fills */
+  --g-accent-ring:   rgba(79, 70, 229, 0.22);
+
+  /* Status */
+  --g-good:          #047857;   /* emerald-700 */
+  --g-good-soft:     #ecfdf5;
+  --g-bad:           #b42318;
+  --g-bad-soft:      #fef3f2;
+  --g-warn:          #b45309;
+  --g-warn-soft:     #fffbeb;
+
+  /* Inputs */
+  --g-input-bg:      #ffffff;
+  --g-input-border:  #cbd5e1;
+  --g-code-bg:       #f1f5f9;
+
+  /* Shape + motion */
+  --g-radius-sm: 8px;
+  --g-radius-md: 12px;
+  --g-radius-lg: 16px;
+  --g-radius-pill: 999px;
+  --g-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --g-shadow-md: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --g-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --g-ease: 160ms ease;
+
+  /* Type */
+  --g-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, system-ui, sans-serif;
+  --g-mono: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Consolas,
+            "Liberation Mono", monospace;
 }
-[data-theme="light"] .icon-sun{display:none}
-[data-theme="dark"] .icon-moon{display:none}
-main{max-width:1024px;margin:0 auto;padding:20px 16px 60px}
-.layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
-@media (max-width:820px){.layout{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;
-  box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
-.card-head{display:flex;align-items:center;gap:10px;margin:0 0 14px}
-.icon-chip{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:var(--chip-bg);
-  display:flex;align-items:center;justify-content:center}
-.icon-chip svg{width:19px;height:19px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.card-head h2{margin:0;font-size:1.12rem}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:480px){.grid2{grid-template-columns:1fr}}
-.field{margin-bottom:12px}
-.field label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
-input[type=text],input[type=number],input[type=date],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--input-border);
-  border-radius:10px;background:var(--input-bg);color:var(--text);font-size:.95rem}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--primary2);border-color:var(--primary2)}
-.err{font-size:.8rem;color:var(--danger);margin-top:4px;min-height:1.1em}
-.field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--danger)}
-.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;cursor:pointer;
-  font-size:.92rem;font-weight:600;padding:10px 16px;margin:4px 8px 4px 0}
-.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
-  box-shadow:0 4px 14px rgba(15,118,110,.35)}
-.btn-primary:hover{filter:brightness(1.08)}
-.btn-secondary{background:transparent;border:1px solid var(--input-border);color:var(--text)}
-.btn-secondary:hover{border-color:var(--primary)}
-.btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
-.btn-danger:hover{background:var(--danger-bg)}
-.btn-sm{padding:6px 10px;font-size:.8rem;border-radius:8px}
-/* ---- Printable receipt ---- */
-.receipt-paper{background:#fff;color:#111;border:1px solid #ddd;border-radius:8px;padding:28px 30px;
-  font-family:Georgia,"Times New Roman",serif;box-shadow:0 4px 18px rgba(0,0,0,.08)}
-.receipt-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #111;
-  padding-bottom:12px;margin-bottom:16px}
-.receipt-head h2{margin:0;font-size:1.7rem;letter-spacing:2px;text-transform:uppercase;font-family:inherit}
-.receipt-num{font-size:.85rem;color:#444;text-align:right;font-family:-apple-system,Helvetica,Arial,sans-serif}
-.receipt-num strong{font-size:1.05rem;color:#111}
-.receipt-rows{margin:0 0 16px;font-family:-apple-system,Helvetica,Arial,sans-serif}
-.receipt-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px dotted #ccc;font-size:.95rem}
-.receipt-row .k{flex:0 0 150px;color:#555;font-size:.82rem;text-transform:uppercase;letter-spacing:.4px;font-weight:600}
-.receipt-row .v{flex:1;color:#111;word-break:break-word}
-.receipt-amount{display:flex;justify-content:space-between;align-items:center;background:#f5f5f5;
-  border:1px solid #ddd;border-radius:6px;padding:12px 16px;margin:0 0 16px}
-.receipt-amount .lbl{font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;color:#555;font-family:-apple-system,Helvetica,Arial,sans-serif}
-.receipt-amount .val{font-size:1.6rem;font-weight:700;color:#111}
-.receipt-sig{display:flex;justify-content:space-between;margin-top:34px;gap:24px;
-  font-family:-apple-system,Helvetica,Arial,sans-serif}
-.sig-line{flex:1;border-top:1px solid #888;padding-top:6px;font-size:.78rem;color:#555}
-.receipt-foot{margin-top:18px;font-size:.75rem;color:#777;text-align:center;
-  font-family:-apple-system,Helvetica,Arial,sans-serif;border-top:1px solid #ddd;padding-top:10px}
-.hist-item{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border);font-size:.9rem}
-.hist-item:last-child{border-bottom:none}
-.hist-item .grow{flex:1;min-width:0}
-.hist-item .num{font-weight:700}
-.hist-item .meta{font-size:.8rem;color:var(--muted)}
-.empty{color:var(--muted);font-size:.9rem;text-align:center;padding:18px 0}
-.promo{border-left:4px solid var(--primary);padding:14px 18px}
-.promo p{margin:0;font-size:.95rem}
-.promo a{color:var(--primary);font-weight:700}
-footer{max-width:1024px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:.85rem}
-footer a{color:var(--primary)}
-footer>div{margin-bottom:6px}
-.disclaimer{font-size:.75rem;opacity:.85}
-/* ---- Print: only the receipt ---- */
-@media print{
-  @page{size:letter;margin:12mm}
-  body{background:#fff}
-  .hero,.no-print,footer{display:none!important}
-  main{max-width:none;margin:0;padding:0}
-  .layout{display:block}
-  .receipt-paper{box-shadow:none;border:none;border-radius:0;margin:0;padding:10px;page-break-inside:avoid}
-  .card{box-shadow:none;border:none}
+
+/* Dark theme: genuinely designed — deep blue-black, lifted surfaces,
+   brightened indigo. Not an inversion of light. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --g-bg:            #0b0e14;
+  --g-surface:       #141926;
+  --g-surface-2:     #0f1420;
+  --g-border:        #232c40;
+  --g-border-strong: #33405c;
+
+  --g-text:          #f1f5f9;
+  --g-text-soft:     #cbd5e1;
+  --g-muted:         #94a3b8;
+
+  --g-accent:        #818cf8;   /* indigo-400 — readable on dark */
+  --g-accent-hover:  #a5b4fc;   /* indigo-300 */
+  --g-accent-ink:    #0b0e14;
+  --g-accent-soft:   rgba(129, 140, 248, 0.14);
+  --g-accent-ring:   rgba(129, 140, 248, 0.35);
+
+  --g-good:          #34d399;
+  --g-good-soft:     rgba(52, 211, 153, 0.12);
+  --g-bad:           #f87171;
+  --g-bad-soft:      rgba(248, 113, 113, 0.12);
+  --g-warn:          #fbbf24;
+  --g-warn-soft:     rgba(251, 191, 36, 0.12);
+
+  --g-input-bg:      #0f1420;
+  --g-input-border:  #33405c;
+  --g-code-bg:       #0f1420;
+
+  --g-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --g-shadow-md: 0 1px 3px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --g-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+
+.g-app {
+  font-family: var(--g-font);
+  background: var(--g-bg);
+  color: var(--g-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Page container */
+.g-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+/* ---------- 3. TYPOGRAPHY ---------- */
+.g-display  { font-size: 1.9rem;  font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;  margin: 0 0 8px; }
+.g-title    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;  margin: 0 0 6px; }
+.g-body     { font-size: 1rem;    color: var(--g-text-soft); margin: 0 0 12px; }
+.g-caption  { font-size: 0.85rem; color: var(--g-muted);    margin: 0; }
+.g-mono     { font-family: var(--g-mono); font-size: 0.9em; }
+
+/* ---------- 4. HEADER ---------- */
+.g-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 4px;
+}
+.g-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.g-brand-mark {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--g-accent);
+  color: var(--g-accent-ink);
+  font-weight: 800; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-sm);
+  user-select: none;
+}
+.g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
+.g-tagline { color: var(--g-muted); font-size: 0.92rem; font-weight: 400; margin: 6px 0 14px; max-width: 56ch; }
+
+/* Theme toggle + sound toggle: icon-only 44px circular buttons */
+/* Header cluster reference (2026-09-21): exact HenTrack bytes mapped to this app's
+   vars — --g-surface (card), --g-border (line), --g-text (ink), --g-accent, --g-accent-soft. */
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--g-surface);border:1px solid var(--g-border);color:var(--g-text-soft);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn svg{width:26px;height:26px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1;color:var(--g-text)}
+.round-btn:hover{border-color:var(--g-accent)}.round-btn:active{transform:scale(.92);border-color:var(--accent,#4f46e5)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--g-accent);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--g-accent);border-color:var(--g-accent);background:var(--g-accent-soft)}
+.g-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;row-gap:6px;justify-content:flex-end}
+/* More Apps pill: white text in BOTH modes (dark-mode --g-accent-ink would go dark-on-dark) */
+.g-header-actions .g-store-btn,
+.g-header-actions .g-store-btn:hover,
+.g-header-actions .g-store-btn:active,
+.g-header-actions .g-store-btn:focus-visible{color:#fff}
+
+/* ---------- 5. TABS (segmented control) ---------- */
+.g-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  background: var(--g-surface-2);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 4px;
+  margin: 14px 0;
+}
+.g-tab {
+  flex: 1 1 auto;
+  appearance: none;
+  border: 0; background: transparent;
+  color: var(--g-muted);
+  font-family: var(--g-font);
+  font-size: 0.93rem; font-weight: 600;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
+  white-space: nowrap;
+}
+.g-tab:hover { color: var(--g-text); }
+.g-tab[aria-selected="true"] {
+  background: var(--g-surface);
+  color: var(--g-text);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-tab:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+
+/* ---------- 6. CARDS ---------- */
+.g-card {
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  padding: 22px;
+  margin: 16px 0;
+  box-shadow: var(--g-shadow-sm);
+}
+.g-card > .g-title { margin-bottom: 4px; }
+.g-card .g-desc { color: var(--g-muted); font-size: 0.92rem; margin: 0 0 14px; }
+.g-card-flat { box-shadow: none; }
+
+/* ---------- 7. BUTTONS ---------- */
+.g-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--g-font);
+  font-size: 0.95rem; font-weight: 650;
+  border-radius: 10px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--g-ease), border-color var(--g-ease),
+              color var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
+  text-decoration: none;
+  line-height: 1.2;
+}
+.g-btn:active { transform: translateY(1px) scale(0.99); }
+.g-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.g-btn-primary {
+  background: var(--g-accent);
+  border-color: var(--g-accent);
+  color: var(--g-accent-ink);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-btn-primary:hover:not(:disabled) { background: var(--g-accent-hover); border-color: var(--g-accent-hover); }
+
+.g-btn-secondary {
+  background: var(--g-surface);
+  border-color: var(--g-border-strong);
+  color: var(--g-text);
+}
+.g-btn-secondary:hover:not(:disabled) { border-color: var(--g-accent); color: var(--g-accent); }
+
+.g-btn-danger {
+  background: var(--g-bad-soft);
+  border-color: transparent;
+  color: var(--g-bad);
+}
+.g-btn-danger:hover:not(:disabled) { background: var(--g-bad); color: #fff; }
+
+.g-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--g-text-soft);
+}
+.g-btn-ghost:hover:not(:disabled) { background: var(--g-surface-2); color: var(--g-text); }
+
+.g-btn-sm { font-size: 0.85rem; padding: 8px 13px; border-radius: 8px; }
+.g-btn-block { display: flex; width: 100%; }
+.g-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+
+/* ---------- 8. FORMS ---------- */
+.g-field { margin: 12px 0; }
+.g-label { display: block; font-weight: 650; font-size: 0.92rem; margin-bottom: 6px; color: var(--g-text); }
+.g-hint { font-size: 0.82rem; color: var(--g-muted); margin-top: 6px; }
+
+.g-input, .g-select, .g-textarea {
+  width: 100%;
+  font-family: var(--g-font);
+  font-size: 1rem;
+  color: var(--g-text);
+  background: var(--g-input-bg);
+  border: 1px solid var(--g-input-border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  transition: border-color var(--g-ease), box-shadow var(--g-ease);
+}
+.g-input::placeholder, .g-textarea::placeholder { color: var(--g-muted); opacity: 0.75; }
+.g-input:hover, .g-select:hover, .g-textarea:hover { border-color: var(--g-border-strong); }
+.g-input:focus, .g-select:focus, .g-textarea:focus {
+  outline: none;
+  border-color: var(--g-accent);
+  box-shadow: 0 0 0 3px var(--g-accent-ring);
+}
+.g-textarea { min-height: 96px; resize: vertical; }
+.g-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+[data-theme="dark"] .g-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.g-input:disabled, .g-select:disabled, .g-textarea:disabled {
+  opacity: 0.55; cursor: not-allowed; background: var(--g-surface-2);
+}
+
+/* Validation */
+.g-input.is-invalid, .g-select.is-invalid {
+  border-color: var(--g-bad);
+}
+.g-input.is-invalid:focus, .g-select.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--g-bad-soft);
+}
+.g-error { display: none; color: var(--g-bad); font-size: 0.86rem; font-weight: 600; margin-top: 6px; }
+.g-error.show { display: block; }
+
+/* Checkbox / radio rows */
+.g-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.95rem; color: var(--g-text-soft);
+  cursor: pointer; margin: 10px 0;
+}
+.g-check input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  margin: 1px 0 0;
+  border: 1.5px solid var(--g-input-border);
+  border-radius: 6px;
+  background: var(--g-input-bg);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--g-ease), border-color var(--g-ease);
+}
+.g-check input[type="radio"] { border-radius: 50%; }
+.g-check input:checked { background: var(--g-accent); border-color: var(--g-accent); }
+.g-check input:checked::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: no-repeat center / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 6.8 11.8 12.5 4.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.g-check input[type="radio"]:checked::after {
+  background: none;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--g-accent-ink);
+}
+.g-check input:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--g-accent-ring); }
+
+/* ---------- 9. RESULT PANELS ---------- */
+.g-result {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: var(--g-radius-md);
+  border: 1px solid var(--g-border);
+  background: var(--g-surface-2);
+}
+.g-big-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 2px 0 6px;
+}
+.g-verdict { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+.g-verdict-good { color: var(--g-good); }
+.g-verdict-bad  { color: var(--g-bad); }
+.g-verdict-warn { color: var(--g-warn); }
+.g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
+
+/* Show-your-work math block */
+.g-math {
+  font-family: var(--g-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background: var(--g-code-bg);
+  border: 1px solid var(--g-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: var(--g-text-soft);
+}
+
+/* ---------- 10. STAT ROWS ---------- */
+.g-stats { margin: 12px 0 0; border-top: 1px solid var(--g-border); }
+.g-stat {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--g-border);
+  font-size: 0.95rem;
+}
+.g-stat:last-child { border-bottom: 0; }
+.g-stat .g-stat-label { color: var(--g-muted); }
+.g-stat .g-stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+.g-stat .g-stat-value.good { color: var(--g-good); }
+.g-stat .g-stat-value.bad  { color: var(--g-bad); }
+
+/* ---------- 11. TABLES ---------- */
+.g-table-wrap { overflow-x: auto; margin: 12px -4px 0; padding: 0 4px; }
+.g-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.g-table th {
+  text-align: left;
+  font-size: 0.76rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--g-muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--g-border-strong);
+  white-space: nowrap;
+}
+.g-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+.g-table tr:last-child td { border-bottom: 0; }
+.g-table tbody tr { transition: background var(--g-ease); }
+.g-table tbody tr:hover { background: var(--g-surface-2); }
+
+/* ---------- 12. BADGES / PILLS ---------- */
+.g-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; font-weight: 700;
+  border-radius: var(--g-radius-pill);
+  padding: 4px 11px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.g-badge-accent { background: var(--g-accent-soft); color: var(--g-accent); }
+.g-badge-good   { background: var(--g-good-soft);   color: var(--g-good); }
+.g-badge-bad    { background: var(--g-bad-soft);    color: var(--g-bad); }
+.g-badge-warn   { background: var(--g-warn-soft);   color: var(--g-warn); }
+.g-badge-neutral{ background: var(--g-surface-2);    color: var(--g-muted); border: 1px solid var(--g-border); }
+.g-badge-dot::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+}
+
+/* ---------- 13. EMPTY STATES ---------- */
+.g-empty {
+  text-align: center;
+  border: 1.5px dashed var(--g-border-strong);
+  border-radius: var(--g-radius-lg);
+  padding: 36px 20px;
+  margin: 16px 0;
+  color: var(--g-muted);
+}
+.g-empty-icon { font-size: 2rem; margin-bottom: 8px; }
+.g-empty .g-title { font-size: 1.05rem; color: var(--g-text-soft); }
+.g-empty p { font-size: 0.9rem; margin: 4px 0 14px; }
+
+/* ---------- 14. FOOTER ---------- */
+.g-footer {
+  text-align: center;
+  margin: 32px 0 8px;
+  font-size: 0.85rem;
+  color: var(--g-muted);
+}
+.g-footer a { color: var(--g-accent); text-decoration: none; font-weight: 600; }
+.g-footer a:hover { text-decoration: underline; }
+.g-footer .g-fine { display: block; margin-top: 8px; font-size: 0.78rem; }
+
+/* ---------- 15. LAYOUT HELPERS ---------- */
+.g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.g-stack > * + * { margin-top: 12px; }
+.g-divider { border: 0; border-top: 1px solid var(--g-border); margin: 20px 0; }
+
+/* ---------- 16. FOCUS (accessibility) ---------- */
+.g-btn:focus-visible,
+.round-btn:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--g-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 17. RESPONSIVE ---------- */
+@media (max-width: 560px) {
+  .g-wrap { padding: 14px 12px 40px; }
+  .g-display { font-size: 1.6rem; }
+  .g-card { padding: 18px 16px; border-radius: 14px; }
+  .g-big-number { font-size: 2rem; }
+  .g-grid-2, .g-grid-3 { grid-template-columns: 1fr; }
+  .g-brand-mark { width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px; }
+  .g-brand-name { font-size: 1.2rem; }
+  .g-tab { padding: 9px 10px; font-size: 0.88rem; }
+}
+
+/* ---------- 18. MOTION PREFERENCE ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+
+/* ---------- 19. ICONS ----------
+   Requires the glenerds-icons.svg sprite inlined in the page (see
+   INTEGRATION.md). <use> inherits stroke from the wrapper, so the two
+   variants are just classes on the <svg> element. */
+.g-icon {
+  width: 24px; height: 24px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  fill: none;
+  vertical-align: -4px;
+}
+.g-icon-sm { width: 18px; height: 18px; }
+.g-icon-lg { width: 32px; height: 32px; }
+/* Flash variant: brand indigo gradient stroke instead of text color. */
+.g-icon-flash { stroke: url(#g-grad-indigo); }
+.g-btn .g-icon { width: 20px; height: 20px; vertical-align: -3px; }
+.g-tab .g-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; }
+
+/* ---------- 20. APP ICONS ----------
+   iOS-style rounded-square gradient tile + one white glyph.
+   Each app picks its own gradient via --g-ai1 / --g-ai2. */
+.g-appicon {
+  --g-ai1: #6366f1;
+  --g-ai2: #8b5cf6;
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--g-ai1), var(--g-ai2));
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  flex: 0 0 auto;
+}
+.g-appicon .g-icon { width: 32px; height: 32px; color: #ffffff; }
+.g-appicon-sm { width: 44px; height: 44px; border-radius: 13px; }
+.g-appicon-sm .g-icon { width: 24px; height: 24px; }
+.g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
+.g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+/* ===== HabitTrack app styles (on top of the Glenerds Design System) ===== */
+.sub{color:var(--g-muted);margin:4px 0 12px;font-size:.92rem}
+.streak-note{display:flex;gap:10px;align-items:flex-start;background:var(--g-accent-soft);border:1px solid var(--g-border);border-radius:var(--g-radius-md);padding:12px 14px;font-size:.88rem;color:var(--g-text-soft);margin:12px 0 4px}
+.streak-note .g-icon{margin-top:1px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 4px}
+.stat{background:var(--g-surface);border:1px solid var(--g-border);border-radius:var(--g-radius-md);padding:12px 14px;box-shadow:var(--g-shadow-sm)}
+.stat .n{font-size:1.35rem;font-weight:800;letter-spacing:-0.01em;display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.stat .l{font-size:.78rem;color:var(--g-muted);margin-top:2px}
+.weekchart{background:var(--g-surface);border:1px solid var(--g-border);border-radius:var(--g-radius-md);padding:12px 14px;margin:10px 0 4px;box-shadow:var(--g-shadow-sm)}
+.weekchart .wct{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.weekchart .wct b{font-size:.92rem}
+.weekchart .wct span{font-size:.78rem;color:var(--g-muted)}
+.weekchart .wcb{display:flex;gap:8px}
+.weekchart .wcd{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.weekchart .wctrack{width:100%;max-width:46px;height:64px;border-radius:6px;background:var(--g-good-soft);display:flex;flex-direction:column-reverse;overflow:hidden}
+.weekchart .wcdone{background:var(--g-good)}
+.weekchart .wcpart{background:var(--g-good);opacity:.35}
+.weekchart .wcl{font-size:.68rem;color:var(--g-muted);font-variant-numeric:tabular-nums;text-align:center;line-height:1.3}
+.weekchart .wcl.today{color:var(--g-text);font-weight:800}
+.habit-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.icon{font-size:1.35rem;line-height:1}
+.habit-name{font-weight:700;font-size:1.08rem;flex:1;min-width:120px;letter-spacing:-0.01em}
+.rate{color:var(--g-muted);font-size:.84rem;margin-top:6px}
+.daybtns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.daybtns button{flex:1;min-width:96px;padding:12px 8px;background:var(--g-surface);border:1px solid var(--g-border-strong);color:var(--g-text);border-radius:10px;font-size:.92rem;font-weight:650;cursor:pointer;font-family:var(--g-font);transition:border-color var(--g-ease),box-shadow var(--g-ease),background var(--g-ease),transform var(--g-ease)}
+.daybtns button:hover:not(:disabled){border-color:var(--g-accent)}
+.daybtns button:active:not(:disabled){transform:scale(.98)}
+.daybtns button:disabled{opacity:.45;cursor:default}
+.daybtns button.done-on{background:var(--g-good);border-color:var(--g-good);color:#fff}
+[data-theme="dark"] .daybtns button.done-on{color:#06281c}
+.daybtns button.partial-on{border-color:var(--g-warn);box-shadow:inset 0 0 0 2px var(--g-warn)}
+.daybtns button.skip-on{border-style:dashed;opacity:.75}
+.habit-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.detail{margin-top:14px;border-top:1px solid var(--g-border);padding-top:14px}
+.hmap{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,15px);gap:3px;overflow-x:auto;padding:8px 2px}
+.cell{width:15px;height:15px;border-radius:4px;background:var(--g-surface-2);border:1px solid var(--g-border);cursor:pointer}
+.cell.missed{background:var(--g-surface-2)}
+.cell.partial{opacity:.6}
+.cell.skip{background:transparent;border:1px dashed var(--g-muted)}
+.cell:hover{outline:2px solid var(--g-accent)}
+.cell:focus-visible{outline:2px solid var(--g-accent); outline-offset:1px}
+/* Week-chart day columns are interactive: click/Enter/Space spotlights the day */
+.weekchart .wcd{cursor:pointer; border-radius:8px; padding:2px}
+.weekchart .wcd:hover .wctrack{outline:2px solid var(--g-accent)}
+.weekchart .wcd:focus-visible{outline:2px solid var(--g-accent); outline-offset:2px}
+.weekchart .wcd.sel .wctrack{outline:2px solid var(--g-accent)}
+.wc-detail{margin-top:10px; font-size:.85rem; color:var(--g-muted)}
+.wc-detail strong{color:var(--g-text)}
+/* ---------- 21. INSIGHTS: progress rings + stacked columns (2026-09-21) ---------- */
+#statsStrip .stat{cursor:pointer}
+#statsStrip .stat:hover{border-color:var(--g-accent)}
+#statsStrip .stat:focus{outline:none;filter:drop-shadow(0 0 3px var(--g-accent))}
+#statsStrip .stat.sel{border-color:var(--g-accent)}
+.insights-rings{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.ring{cursor:pointer;border:0;border-radius:12px;padding:8px 10px;background:transparent;font-family:var(--g-font);color:var(--g-text);display:flex;flex-direction:column;align-items:center;gap:4px}
+.ring:hover{background:var(--g-surface-2)}
+.ring:focus{outline:none;filter:drop-shadow(0 0 4px var(--g-accent))}
+.ring.sel{filter:drop-shadow(0 0 4px var(--g-accent));background:var(--g-surface-2)}
+.ring svg{display:block}
+.ring .rname{font-size:.72rem;color:var(--g-muted);max-width:88px;text-align:center;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ring-detail{margin-top:6px;font-size:.85rem;color:var(--g-muted);min-height:1.4em}
+.ring-detail strong{color:var(--g-text)}
+.wcols{display:flex;gap:8px;margin-top:10px}
+.wcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;border-radius:8px;padding:3px}
+.wcol-track{width:100%;max-width:52px;height:88px;border-radius:6px;background:var(--g-surface-2);border:1px solid var(--g-border);display:flex;flex-direction:column-reverse;overflow:hidden}
+.wcol-track div{width:100%}
+.wcol-lbl{font-size:.68rem;color:var(--g-muted);text-align:center;line-height:1.3}
+.wcol-lbl.today{color:var(--g-text);font-weight:800}
+.wcol[role="button"]{cursor:pointer}
+.wcol[role="button"]:hover .wcol-track{outline:2px solid var(--g-accent)}
+.wcol[role="button"]:focus{outline:none;filter:drop-shadow(0 0 4px var(--g-accent))}
+.wcol.sel .wcol-track{outline:2px solid var(--g-accent)}
+.wcol-detail{margin-top:8px;font-size:.85rem;color:var(--g-muted)}
+.wcol-detail strong{color:var(--g-text)}
+.insight-sub{font-size:.8rem;color:var(--g-muted);margin:2px 0 0}
+.legend{display:flex;gap:6px;align-items:center;font-size:.75rem;color:var(--g-muted);margin-top:8px;flex-wrap:wrap}
+.modal-back{position:fixed;inset:0;background:rgba(2,6,12,.5);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal{background:var(--g-surface);border:1px solid var(--g-border);border-radius:var(--g-radius-lg);padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--g-shadow-lg)}
+.modal h2{margin:0 0 12px;font-size:1.2rem;font-weight:800;letter-spacing:-0.01em}
+.chk-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chk-row label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--g-input-border);border-radius:var(--g-radius-pill);padding:8px 14px;font-size:.88rem;cursor:pointer;background:var(--g-input-bg);color:var(--g-text-soft);font-weight:600;transition:border-color var(--g-ease),color var(--g-ease),background var(--g-ease)}
+.chk-row label:has(input:checked){border-color:var(--g-accent);color:var(--g-accent);background:var(--g-accent-soft)}
+.swatches{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.swatch{width:34px;height:34px;border-radius:50%;cursor:pointer;border:2px solid transparent;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);transition:transform var(--g-ease),box-shadow var(--g-ease)}
+.swatch:hover{transform:scale(1.1)}
+.swatch.sel{box-shadow:0 0 0 2px var(--g-surface),0 0 0 4px var(--g-text)}
+.icons{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.icons button{font-size:1.25rem;padding:8px 12px;background:var(--g-surface);border:1px solid var(--g-border);border-radius:10px;cursor:pointer;line-height:1;transition:border-color var(--g-ease),background var(--g-ease)}
+.icons button:hover{border-color:var(--g-accent)}
+.icons button.sel{border-color:var(--g-accent);box-shadow:inset 0 0 0 2px var(--g-accent);background:var(--g-accent-soft)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:11px 20px;border-radius:var(--g-radius-pill);font-size:.9rem;font-weight:600;z-index:99;display:none;box-shadow:var(--g-shadow-lg);white-space:nowrap}
+[data-theme="dark"] .toast{background:#f1f5f9;color:#0b0e14}
+.note-line{font-size:.82rem;color:var(--g-muted);margin-top:8px;font-style:italic}
+.hidden{display:none!important}
+.io-block{margin:10px 0}
+#impMsg p{margin:8px 0 0}
+@media (max-width:560px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .modal{padding:20px 18px}
 }
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: #fff;
+  color: var(--g-accent-ink, #ffffff);
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -188,8 +662,7 @@ footer>div{margin-bottom:6px}
   box-shadow: 0 1px 2px rgba(0,0,0,.12);
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
-[data-theme="dark"] .g-store-btn, [data-theme="dark"] .g-store-btn:hover { color: #fff; }
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .g-cta-strip {
@@ -206,692 +679,1450 @@ footer>div{margin-bottom:6px}
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; vertical-align: -0.08em; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
 [data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
-  .hero-inner { flex-wrap: wrap; }
 }
 @media print {
   .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
 }
 </style>
+<script>
+/* Pre-paint theme init: same storage key the app has always used (habittrack.theme).
+   Runs before first paint so there is no light/dark flash. */
+(function(){var t=null;try{t=localStorage.getItem('habittrack.theme')}catch(e){}
+if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+document.documentElement.setAttribute('data-theme',t);})();
+</script>
 </head>
-<body>
-<header class="hero">
-  <div class="hero-inner">
-    <div class="logo-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9h12M6 13h12M6 17h7"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg></div>
-    <div>
-      <h1>Free Rent Receipt Generator</h1>
-      <p class="tagline">Create and print professional rent receipts. Works offline &mdash; your data never leaves this device.</p>
+<body class="g-app">
+<!-- ==========================================================================
+     GLENERDS ICON SET v1.0 — inline SVG <symbol> sprite
+     --------------------------------------------------------------------------
+     Inline this whole file right after <body> in each app (or paste the
+     <svg> block). Zero external requests. See INTEGRATION.md for usage.
+
+     - 24x24 grid, stroke-based line icons, stroke-width 2, round caps/joins.
+     - Clean variant inherits text color (currentColor).
+     - Flash variant: add class "g-icon-flash" to the <svg> wrapper and the
+       stroke renders in the brand indigo gradient instead.
+     - All geometry inherits from the symbol; do not set stroke/fill on <use>.
+     ========================================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-grad-indigo" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#818cf8"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="g-grad-sunset" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="g-grad-ocean" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="g-grad-royal" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#c084fc"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- calculator -->
+  <symbol id="g-i-calc" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6.5" y="3" width="11" height="18" rx="2"/>
+    <path d="M9.5 7.5h5"/>
+    <path d="M9.5 12h.02M12 12h.02M14.5 12h.02M9.5 15.5h.02M12 15.5h.02M14.5 15.5h.02"/>
+  </symbol>
+
+  <!-- chart / graph (bars) -->
+  <symbol id="g-i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20h16"/>
+    <path d="M7.5 20v-6.5M12 20V6.5M16.5 20v-9.5"/>
+  </symbol>
+
+  <!-- calendar -->
+  <symbol id="g-i-cal" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>
+    <path d="M8 3v3.5M16 3v3.5M3.5 10h17"/>
+  </symbol>
+
+  <!-- checkmark -->
+  <symbol id="g-i-check" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.8 12.6l4.7 4.7L19.2 7.2"/>
+  </symbol>
+
+  <!-- streak flame -->
+  <symbol id="g-i-flame" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.2c.9 2.8-.5 4.3-1.7 5.6C8.7 10.5 7 12.4 7 15.2a5 5 0 0010 0c0-2-1-3.5-2-4.9-.4 1.1-1.1 1.9-2.1 2.3.4-3-.4-6.7-.9-9.4z"/>
+  </symbol>
+
+  <!-- star -->
+  <symbol id="g-i-star" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/>
+  </symbol>
+
+  <!-- moon -->
+  <symbol id="g-i-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.2 14.8A8.3 8.3 0 019.2 3.8a8.3 8.3 0 1011 11z"/>
+  </symbol>
+
+  <!-- sun -->
+  <symbol id="g-i-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4.2"/>
+    <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/>
+  </symbol>
+
+  <!-- plus -->
+  <symbol id="g-i-plus" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5.5v13M5.5 12h13"/>
+  </symbol>
+
+  <!-- trash -->
+  <symbol id="g-i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 6.8h15"/>
+    <path d="M9.5 6.2V4.8a1.3 1.3 0 011.3-1.3h2.4a1.3 1.3 0 011.3 1.3v1.4"/>
+    <path d="M6.8 6.8l.9 12.4a1.6 1.6 0 001.6 1.5h5.4a1.6 1.6 0 001.6-1.5l.9-12.4"/>
+    <path d="M10 10.8v5.5M14 10.8v5.5"/>
+  </symbol>
+
+  <!-- download -->
+  <symbol id="g-i-download" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4v10.5"/>
+    <path d="M7.6 11L12 15.4 16.4 11"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- upload -->
+  <symbol id="g-i-upload" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 15.5V5"/>
+    <path d="M7.6 9.4L12 5l4.4 4.4"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- settings gear -->
+  <symbol id="g-i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3.4"/>
+    <path d="M12 5v2.2M12 16.8V19M5 12h2.2M16.8 12H19M7.1 7.1l1.5 1.5M15.4 15.4l1.5 1.5M16.9 7.1l-1.5 1.5M8.6 15.4l-1.5 1.5"/>
+  </symbol>
+
+  <!-- heart -->
+  <symbol id="g-i-heart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20.5c-5-3.4-8.5-6.8-8.5-10.6C3.5 7.1 5.7 5 8.4 5c1.5 0 2.8.8 3.6 2 .8-1.2 2.1-2 3.6-2 2.7 0 4.9 2.1 4.9 4.9 0 3.8-3.5 7.2-8.5 10.6z"/>
+  </symbol>
+
+  <!-- clock -->
+  <symbol id="g-i-clock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 7.3V12l3.2 2"/>
+  </symbol>
+
+  <!-- target -->
+  <symbol id="g-i-target" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <circle cx="12" cy="12" r="4.8"/>
+    <circle cx="12" cy="12" r="1.4"/>
+  </symbol>
+
+  <!-- trophy -->
+  <symbol id="g-i-trophy" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 4h9v4.5a4.5 4.5 0 01-9 0V4z"/>
+    <path d="M7.5 5.5H4.5a3.5 3.5 0 003.8 3.8M16.5 5.5h3a3.5 3.5 0 01-3.8 3.8"/>
+    <path d="M12 13v4M8.5 20.5h7"/>
+  </symbol>
+
+  <!-- tag -->
+  <symbol id="g-i-tag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.6 13.4L11 3.8a2 2 0 00-1.4-.6H5a1.8 1.8 0 00-1.8 1.8v4.6c0 .5.2 1 .6 1.4l9.6 9.6a1.9 1.9 0 002.7 0l4.5-4.5a1.9 1.9 0 000-2.7z"/>
+    <circle cx="8" cy="8" r="1.4"/>
+  </symbol>
+
+  <!-- search -->
+  <symbol id="g-i-search" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="6.5"/>
+    <path d="M15.8 15.8l4.7 4.7"/>
+  </symbol>
+
+  <!-- edit pencil -->
+  <symbol id="g-i-edit" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20l1.2-4.2L16.7 4.3a2 2 0 012.9 2.9L8.1 18.7 4 20z"/>
+    <path d="M14.8 6.2l2.9 2.9"/>
+  </symbol>
+
+  <!-- share -->
+  <symbol id="g-i-share" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6.5" cy="12" r="2.5"/>
+    <circle cx="17" cy="5.8" r="2.5"/>
+    <circle cx="17" cy="18.2" r="2.5"/>
+    <path d="M8.7 10.9l6.1-3.5M8.7 13.1l6.1 3.5"/>
+  </symbol>
+
+  <!-- lock -->
+  <symbol id="g-i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/>
+    <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/>
+    <path d="M12 14.5v2"/>
+  </symbol>
+
+  <!-- sparkles -->
+  <symbol id="g-i-sparkles" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8-4.8-1.7 4.8-1.7L12 3.5z"/>
+    <path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/>
+  </symbol>
+
+  <!-- home -->
+  <symbol id="g-i-home" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11.2L12 4l8 7.2"/>
+    <path d="M6.2 9.8V20h11.6V9.8"/>
+    <path d="M10 20v-4.8h4V20"/>
+  </symbol>
+
+  <!-- back arrow -->
+  <symbol id="g-i-back" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.8 5.5L8.3 12l6.5 6.5"/>
+  </symbol>
+
+  <!-- close X -->
+  <symbol id="g-i-x" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 6l12 12M18 6L6 18"/>
+  </symbol>
+
+  <!-- info -->
+  <symbol id="g-i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 11v5"/>
+    <path d="M12 7.6v.2"/>
+  </symbol>
+
+  <!-- wallet -->
+  <symbol id="g-i-wallet" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="6.5" width="18" height="13" rx="3"/>
+    <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
+    <circle cx="17.5" cy="14.8" r="1.1"/>
+  </symbol>
+
+  <!-- list -->
+  <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
+    <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
+  </symbol>
+
+  <!-- bell -->
+  <symbol id="g-i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.2 16v-4.8a5.8 5.8 0 0111.6 0V16l1.7 2.8H4.5L6.2 16z"/>
+    <path d="M10 20.5a2.2 2.2 0 004 0"/>
+  </symbol>
+</svg>
+<div class="g-wrap">
+  <header class="g-header">
+    <div class="g-brand">
+      <span class="g-appicon g-appicon-sm" style="--g-ai1:#fb7185;--g-ai2:#f59e0b" aria-hidden="true">
+        <svg class="g-icon" aria-hidden="true"><use href="#g-i-flame"/></svg>
+      </span>
+      <h1 class="g-brand-name">HabitTrack</h1>
     </div>
-    <div class="g-header-actions no-print">
-      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button class="g-round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
-      <button class="g-round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
-    </div>
+    <div class="g-header-actions">
+  <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+<button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+<button type="button" id="themeBtn" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+<button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
+</div>
+  </header>
+  <h2 class="g-tagline">Free daily habit tracker with streaks. Works fully offline — your habits never leave your device.</h2>
+
+  <div class="g-btn-row" style="margin-top:0">
+    <button class="g-btn g-btn-primary" id="newHabitBtn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-plus"/></svg>New habit</button>
+    <button class="g-btn g-btn-secondary" id="exportBtn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg>Export</button>
+    <button class="g-btn g-btn-secondary" id="importBtn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-upload"/></svg>Import</button>
   </div>
-</header>
 
-<main>
-  <div class="layout">
-    <!-- FORM -->
-    <section class="card no-print" aria-label="Receipt details">
-      <div class="card-head">
-        <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
-        <h2>Receipt details</h2>
-      </div>
-      <form id="receiptForm" novalidate>
-        <div class="grid2">
-          <div class="field" data-f="landlord">
-            <label for="landlord">Landlord name *</label>
-            <input type="text" id="landlord" maxlength="80" autocomplete="off">
-            <div class="err"></div>
-          </div>
-          <div class="field" data-f="tenant">
-            <label for="tenant">Tenant name *</label>
-            <input type="text" id="tenant" maxlength="80" autocomplete="off">
-            <div class="err"></div>
-          </div>
-        </div>
-        <div class="grid2">
-          <div class="field" data-f="amount">
-            <label for="amount">Amount (USD) *</label>
-            <input type="number" id="amount" min="0" step="0.01" inputmode="decimal">
-            <div class="err"></div>
-          </div>
-          <div class="field" data-f="datePaid">
-            <label for="datePaid">Date paid *</label>
-            <input type="date" id="datePaid">
-            <div class="err"></div>
-          </div>
-        </div>
-        <div class="grid2">
-          <div class="field" data-f="method">
-            <label for="method">Payment method *</label>
-            <select id="method">
-              <option value="Cash">Cash</option>
-              <option value="Check">Check</option>
-              <option value="Bank transfer">Bank transfer</option>
-              <option value="Money order">Money order</option>
-              <option value="Other">Other</option>
-            </select>
-            <div class="err"></div>
-          </div>
-          <div class="field" data-f="receiptNo">
-            <label for="receiptNo">Receipt #</label>
-            <input type="text" id="receiptNo" maxlength="20" autocomplete="off">
-            <div class="err"></div>
-          </div>
-        </div>
-        <div class="field" data-f="period">
-          <label for="period">Period covered <span style="font-weight:400;text-transform:none">(e.g. June 2026)</span></label>
-          <input type="text" id="period" maxlength="60" autocomplete="off">
-          <div class="err"></div>
-        </div>
-        <div class="field" data-f="address">
-          <label for="address">Property address</label>
-          <textarea id="address" rows="2" maxlength="200"></textarea>
-          <div class="err"></div>
-        </div>
-        <div class="field" data-f="memo">
-          <label for="memo">Memo / notes</label>
-          <textarea id="memo" rows="2" maxlength="200"></textarea>
-          <div class="err"></div>
-        </div>
-        <div>
-          <button type="button" class="btn btn-primary" id="saveBtn"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Save receipt</span></button>
-          <button type="button" class="btn btn-secondary" id="printBtn"><svg viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span>Print receipt</span></button>
-          <button type="button" class="btn btn-secondary" id="clearFormBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 14h10l1-14"/></svg><span>New</span></button>
-        </div>
-        <div class="err" id="formErr" role="alert"></div>
-        <p style="font-size:.8rem;color:var(--muted);margin:10px 0 0">Saving a receipt stores it in this browser&rsquo;s history below. Your draft is auto-saved as you type.</p>
-      </form>
-    </section>
+  <div class="stats" id="statsStrip" aria-live="polite"></div>
+  <div class="weekchart" id="weekChart" aria-label="Activity over the last 7 days"></div>
 
-    <!-- PREVIEW -->
-    <section class="card" id="previewCard" aria-label="Receipt preview">
-      <div class="card-head no-print">
-        <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M1 4h14M1 8h14M1 12h9"/></svg></div>
-        <h2>Live preview</h2>
+  <div class="g-card" id="insightsCard">
+    <p class="g-title">Insights</p>
+    <p class="insight-sub">Completion rings per habit and check-in mix by week — tap either for details.</p>
+    <div class="insights-rings" id="ringRow" aria-label="Per-habit completion rings"></div>
+    <div class="ring-detail" id="ringDetail" aria-live="polite"></div>
+    <hr class="g-divider">
+    <p class="g-title" style="font-size:1.02rem">Check-in mix — trailing 6 weeks</p>
+    <div class="wcols" id="weekCols" aria-label="Stacked weekly check-in columns"></div>
+    <div class="wcol-detail" id="weekDetail" aria-live="polite"></div>
+  </div>
+  <p class="streak-note"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-flame"/></svg><span><b>How streaks work:</b> done or partial days extend your streak · rest days pause it without breaking · a missed day resets it.</span></p>
+
+  <div id="habitList"></div>
+
+  <div class="g-card hidden" id="ioCard">
+    <p class="g-title" style="display:flex;align-items:center;gap:8px"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg>Backup &amp; restore</p>
+    <div class="io-block">
+      <div class="g-btn-row" style="margin:0">
+        <button class="g-btn g-btn-sm g-btn-secondary" id="expJson"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg>Download JSON</button>
+        <button class="g-btn g-btn-sm g-btn-secondary" id="expCsv"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg>Download CSV</button>
       </div>
-      <div id="printArea">
-        <div class="receipt-paper" id="receiptPaper" aria-label="Receipt preview">
-          <div class="receipt-head">
-            <h2>Rent Receipt</h2>
-            <div class="receipt-num">RECEIPT #<br><strong id="pvNum">—</strong></div>
-          </div>
-          <div class="receipt-rows">
-            <div class="receipt-row"><span class="k">Received from</span><span class="v" id="pvTenant">—</span></div>
-            <div class="receipt-row"><span class="k">Landlord / payee</span><span class="v" id="pvLandlord">—</span></div>
-            <div class="receipt-row"><span class="k">Property address</span><span class="v" id="pvAddress">—</span></div>
-            <div class="receipt-row"><span class="k">Period covered</span><span class="v" id="pvPeriod">—</span></div>
-            <div class="receipt-row"><span class="k">Date paid</span><span class="v" id="pvDate">—</span></div>
-            <div class="receipt-row"><span class="k">Payment method</span><span class="v" id="pvMethod">—</span></div>
-            <div class="receipt-row"><span class="k">Memo</span><span class="v" id="pvMemo">—</span></div>
-          </div>
-          <div class="receipt-amount">
-            <span class="lbl">Amount received</span>
-            <span class="val" id="pvAmount">—</span>
-          </div>
-          <div class="receipt-sig">
-            <div class="sig-line">Landlord signature / date</div>
-            <div class="sig-line">Tenant signature / date</div>
-          </div>
-          <div class="receipt-foot">This receipt was generated with the free RentReceipt generator &mdash; no account, no sign-up, no data sent anywhere.</div>
-        </div>
-      </div>
-      <p class="no-print" style="font-size:.82rem;color:var(--muted);margin:12px 0 0">The preview updates as you type. Printing outputs only the receipt, fitted to one page.</p>
-    </section>
+    </div>
+    <div class="io-block">
+      <label class="g-label" for="impFile">Import a previous backup (JSON or CSV)</label>
+      <input type="file" class="g-input" id="impFile" accept=".json,.csv,application/json,text/csv">
+    </div>
+    <p class="g-hint">JSON import replaces everything after confirmation. CSV import matches rows to habits by name and merges daily entries.</p>
+    <div id="impMsg"></div>
   </div>
 
-  <!-- RECEIPT INSIGHTS -->
-  <section class="card no-print" id="insightsCard" aria-label="Receipt insights">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg></div>
-      <h2>Receipt insights</h2>
-    </div>
-    <div id="insightsBody"></div>
-  </section>
-
-  <!-- HISTORY -->
-  <section class="card no-print" aria-label="Receipt history">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/></svg></div>
-      <h2>Receipt history</h2>
-    </div>
-    <div id="historyList"></div>
-  </section>
-
-  <!-- CROSS-PROMO -->
-  <section class="card promo no-print" aria-label="Related tool">
-    <p>Disputing deposit deductions? Check out <a href="https://glenerds.gumroad.com/l/depositcheck">DepositCheck</a> &mdash; $9 one-time, offline.</p>
-  </section>
-</main>
-
-<a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+  <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
   <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
-<footer>
-  <div>RentReceipt &mdash; Free Rent Receipt Generator. Your data never leaves this device.</div>
-  <div>by <a href="https://glenerds.gumroad.com">Glenerds</a></div>
-  <div class="disclaimer">For record-keeping only &mdash; not legal or tax advice. Verify payment details with both parties before relying on a receipt.</div>
-</footer>
+
+<footer class="g-footer">
+    Made for people who like streaks. <a href="https://glenerds.gumroad.com">by Glenerds</a>
+  </footer>
+</div>
+
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-(function(){
 "use strict";
-var K={theme:"rentreceipt-theme",hist:"rentreceipt-history",draft:"rentreceipt-draft",next:"rentreceipt-next-num"};
-var $=function(id){return document.getElementById(id);};
-var F=["landlord","tenant","amount","datePaid","method","receiptNo","period","address","memo"];
+/* ============ storage ============ */
+const LS_KEY = "habittrack.v1";
+const THEME_KEY = "habittrack.theme";
+let state = { habits: [], log: {} };
 
-/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
-var sampleOn=false, sampleSnap=null, sampleHist=null;
-function rawGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
-function rawSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
-function fillSample(){
-  setForm({landlord:"Maple Street Properties",tenant:"Alex Johnson",amount:"1450.00",
-    datePaid:"2026-09-15",method:"Check",receiptNo:"RR-0042",period:"September 2026",
-    address:"123 Maple St, Bloomington, IN 47401",memo:"Rent for September 2026"});
-  sampleHist=[
-    {id:"s1",receiptNo:"RR-0041",tenant:"Alex Johnson",amount:1450,datePaid:"2026-08-15",
-     landlord:"Maple Street Properties",method:"Check",period:"August 2026",
-     address:"123 Maple St, Bloomington, IN 47401",memo:"Rent for August 2026"},
-    {id:"s2",receiptNo:"RR-0040",tenant:"Alex Johnson",amount:1450,datePaid:"2026-07-15",
-     landlord:"Maple Street Properties",method:"Cash",period:"July 2026",
-     address:"123 Maple St, Bloomington, IN 47401",memo:""},
-    {id:"s3",receiptNo:"RR-0039",tenant:"Alex Johnson",amount:1450,datePaid:"2026-06-15",
-     landlord:"Maple Street Properties",method:"Bank transfer",period:"June 2026",
-     address:"123 Maple St, Bloomington, IN 47401",memo:""}
-  ];
-  renderHistory();
-  updatePreview();
-}
-/* snapshot every scrap of transient UI: form values, validation styling + messages, draft, counters */
-function snapValidation(){
-  var o={};
-  F.forEach(function(f){
-    var box=document.querySelector('.field[data-f="'+f+'"]');
-    o[f]={inv:box?box.classList.contains("invalid"):false,
-          err:box&&box.querySelector(".err")?box.querySelector(".err").textContent:""};
+function sanitizeLog(log, habitIds){
+  const out = {};
+  if(!log || typeof log !== "object") return out;
+  Object.keys(log).forEach(hid => {
+    if(!Object.prototype.hasOwnProperty.call(habitIds, hid)) return; // drop orphaned log entries (+ __proto__/constructor keys)
+    const entries = log[hid];
+    if(!entries || typeof entries !== "object" || Array.isArray(entries)) return;
+    const clean = {};
+    Object.keys(entries).forEach(k => {
+      if(!isValidDateKey(k)) return;
+      const e = entries[k];
+      if(!e || typeof e !== "object" || Array.isArray(e)) return;
+      const s = e.status;
+      if(s != null && ["done","partial","skip"].indexOf(s) === -1) return;
+      clean[k] = { status: s == null ? null : s, note: String(e.note || "").slice(0, 500) };
+    });
+    out[hid] = clean;
   });
-  o.formErr=$("formErr").textContent;
-  return o;
+  return out;
 }
-function restoreValidation(o){
-  if(!o)return;
-  F.forEach(function(f){
-    var box=document.querySelector('.field[data-f="'+f+'"]');
-    if(!box)return;
-    box.classList.toggle("invalid",!!(o[f]&&o[f].inv));
-    var slot=box.querySelector(".err");
-    if(slot)slot.textContent=(o[f]&&o[f].err)||"";
-  });
-  $("formErr").textContent=o.formErr||"";
+function loadState(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(!d || typeof d !== "object" || !Array.isArray(d.habits) || !d.log || typeof d.log !== "object") throw new Error("bad shape");
+    const habits = [];
+    d.habits.forEach(h => { const s = sanitizeHabit(h); if(s) habits.push(s); }); // repair/drop bad habits, never crash
+    const ids = {};
+    habits.forEach(h => { ids[h.id] = true; });
+    state = { habits: habits, log: sanitizeLog(d.log, ids) };
+  }catch(e){
+    state = { habits: [], log: {} }; // corrupt storage -> safe defaults, no crash
+    try{ toast("Saved data was corrupted and couldn't be read — starting fresh."); }catch(_){}
+  }
 }
-function setSample(on){
-  if(on&&!sampleOn){
-    sampleSnap={form:formData(),val:snapValidation(),hist:rawGet(K.hist),draft:rawGet(K.draft),next:rawGet(K.next)};
-    sampleOn=true; window.__gSampleOn=true;
-    fillSample();
-  }else if(!on&&sampleOn){
-    sampleOn=false; window.__gSampleOn=false;
-    var snap=sampleSnap; sampleSnap=null; sampleHist=null;
-    if(snap){
-      rawSet(K.hist,snap.hist); rawSet(K.draft,snap.draft); rawSet(K.next,snap.next);
-      setForm(snap.form); restoreValidation(snap.val); renderHistory();
+let saveWarned = false; // warn once per session if persistence fails, so data loss is never silent
+function saveState(){
+  if(window.__gSampleOn) return; /* sample mode: real data is snapshotted — never persist demo data */
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){ /* storage full/blocked: keep running in-memory */
+    if(!saveWarned){ saveWarned = true; try{ toast("Couldn't save — browser storage is full or blocked. Changes only last for this session."); }catch(_){} }
+  }
+}
+
+/* ============ date utils (timezone-safe: local calendar dates only, never UTC) ============ */
+function localKey(d){
+  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,"0"), day = String(d.getDate()).padStart(2,"0");
+  return y + "-" + m + "-" + day;
+}
+function parseKey(k){
+  const p = k.split("-");
+  return new Date(Number(p[0]), Number(p[1])-1, Number(p[2]));
+}
+function isValidDateKey(s){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const y = Number(s.slice(0,4)), m = Number(s.slice(5,7)), d = Number(s.slice(8,10));
+  if(m < 1 || m > 12 || d < 1 || d > 31) return false;
+  const dt = new Date(y, m-1, d);
+  return dt.getFullYear() === y && dt.getMonth() === m-1 && dt.getDate() === d;
+}
+function addDays(d, n){
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate()+n);
+}
+function todayKey(){ return localKey(new Date()); }
+function fmtDay(k){
+  const d = parseKey(k);
+  return d.toLocaleDateString(undefined, {weekday:"short", month:"short", day:"numeric"});
+}
+
+/* ============ habit model ============ */
+const COLORS = ["#0b6e4f","#1a73e8","#9334e6","#d93025","#e8710a","#f9ab00","#0097a7","#5c6bc0","#ec407a","#616161"];
+const ICONS = ["✅","🏃","📚","💧","🧘","💪","🎸","✍️","🌱","😴","🥗","🚭","💰","🧠","🎯","⭐"];
+/* Repair a habit from storage/import: fix trivially repairable fields, return null when unrecoverable. */
+function sanitizeHabit(h){
+  if(!h || typeof h !== "object" || Array.isArray(h)) return null;
+  /* id charset lock: ids are interpolated into HTML/data attributes and used as
+     object keys. Anything outside [A-Za-z0-9_-] is regenerated — this closes
+     stored-XSS via crafted import ids and __proto__/constructor key tricks. */
+  const id = (typeof h.id === "string" && /^[A-Za-z0-9_-]{1,64}$/.test(h.id) &&
+    ["__proto__","constructor","prototype"].indexOf(h.id) === -1) ? h.id : uid();
+  const name = String(h.name == null ? "" : h.name).trim();
+  if(!name) return null;
+  const type = h.type === "weekly" ? "weekly" : "daily";
+  let weekdays = Array.isArray(h.weekdays)
+    ? h.weekdays.filter(w => Number.isInteger(w) && w >= 0 && w <= 6)
+    : [];
+  if(type === "weekly" && weekdays.length === 0) weekdays = [1,2,3,4,5];
+  const color = (typeof h.color === "string" && (COLORS.indexOf(h.color) !== -1 || /^#[0-9a-fA-F]{6}$/.test(h.color))) ? h.color : COLORS[0];
+  const icon = (typeof h.icon === "string" && ICONS.indexOf(h.icon) !== -1) ? h.icon : ICONS[0];
+  const allowPartial = h.allowPartial === undefined ? true : !!h.allowPartial;
+  let created = (typeof h.created === "string" && isValidDateKey(h.created)) ? h.created : todayKey();
+  if(created > todayKey()) created = todayKey(); // created can never be in the future; clamp crafted imports
+  return { id: id, name: name, type: type, weekdays: weekdays, color: color, icon: icon, allowPartial: allowPartial, created: created };
+}
+const I_FLAME = '<svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-flame"/></svg>';
+const I_FLAME_FLASH = '<svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-flame"/></svg>';
+const I_CHART = '<svg class="g-icon" aria-hidden="true"><use href="#g-i-chart"/></svg>';
+const I_EDIT = '<svg class="g-icon" aria-hidden="true"><use href="#g-i-edit"/></svg>';
+const I_TRASH = '<svg class="g-icon" aria-hidden="true"><use href="#g-i-trash"/></svg>';
+
+function uid(){ return "h" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function isScheduled(h, d){
+  if(h.type === "daily") return true;
+  return Array.isArray(h.weekdays) && h.weekdays.indexOf(d.getDay()) !== -1;
+}
+function entry(hid, key){
+  const l = state.log[hid];
+  return l ? (l[key] || null) : null;
+}
+function entryStatus(hid, key){
+  const e = entry(hid, key);
+  return e && e.status ? e.status : null; // note-only entries count as unlogged
+}
+function setEntry(hid, key, status, note){
+  if(!state.log[hid]) state.log[hid] = {};
+  if(status == null && !note){
+    delete state.log[hid][key];
+  }else{
+    state.log[hid][key] = { status: status, note: note || "" };
+  }
+  saveState();
+}
+
+/* ============ streaks ============
+   Rules: done/partial extend the streak. A rest (skip) day pauses it — it neither
+   extends nor breaks the streak. A missed scheduled day resets it. Non-scheduled
+   days (weekly plans) are invisible to streak math. */
+function computeStreaks(h){
+  const end = new Date(); end.setHours(0,0,0,0);
+  const created = parseKey(h.created);
+  let cur = 0;
+  // current streak: walk back from today; if today is still open, start at yesterday
+  let d = new Date(end);
+  if(isScheduled(h, d) && !entryStatus(h.id, localKey(d))) d = addDays(d, -1);
+  while(d >= created){
+    if(!isScheduled(h, d)){ d = addDays(d, -1); continue; }
+    const s = entryStatus(h.id, localKey(d));
+    if(s === "done" || s === "partial"){ cur++; d = addDays(d, -1); }
+    else if(s === "skip"){ d = addDays(d, -1); } // pause, no break
+    else break;
+  }
+  // best streak: scan whole life
+  let best = 0, run = 0, d2 = new Date(created);
+  while(d2 <= end){
+    if(isScheduled(h, d2)){
+      const s = entryStatus(h.id, localKey(d2));
+      if(s === "done" || s === "partial"){ run++; if(run > best) best = run; }
+      else if(s === "skip"){ /* pause */ }
+      else run = 0;
     }
+    d2 = addDays(d2, 1);
   }
-  paintSample();
+  return { current: cur, best: best };
 }
 
-/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
-var Sound=(function(){
-  var KK="rentreceipt.sound",on=true,ctx=null;
-  try{if(window.localStorage.getItem(KK)==="off")on=false;}catch(e){}
-  function ac(){try{
-    if(!ctx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;ctx=new AC();}
-    return ctx;}catch(e){return null;}}
-  function tone(freq,dur,type,vol,delay){
-    var c=ac();if(!c)return;
-    function play(){try{
-      var t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
-      o.type=type||"sine";o.frequency.value=freq;
-      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-      o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.05);}catch(e){}}
-    if(c.state==="suspended"){c.resume().then(play,play);}else{play();}
+function completionRate(h){
+  const end = new Date(); end.setHours(0,0,0,0);
+  const created = parseKey(h.created);
+  let scheduled = 0, completed = 0, skipped = 0, d = new Date(created);
+  const tk = localKey(end);
+  while(d <= end){
+    if(isScheduled(h, d)){
+      const key = localKey(d);
+      /* same open-day rule as streaks: an unlogged today is not a miss yet */
+      if(key === tk && !entryStatus(h.id, key)){ d = addDays(d, 1); continue; }
+      scheduled++;
+      const s = entryStatus(h.id, key);
+      if(s === "done" || s === "partial") completed++;
+      else if(s === "skip") skipped++;
+    }
+    d = addDays(d, 1);
   }
-  return{
-    isOn:function(){return on;},
-    toggle:function(){on=!on;try{window.localStorage.setItem(KK,on?"on":"off");}catch(e){}return on;},
-    click:function(){if(on)tone(520,0.06,"sine",0.045);},
-    success:function(){if(on){tone(660,0.09,"sine",0.06);tone(990,0.12,"sine",0.05,0.08);}},
-    error:function(){if(on)tone(170,0.16,"sawtooth",0.045);},
-    toggleTheme:function(){if(on)tone(440,0.06,"triangle",0.05);}
+  const denom = scheduled - skipped;
+  return { pct: denom > 0 ? Math.round(completed / denom * 100) : 0, completed, scheduled: denom };
+}
+
+/* ============ theme ============ */
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  const btn = document.getElementById("themeBtn");
+  const label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
+  btn.innerHTML = (t === "dark") ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
+  btn.setAttribute("aria-label", label);
+  btn.title = label;
+  btn.setAttribute("aria-pressed", t === "dark" ? "true" : "false");
+  try{ localStorage.setItem(THEME_KEY, t); }catch(e){}
+}
+function initTheme(){
+  let t = null;
+  try{ t = localStorage.getItem(THEME_KEY); }catch(e){}
+  if(t !== "dark" && t !== "light"){
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  applyTheme(t);
+}
+/* ============ subtle sounds (Web Audio, no files, offline) ============ */
+const Sound = (() => {
+  const KEY = "habittrack.sound";
+  let on = true, ctx = null;
+  try{ if(localStorage.getItem(KEY) === "off") on = false; }catch(e){}
+  function ac(){
+    try{
+      if(!ctx){
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if(!AC) return null;
+        ctx = new AC();
+      }
+      if(ctx.state === "suspended") ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(freq, dur, type, vol, delay){
+    const c = ac(); if(!c) return;
+    try{
+      const t = c.currentTime + (delay || 0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type || "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.05);
+    }catch(e){}
+  }
+  return {
+    isOn: () => on,
+    toggle(){ on = !on; try{ localStorage.setItem(KEY, on ? "on" : "off"); }catch(e){} return on; },
+    click(){ if(on) tone(520, 0.06, "sine", 0.045); },
+    select(){ if(on){ tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
+    success(){ if(on){ tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
+    error(){ if(on) tone(170, 0.16, "sawtooth", 0.045); },
+    toggleTheme(){ if(on) tone(440, 0.06, "triangle", 0.05); }
   };
 })();
-/* ---------- theme (spec reference: emoji icon, white round button adapts via vars) ---------- */
-function paintTheme(){
-  var dark=document.documentElement.getAttribute("data-theme")==="dark";
-  var b=$("themeToggle"); if(!b)return;
-  b.innerHTML=(dark)?`<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>`:"🌙";
-  var l=dark?"Switch to light mode":"Switch to dark mode";
-  b.setAttribute("aria-pressed",dark?"true":"false");
-  b.setAttribute("aria-label",l); b.title=l;
-}
-function paintSoundBtn(btn){
-  /* spec reference: emoji icon, button stays white in all states */
-  var on=Sound.isOn();
-  btn.textContent=on?"🔊":"🔇";
-  btn.setAttribute("aria-pressed",on?"true":"false");
-  btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
-  btn.title="Toggle sounds ("+(on?"on":"off")+")";
-}
-function toggleSound(btn){Sound.toggle();paintSoundBtn(btn);Sound.click();}
-function paintSample(){
-  var b=$("sampleToggle"); if(!b)return;
-  var l=sampleOn?"Clear sample data":"Try sample data";
-  b.setAttribute("aria-pressed",sampleOn?"true":"false");
-  b.setAttribute("aria-label",l); b.title=l;
-  /* ON tint comes from .sample-toggle[aria-pressed="true"] CSS — white button per spec */
-}
-function paintHeader(){paintTheme();paintSample();paintSoundBtn($("soundToggle"));}
-
-function load(key,fallback){try{var v=localStorage.getItem(key);return v==null?fallback:JSON.parse(v);}catch(e){return fallback;}}
-function store(key,val){
-  /* sample data is transient — never persisted (theme writes stay allowed) */
-  if(window.__gSampleOn||sampleOn){if(key!==K.theme)return;}
-  try{localStorage.setItem(key,key===K.theme?val:JSON.stringify(val));}catch(e){}
-}
-
-function fmtMoney(n){return "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
-function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function fmtDate(iso){try{var d=new Date(iso+"T12:00:00");if(isNaN(d))return iso;
-  return d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});}catch(e){return iso;}}
-
-function formData(){
-  var o={};
-  F.forEach(function(f){o[f]=$(f).value.trim();});
-  return o;
-}
-function setForm(o){
-  F.forEach(function(f){$(f).value=o[f]||"";});
-  updatePreview();
-}
-
-function nextReceiptNo(){
-  var n=parseInt(load(K.next,1),10);
-  if(!isFinite(n)||n<1)n=1;
-  return "RR-"+String(n).padStart(4,"0");
-}
-function bumpNext(){
-  var n=parseInt(load(K.next,1),10);
-  if(!isFinite(n)||n<1)n=1;
-  store(K.next,n+1);
-}
-
-/* ---------- preview ---------- */
-function updatePreview(){
-  var d=formData();
-  var amt=parseFloat(d.amount);
-  $("pvNum").textContent=d.receiptNo||nextReceiptNo();
-  $("pvTenant").textContent=d.tenant||"—";
-  $("pvLandlord").textContent=d.landlord||"—";
-  $("pvAddress").textContent=d.address||"—";
-  $("pvPeriod").textContent=d.period||"—";
-  $("pvDate").textContent=d.datePaid?fmtDate(d.datePaid):"—";
-  $("pvMethod").textContent=d.method||"—";
-  $("pvMemo").textContent=d.memo||"—";
-  $("pvAmount").textContent=(isFinite(amt)&&amt>0)?fmtMoney(amt):"—";
-  saveDraft();
-}
-function saveDraft(){store(K.draft,formData());}
-
-/* ---------- validation ---------- */
-function validate(d){
-  var errs={};
-  if(!d.landlord)errs.landlord="Landlord name is required.";
-  if(!d.tenant)errs.tenant="Tenant name is required.";
-  var amt=parseFloat(d.amount);
-  if(d.amount===""||!isFinite(amt))errs.amount="Enter a valid amount.";
-  else if(amt<=0)errs.amount="Amount must be greater than zero.";
-  else if(amt>1000000)errs.amount="Amount looks unusually large — please check it.";
-  if(!d.datePaid)errs.datePaid="Date paid is required.";
-  else{
-    var t=new Date(d.datePaid+"T12:00:00");
-    if(isNaN(t))errs.datePaid="Enter a valid date.";
-    else{
-      var now=new Date();now.setHours(0,0,0,0);
-      var max=new Date(now);max.setFullYear(max.getFullYear()+1);
-      var min=new Date(2000,0,1);
-      if(t>max)errs.datePaid="Date paid can\u2019t be more than a year in the future.";
-      else if(t<min)errs.datePaid="Date paid must be after Jan 1, 2000.";
-    }
+function bindSoundToggle(){
+  const btn = document.getElementById("sound-toggle");
+  if(!btn) return;
+  function paint(){
+    const on = Sound.isOn();
+    btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
+    btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+    /* Sound button stays white (var(--g-surface)) in all states per the 2026-09-21 header reference. */
   }
-  if(!d.method)errs.method="Choose a payment method.";
-  return errs;
+  btn.addEventListener("click", () => { Sound.toggle(); paint(); Sound.click(); });
+  paint();
 }
-function showErrors(errs){
-  var any=false;
-  F.forEach(function(f){
-    var box=document.querySelector('.field[data-f="'+f+'"]');
-    if(!box)return;
-    var e=errs[f];
-    box.classList.toggle("invalid",!!e);
-    var slot=box.querySelector(".err");
-    if(slot)slot.textContent=e||"";
-    if(e)any=true;
-  });
-  $("formErr").textContent=any?"Fix the highlighted fields before saving.":"";
-  return !any;
+/* ============ helpers ============ */
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.style.display = "block";
+  clearTimeout(el._t); el._t = setTimeout(()=>{ el.style.display = "none"; }, 2200);
 }
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function closeModal(){ document.getElementById("modalRoot").innerHTML = ""; }
+function openModal(html){
+  const root = document.getElementById("modalRoot");
+  root.innerHTML = '<div class="modal-back" id="mback"><div class="modal" role="dialog" aria-modal="true">' + html + "</div></div>";
+  document.getElementById("mback").addEventListener("click", e => { if(e.target.id === "mback") closeModal(); });
+}
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
+/* Esc clears chart spotlights (click again / Esc restores default view) */
+document.addEventListener("keydown", e => {
+  if(e.key !== "Escape") return;
+  if(document.getElementById("modalRoot").firstChild) return; /* modal owns Esc */
+  let hit = false;
+  document.querySelectorAll("#weekChart .wcd.sel, #ringRow .ring.sel, #weekCols .wcol.sel").forEach(el => { el.click(); hit = true; });
+  document.querySelectorAll("#statsStrip .stat.sel").forEach(el => { el.classList.remove("sel"); hit = true; });
+  if(hit) Sound.click();
+});
 
-/* ---------- history ---------- */
-function getHistory(){
-  if(sampleOn&&sampleHist)return sampleHist.slice();
-  var h=load(K.hist,[]);return Array.isArray(h)?h:[];
+/* ============ rendering ============ */
+function renderStats(){
+  const el = document.getElementById("statsStrip");
+  const tk = todayKey();
+  let checkins = 0, longest = 0;
+  state.habits.forEach(h => {
+    const st = computeStreaks(h);
+    if(st.best > longest) longest = st.best;
+    const s = entryStatus(h.id, tk);
+    if(s === "done" || s === "partial") checkins++;
+  });
+  const dueToday = state.habits.filter(h => isScheduled(h, new Date())).length;
+  el.innerHTML =
+    statHtml(checkins, "done today", "done", checkins + " of " + dueToday + " due logged today. Activate to jump to the next open habit.") +
+    statHtml(state.habits.length, "habits", "habits", state.habits.length + " habits tracked. Activate to jump to the list.") +
+    statHtml(I_FLAME_FLASH + longest, "longest streak", "streak", "Longest best streak is " + longest + ". Activate to open that habit's details.") +
+    statHtml(dueToday, "due today", "due", dueToday + " habits due today. Activate to jump to the first open one.");
 }
-function setHistory(h){store(K.hist,h);}
+function statHtml(n, l, kind, aria){ return '<div class="stat" data-stat="' + kind + '" tabindex="0" role="button" aria-pressed="false" aria-label="' + esc(aria) + '"><div class="n">' + n + '</div><div class="l">' + esc(l) + "</div></div>"; }
 
-/* ---------- receipt insights: monthly bars + payment-method donut ---------- */
-var CH_COLORS=["var(--ch1)","var(--ch2)","var(--ch3)","var(--ch4)","var(--ch5)"];
-function monthLabel(ym){var p=ym.split("-"),d=new Date(+p[0],+p[1]-1,1);
-  return d.toLocaleDateString("en-US",{month:"short",year:"numeric"});}
-function monthlyAgg(){
-  var map={},h=getHistory();
-  h.forEach(function(r){
-    var k=(r.datePaid||"").slice(0,7);
-    if(!/^\d{4}-\d{2}$/.test(k))return;
-    if(!map[k])map[k]={total:0,count:0};
-    map[k].total+=isFinite(r.amount)?r.amount:0; map[k].count++;
-  });
-  return Object.keys(map).sort().map(function(k){
-    return{key:k,label:monthLabel(k),total:map[k].total,count:map[k].count};
-  });
-}
-function methodAgg(){
-  var map={},h=getHistory();
-  h.forEach(function(r){
-    var m=r.method||"Other";
-    if(!map[m])map[m]={total:0,count:0};
-    map[m].total+=isFinite(r.amount)?r.amount:0; map[m].count++;
-  });
-  return Object.keys(map).map(function(k){return{method:k,total:map[k].total,count:map[k].count};});
-}
-/* gallery-style donut: dashed-circle segments, center readout */
-function donutSVG(uidp,segs,total,topText,subText){
-  var C=345.6,acc=0,i;
-  var g="";
-  for(i=0;i<segs.length;i++){
-    var frac=total>0?segs[i].value/total:0;
-    var len=segs.length>1?Math.max(frac*C-1.4,0.6):C;
-    g+='<g class="seg" tabindex="0" role="button" data-i="'+i+'" aria-pressed="false" aria-label="'+esc(segs[i].label+": "+segs[i].hint)+'">'
-      +'<circle cx="80" cy="80" r="55" fill="none" stroke="'+segs[i].color+'" stroke-width="24"'
-      +' stroke-dasharray="'+len.toFixed(1)+" "+C.toFixed(1)+'" stroke-dashoffset="'+(-acc).toFixed(1)+'"/></g>';
-    acc+=frac*C;
-  }
-  return '<svg viewBox="0 0 160 160" role="img" aria-label="Payment method breakdown donut chart">'
-    +'<circle cx="80" cy="80" r="55" fill="none" stroke="var(--border)" stroke-width="24"/>'
-    +'<g fill="none" transform="rotate(-90 80 80)">'+g+'</g>'
-    +'<text x="80" y="78" text-anchor="middle" pointer-events="none" style="font-size:20px;font-weight:700;fill:var(--text)" id="'+uidp+'-top">'+esc(topText)+'</text>'
-    +'<text x="80" y="98" text-anchor="middle" pointer-events="none" style="font-size:10.5px;letter-spacing:1.2px;fill:var(--muted)" id="'+uidp+'-sub">'+esc(subText)+'</text></svg>';
-}
-function legendHTML(segs){
-  return '<div class="ch-legend">'+segs.map(function(s,i){
-    return '<button type="button" class="ch-leg" data-i="'+i+'" aria-pressed="false">'
-      +'<span class="sw" style="background:'+s.color+'"></span><span>'+esc(s.label)+'</span>'
-      +'<span style="color:var(--muted)">'+esc(s.hint)+'</span></button>';
-  }).join("")+'</div>';
-}
-function barsSVG(months){
-  var W=380,padL=100,rowH=40,top=8;
-  var max=Math.max.apply(null,months.map(function(m){return m.total;}).concat([0]));
-  var H=top+months.length*rowH+6,s="";
-  months.forEach(function(m,i){
-    var y=top+i*rowH,bw=max>0?Math.max(Math.round(m.total/max*180),3):0;
-    s+='<g class="ch-bar" tabindex="0" role="button" data-i="'+i+'" aria-pressed="false"'
-      +' aria-label="'+esc(m.label+": "+fmtMoney(m.total)+", "+m.count+" receipts")+'">'
-      +'<text x="0" y="'+(y+21)+'" style="font-size:12px;fill:var(--muted)">'+esc(m.label)+'</text>'
-      +'<rect x="'+padL+'" y="'+(y+8)+'" width="'+bw+'" height="20" rx="5" fill="var(--ch1)"/>'
-      +'<text x="'+(padL+bw+8)+'" y="'+(y+21)+'" style="font-size:12px;font-weight:600;fill:var(--text)">'+esc(fmtMoney(m.total))+'</text></g>';
-  });
-  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Monthly rent totals bar chart">'+s+'</svg>';
-}
-/* shared select-to-spotlight behavior: click/Enter/Space spotlights an item and
-   swaps the detail readout; clicking again restores the default view */
-function wireSelectable(scope,segs,fmtDetail,fmtDefault,detId,onPick){
-  var det=$(detId),sel=-1;
-  var items=scope.querySelectorAll(".seg,.ch-bar");
-  function pick(i){
-    sel=(sel===i?-1:i);
-    items.forEach(function(g,gi){
-      g.style.opacity=(sel===-1||sel===gi)?"1":"0.25";
-      g.setAttribute("aria-pressed",sel===gi?"true":"false");
-    });
-    scope.querySelectorAll(".ch-leg").forEach(function(l,li){
-      l.setAttribute("aria-pressed",sel===li?"true":"false");
-    });
-    det.innerHTML=sel===-1?fmtDefault():fmtDetail(segs[sel]);
-    if(onPick)onPick(sel);
-  }
-  items.forEach(function(g,i){
-    g.addEventListener("click",function(){pick(i);Sound.click();});
-    g.addEventListener("keydown",function(e){
-      if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(i);Sound.click();}
-    });
-  });
-  scope.querySelectorAll(".ch-leg").forEach(function(l,i){
-    l.addEventListener("click",function(){pick(i);Sound.click();});
-  });
-  /* Escape restores the default view for this chart's spotlight */
-  document.addEventListener("keydown",function(e){
-    if(e.key==="Escape"&&sel!==-1){pick(sel);Sound.click();}
-  });
-  det.innerHTML=fmtDefault(); /* seed the default readout immediately */
-}
-function renderInsights(){
-  var body=$("insightsBody"),h=getHistory();
-  if(!h.length){
-    body.innerHTML='<div class="empty">Save a few receipts and charts of monthly totals and payment methods will appear here.</div>';
+function renderList(){
+  const list = document.getElementById("habitList");
+  if(state.habits.length === 0){
+    list.innerHTML = '<div class="g-empty"><div class="g-empty-icon"><svg class="g-icon g-icon-lg g-icon-flash" aria-hidden="true"><use href="#g-i-sparkles"/></svg></div><p class="g-title">No habits yet</p><p>Tap <b>+ New habit</b> to start your first streak.</p></div>';
     return;
   }
-  var sum=0,i; for(i=0;i<h.length;i++){if(isFinite(h[i].amount))sum+=h[i].amount;}
-  var months=monthlyAgg(),methods=methodAgg();
-  var mTotal=months.reduce(function(a,m){return a+m.total;},0);
-  var segs=methods.map(function(m,mi){
-    return{label:m.method,value:m.total,count:m.count,
-      hint:(mTotal>0?Math.round(m.total/mTotal*1000)/10:0)+"%",
-      color:CH_COLORS[mi%CH_COLORS.length]};
-  });
-  body.innerHTML=
-    '<div class="kpis">'
-    +'<div class="kpi" data-kpi="total" role="button" tabindex="0" aria-pressed="false" aria-label="Total collected — activate for the month-by-month breakdown"><div class="k">Total collected</div><div class="v">'+esc(fmtMoney(sum))+'</div></div>'
-    +'<div class="kpi" data-kpi="count" role="button" tabindex="0" aria-pressed="false" aria-label="Receipts — activate for the breakdown by payment method"><div class="k">Receipts</div><div class="v">'+h.length+'</div></div>'
-    +'<div class="kpi" data-kpi="avg" role="button" tabindex="0" aria-pressed="false" aria-label="Average receipt — activate for smallest, largest and median receipt"><div class="k">Average receipt</div><div class="v">'+esc(fmtMoney(sum/h.length))+'</div></div></div>'
-    +'<div class="ch-det" id="kpiDet" hidden></div>'
-    +'<div class="charts2">'
-    +'<div class="ch-panel"><h3>Monthly totals</h3><div id="barsWrap">'+barsSVG(months)+'</div>'
-    +'<div class="ch-det" id="barsDet"></div></div>'
-    +'<div class="ch-panel"><h3>Payment methods</h3>'
-    +'<div id="donutWrap" style="max-width:225px;margin:0 auto">'+donutSVG("mDonut",segs,mTotal,fmtMoney(mTotal),"TOTAL")+legendHTML(segs)+'</div>'
-    +'<div class="ch-det" id="donutDet"></div></div></div>';
-  wireSelectable($("barsWrap"),months,
-    function(m){return "<strong>"+esc(m.label)+"</strong> &mdash; "+esc(fmtMoney(m.total))+" &middot; "+m.count+" receipt"+(m.count===1?"":"s")+" &middot; avg "+esc(fmtMoney(m.total/m.count))+".";},
-    function(){return "<strong>"+esc(fmtMoney(mTotal))+"</strong> collected across "+months.length+" month"+(months.length===1?"":"s")+". Tap a bar for the breakdown.";},
-    "barsDet");
-  wireSelectable($("donutWrap"),segs,
-    function(s){return "<strong>"+esc(s.label)+"</strong> &mdash; "+esc(fmtMoney(s.value))+" ("+esc(s.hint)+") &middot; "+s.count+" receipt"+(s.count===1?"":"s")+".";},
-    function(){return "All methods &mdash; <strong>"+esc(fmtMoney(mTotal))+"</strong> across "+h.length+" receipts. Tap a slice or a legend chip for the breakdown.";},
-    "donutDet",
-    function(i){
-      $("mDonut-top").textContent=i===-1?fmtMoney(mTotal):fmtMoney(segs[i].value);
-      $("mDonut-sub").textContent=i===-1?"TOTAL":segs[i].label.toUpperCase();
-    });
-  wireKpis(body); /* KPI breakdown readouts */
+  const tk = todayKey();
+  const now = new Date();
+  list.innerHTML = state.habits.map(h => {
+    const st = computeStreaks(h);
+    const cr = completionRate(h);
+    const e = entry(h.id, tk);
+    const cur = entryStatus(h.id, tk);
+    const due = isScheduled(h, now);
+    const partialBtn = h.allowPartial
+      ? '<button data-act="partial" data-h="' + h.id + '" class="' + (cur === "partial" ? "partial-on" : "") + '" ' + (due ? "" : "disabled") + '>◐ Partial</button>' : "";
+    return '<div class="g-card" data-card="' + h.id + '">' +
+      '<div class="habit-head">' +
+        '<span class="dot" style="background:' + esc(h.color) + '"></span>' +
+        '<span class="icon" aria-hidden="true">' + esc(h.icon) + "</span>" +
+        '<span class="habit-name">' + esc(h.name) + "</span>" +
+        '<span class="g-badge g-badge-good" title="Current streak / best streak">' + I_FLAME + st.current + " (best " + st.best + ")</span>" +
+      "</div>" +
+      '<div class="rate">' + esc(scheduleLabel(h)) + " · " + cr.pct + "% completion (" + cr.completed + "/" + cr.scheduled + " days)</div>" +
+      '<div class="daybtns">' +
+        '<button data-act="done" data-h="' + h.id + '" class="' + (cur === "done" ? "done-on" : "") + '" ' + (due ? "" : "disabled") + ">✓ Done</button>" +
+        partialBtn +
+        '<button data-act="skip" data-h="' + h.id + '" class="' + (cur === "skip" ? "skip-on" : "") + '" ' + (due ? "" : "disabled") + ">☾ Rest day</button>" +
+      "</div>" +
+      (e && e.note ? '<div class="note-line">📝 ' + esc(e.note) + "</div>" : "") +
+      '<div class="habit-actions">' +
+        '<button class="g-btn g-btn-sm g-btn-secondary" data-act="detail" data-h="' + h.id + '">' + I_CHART + "Details &amp; history</button>" +
+        '<button class="g-btn g-btn-sm g-btn-secondary" data-act="edit" data-h="' + h.id + '">' + I_EDIT + "Edit</button>" +
+        '<button class="g-btn g-btn-sm g-btn-danger" data-act="del" data-h="' + h.id + '">' + I_TRASH + "Delete</button>" +
+      "</div>" +
+      '<div class="detail hidden" id="detail-' + h.id + '"></div>' +
+    "</div>";
+  }).join("");
 }
-/* ---------- KPI detail: tap a KPI for the breakdown behind it ---------- */
-function kpiToggle(el){
-  var kind=el.getAttribute("data-kpi"),det=$("kpiDet");
-  var was=el.getAttribute("aria-pressed")==="true";
-  var scope=det?det.parentNode:null;
-  if(scope){var ks=scope.querySelectorAll(".kpi[role=\"button\"]");for(var i=0;i<ks.length;i++)ks[i].setAttribute("aria-pressed","false");}
-  if(was||!det){if(det){det.hidden=true;det.innerHTML="";}Sound.click();return;}
-  var h=getHistory(),html="",sum=0,j;
-  for(j=0;j<h.length;j++){if(isFinite(h[j].amount))sum+=h[j].amount;}
-  if(kind==="total"){
-    var months=monthlyAgg();
-    html="<strong>Collected by month</strong> &mdash; "+months.map(function(m){
-      return esc(m.label)+": <span class=\"money\">"+esc(fmtMoney(m.total))+"</span> ("+m.count+")";
-    }).join(" &middot; ")+".";
-  }else if(kind==="count"){
-    var methods=methodAgg();
-    html="<strong>"+h.length+" receipts by payment method</strong> &mdash; "+methods.map(function(m){
-      return esc(m.method)+": "+m.count;
-    }).join(" &middot; ")+".";
-  }else if(kind==="avg"){
-    var amts=h.filter(function(r){return isFinite(r.amount);});
-    if(amts.length){
-      var sorted=amts.map(function(r){return r.amount;}).sort(function(a,b){return a-b;});
-      var min=sorted[0],max=sorted[sorted.length-1];
-      var med=sorted.length%2?sorted[(sorted.length-1)/2]:(sorted[sorted.length/2-1]+sorted[sorted.length/2])/2;
-      var minR=null,maxR=null;
-      for(j=0;j<amts.length;j++){if(amts[j].amount===min&&!minR)minR=amts[j];if(amts[j].amount===max&&!maxR)maxR=amts[j];}
-      html="<strong>Average "+esc(fmtMoney(sum/amts.length))+"</strong> &mdash; smallest "+esc(fmtMoney(min))+
-        (minR&&minR.receiptNo?" ("+esc(minR.receiptNo)+")":"")+" &middot; largest "+esc(fmtMoney(max))+
-        (maxR&&maxR.receiptNo?" ("+esc(maxR.receiptNo)+")":"")+" &middot; median "+esc(fmtMoney(med))+".";
+function scheduleLabel(h){
+  if(h.type === "daily") return "Every day";
+  const names = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  return "Weekly: " + h.weekdays.slice().sort((a,b)=>a-b).map(i => names[i]).join(", ");
+}
+
+/* GitHub-style heatmap: trailing N days, weeks as columns */
+function heatmapHtml(h, days){
+  days = days || 119;
+  const end = new Date(); end.setHours(0,0,0,0);
+  const start = addDays(end, -(days - 1));
+  // align start back to Sunday so columns are full weeks
+  const aligned = addDays(start, -start.getDay());
+  let html = '<div class="hmap" role="img" aria-label="Activity heatmap">';
+  let d = new Date(aligned);
+  while(d <= end){
+    const k = localKey(d);
+    const inRange = d >= start;
+    const scheduled = inRange && d >= parseKey(h.created) && isScheduled(h, d);
+    let cls = "cell", title = fmtDay(k), bg = "";
+    if(scheduled){
+      const s = entryStatus(h.id, k);
+      if(s === "done"){ bg = ' style="background:' + esc(h.color) + '"'; title += " — done"; } // full-strength: done is distinct from partial
+      else if(s === "partial"){ cls += " partial"; bg = ' style="background:' + esc(h.color) + '"'; title += " — partial"; }
+      else if(s === "skip"){ cls += " skip"; title += " — rest day"; }
+      else if(d < end){ cls += " missed"; title += " — missed"; }
+      else { title += " — today, not logged"; }
+      html += '<div class="' + cls + '"' + bg + ' title="' + esc(title) + '" data-day="' + k + '" data-h="' + h.id + '" tabindex="0" role="button" aria-label="' + esc(title) + '"></div>';
+    }else{
+      html += '<div class="cell" style="visibility:hidden"></div>';
+    }
+    d = addDays(d, 1);
+  }
+  html += "</div>";
+  html += '<div class="legend"><span>Less</span>' +
+    '<span class="cell missed" style="cursor:default"></span>' +
+    '<span class="cell partial" style="background:' + esc(h.color) + ';cursor:default"></span>' +
+    '<span>More</span><span class="cell skip" style="cursor:default"></span><span>rest</span>' +
+    '<span style="margin-left:8px">Tap any day to log or edit it.</span></div>';
+  return html;
+}
+
+function renderDetail(hid){
+  const h = state.habits.find(x => x.id === hid);
+  if(!h) return;
+  const box = document.getElementById("detail-" + hid);
+  const st = computeStreaks(h);
+  const cr = completionRate(h);
+  let total = 0, partials = 0, skips = 0;
+  Object.keys(state.log[hid] || {}).forEach(k => {
+    if(k < h.created) return; // ignore stray keys predating the habit (consistent with streaks/heatmap)
+    const s = state.log[hid][k].status;
+    if(s === "done"){ total++; } else if(s === "partial"){ total++; partials++; } else if(s === "skip"){ skips++; }
+  });
+  box.innerHTML =
+    '<div class="rate">Current streak <b>' + st.current + '</b> · Best streak <b>' + st.best + '</b> · ' +
+    'Check-ins <b>' + total + '</b>' + (partials ? " (" + partials + " partial)" : "") +
+    " · Rest days <b>" + skips + "</b> · Since " + esc(h.created) + "</div>" +
+    heatmapHtml(h, 119);
+  box.classList.remove("hidden");
+}
+
+/* ============ day editor (tap a heatmap cell or today buttons) ============ */
+function openDayEditor(hid, key){
+  const h = state.habits.find(x => x.id === hid);
+  if(!h) return;
+  const e = entry(hid, key);
+  const cur = e ? e.status : null;
+  const note = e ? (e.note || "") : "";
+  const partialBtn = h.allowPartial
+    ? '<button data-dact="partial" class="' + (cur === "partial" ? "partial-on" : "") + '">◐ Partial credit</button>' : "";
+  openModal(
+    "<h2>" + esc(h.icon) + " " + esc(h.name) + "</h2>" +
+    '<p class="sub">' + esc(fmtDay(key)) + (key === todayKey() ? " (today)" : "") + "</p>" +
+    '<div class="daybtns" style="margin-top:0">' +
+      '<button data-dact="done" class="' + (cur === "done" ? "done-on" : "") + '">✓ Done</button>' +
+      partialBtn +
+      '<button data-dact="skip" class="' + (cur === "skip" ? "skip-on" : "") + '">☾ Rest day</button>' +
+      '<button data-dact="clear">✕ Clear</button>' +
+    "</div>" +
+    '<label class="g-label" for="dayNote" style="margin-top:14px">Note for this day</label>' +
+    '<textarea class="g-textarea" id="dayNote" maxlength="500" placeholder="Optional note…">' + esc(note) + "</textarea>" +
+    '<div class="g-btn-row"><button class="g-btn g-btn-primary" id="daySave">Save</button><button class="g-btn g-btn-secondary" id="dayCancel">Cancel</button></div>'
+  );
+  const root = document.getElementById("modalRoot");
+  let chosen = cur;
+  root.querySelectorAll("[data-dact]").forEach(b => {
+    b.addEventListener("click", () => {
+      chosen = b.getAttribute("data-dact") === "clear" ? null : b.getAttribute("data-dact");
+      root.querySelectorAll("[data-dact]").forEach(x => x.classList.remove("done-on","partial-on","skip-on"));
+      if(chosen === "done") b.classList.add("done-on");
+      if(chosen === "partial") b.classList.add("partial-on");
+      if(chosen === "skip") b.classList.add("skip-on");
+    });
+  });
+  document.getElementById("dayCancel").addEventListener("click", () => { closeModal(); Sound.click(); });
+  document.getElementById("daySave").addEventListener("click", () => {
+    const n = document.getElementById("dayNote").value.trim().slice(0, 500);
+    setEntry(hid, key, chosen, n);
+    closeModal(); renderAll();
+    toast("Saved");
+    Sound.success();
+  });
+}
+
+/* ============ habit editor ============ */
+function openHabitEditor(existing){
+  const h = existing || { name:"", type:"daily", weekdays:[1,2,3,4,5], color:COLORS[0], icon:ICONS[0], allowPartial:true };
+  const dayNames = ["S","M","T","W","T","F","S"];
+  openModal(
+    "<h2>" + (existing ? "Edit habit" : "New habit") + "</h2>" +
+    '<label class="g-label" for="hzName">Name</label>' +
+    '<input type="text" class="g-input" id="hzName" maxlength="60" value="' + esc(h.name) + '" placeholder="e.g. Read 20 pages">' +
+    '<label class="g-label" style="margin-top:14px">Schedule</label>' +
+    '<div class="chk-row" id="hzType">' +
+      '<label><input type="radio" name="hztype" value="daily" ' + (h.type === "daily" ? "checked" : "") + '> Every day</label>' +
+      '<label><input type="radio" name="hztype" value="weekly" ' + (h.type === "weekly" ? "checked" : "") + "> Certain days</label>" +
+    "</div>" +
+    '<div class="chk-row" id="hzDays" style="' + (h.type === "weekly" ? "" : "display:none") + ';margin-top:8px">' +
+      dayNames.map((n,i) => '<label><input type="checkbox" value="' + i + '" ' + (h.weekdays.indexOf(i) !== -1 ? "checked" : "") + ">" + n + "</label>").join("") +
+    "</div>" +
+    '<label class="g-label" style="margin-top:14px">Color</label><div class="swatches" id="hzColors">' +
+      COLORS.map(c => '<div class="swatch' + (h.color === c ? " sel" : "") + '" data-c="' + c + '" style="background:' + c + '"></div>').join("") +
+    "</div>" +
+    '<label class="g-label" style="margin-top:14px">Icon</label><div class="icons" id="hzIcons">' +
+      ICONS.map(ic => '<button type="button" class="' + (h.icon === ic ? "sel" : "") + '" data-ic="' + esc(ic) + '">' + esc(ic) + "</button>").join("") +
+    "</div>" +
+    '<label class="g-check"><input type="checkbox" id="hzPartial" ' + (h.allowPartial ? "checked" : "") + '> Allow partial credit (a half-done day still counts)</label>' +
+    '<div class="g-btn-row"><button class="g-btn g-btn-primary" id="hzSave">' + (existing ? "Save changes" : "Create habit") + '</button><button class="g-btn g-btn-secondary" id="hzCancel">Cancel</button></div>'
+  );
+  let color = h.color, icon = h.icon;
+  const root = document.getElementById("modalRoot");
+  root.querySelectorAll('input[name="hztype"]').forEach(r => r.addEventListener("change", () => {
+    document.getElementById("hzDays").style.display = root.querySelector('input[name="hztype"]:checked').value === "weekly" ? "" : "none";
+  }));
+  root.querySelectorAll("#hzColors .swatch").forEach(s => s.addEventListener("click", () => {
+    root.querySelectorAll("#hzColors .swatch").forEach(x => x.classList.remove("sel"));
+    s.classList.add("sel"); color = s.getAttribute("data-c");
+  }));
+  root.querySelectorAll("#hzIcons button").forEach(b => b.addEventListener("click", () => {
+    root.querySelectorAll("#hzIcons button").forEach(x => x.classList.remove("sel"));
+    b.classList.add("sel"); icon = b.getAttribute("data-ic");
+  }));
+  document.getElementById("hzCancel").addEventListener("click", () => { closeModal(); Sound.click(); });
+  document.getElementById("hzSave").addEventListener("click", () => {
+    const name = document.getElementById("hzName").value.trim().slice(0, 60);
+    if(!name){ toast("Give the habit a name"); Sound.error(); return; }
+    const type = root.querySelector('input[name="hztype"]:checked').value;
+    let weekdays = [0,1,2,3,4,5,6];
+    if(type === "weekly"){
+      weekdays = Array.from(root.querySelectorAll("#hzDays input:checked")).map(x => Number(x.value));
+      if(weekdays.length === 0){ toast("Pick at least one day"); Sound.error(); return; }
+    }
+    const allowPartial = document.getElementById("hzPartial").checked;
+    if(existing){
+      existing.name = name; existing.type = type; existing.weekdays = weekdays;
+      existing.color = color; existing.icon = icon; existing.allowPartial = allowPartial;
+      toast("Habit updated");
+    }else{
+      state.habits.push({ id: uid(), name, type, weekdays, color, icon, allowPartial, created: todayKey() });
+      toast("Habit created — good luck 🔥");
+    }
+    saveState(); closeModal(); renderAll();
+    Sound.success();
+  });
+}
+
+/* ============ list event delegation ============ */
+document.getElementById("habitList").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-act]");
+  const cell = e.target.closest(".cell[data-day]");
+  if(cell){
+    openDayEditor(cell.getAttribute("data-h"), cell.getAttribute("data-day"));
+    return;
+  }
+  if(!btn) return;
+  const hid = btn.getAttribute("data-h");
+  const act = btn.getAttribute("data-act");
+  const h = state.habits.find(x => x.id === hid);
+  if(!h) return;
+  if(act === "done" || act === "partial" || act === "skip"){
+    const tk = todayKey();
+    const cur = entry(hid, tk);
+    // tapping the active status again clears it (quick undo) — keep the note
+    if(cur && cur.status === act){ setEntry(hid, tk, null, cur.note || ""); Sound.click(); }
+    else { const note = cur ? (cur.note || "") : ""; setEntry(hid, tk, act, note); Sound.success(); }
+    renderAll();
+  }else if(act === "detail"){
+    const box = document.getElementById("detail-" + hid);
+    if(box.classList.contains("hidden")) renderDetail(hid);
+    else box.classList.add("hidden");
+    Sound.click();
+  }else if(act === "edit"){
+    openHabitEditor(h); Sound.click();
+  }else if(act === "del"){
+    openModal(
+      "<h2>Delete habit?</h2>" +
+      '<p class="sub">“' + esc(h.name) + '” and all of its history will be removed from this device. This cannot be undone.</p>' +
+      '<div class="g-btn-row"><button class="g-btn g-btn-danger" id="delYes">Delete</button><button class="g-btn g-btn-secondary" id="delNo">Keep it</button></div>'
+    );
+    document.getElementById("delNo").addEventListener("click", () => { closeModal(); Sound.click(); });
+    document.getElementById("delYes").addEventListener("click", () => {
+      state.habits = state.habits.filter(x => x.id !== hid);
+      delete state.log[hid];
+      saveState(); closeModal(); renderAll();
+      toast("Habit deleted");
+      Sound.success();
+    });
+  }
+});
+// keyboard access to heatmap cells
+document.getElementById("habitList").addEventListener("keydown", e => {
+  if((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("cell") && e.target.getAttribute("data-day")){
+    e.preventDefault();
+    openDayEditor(e.target.getAttribute("data-h"), e.target.getAttribute("data-day"));
+  }
+});
+
+/* ============ export / import ============ */
+function download(filename, text, mime){
+  const blob = new Blob([text], {type: mime});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function exportJson(){
+  download("habittrack-backup-" + todayKey() + ".json",
+    JSON.stringify({ app: "habittrack", version: 1, exported: new Date().toISOString(), habits: state.habits, log: state.log }, null, 2),
+    "application/json");
+}
+function csvEsc(v){
+  v = String(v == null ? "" : v);
+  return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function exportCsv(){
+  const rows = ["habit_id,habit_name,date,status,note"];
+  state.habits.forEach(h => {
+    Object.keys(state.log[h.id] || {}).sort().forEach(k => {
+      const en = state.log[h.id][k];
+      if(!en || (!en.status && !en.note)) return; // skip fully-empty rows; note-only entries export with blank status
+      rows.push([csvEsc(h.id), csvEsc(h.name), csvEsc(k), csvEsc(en.status || ""), csvEsc(en.note || "")].join(","));
+    });
+  });
+  download("habittrack-backup-" + todayKey() + ".csv", rows.join("\n"), "text/csv");
+}
+function parseCsv(text){
+  const rows = [];
+  let cur = [""], inQ = false;
+  for(let i = 0; i < text.length; i++){
+    const c = text[i];
+    if(inQ){
+      if(c === '"'){ if(text[i+1] === '"'){ cur[cur.length-1] += '"'; i++; } else inQ = false; }
+      else cur[cur.length-1] += c;
+    }else{
+      if(c === '"') inQ = true;
+      else if(c === ",") cur.push("");
+      else if(c === "\n"){ rows.push(cur); cur = [""]; }
+      else if(c === "\r"){ /* skip */ }
+      else cur[cur.length-1] += c;
     }
   }
-  if(!html){Sound.click();return;}
-  el.setAttribute("aria-pressed","true");
-  det.innerHTML=html;det.hidden=false;
-  Sound.click();
+  if(cur.length > 1 || cur[0] !== "") rows.push(cur);
+  return rows;
 }
-function wireKpis(scope){
-  if(!scope)return;
-  scope.querySelectorAll(".kpi[role=\"button\"]").forEach(function(k){
-    k.addEventListener("click",function(){kpiToggle(k);});
-    k.addEventListener("keydown",function(e){
-      if(e.key==="Enter"||e.key===" "){e.preventDefault();kpiToggle(k);}
-    });
-  });
-}
-function renderHistory(){
-  var list=$("historyList"),h=getHistory();
-  renderInsights();
-  list.innerHTML="";
-  if(!h.length){list.innerHTML='<div class="empty">No saved receipts yet. Fill out the form and hit \u201cSave receipt\u201d.</div>';return;}
-  var shown=h.slice().reverse();
-  shown.forEach(function(r){
-    var div=document.createElement("div");
-    div.className="hist-item";
-    /* tap a history row to load that receipt back into the form + preview */
-    div.setAttribute("role","button");
-    div.setAttribute("tabindex","0");
-    div.setAttribute("aria-label","Receipt "+(r.receiptNo||"")+" — activate to load into the form");
-    div.innerHTML='<div class="grow"><div class="num">'+esc(r.receiptNo||"—")+'</div>'+
-      '<div class="meta">'+esc(r.tenant||"")+' · '+(isFinite(r.amount)?fmtMoney(r.amount):"")+' · '+(r.datePaid?esc(fmtDate(r.datePaid)):"")+'</div></div>';
-    div.addEventListener("click",function(e){
-      if(e.target&&e.target.closest&&e.target.closest("button"))return;
-      setForm(r);updatePreview();
-      var pv=$("previewCard");if(pv)pv.scrollIntoView({behavior:"smooth",block:"start"});
-      Sound.click();
-    });
-    div.addEventListener("keydown",function(e){
-      if(e.key==="Enter"||e.key===" "){e.preventDefault();setForm(r);updatePreview();
-        var pv=$("previewCard");if(pv)pv.scrollIntoView({behavior:"smooth",block:"start"});
-        Sound.click();}
-    });
-    var rp=document.createElement("button");
-    rp.type="button";rp.className="btn btn-secondary btn-sm";rp.textContent="Reprint";
-    rp.addEventListener("click",function(){setForm(r);window.print();});
-    var del=document.createElement("button");
-    del.type="button";del.className="btn btn-danger btn-sm";del.textContent="Delete";
-    del.addEventListener("click",function(){
-      if(confirm("Delete receipt "+(r.receiptNo||"")+"? This can\u2019t be undone.")){
-        setHistory(getHistory().filter(function(x){return x.id!==r.id;}));
-        renderHistory();
+function importFile(file){
+  const msg = document.getElementById("impMsg");
+  msg.innerHTML = "";
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const text = String(reader.result || "").replace(/^\uFEFF/, ""); // strip UTF-8 BOM (Excel) so header matching works
+      if(/\.json$/i.test(file.name) || text.trim().charAt(0) === "{"){
+        const d = JSON.parse(text);
+        if(!d || !Array.isArray(d.habits) || !d.log || typeof d.log !== "object") throw new Error("not a HabitTrack backup");
+        const clean = [];
+        let dropped = 0, dupIds = 0;
+        const seenIds = {};
+        d.habits.forEach(h => {
+          const s = sanitizeHabit(h);
+          if(!s){ dropped++; return; }
+          /* duplicate ids are ambiguous (the log is keyed by id): first habit
+             wins, later duplicates are dropped, the log stays with the first */
+          if(seenIds[s.id]){ dupIds++; return; }
+          seenIds[s.id] = true;
+          clean.push(s);
+        });
+        if(clean.length === 0) throw new Error("no valid habits in backup");
+        d.habits = clean;
+        // drop orphaned log entries whose habit id is not in this backup
+        const keep = {};
+        d.habits.forEach(h => { keep[h.id] = true; });
+        // full sanitize: repairs/drops bad dates, statuses, notes (same as loadState)
+        const cleanLog = sanitizeLog(d.log, keep);
+        if(!window.confirm("Replace everything on this device with the backup (" + d.habits.length + " habits)?")){ Sound.click(); return; }
+        state = { habits: d.habits, log: cleanLog };
+        saveState(); renderAll();
+        Sound.success();
+        const skipParts = [];
+        if(dropped) skipParts.push(dropped + " invalid");
+        if(dupIds) skipParts.push(dupIds + " duplicate id");
+        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Imported ' + d.habits.length + " habits." + (skipParts.length ? " (" + skipParts.join(", ") + " entries skipped)" : "") + "</p>";
+      }else{
+        // CSV: match rows by habit_id when the column is present (unambiguous),
+        // otherwise by name. Duplicate names are ambiguous — those rows are
+        // skipped, never silently merged into the first matching habit.
+        const rows = parseCsv(text);
+        if(rows.length < 2) throw new Error("CSV has no data rows");
+        const header = rows[0].map(s => s.trim().toLowerCase());
+        const hi = header.indexOf("habit_name"), di = header.indexOf("date"),
+              si = header.indexOf("status"), ni = header.indexOf("note"),
+              ii = header.indexOf("habit_id");
+        if(hi === -1 || di === -1 || si === -1) throw new Error("CSV needs habit_name, date, status columns");
+        const byId = Object.create(null); // null-prototype: crafted habit_id="__proto__"/"constructor"/"toString" reads undefined, not Object.prototype (prevents orphan "undefined" entries)
+        state.habits.forEach(h => { byId[h.id] = h; });
+        let merged = 0, skipped = 0, ambiguous = 0;
+        for(let r = 1; r < rows.length; r++){
+          const row = rows[r];
+          const idv = ii === -1 ? "" : (row[ii] || "").trim();
+          const name = (row[hi] || "").trim(), date = (row[di] || "").trim(), status = (row[si] || "").trim();
+          const note = ni === -1 ? "" : (row[ni] || "");
+          let h = null;
+          if(idv){
+            h = byId[idv] || null; // explicit id with no match: unknown habit, skip
+          }else{
+            const matches = state.habits.filter(x => x.name === name);
+            if(matches.length > 1){ ambiguous++; continue; } // duplicate name: do not guess
+            h = matches[0] || null;
+          }
+          if(!h || !isValidDateKey(date) || (status && ["done","partial","skip"].indexOf(status) === -1)){ skipped++; continue; }
+          if(!status && !note){ skipped++; continue; } // fully-empty row: nothing to store
+          setEntry(h.id, date, status || null, note.slice(0, 500));
+          merged++;
+        }
+        renderAll();
+        const cskip = [];
+        if(skipped) cskip.push(skipped + " unknown habit / bad date or status");
+        if(ambiguous) cskip.push(ambiguous + " ambiguous duplicate-name");
+        msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Merged ' + merged + " entries" + (cskip.length ? " (" + cskip.join("; ") + " skipped)" : "") + ".</p>";
+        Sound.success();
       }
+    }catch(err){
+      msg.innerHTML = '<p class="sub" style="color:var(--g-bad)">Import failed: ' + esc(err.message) + ". Nothing was changed.</p>";
+      Sound.error();
+    }
+  };
+  reader.onerror = () => {
+    msg.innerHTML = '<p class="sub" style="color:var(--g-bad)">Could not read that file.</p>';
+  };
+  reader.readAsText(file);
+}
+
+function renderWeekChart(){
+  const el = document.getElementById("weekChart");
+  if(!el) return;
+  el.innerHTML = "";
+  const now = new Date(), WD = ["S","M","T","W","T","F","S"];
+  let total = 0;
+  const head = document.createElement("div"); head.className = "wct";
+  const hb = document.createElement("b"); hb.textContent = "Last 7 days";
+  const hs = document.createElement("span");
+  head.appendChild(hb); head.appendChild(hs);
+  const body = document.createElement("div"); body.className = "wcb";
+  const days = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(now); d.setDate(d.getDate()-i);
+    const key = localKey(d);
+    let sched = 0, done = 0, part = 0;
+    const per = [];
+    state.habits.forEach(h => {
+      if(!isScheduled(h, d)) return;
+      if(d < parseKey(h.created)) return; // don't show phantom misses before the habit existed
+      sched++;
+      const s = entryStatus(h.id, key);
+      per.push({ name: h.name, status: s });
+      if(s === "done"){ done++; total++; }
+      else if(s === "partial"){ part++; total++; }
     });
-    div.appendChild(rp);div.appendChild(del);
-    list.appendChild(div);
+    days.push({ d, key, sched, done, part, per });
+  }
+  hs.textContent = total + " check-ins";
+  const detail = document.createElement("div");
+  detail.className = "wc-detail"; detail.setAttribute("aria-live", "polite");
+  let sel = null;
+  days.forEach((day, idx) => {
+    const dh = day.sched ? Math.round(day.done/day.sched*100) : 0;
+    const ph = day.sched ? Math.round(day.part/day.sched*100) : 0;
+    const lbl = fmtDay(day.key) + ": " + day.done + " done, " + day.part + " partial of " + day.sched + " scheduled";
+    const col = document.createElement("div");
+    col.className = "wcd";
+    col.setAttribute("tabindex", "0");
+    col.setAttribute("role", "button");
+    col.setAttribute("data-day", day.key);
+    col.setAttribute("aria-pressed", "false");
+    col.setAttribute("aria-label", lbl + ". Activate to see per-habit detail.");
+    const track = document.createElement("div");
+    track.className = "wctrack"; track.title = lbl;
+    const doneBar = document.createElement("div");
+    doneBar.className = "wcdone"; doneBar.style.height = dh + "%";
+    const partBar = document.createElement("div");
+    partBar.className = "wcpart"; partBar.style.height = ph + "%";
+    track.appendChild(doneBar); track.appendChild(partBar);
+    const lab = document.createElement("div");
+    lab.className = "wcl" + (idx === days.length - 1 ? " today" : "");
+    lab.innerHTML = WD[day.d.getDay()] + "<br>" + day.d.getDate();
+    col.appendChild(track); col.appendChild(lab);
+    function act(){
+      if(sel === col){
+        col.classList.remove("sel"); col.setAttribute("aria-pressed", "false");
+        detail.textContent = ""; sel = null; Sound.click(); return;
+      }
+      if(sel){ sel.classList.remove("sel"); sel.setAttribute("aria-pressed", "false"); }
+      sel = col; col.classList.add("sel"); col.setAttribute("aria-pressed", "true");
+      detail.textContent = "";
+      const strong = document.createElement("strong");
+      strong.textContent = fmtDay(day.key) + ": ";
+      detail.appendChild(strong);
+      if(!day.per.length){
+        detail.appendChild(document.createTextNode("no habits scheduled."));
+      }else{
+        detail.appendChild(document.createTextNode(day.per.map(p =>
+          p.name + " — " + (p.status === "done" ? "done" : p.status === "partial" ? "partial" : p.status === "skip" ? "rest day" : "missed")
+        ).join("; ") + "."));
+      }
+      Sound.select();
+    }
+    col.addEventListener("click", act);
+    col.addEventListener("keydown", e => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); act(); }
+    });
+    body.appendChild(col);
+  });
+  el.appendChild(head); el.appendChild(body); el.appendChild(detail);
+}
+
+/* ============ insights: progress rings + stacked weekly columns ============
+   Gallery vocabulary: "Progress rings — small multiples for several goals"
+   and "Stacked columns — totals and composition at once". Both interactive:
+   click/Enter/Space spotlights one item and swaps the detail line; clicking
+   again restores the aggregate view. */
+let selRingHid = null, selWeekIdx = -1;
+const NS_SVG = "http://www.w3.org/2000/svg";
+
+function ringSvg(h, pct){
+  const R = 30, C = 2 * Math.PI * R, off = C * (1 - pct / 100);
+  const svg = document.createElementNS(NS_SVG, "svg");
+  svg.setAttribute("width", "72"); svg.setAttribute("height", "72");
+  svg.setAttribute("viewBox", "0 0 72 72"); svg.setAttribute("aria-hidden", "true");
+  const track = document.createElementNS(NS_SVG, "circle");
+  track.setAttribute("cx", "36"); track.setAttribute("cy", "36"); track.setAttribute("r", String(R));
+  track.setAttribute("fill", "none"); track.setAttribute("stroke-width", "9");
+  track.style.stroke = "var(--g-surface-2)"; track.style.filter = "none";
+  const arc = document.createElementNS(NS_SVG, "circle");
+  arc.setAttribute("cx", "36"); arc.setAttribute("cy", "36"); arc.setAttribute("r", String(R));
+  arc.setAttribute("fill", "none"); arc.setAttribute("stroke-width", "9");
+  arc.setAttribute("stroke-linecap", "round");
+  arc.setAttribute("stroke", h.color);
+  arc.setAttribute("stroke-dasharray", C.toFixed(1));
+  arc.setAttribute("stroke-dashoffset", off.toFixed(1));
+  arc.setAttribute("transform", "rotate(-90 36 36)");
+  const t = document.createElementNS(NS_SVG, "text");
+  t.setAttribute("x", "36"); t.setAttribute("y", "36");
+  t.setAttribute("text-anchor", "middle"); t.setAttribute("dominant-baseline", "central");
+  t.setAttribute("font-size", "15"); t.setAttribute("font-weight", "800");
+  t.style.fill = "var(--g-text)";
+  t.textContent = pct + "%";
+  svg.appendChild(track); svg.appendChild(arc); svg.appendChild(t);
+  return svg;
+}
+
+function renderInsights(){
+  const row = document.getElementById("ringRow");
+  const rdet = document.getElementById("ringDetail");
+  const cols = document.getElementById("weekCols");
+  const wdet = document.getElementById("weekDetail");
+  if(!row || !cols) return;
+  row.innerHTML = ""; cols.innerHTML = "";
+  if(state.habits.length === 0){
+    rdet.textContent = "Add a habit to see completion rings here.";
+    wdet.textContent = "";
+    return;
+  }
+  /* ---- progress rings: one per habit ---- */
+  let aggSched = 0, aggDone = 0;
+  state.habits.forEach(h => {
+    const cr = completionRate(h);
+    aggSched += cr.scheduled; aggDone += cr.completed;
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "ring" + (selRingHid === h.id ? " sel" : "");
+    b.setAttribute("aria-pressed", selRingHid === h.id ? "true" : "false");
+    b.setAttribute("aria-label", h.name + ": " + cr.pct + "% completion. Activate to spotlight.");
+    b.appendChild(ringSvg(h, cr.pct));
+    const nm = document.createElement("span"); nm.className = "rname"; nm.textContent = h.name;
+    b.appendChild(nm);
+    b.addEventListener("click", () => {
+      selRingHid = (selRingHid === h.id) ? null : h.id;
+      renderInsights();
+      Sound.click();
+    });
+    row.appendChild(b);
+  });
+  const aggPct = aggSched > 0 ? Math.round(aggDone / aggSched * 100) : 0;
+  const selH = selRingHid ? state.habits.find(x => x.id === selRingHid) : null;
+  if(selH){
+    const st = computeStreaks(selH), cr = completionRate(selH);
+    rdet.innerHTML = "";
+    const s = document.createElement("strong"); s.textContent = selH.name + ": ";
+    rdet.appendChild(s);
+    rdet.appendChild(document.createTextNode(cr.pct + "% completion · current streak " +
+      st.current + " · best " + st.best + " · " + cr.completed + "/" + cr.scheduled + " days. Tap again to restore."));
+  }else{
+    rdet.innerHTML = "";
+    const s = document.createElement("strong"); s.textContent = aggPct + "%";
+    rdet.appendChild(s);
+    rdet.appendChild(document.createTextNode(" overall completion across " + state.habits.length +
+      (state.habits.length === 1 ? " habit" : " habits") + " — tap a ring for one habit."));
+  }
+  /* ---- stacked columns: trailing 6 weeks of check-in mix ---- */
+  const weeks = [];
+  const end = new Date(); end.setHours(0, 0, 0, 0);
+  for(let w = 0; w < 6; w++){
+    const wEnd = addDays(end, -7 * w), wStart = addDays(wEnd, -6);
+    weeks.push({ start: wStart, end: wEnd, idx: w });
+  }
+  const tallies = weeks.map(wk => weekCounts(wk.start, wk.end));
+  let maxSched = 0;
+  tallies.forEach(t => { if(t.sched > maxSched) maxSched = t.sched; });
+  const segs = [
+    ["done", "var(--g-good)", "done"],
+    ["part", "var(--g-good)", "partial"],
+    ["rest", "var(--g-muted)", "rest days"],
+    ["miss", "var(--g-bad)", "missed"]
+  ];
+  weeks.forEach((wk, i) => {
+    const t = tallies[i];
+    const col = document.createElement("div");
+    col.className = "wcol" + (selWeekIdx === i ? " sel" : "");
+    col.setAttribute("role", "button");
+    col.setAttribute("tabindex", "0");
+    col.setAttribute("aria-pressed", selWeekIdx === i ? "true" : "false");
+    const lbl = wk.start.toLocaleDateString(undefined, { month: "numeric", day: "numeric" });
+    col.setAttribute("aria-label", "Week of " + fmtDay(localKey(wk.start)) + ": " +
+      t.done + " done, " + t.part + " partial, " + t.rest + " rest, " + t.miss + " missed. Activate to break down.");
+    const track = document.createElement("div"); track.className = "wcol-track";
+    segs.forEach(sg => {
+      const d = document.createElement("div");
+      const n = t[sg[0]];
+      d.style.height = maxSched > 0 ? (n / maxSched * 100).toFixed(1) + "%" : "0";
+      d.style.background = sg[1];
+      if(sg[0] === "part") d.style.opacity = "0.35";
+      if(sg[0] === "miss") d.style.opacity = "0.55";
+      d.title = sg[2] + ": " + n;
+      track.appendChild(d);
+    });
+    const lab = document.createElement("div");
+    lab.className = "wcol-lbl" + (i === 0 ? " today" : "");
+    lab.textContent = i === 0 ? "this wk" : lbl;
+    col.appendChild(track); col.appendChild(lab);
+    function act(){
+      selWeekIdx = (selWeekIdx === i) ? -1 : i;
+      renderInsights();
+      Sound.click();
+    }
+    col.addEventListener("click", act);
+    col.addEventListener("keydown", e => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); act(); }
+    });
+    cols.appendChild(col);
+  });
+  if(selWeekIdx >= 0 && tallies[selWeekIdx]){
+    const wk = weeks[selWeekIdx], t = tallies[selWeekIdx];
+    wdet.innerHTML = "";
+    const s = document.createElement("strong");
+    s.textContent = "Week of " + fmtDay(localKey(wk.start)) + ": ";
+    wdet.appendChild(s);
+    const lines = Object.keys(t.per).map(hid => {
+      const p = t.per[hid];
+      return p.name + " — " + p.done + " done, " + p.part + " partial, " + p.rest + " rest, " + p.miss + " missed";
+    });
+    wdet.appendChild(document.createTextNode(lines.join("; ") + ". Tap again to restore."));
+  }else{
+    wdet.textContent = "Tap a week column to break it down by habit.";
+  }
+}
+
+function weekCounts(wStart, wEnd){
+  const tk = todayKey();
+  const out = { done: 0, part: 0, rest: 0, miss: 0, sched: 0, per: {} };
+  state.habits.forEach(h => {
+    const created = parseKey(h.created);
+    const p = { name: h.name, done: 0, part: 0, rest: 0, miss: 0 };
+    let d = new Date(wStart);
+    while(d <= wEnd){
+      if(isScheduled(h, d) && d >= created){
+        const key = localKey(d);
+        if(key === tk && !entryStatus(h.id, key)){ d = addDays(d, 1); continue; } // open day: not a miss yet
+        out.sched++;
+        const s = entryStatus(h.id, key);
+        if(s === "done"){ out.done++; p.done++; }
+        else if(s === "partial"){ out.part++; p.part++; }
+        else if(s === "skip"){ out.rest++; p.rest++; }
+        else { out.miss++; p.miss++; }
+      }
+      d = addDays(d, 1);
+    }
+    out.per[h.id] = p;
+  });
+  return out;
+}
+
+/* ============ clickable stat tiles ============
+   The four stat tiles are real affordances now: each jumps to (or expands)
+   the thing it summarizes. Enter/Space + touch work, same as the week chart. */
+function statDestination(kind){
+  const tk = todayKey(), now = new Date();
+  const due = state.habits.filter(h => isScheduled(h, now));
+  if(kind === "done"){
+    const open = due.find(h => { const s = entryStatus(h.id, tk); return s !== "done" && s !== "partial"; });
+    return { target: open ? open.id : null, msg: open ? null : "Everything due is logged for today." };
+  }
+  if(kind === "due"){
+    const open = due.find(h => { const s = entryStatus(h.id, tk); return s !== "done" && s !== "partial"; });
+    return { target: open ? open.id : (due.length ? due[0].id : null), msg: due.length ? null : "Nothing scheduled today." };
+  }
+  if(kind === "streak"){
+    let best = null, bn = -1;
+    state.habits.forEach(h => { const st = computeStreaks(h); if(st.best > bn){ bn = st.best; best = h; } });
+    return { target: best ? best.id : null, expand: true, msg: best ? null : "Add a habit to start a streak." };
+  }
+  return { target: state.habits.length ? state.habits[0].id : null, msg: state.habits.length ? null : "No habits yet — create one." };
+}
+function bindStatTiles(){
+  const strip = document.getElementById("statsStrip");
+  if(!strip || strip._statBound) return;
+  strip._statBound = true;
+  function act(el){
+    const kind = el.getAttribute("data-stat");
+    if(!kind) return;
+    const d = statDestination(kind);
+    strip.querySelectorAll(".stat.sel").forEach(x => x.classList.remove("sel"));
+    el.classList.add("sel");
+    if(d.target){
+      const card = document.querySelector('[data-card="' + d.target + '"]');
+      if(d.expand){
+        const box = document.getElementById("detail-" + d.target);
+        if(box && box.classList.contains("hidden")) renderDetail(d.target);
+      }
+      if(card){ card.scrollIntoView({ behavior: "smooth", block: "center" }); }
+    }
+    if(d.msg) toast(d.msg);
+    Sound.click();
+  }
+  strip.addEventListener("click", e => {
+    const el = e.target.closest(".stat[data-stat]");
+    if(el) act(el);
+  });
+  strip.addEventListener("keydown", e => {
+    if((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("stat")){
+      e.preventDefault(); act(e.target);
+    }
   });
 }
 
-/* ---------- events ---------- */
-F.forEach(function(f){
-  $(f).addEventListener("input",function(){updatePreview();});
-  $(f).addEventListener("change",function(){updatePreview();});
-});
-document.addEventListener("keydown",function(e){
-  if(e.key==="Escape"){
-    var det=$("kpiDet");
-    if(det&&!det.hidden){
-      det.hidden=true;det.innerHTML="";
-      var ks=document.querySelectorAll(".kpi[role=\"button\"]");
-      for(var i=0;i<ks.length;i++)ks[i].setAttribute("aria-pressed","false");
-      Sound.click();
-    }
-  }
-});
-$("saveBtn").addEventListener("click",function(){
-  var d=formData(),errs=validate(d);
-  if(!showErrors(errs)){Sound.error();return;}
-  var rec=Object.assign({},d,{amount:parseFloat(d.amount),id:"r"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36)});
-  if(!rec.receiptNo)rec.receiptNo=nextReceiptNo();
-  var h=getHistory();h.push(rec);setHistory(h);
-  if(!d.receiptNo){
-    bumpNext();
-  }else{
-    /* custom number matching RR-NNNN: keep the auto counter ahead of it */
-    var m=d.receiptNo.match(/^RR-(\d+)$/i);
-    if(m){
-      var num=parseInt(m[1],10),cur=parseInt(load(K.next,1),10);
-      if(num>=cur)store(K.next,num+1);
-    }
-  }
-  $("receiptNo").value=nextReceiptNo();
-  renderHistory();updatePreview();
-  $("formErr").textContent="";
-  Sound.success();
-});
-$("printBtn").addEventListener("click",function(){
-  Sound.click();
-  updatePreview();
-  window.print();
-});
-$("clearFormBtn").addEventListener("click",function(){
-  Sound.click();
-  F.forEach(function(f){$(f).value="";});
-  $("method").value="Cash";
-  $("receiptNo").value=nextReceiptNo();
-  showErrors({});updatePreview();
-});
-$("themeToggle").addEventListener("click",function(){
-  var cur=document.documentElement.getAttribute("data-theme")==="dark"?"dark":"light";
-  var nxt=cur==="dark"?"light":"dark";
-  document.documentElement.setAttribute("data-theme",nxt);
-  store(K.theme,nxt);
-  paintHeader(); Sound.toggleTheme(); Sound.click();
-});
-$("sampleToggle").addEventListener("click",function(){setSample(!sampleOn);Sound.click();});
-$("soundToggle").addEventListener("click",function(){toggleSound(this);});
+/* ============ init ============ */
+function renderAll(){ renderStats(); renderWeekChart(); renderInsights(); renderList(); bindStatTiles(); }
 
-/* ---------- init ---------- */
-(function init(){
-  paintHeader();
-  var draft=load(K.draft,null);
-  if(draft&&typeof draft==="object"){
-    F.forEach(function(f){if(typeof draft[f]==="string")$(f).value=draft[f];});
+document.getElementById("themeBtn").addEventListener("click", () => {
+  applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  Sound.toggleTheme();
+});
+document.getElementById("newHabitBtn").addEventListener("click", () => { openHabitEditor(null); Sound.click(); });
+document.getElementById("exportBtn").addEventListener("click", () => {
+  document.getElementById("ioCard").classList.remove("hidden");
+  document.getElementById("impMsg").innerHTML = "";
+  document.getElementById("ioCard").scrollIntoView({behavior:"smooth", block:"nearest"});
+  Sound.click();
+});
+document.getElementById("importBtn").addEventListener("click", () => {
+  document.getElementById("ioCard").classList.remove("hidden");
+  document.getElementById("impMsg").innerHTML = "";
+  Sound.click();
+});
+document.getElementById("expJson").addEventListener("click", () => { exportJson(); Sound.success(); });
+document.getElementById("expCsv").addEventListener("click", () => { exportCsv(); Sound.success(); });
+document.getElementById("impFile").addEventListener("change", e => {
+  if(e.target.files && e.target.files[0]) importFile(e.target.files[0]);
+  e.target.value = "";
+});
+
+/* ---------- sample-data toggle: snapshot user data, realistic demo, exact restore ---------- */
+(function(){
+  var btn = document.getElementById('sample-toggle');
+  if(!btn) return;
+  var sampleOn = false, snap = null, snapLS = null, snapUI = null, LS_MISSING = {};
+  function paintSample(){
+    var lbl = sampleOn ? 'Clear sample data' : 'Try sample data';
+    btn.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+    btn.setAttribute('aria-label', lbl);
+    btn.title = lbl;
   }
-  if(!$("receiptNo").value)$("receiptNo").value=nextReceiptNo();
-  if(!$("method").value)$("method").value="Cash";
-  renderHistory();
-  updatePreview();
+  function snapshotUI(){
+    var ui = { ioHidden: true, impMsg: '', detailOpen: [], weekSel: null, ring: selRingHid, week: selWeekIdx };
+    try{
+      var io = document.getElementById('ioCard');
+      if(io) ui.ioHidden = io.classList.contains('hidden');
+      var im = document.getElementById('impMsg');
+      if(im) ui.impMsg = im.innerHTML;
+      document.querySelectorAll('#habitList .detail:not(.hidden)').forEach(function(box){
+        var id = box.id.replace(/^detail-/, '');
+        if(id) ui.detailOpen.push(id);
+      });
+      var wc = document.querySelector('#weekChart .wcd.sel');
+      if(wc) ui.weekSel = wc.getAttribute('data-day');
+    }catch(e){}
+    return ui;
+  }
+  function restoreUI(ui){
+    if(!ui) return;
+    try{
+      var io = document.getElementById('ioCard');
+      if(io) io.classList.toggle('hidden', ui.ioHidden);
+      var im = document.getElementById('impMsg');
+      if(im) im.innerHTML = ui.impMsg;
+      (ui.detailOpen || []).forEach(function(hid){
+        var box = document.getElementById('detail-' + hid);
+        if(box && box.classList.contains('hidden')) renderDetail(hid);
+      });
+      if(ui.weekSel){
+        var col = document.querySelector('#weekChart .wcd[data-day="' + ui.weekSel + '"]');
+        if(col) col.click(); /* re-selects and plays the select blip — harmless */
+      }
+    }catch(e){}
+  }
+  function paintSample(){
+    var lbl = sampleOn ? 'Clear sample data' : 'Try sample data';
+    btn.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+    btn.setAttribute('aria-label', lbl);
+    btn.title = lbl;
+  }
+  function snapshot(){
+    try{ snap = JSON.parse(JSON.stringify(state)); }catch(e){ snap = { habits: [], log: {} }; }
+    try{
+      var raw = localStorage.getItem(LS_KEY);
+      snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
+    }catch(e){ snapLS = LS_MISSING; }
+  }
+  function applySample(){
+    function pastKey(n){ var d = new Date(); d.setDate(d.getDate() - n); return localKey(d); }
+    var h1 = { id: 'h-sample-run', name: 'Morning run', type: 'daily', weekdays: [],
+               color: COLORS[1], icon: '🏃', allowPartial: true, created: pastKey(21) };
+    var h2 = { id: 'h-sample-read', name: 'Read 20 pages', type: 'weekly', weekdays: [1,2,3,4,5],
+               color: COLORS[2], icon: '📚', allowPartial: true, created: pastKey(21) };
+    var h3 = { id: 'h-sample-water', name: 'Drink water', type: 'daily', weekdays: [],
+               color: COLORS[6], icon: '💧', allowPartial: false, created: pastKey(21) };
+    state = { habits: [h1, h2, h3], log: {} };
+    state.log[h1.id] = {}; state.log[h2.id] = {}; state.log[h3.id] = {};
+    for(var i = 0; i < 14; i++){
+      var d = new Date(); d.setDate(d.getDate() - i);
+      var k = localKey(d), wd = d.getDay();
+      state.log[h1.id][k] = { status: (i % 4 === 3 ? 'partial' : 'done'), note: '' };
+      if(wd >= 1 && wd <= 5) state.log[h2.id][k] = { status: (i % 6 === 5 ? 'skip' : 'done'), note: '' };
+      state.log[h3.id][k] = { status: (i === 9 ? 'skip' : 'done'), note: '' };
+    }
+    renderAll();
+  }
+  function restore(){
+    state = snap || { habits: [], log: {} };
+    try{
+      if(snapLS === LS_MISSING) localStorage.removeItem(LS_KEY);
+      else localStorage.setItem(LS_KEY, snapLS);
+    }catch(e){}
+    if(snapUI){ selRingHid = snapUI.ring; selWeekIdx = (snapUI.week == null ? -1 : snapUI.week); }
+    snap = null; snapLS = null;
+    renderAll();
+    restoreUI(snapUI);
+    snapUI = null;
+  }
+  btn.addEventListener('click', function(){
+    if(!sampleOn){
+      snapshot();
+      snapUI = snapshotUI();
+      window.__gSampleOn = true;
+      sampleOn = true;
+      applySample();
+    }else{
+      window.__gSampleOn = false;
+      sampleOn = false;
+      restore();
+    }
+    paintSample();
+    Sound.click();
+  });
+  paintSample();
 })();
-})();
+
+loadState();
+initTheme();
+renderAll();
+bindSoundToggle();
 </script>
 </body>
 </html>
