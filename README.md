@@ -1,8 +1,8 @@
-# SplitFair — Roommate Utility Split Calculator
+# SubAudit — Subscription Audit Dashboard
 
-Stop arguing about the electric bill. Add your roommates and utility bills,
-and SplitFair computes exactly who owes what — split equally, by room size,
-or by who's actually home.
+Find every forgotten recurring charge. See exactly what your subscriptions cost
+per month and per year, get warned before renewals hit, and model what
+cancelling would save.
 
 ## What's inside
 - `index.html` — the complete app. Single file, works offline.
@@ -11,15 +11,14 @@ or by who's actually home.
 - `gallery/` — 8 screenshots showing the app in action.
 
 ## Features
-- Add roommates with optional room square footage
-- Add utility bills: Electric, Gas, Internet, Water, Trash, or custom
-- Three split methods per bill:
-  - Equal — split evenly
-  - By square footage — bigger room pays more (falls back to equal if no sqft)
-  - By occupancy — weighted by days present + guest days (guest day = 0.5)
-- Exact-to-the-cent math: rounding drift always lands on the largest share
-- Per-bill breakdowns, per-person totals, grand total, settle-up list
-- JSON backup export/import, demo data to explore
+- Track subscriptions: name, cost, billing cycle (weekly/monthly/quarterly/yearly),
+  category, renewal date, notes
+- Dashboard: monthly + annual burn, subscription count, most expensive, average
+- Renewal watch: flags charges coming up in the next 14 days (plus overdue)
+- Category breakdown with bar chart
+- Trim mode: mark subscriptions you're considering cancelling and see projected
+  monthly + annual savings live
+- Search, sort, JSON backup export/import, demo data
 - Dark mode (follows your system, remembers your choice)
 - Everything stays in your browser — your data never leaves your device
 

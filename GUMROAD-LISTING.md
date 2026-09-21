@@ -1,10 +1,10 @@
-# SplitFair — Gumroad listing (UNPUBLISHED $0 draft)
+# SubAudit — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free Roommate Utility Split Calculator: Fair Electric, Gas & Internet Bill Splitting
+Free Subscription Tracker: Audit Recurring Charges & Cancel Unused Subscriptions
 
 ## Permalink slug
-free-roommate-utility-split-calculator
+free-subscription-tracker-audit-tool
 
 ## Price
 $0
@@ -13,45 +13,46 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/0-cover.png (also attach gallery/1-people.png … 7-split-method.png as product images)
+gallery/0-cover.png (also attach gallery/1-dashboard.png … 7-mobile.png as product images)
 
 ## Product file
-splitfair-bundle.zip
+subaudit-bundle.zip
 
 ## Tags
-roommate, utility split, bill splitter, split bills, electric bill, roommate calculator, shared expenses, apartment, rent split, fair split
+subscription tracker, cancel subscriptions, personal finance, budget planner, money saving, recurring charges, subscription audit, finance tracker, monthly bills, expense tracker
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-⚖️ Free Roommate Utility Split Calculator — SplitFair
+Free subscription tracker and audit tool. Find forgotten recurring charges, track monthly and annual burn, get renewal warnings, and calculate exact savings from cancelling unused services. 100% free, offline, and private.
 
-Stop arguing about the electric bill. Add your roommates and utility bills, and SplitFair computes exactly who owes what — split equally, by room size, or by who's actually home (guests included).
+🔍 SubAudit — Free Subscription Tracker & Audit Tool
 
-💸 100% FREE — no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
+Find every forgotten recurring charge. SubAudit shows exactly what your subscriptions cost per month and per year, warns you before renewals hit, and calculates what cancelling would save.
+
+💸 100% FREE — no upsells, no account, no subscription (obviously). If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 ✨ WHAT IT DOES
-• 👥 Add roommates — with optional room square footage
-• 🧾 Add utility bills — Electric, Gas, Internet, Water, Trash, or custom
-• ⚖️ Three fair split methods per bill:
-  - Equal — split evenly among roommates
-  - By square footage — bigger room pays more
-  - By occupancy — weighted by days present + guest days (a guest day counts as half)
-• 🎯 Exact-to-the-cent math — no rounding arguments, ever
-• 📊 Per-bill breakdowns, per-person totals, grand total, and a settle-up list
+• 📋 Track every subscription — name, cost, billing cycle (weekly/monthly/quarterly/yearly), category, renewal date
+• 📊 Instant dashboard — monthly burn, annual burn, most expensive subscription, average cost
+• ⏰ Renewal watch — flags every charge coming up in the next 14 days, plus overdue ones
+• ✂️ Trim mode — mark subscriptions you're thinking of cancelling and see your projected savings live
+• 🗂️ Category breakdown — see where the money really goes (Streaming, Software, Memberships…)
+• 🔎 Search & sort — by cost, renewal date, category, or name
 
 📦 WHAT YOU GET
-• SplitFair as a single HTML file — double-click to open in any browser
+• SubAudit as a single HTML file — double-click to open in any browser
 • 8 screenshot walkthrough images
 • README with quick-start guide
 • Free updates forever
 
 🖥️ HOW IT WORKS
-No install, no internet, no account. Open the file, add your roommates once, then drop in each month's bills and pick the split method. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
+No install, no internet, no account. Open the file, add your subscriptions, done. Everything is stored privately in your own browser — your financial data never leaves your device. Includes JSON backup export/import and one-click demo data so you can explore before entering your own.
 
 🔒 PRIVACY
-SplitFair is fully offline. No trackers, no analytics, no external requests.
+SubAudit is fully offline. There are no trackers, no analytics, no external requests. What you enter stays on your computer.
 
 🛠️ MORE FROM GLENERDS
+• Free Compound Interest Calculator → https://glenerds.netlify.app/tools/compound-interest-calculator/
 • Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT

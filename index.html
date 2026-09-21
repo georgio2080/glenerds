@@ -4,87 +4,110 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Free roommate utility split calculator: split electric, gas, and internet bills equally, by room size, or by occupancy. Offline, single-file tool (SplitFair).">
-<title>Free Roommate Utility Split Calculator (SplitFair)</title>
-<script>
-/* Early theme set (prevents flash); mirrors the stored preference logic below. */
-(function(){try{var t=localStorage.getItem("splitfair.theme.v1");if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
-</script>
+<meta name="description" content="SubAudit — audit your recurring subscriptions, see where the money leaks, and find out what cancelling would save. Single-file offline tool.">
+<title>SubAudit — Subscription Audit Dashboard</title>
 <style>
-[hidden]{display:none!important}
   :root {
     color-scheme: light;
-    --bg: #f4f3fb;
+    --bg: #f3f5fb;
     --surface: #ffffff;
-    --surface-2: #efedf7;
-    --text: #211f2e;
-    --muted: #6b6884;
-    --border: #dddaf0;
-    --accent: #6366f1;
-    --accent-2: #8b5cf6;
-    --accent-strong: #4f46e5;
+    --surface-2: #eef1f8;
+    --text: #171b28;
+    --muted: #5f6b84;
+    --border: #e2e8f3;
+    --accent: #4f46e5;
+    --accent-2: #7c3aed;
+    --accent-ink: #4338ca;
+    --accent-soft: rgba(79,70,229,.10);
     --on-accent: #ffffff;
-    --good: #146c38;
-    --warn: #8a5200;
-    --danger: #b3261e;
-    --radius: 14px;
-    --shadow: 0 6px 18px rgba(79,70,229,.08);
+    --good: #059669;
+    --good-soft: rgba(5,150,105,.12);
+    --warn: #b45309;
+    --warn-soft: rgba(180,83,9,.13);
+    --bad: #dc2626;
+    --bad-soft: rgba(220,38,38,.10);
+    --chip: #eef1fe;
+    --bar-track: #e6ebf5;
+    --grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #2563eb 100%);
+    --bar-grad: linear-gradient(90deg, #4f46e5, #06b6d4);
+    --radius: 16px;
+    --shadow: 0 1px 2px rgba(23,27,40,.05), 0 10px 28px -14px rgba(79,70,229,.22);
+    --shadow-sm: 0 1px 2px rgba(23,27,40,.06);
   }
   [data-theme="dark"] {
     color-scheme: dark;
-    --bg: #12111a;
-    --surface: #1c1b26;
-    --surface-2: #262534;
-    --text: #f1f0f7;
-    --muted: #a7a3bd;
-    --border: #35334a;
-    --accent: #a78bfa;
-    --accent-2: #8b5cf6;
-    --accent-strong: #c4b5fd;
-    --on-accent: #1b1440;
-    --good: #7ee2a8;
-    --warn: #f0b429;
-    --danger: #ff8a80;
-    --shadow: 0 6px 18px rgba(0,0,0,.35);
+    --bg: #0b0e15;
+    --surface: #141927;
+    --surface-2: #1b2234;
+    --text: #eef1f8;
+    --muted: #99a4bd;
+    --border: #263049;
+    --accent: #8b9cf9;
+    --accent-2: #a78bfa;
+    --accent-ink: #c7d2fe;
+    --accent-soft: rgba(139,156,249,.15);
+    --on-accent: #131022;
+    --good: #34d399;
+    --good-soft: rgba(52,211,153,.14);
+    --warn: #fbbf24;
+    --warn-soft: rgba(251,191,36,.15);
+    --bad: #f87171;
+    --bad-soft: rgba(248,113,113,.13);
+    --chip: #1e2742;
+    --bar-track: #222b45;
+    --grad: linear-gradient(135deg, #4338ca 0%, #6d28d9 55%, #1e40af 100%);
+    --bar-grad: linear-gradient(90deg, #8b9cf9, #22d3ee);
+    --shadow: 0 1px 2px rgba(0,0,0,.45), 0 14px 34px -14px rgba(0,0,0,.6);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
   }
   * { box-sizing: border-box; }
   html, body { overflow-x: clip; }
   body {
     margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--text);
     line-height: 1.5;
+    background:
+      radial-gradient(900px 320px at 12% -4%, rgba(79,70,229,.10), transparent 60%),
+      radial-gradient(800px 300px at 88% 2%, rgba(6,182,212,.08), transparent 60%),
+      var(--bg);
+    min-height: 100vh;
   }
-  /* ---------- hero header ---------- */
-  header.hero {
+  [data-theme="dark"] body {
+    background:
+      radial-gradient(900px 320px at 12% -4%, rgba(129,140,248,.10), transparent 60%),
+      radial-gradient(800px 300px at 88% 2%, rgba(34,211,238,.06), transparent 60%),
+      var(--bg);
+  }
+  a { color: var(--accent); }
+  .ico { width: 1.15em; height: 1.15em; flex: none; vertical-align: -0.2em; }
+
+  /* ---------- header ---------- */
+  header.top {
     background: none;
     color: var(--text);
-    position: static;
+    padding: 1.4rem 1.5rem .6rem;
     box-shadow: none;
     border: none;
+    position: static;
+    overflow: visible;
   }
-  .hero-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
+  .top-inner {
+    max-width: 1080px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; position: relative; z-index: 1;
   }
-  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .brand { display: flex; align-items: center; gap: .9rem; }
   .logo-badge {
-    width: 46px; height: 46px; flex: 0 0 46px;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: var(--accent);
+    width: 3rem; height: 3rem; border-radius: 1rem;
+    background: var(--accent,#4f46e5);
     border: none;
-    border-radius: 14px;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: none;
   }
-  .logo-badge svg { width: 26px; height: 26px; }
-  .brand h1 { font-size: 1.4rem; margin: 0; letter-spacing: .2px; }
-  .brand p { margin: 2px 0 0; font-size: .88rem; color: var(--muted); opacity: 1; }
+  .logo-badge .ico { width: 1.7rem; height: 1.7rem; color: #fff; }
+  header.top h1 { margin: 0; font-size: 1.55rem; letter-spacing: -0.02em; font-weight: 800; }
+  header.top p { margin: .15rem 0 0; color: var(--muted); font-size: .92rem; }
   /* ---------- spec header cluster (2026-09-21) ---------- */
   .round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card,var(--surface,#fff));border:1px solid var(--line,var(--border,rgba(0,0,0,.16)));color:var(--ink,var(--text,var(--fg,#1f2937)));box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem;transition:transform .08s ease,border-color .15s ease}
   .round-btn svg{width:26px;height:26px;flex:none}
@@ -93,200 +116,259 @@
   .round-btn:active{transform:scale(.92);border-color:var(--accent,#4f46e5)}
   .round-btn:focus{outline:none}
   .round-btn:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:2px}
-  .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(99,102,241,.12))}
+  .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(79,70,229,.12))}
   .g-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;row-gap:6px;justify-content:flex-end}
-  /* ---------- interactive who-owes-what rows ---------- */
-  .sf-row[role="button"] { cursor: pointer; }
-  .sf-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
-  .sf-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent, #1f7a5c); border-radius: 8px; }
-  .sf-detail { margin: 8px 0 0; font-size: .85rem; color: var(--muted, #5b6472); min-height: 1.2em; }
-  .sf-detail strong { color: var(--text, #1c2330); }
-  /* clickable totals-table person rows: tie to the Who-owes-what spotlight */
-  .tot-row[role="button"] { cursor: pointer; }
-  .tot-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
-  .tot-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent, #1f7a5c); border-radius: 4px; }
-  /* ---------- layout ---------- */
-  main { max-width: 900px; margin: 0 auto; padding: 20px 16px 48px; }
+  /* ---------- interactive category bars ---------- */
+  .cat-row[role="button"] { cursor: pointer; border-radius: 10px; }
+  .cat-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #4f46e5)); }
+  .cat-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent, #4f46e5); }
+  .cat-detail { margin: 8px 0 0; font-size: .85rem; color: var(--muted, #5b6472); }
+  .cat-detail strong { color: var(--text, #1c2330); }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 1.75rem 1.5rem 3rem; }
+
+  /* ---------- cards & headings ---------- */
   section.card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 18px;
-    margin-bottom: 18px;
     box-shadow: var(--shadow);
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1.5rem;
   }
-  h2 {
-    font-size: 1.18rem; margin: 0 0 12px;
-    display: flex; align-items: center; gap: 10px;
+  section.card > h2 {
+    margin: 0 0 1.1rem; font-size: 1.08rem; font-weight: 750; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: .6rem;
   }
-  .hicon {
-    width: 34px; height: 34px; flex: 0 0 34px;
+  .h-ico {
+    width: 2rem; height: 2rem; border-radius: .65rem;
+    background: var(--accent-soft); color: var(--accent-ink);
+    display: inline-flex; align-items: center; justify-content: center; flex: none;
+  }
+  [data-theme="dark"] .h-ico { color: var(--accent); }
+  .h-ico .ico { width: 1.15rem; height: 1.15rem; }
+
+  /* ---------- stat cards ---------- */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .9rem; }
+  .stat {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: .95rem 1rem;
+    display: flex; gap: .8rem; align-items: flex-start;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .stat-icon {
+    width: 2.4rem; height: 2.4rem; border-radius: .8rem; flex: none;
     display: inline-flex; align-items: center; justify-content: center;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(99,102,241,.16), rgba(139,92,246,.16));
-    color: var(--accent-strong);
-    border: 1px solid var(--border);
   }
-  [data-theme="dark"] .hicon { color: var(--accent); }
-  .hicon svg { width: 19px; height: 19px; }
-  h3 { font-size: 1rem; margin: 16px 0 8px; }
-  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
-  .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .field label { font-size: .82rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
-  input, select {
+  .stat-icon .ico { width: 1.3rem; height: 1.3rem; }
+  .tint-flame .stat-icon { background: rgba(220,38,38,.12); color: #dc2626; }
+  .tint-cal .stat-icon { background: rgba(79,70,229,.12); color: #4f46e5; }
+  .tint-layers .stat-icon { background: rgba(124,58,237,.12); color: #7c3aed; }
+  .tint-crown .stat-icon { background: rgba(180,83,9,.13); color: #b45309; }
+  .tint-pie .stat-icon { background: rgba(5,150,105,.13); color: #059669; }
+  [data-theme="dark"] .tint-flame .stat-icon { color: #f87171; }
+  [data-theme="dark"] .tint-cal .stat-icon { color: #8b9cf9; }
+  [data-theme="dark"] .tint-layers .stat-icon { color: #a78bfa; }
+  [data-theme="dark"] .tint-crown .stat-icon { color: #fbbf24; }
+  [data-theme="dark"] .tint-pie .stat-icon { color: #34d399; }
+  .stat .label { font-size: .74rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .25rem; font-weight: 600; }
+  .stat .value { font-size: 1.4rem; font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; }
+  .stat .sub { font-size: .82rem; color: var(--muted); margin-top: .15rem; }
+
+  /* ---------- buttons / inputs ---------- */
+  button, .btn {
     font: inherit;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
+    cursor: pointer;
     border-radius: 10px;
+    padding: .55rem 1rem;
+    border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text);
-    min-height: 44px;
-    max-width: 100%;
+    display: inline-flex; align-items: center; gap: .45rem;
+    transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
   }
-  input:focus, select:focus, button:focus-visible {
+  button:hover, .btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+  button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
-  input[type="number"] { width: 7em; }
-  input[type="text"] { min-width: 10em; }
-  /* ---------- buttons ---------- */
-  button {
-    font: inherit;
-    min-height: 44px;
-    padding: 10px 16px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--surface-2);
-    color: var(--text);
-    cursor: pointer;
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    font-weight: 600;
-  }
-  button:hover { filter: brightness(1.04); }
-  button svg { width: 17px; height: 17px; flex: 0 0 17px; }
   button.primary {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-    border-color: transparent;
+    background: var(--grad);
+    border: none;
     color: #fff;
-    box-shadow: 0 4px 12px rgba(99,102,241,.35);
+    font-weight: 700;
+    box-shadow: 0 6px 18px -6px rgba(79,70,229,.55);
   }
-  [data-theme="dark"] button.primary { color: #fff; }
-  button.danger { color: var(--danger); border-color: var(--danger); background: transparent; }
-  button:disabled { opacity: .5; cursor: not-allowed; }
-  /* icons injected on JS-generated buttons (textContent is never swapped, so ::before is safe) */
-  button[aria-label^="Remove"]::before,
-  button[aria-label^="Delete bill"]::before {
-    content: ""; width: 1em; height: 1em; flex: 0 0 1em;
-    background-color: currentColor;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M9 3h6l1 2h4v2H4V5h4l1-2zm-3 6h12l-1 12H7L6 9z'/%3E%3C/svg%3E") no-repeat center / contain;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M9 3h6l1 2h4v2H4V5h4l1-2zm-3 6h12l-1 12H7L6 9z'/%3E%3C/svg%3E") no-repeat center / contain;
-  }
-  /* ---------- people & bills ---------- */
-  .person-row, .bill-card {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 12px;
+  button.primary:hover { filter: brightness(1.06); }
+  button.danger { color: var(--bad); }
+  button.danger:hover { border-color: var(--bad); background: var(--bad-soft); }
+  button.small { padding: .32rem .7rem; font-size: .85rem; border-radius: 8px; }
+  input[type="text"], input[type="search"], input[type="number"], input[type="date"], select, textarea {
+    font: inherit;
+    color: var(--text);
     background: var(--surface);
-  }
-  .bill-card { background: var(--surface-2); overflow-x: auto; }
-  [data-theme="dark"] .bill-card { background: var(--surface); }
-  .person-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
-  .bill-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
-  .bill-meta { font-size: .85rem; color: var(--muted); margin: 8px 0; }
-  .note { font-size: .85rem; color: var(--muted); }
-  .math-note {
-    font-size: .85rem;
-    color: var(--muted);
-    background: var(--surface-2);
-    border: 1px dashed var(--border);
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-top: 10px;
-  }
-  /* ---------- tables & results ---------- */
-  #results { overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; margin-top: 8px; }
-  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; }
-  thead th {
-    background: linear-gradient(135deg, rgba(99,102,241,.14), rgba(139,92,246,.14));
-    font-size: .82rem; text-transform: uppercase; letter-spacing: .4px;
-  }
-  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-  tbody tr:nth-child(even) { background: var(--surface-2); }
-  tfoot td { font-weight: 700; }
-  .total-good { color: var(--good); }
-  #results h3 {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 1.05rem;
-    background: linear-gradient(135deg, var(--accent-strong), var(--accent-2));
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  [data-theme="dark"] #results h3 { -webkit-text-fill-color: var(--accent); background: none; }
-  /* ---------- balance bars (visual representation) ---------- */
-  .sf-bars { display: grid; gap: 8px; margin: 10px 0 4px; }
-  .sf-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; align-items: center; }
-  .sf-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sf-val { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; white-space: nowrap; }
-  .sf-track { grid-column: 1 / -1; height: 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); overflow: hidden; }
-  .sf-fill { height: 100%; border-radius: 999px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); min-width: 0; }
-  @media (max-width: 560px) { .sf-name { font-size: .92rem; } }
-  .settle-list { list-style: none; padding: 0; margin: 10px 0 0; }  .settle-list li {
-    padding: 12px 14px;
     border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .5rem .65rem;
+    max-width: 100%;
+  }
+  textarea { resize: vertical; min-height: 3.2rem; }
+  label { font-size: .88rem; font-weight: 600; display: block; margin-bottom: .3rem; }
+  .hint { font-size: .82rem; color: var(--muted); margin-top: .25rem; }
+  .error { color: var(--bad); font-size: .9rem; font-weight: 600; margin: .75rem 0 0; min-height: 1.4em; }
+  .empty { color: var(--muted); font-size: .95rem; padding: .75rem 0; margin: 0; }
+  .muted { color: var(--muted); }
+
+  /* ---------- renewal watch ---------- */
+  .renew-list { list-style: none; margin: 0; padding: 0; }
+  .renew-list li {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: .7rem .25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .renew-list li:last-child { border-bottom: none; }
+  .renew-name { font-weight: 650; display: flex; align-items: center; gap: .5rem; }
+  .renew-name .ico { color: var(--muted); }
+  .renew-meta { color: var(--muted); font-size: .86rem; margin-top: .1rem; }
+  .badge {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: .22rem .65rem; border-radius: 999px;
+    font-size: .78rem; font-weight: 700; white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .badge.soon { background: var(--accent-soft); color: var(--accent-ink); border-color: var(--accent); }
+  [data-theme="dark"] .badge.soon { color: var(--accent); }
+  .badge.overdue { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
+  .badge.today { background: var(--warn); color: #fff; border-color: var(--warn); }
+  [data-theme="dark"] .badge.today { color: #1d1c1a; }
+
+  /* ---------- category bars ---------- */
+  .cat-row { margin-bottom: 1rem; }
+  .cat-row:last-child { margin-bottom: 0; }
+  .cat-head { display: flex; justify-content: space-between; gap: 1rem; font-size: .92rem; margin-bottom: .35rem; }
+  .cat-name { font-weight: 650; display: flex; align-items: center; gap: .5rem; }
+  .cat-name .ico { color: var(--accent-ink); }
+  [data-theme="dark"] .cat-name .ico { color: var(--accent); }
+  .cat-nums { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .bar-track { background: var(--bar-track); border-radius: 8px; height: 12px; overflow: hidden; }
+  .bar {
+    background: var(--bar-grad); height: 100%; border-radius: 8px; min-width: 3px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+  }
+
+  /* ---------- savings ---------- */
+  .savings-hero { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .savings-tile {
+    flex: 1 1 200px;
+    background: var(--good-soft);
+    border: 1px solid var(--good);
     border-radius: 12px;
-    margin-bottom: 8px;
-    display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    font-variant-numeric: tabular-nums;
-    background: var(--surface-2);
-    box-shadow: var(--shadow);
+    padding: .9rem 1.1rem;
+    display: flex; gap: .8rem; align-items: center;
   }
-  .settle-list strong {
-    font-size: 1.1rem;
-    background: linear-gradient(135deg, var(--accent-strong), var(--accent-2));
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .savings-tile .tile-ico {
+    width: 2.4rem; height: 2.4rem; border-radius: .8rem; flex: none;
+    background: var(--good); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
   }
-  [data-theme="dark"] .settle-list strong { -webkit-text-fill-color: var(--accent); background: none; }
-  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; align-items: end; }
-  footer {
+  .savings-tile .tile-ico .ico { width: 1.3rem; height: 1.3rem; }
+  .savings-hero .big { font-size: 1.65rem; font-weight: 800; color: var(--good); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .savings-hero .cap { font-size: .76rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .cancel-list { list-style: none; margin: .5rem 0 0; padding: 0; }
+  .cancel-list li {
+    display: flex; justify-content: space-between; gap: 1rem;
+    padding: .5rem .25rem; border-bottom: 1px solid var(--border); font-size: .95rem;
+  }
+  .cancel-list li:last-child { border-bottom: none; }
+  .cancel-list li span:last-child { font-variant-numeric: tabular-nums; font-weight: 650; color: var(--good); }
+
+  /* ---------- controls & table ---------- */
+  .controls { display: flex; flex-wrap: wrap; gap: .9rem; align-items: flex-end; margin-bottom: 1rem; }
+  .controls .field { display: flex; flex-direction: column; }
+  .controls .spacer { flex: 1; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; min-width: 780px; position: relative; }
+  caption { text-align: left; padding: .6rem .9rem; color: var(--muted); font-size: .85rem; }
+  th, td { text-align: left; padding: .65rem .75rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  thead th {
+    font-size: .76rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted);
+    background: var(--surface-2); font-weight: 700;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background .12s ease; }
+  tbody tr:hover { background: var(--surface-2); }
+  td.num, th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td .cycle-suffix { color: var(--muted); font-size: .82rem; }
+  .row-actions { display: flex; gap: .4rem; }
+  input[type="checkbox"].trim-check { width: 1.2rem; height: 1.2rem; accent-color: var(--accent); cursor: pointer; }
+  td:first-child .trim-check { display: block; margin: 0 auto; }
+
+  /* ---------- data section ---------- */
+  .data-row { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+  /* ---------- dialog ---------- */
+  dialog {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+    color: var(--text);
+    padding: 0;
+    width: min(520px, calc(100vw - 2rem));
+    box-shadow: 0 24px 64px rgba(0,0,0,.3);
+  }
+  dialog::backdrop { background: rgba(10,12,20,.55); backdrop-filter: blur(2px); }
+  .dlg-body { padding: 1.6rem; }
+  .dlg-body h2 { margin: 0 0 1.1rem; font-size: 1.2rem; font-weight: 750; display: flex; align-items: center; gap: .6rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .dlg-actions { display: flex; justify-content: flex-end; gap: .6rem; margin-top: 1.3rem; }
+
+  footer.page {
     text-align: center;
-    padding: 24px 16px 32px;
     color: var(--muted);
     font-size: .85rem;
+    padding: 1.5rem;
   }
-  footer a { color: var(--muted); }
-  .empty { color: var(--muted); font-style: italic; }
-  .occ-table input[type="number"] { width: 5.5em; }
-  .visually-hidden {
-    position: absolute; width: 1px; height: 1px;
-    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
   }
-  @media (max-width: 560px) {
-    .hero-inner { padding: 12px; }
-    .brand h1 { font-size: 1.2rem; }
-    .brand p { font-size: .8rem; }
-    section.card { padding: 14px; }
-    input[type="text"] { min-width: 0; width: 100%; }
-    .field { flex: 1 1 140px; }
-    .toolbar button { flex: 1 1 auto; }
+  @media (max-width: 600px) {
+    main { padding: 1.25rem 0.9rem 2.5rem; }
+    section.card { padding: 1.1rem 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .savings-hero { gap: .8rem; }
+    .top-inner { flex-direction: column; align-items: flex-start; }
+    #themeToggle { align-self: flex-end; }
+    header.top h1 { font-size: 1.35rem; }
   }
-/* ---------- charts (donut + stacked columns) ---------- */
-.chart-wrap { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin: 8px 0 2px; }
-.chart-wrap svg { display: block; max-width: 100%; height: auto; }
-.donut-seg, .stack-seg, .settle-list li[role="button"] { cursor: pointer; }
-.donut-seg:focus-visible, .stack-seg:focus-visible { outline: none; filter: drop-shadow(0 0 4px rgba(79,70,229,.9)); }
-.donut-seg.sel circle { stroke-width: 34; }
-.donut-top, .donut-sub, .donut-pct, .stack-lbl, .stack-amt { pointer-events: none; }
-.chart-detail { margin: 8px 0 0; font-size: .85rem; color: var(--muted); min-height: 1.2em; }
-.chart-detail strong { color: var(--text); }
-.donut-top { font-size: 1.25rem; font-weight: 800; fill: var(--text); }
-.donut-sub { font-size: .9rem; fill: var(--muted); }
-.donut-pct { font-size: .72rem; font-weight: 700; fill: #fff; pointer-events: none; }
-.stack-lbl { font-size: .72rem; fill: var(--muted); }
-.stack-amt { font-size: .72rem; font-weight: 700; fill: var(--text); font-variant-numeric: tabular-nums; }
-.settle-list li[role="button"]:focus-visible { outline: none; filter: drop-shadow(0 0 3px rgba(79,70,229,.9)); }
+  /* ---------- charts: donut, renewal timeline, savings gauge ---------- */
+  .chart-wrap { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin: 8px 0 2px; }
+  .chart-wrap svg { display: block; max-width: 100%; height: auto; }
+  .donut-seg, .tl-mark { cursor: pointer; }
+  .donut-seg:focus-visible, .tl-mark:focus-visible, .gauge-tile:focus-visible { outline: none; filter: drop-shadow(0 0 4px var(--accent)); }
+  .donut-seg.sel circle { stroke-width: 34; }
+  .donut-top, .donut-sub, .donut-pct, .tl-name, .tl-day, .gauge-top, .gauge-sub { pointer-events: none; }
+  .donut-top { font-size: 1.25rem; font-weight: 800; fill: var(--text); }
+  .donut-sub { font-size: .9rem; fill: var(--muted); }
+  .donut-pct { font-size: .72rem; font-weight: 700; fill: #fff; pointer-events: none; }
+  .gauge-top { font-size: 1.05rem; font-weight: 800; fill: var(--good); }
+  .gauge-sub { font-size: .75rem; fill: var(--muted); }
+  .tl-name { font-size: .8rem; fill: var(--text); font-weight: 600; }
+  .tl-day { font-size: .72rem; fill: var(--muted); }
+  .tl-axis { stroke: var(--border); stroke-width: 2; }
+  .gauge-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .1rem; padding: .3rem .6rem; border-radius: 12px; cursor: pointer; }
+  .stat[role="button"] { cursor: pointer; }
+  .stat[role="button"]:focus-visible { outline: none; filter: drop-shadow(0 0 3px var(--accent)); }
+  .stat[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent); }
+  .stat-box[role="button"] { cursor: pointer; border-radius: 10px; }
+  .stat-box[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent)); }
+  .stat-box.sel { box-shadow: inset 0 0 0 2px var(--accent); }
+  .stat-detail { margin-top: .75rem; font-size: .88rem; color: var(--muted); min-height: 1.2em; }
+  .stat-detail strong { color: var(--text); }
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
 
 .g-store-btn {
@@ -329,607 +411,650 @@
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="hero-inner">
+<header class="top">
+  <div class="top-inner">
     <div class="brand">
-      <span class="logo-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 12V3"/><path d="M12 12l6.4 6.4"/></svg></span>
+      <span class="logo-badge" aria-hidden="true">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+      </span>
       <div>
-        <h1>SplitFair</h1>
-        <p>Fair utility bill splitting for roommates. Works offline.</p>
+        <h1>SubAudit</h1>
+        <p>See exactly what your subscriptions cost — and what cancelling would save.</p>
       </div>
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
       <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-    <button type="button" id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
-      <button type="button" id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
+      <button type="button" id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
   </div>
 </header>
 
 <main>
-  <section class="card" aria-labelledby="peopleH">
-    <h2 id="peopleH"><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16.2 14.3c2.8.5 4.8 2.5 4.8 5.4"/></svg></span>People</h2>
-    <p class="note">Room square footage is optional — leave it blank or 0 and that bill splits equally by default.</p>
-    <div id="peopleList"></div>
-    <button type="button" id="addPerson" class="primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add person</button>
+  <section class="card" aria-labelledby="dashHeading">
+    <h2 id="dashHeading"><span class="h-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>Dashboard</h2>
+    <div class="stats" id="totals" aria-live="polite" aria-atomic="true">
+      <div class="stat tint-flame">
+        <span class="stat-icon" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+        <div><div class="label">Monthly burn</div><div class="value" id="statMonthly">$0.00</div></div>
+      </div>
+      <div class="stat tint-cal">
+        <span class="stat-icon" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/></svg></span>
+        <div><div class="label">Annual burn</div><div class="value" id="statAnnual">$0.00</div></div>
+      </div>
+      <div class="stat tint-layers">
+        <span class="stat-icon" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span>
+        <div><div class="label">Active subscriptions</div><div class="value" id="statCount">0</div></div>
+      </div>
+      <div class="stat tint-crown">
+        <span class="stat-icon" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.735H5.81a1 1 0 0 1-.957-.735L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg></span>
+        <div><div class="label">Most expensive</div><div class="value" id="statTop">—</div><div class="sub" id="statTopSub"></div></div>
+      </div>
+      <div class="stat tint-pie">
+        <span class="stat-icon" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg></span>
+        <div><div class="label">Average per subscription</div><div class="value" id="statAvg">$0.00</div><div class="sub">per month</div></div>
+      </div>
+    </div>
+    <div id="statDetail" class="stat-detail" aria-live="polite"></div>
   </section>
 
-  <section class="card" aria-labelledby="billsH">
-    <h2 id="billsH"><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-2-1.5-2 1.5-2-1.5L10 21l-2-1.5L6 21z"/><path d="M9 8h6M9 12h6"/></svg></span>Bills</h2>
-    <div class="toolbar">
+  <section class="card" aria-labelledby="renewHeading">
+    <h2 id="renewHeading"><span class="h-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>Renewal watch <span class="muted" style="font-weight:400;font-size:.85rem;">(next 14 days)</span></h2>
+    <div id="renewBody"></div>
+  </section>
+
+  <section class="card" aria-labelledby="catHeading">
+    <h2 id="catHeading"><span class="h-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>Spending by category</h2>
+    <div id="catBody"></div>
+  </section>
+
+  <section class="card" aria-labelledby="trimHeading">
+    <h2 id="trimHeading"><span class="h-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/></svg></span>Trim mode — what-if savings</h2>
+    <p class="hint" style="margin-top:-0.5rem;">Check <strong>Trim</strong> next to any subscription below to see what cancelling it would save.</p>
+    <div id="savingsBody"></div>
+  </section>
+
+  <section class="card" aria-labelledby="listHeading">
+    <h2 id="listHeading"><span class="h-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h.01M3 18h.01M3 6h.01M8 12h13M8 18h13M8 6h13"/></svg></span>Your subscriptions</h2>
+    <div class="controls">
       <div class="field">
-        <label for="newBillType">Bill type</label>
-        <select id="newBillType">
-          <option value="Electric">Electric</option>
-          <option value="Gas">Gas</option>
-          <option value="Internet">Internet</option>
-          <option value="Water">Water</option>
-          <option value="Trash">Trash</option>
-          <option value="__custom">Custom…</option>
+        <label for="searchInput">Search</label>
+        <input type="search" id="searchInput" placeholder="Search by name" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="sortSelect">Sort by</label>
+        <select id="sortSelect">
+          <option value="cost-desc">Cost: highest first</option>
+          <option value="cost-asc">Cost: lowest first</option>
+          <option value="renewal">Renewal: soonest first</option>
+          <option value="name">Name: A to Z</option>
+          <option value="category">Category</option>
         </select>
       </div>
-      <div class="field" id="customNameWrap" hidden>
-        <label for="newBillCustom">Custom name</label>
-        <input type="text" id="newBillCustom" maxlength="60" placeholder="e.g. Yard service">
-      </div>
-      <div class="field">
-        <label for="newBillAmount">Amount ($)</label>
-        <input type="number" id="newBillAmount" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
-      </div>
-      <div class="field">
-        <label for="newBillStart">Period start</label>
-        <input type="date" id="newBillStart">
-      </div>
-      <div class="field">
-        <label for="newBillEnd">Period end</label>
-        <input type="date" id="newBillEnd">
-      </div>
-      <div class="field">
-        <label for="newBillMethod">Split method</label>
-        <select id="newBillMethod">
-          <option value="equal">Equal</option>
-          <option value="sqft">By square footage</option>
-          <option value="occupancy">By occupancy</option>
-        </select>
-      </div>
-      <button type="button" id="addBill" class="primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add bill</button>
+      <div class="spacer"></div>
+      <button type="button" class="primary" id="addBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add subscription</button>
     </div>
-    <p class="note">Occupancy rule: each guest day counts as 0.5 occupant-day. A person’s weight is their days present plus half their guest days.</p>
-    <div id="billList"></div>
+    <div class="table-wrap">
+      <table id="subTable">
+        <caption id="tableCaption">All subscriptions, normalized to monthly cost.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Trim</th>
+            <th scope="col">Name</th>
+            <th scope="col" class="num">Cost</th>
+            <th scope="col">Cycle</th>
+            <th scope="col">Category</th>
+            <th scope="col">Renews</th>
+            <th scope="col" class="num">Per month</th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="subTbody"></tbody>
+      </table>
+    </div>
   </section>
 
-  <section class="card" aria-labelledby="resultsH">
-    <h2 id="resultsH"><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-5M12 16V8M16 16v-3"/></svg></span>Results</h2>
-    <div id="results" aria-live="polite"></div>
-  </section>
-
-  <section class="card" aria-labelledby="dataH">
-    <h2 id="dataH"><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7.5" ry="2.8"/><path d="M4.5 5.5v13c0 1.6 3.4 2.9 7.5 2.9s7.5-1.3 7.5-2.9v-13"/><path d="M4.5 12c0 1.6 3.4 2.9 7.5 2.9s7.5-1.3 7.5-2.9"/></svg></span>Data</h2>
-    <div class="toolbar">
-      <button type="button" id="loadDemo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l1.7 4.6 4.8 1.4-4.8 1.4L12 16l-1.7-4.6L5.5 10l4.8-1.4z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg>Load demo data</button>
-      <button type="button" id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>Export JSON</button>
-      <button type="button" id="importBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M7 8l5-5 5 5"/><path d="M5 20h14"/></svg>Import JSON</button>
-      <input type="file" id="importFile" accept="application/json,.json" class="visually-hidden" aria-label="Choose JSON file to import">
-      <button type="button" id="clearAll" class="danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><path d="M6.5 7l1 13h9l1-13"/></svg>Clear all</button>
+  <section class="card" aria-labelledby="dataHeading">
+    <h2 id="dataHeading"><span class="h-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></span>Backup &amp; demo data</h2>
+    <p class="hint" style="margin-top:-0.5rem;">Everything is stored only in this browser. Export a backup before clearing or switching devices.</p>
+    <div class="data-row">
+      <button type="button" id="exportBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Export JSON</button>
+      <button type="button" id="importBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 8 5-5 5 5"/><path d="M12 3v12"/></svg>Import JSON</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="sr-only" aria-hidden="true" tabindex="-1">
+      <button type="button" id="demoBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.7 5.7 1.9-5.7 1.9L12 18.2l-1.9-5.7L4.4 10.6l5.7-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>Load demo data</button>
+      <button type="button" class="danger" id="clearBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Clear all</button>
     </div>
-    <p class="note">Everything is stored only in this browser (localStorage). Export to keep a backup.</p>
+    <p class="error" id="dataMsg" role="status" aria-live="polite"></p>
   </section>
 </main>
+
+<dialog id="subDialog" aria-labelledby="dialogTitle">
+  <div class="dlg-body">
+    <h2><span class="h-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></span><span id="dialogTitle">Add subscription</span></h2>
+    <form id="subForm" novalidate>
+      <div class="form-grid">
+        <div class="full">
+          <label for="fName">Name</label>
+          <input type="text" id="fName" maxlength="100" required autocomplete="off" placeholder="e.g. StreamFlix">
+        </div>
+        <div>
+          <label for="fCost">Cost (USD)</label>
+          <input type="number" id="fCost" min="0" max="1000000" step="0.01" inputmode="decimal" required placeholder="9.99">
+        </div>
+        <div>
+          <label for="fCycle">Billing cycle</label>
+          <select id="fCycle">
+            <option value="weekly">Weekly</option>
+            <option value="monthly" selected>Monthly</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+        <div>
+          <label for="fCategory">Category</label>
+          <select id="fCategory"></select>
+        </div>
+        <div>
+          <label for="fRenewal">Next renewal <span class="muted" style="font-weight:400;">(optional)</span></label>
+          <input type="date" id="fRenewal">
+        </div>
+        <div class="full">
+          <label for="fNotes">Notes <span class="muted" style="font-weight:400;">(optional)</span></label>
+          <textarea id="fNotes" maxlength="500" placeholder="Plan details, who uses it, why you keep it…"></textarea>
+        </div>
+      </div>
+      <p class="error" id="formError" role="alert"></p>
+      <div class="dlg-actions">
+        <button type="button" id="cancelBtn">Cancel</button>
+        <button type="submit" class="primary" id="saveBtn">Save</button>
+      </div>
+    </form>
+  </div>
+</dialog>
 
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
   <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
-<footer>
-  <a href="https://glenerds.gumroad.com">by Glenerds</a>
+<footer class="page">
+  <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
 </footer>
 
 <script>
 "use strict";
-/* SplitFair — single-file offline roommate bill splitter. No external requests. */
+/* SubAudit — single-file offline subscription audit dashboard.
+   All rendering uses DOM APIs + textContent; user/imported data is never
+   interpolated into HTML strings. */
 
 /* ---------- constants ---------- */
-var STATE_KEY = "splitfair.state.v1";
-var THEME_KEY = "splitfair.theme.v1";
-var METHODS = { equal: true, sqft: true, occupancy: true };
-var BILL_TYPES = ["Electric", "Gas", "Internet", "Water", "Trash"];
-var MAX_NAME = 60;
-var MAX_SQFT = 100000;
-var MAX_AMOUNT = 1000000000;
-var MAX_DAYS = 366;
-var uidCounter = 0;
+var LS_DATA = "subaudit.data.v1";
+var LS_THEME = "subaudit.theme.v1";
+var CYCLES = ["weekly", "monthly", "quarterly", "yearly"];
+var CYCLE_LABEL = { weekly: "Weekly", monthly: "Monthly", quarterly: "Quarterly", yearly: "Yearly" };
+var CYCLE_SHORT = { weekly: "/wk", monthly: "/mo", quarterly: "/qtr", yearly: "/yr" };
+/* monthly normalization factors */
+var CYCLE_FACTOR = { weekly: 52 / 12, monthly: 1, quarterly: 4 / 12, yearly: 1 / 12 };
+var CATEGORIES = ["Streaming", "Software & Apps", "Memberships", "News & Media", "Utilities", "Insurance", "Health & Fitness", "Other"];
+var MAX_COST = 1000000;
+var MAX_NAME = 100;
+var MAX_NOTES = 500;
+var RENEW_WINDOW_DAYS = 14;
 
-function uid() {
-  uidCounter += 1;
-  return "id" + Date.now().toString(36) + uidCounter.toString(36);
-}
-
-function money(cents) {
-  var sign = cents < 0 ? "-" : "";
-  var abs = Math.abs(Math.round(cents));
-  return sign + "$" + (abs / 100).toFixed(2);
-}
+var money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+var dateFmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
 
 /* ---------- state ---------- */
-var state = { people: [], bills: [] };
+var subs = [];
+var editingId = null;
+var searchTerm = "";
+var sortKey = "cost-desc";
+var storageOK = true;
+var memStore = {};
 
-function blankState() { return { people: [], bills: [] }; }
-
-function save() {
-  if (window.__gSampleOn) return; /* sample mode: real data is snapshotted — never persist demo data */
-  try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (e) {}
-}
-
-function load() {
-  try {
-    var raw = localStorage.getItem(STATE_KEY);
-    if (!raw) return;
-    var parsed = JSON.parse(raw);
-    var clean = sanitizeState(parsed);
-    if (clean) state = clean;
-  } catch (e) {}
-}
-
-/* ---------- sanitization (import + storage) ---------- */
-function cleanNum(v, min, max) {
-  var n = Number(v);
-  if (!isFinite(n)) return null;
-  if (n < min || n > max) return null;
+/* ---------- tiny DOM helper (no HTML strings from data) ---------- */
+function el(tag, className, text) {
+  var n = document.createElement(tag);
+  if (className) n.className = className;
+  if (text !== undefined && text !== null) n.textContent = text;
   return n;
 }
+function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
 
-function cleanStr(v) {
-  if (typeof v !== "string") return null;
-  var s = v.trim().replace(/[\u0000-\u001F\u007F]/g, "");
-  if (s.length === 0 || s.length > MAX_NAME) return null;
-  return s;
+/* ---------- storage (localStorage with in-memory fallback) ---------- */
+function storeGet(key) {
+  try { return window.localStorage.getItem(key); }
+  catch (e) { storageOK = false; return (key in memStore) ? memStore[key] : null; }
+}
+function storeSet(key, value) {
+  try { window.localStorage.setItem(key, value); }
+  catch (e) { storageOK = false; memStore[key] = value; }
+}
+function saveData() {
+  if (window.__gSampleOn) return; /* sample mode: real data is snapshotted — never persist demo data */
+  storeSet(LS_DATA, JSON.stringify({ v: 1, subs: subs }));
+}
+function loadData() {
+  var raw = storeGet(LS_DATA);
+  if (!raw) { subs = []; return; }
+  try {
+    var parsed = JSON.parse(raw);
+    var arr = Array.isArray(parsed) ? parsed : parsed.subs;
+    if (!Array.isArray(arr)) { subs = []; return; }
+    subs = [];
+    for (var i = 0; i < arr.length; i++) {
+      var s = sanitizeSub(arr[i]);
+      if (s) subs.push(s);
+    }
+  } catch (e) { subs = []; }
 }
 
-function cleanDateStr(v) {
-  if (typeof v !== "string") return "";
-  var s = v.trim();
-  if (s === "") return "";
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return "";
-  return s;
+/* ---------- ids ---------- */
+function uid() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+  return "id-" + Date.now().toString(36) + "-" + Math.floor(Math.random() * 1e9).toString(36);
 }
 
-function sanitizePerson(p) {
-  if (!p || typeof p !== "object") return null;
-  var name = cleanStr(p.name);
+/* ---------- money / date math ---------- */
+function monthlyOf(s) { return s.cost * CYCLE_FACTOR[s.cycle]; }
+function annualOf(s) { return monthlyOf(s) * 12; }
+
+function parseISODate(str) {
+  if (typeof str !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(str)) return null;
+  var p = str.split("-");
+  var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  if (d.getFullYear() !== Number(p[0]) || d.getMonth() !== Number(p[1]) - 1 || d.getDate() !== Number(p[2])) return null;
+  return d;
+}
+function startOfToday() {
+  var t = new Date();
+  t.setHours(0, 0, 0, 0);
+  return t;
+}
+function daysUntilRenewal(sub) {
+  var d = parseISODate(sub.renewal);
+  if (!d) return null;
+  return Math.round((d.getTime() - startOfToday().getTime()) / 86400000);
+}
+function isoOfDate(d) {
+  var m = String(d.getMonth() + 1), day = String(d.getDate());
+  return d.getFullYear() + "-" + (m.length < 2 ? "0" + m : m) + "-" + (day.length < 2 ? "0" + day : day);
+}
+
+/* ---------- validation / sanitization ---------- */
+function sanitizeSub(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  var name = typeof raw.name === "string" ? raw.name.trim().slice(0, MAX_NAME) : "";
   if (!name) return null;
-  var sqft = cleanNum(p.sqft, 0, MAX_SQFT);
-  return { id: typeof p.id === "string" && p.id.length <= 40 ? p.id : uid(),
-           name: name, sqft: sqft === null ? 0 : sqft };
+  var cost = Number(raw.cost);
+  if (!isFinite(cost) || cost < 0 || cost > MAX_COST) return null;
+  cost = Math.round(cost * 100) / 100;
+  var cycle = CYCLES.indexOf(raw.cycle) !== -1 ? raw.cycle : "monthly";
+  var category = CATEGORIES.indexOf(raw.category) !== -1 ? raw.category : "Other";
+  var renewal = "";
+  if (typeof raw.renewal === "string" && raw.renewal !== "") {
+    if (!parseISODate(raw.renewal)) return null;
+    renewal = raw.renewal;
+  }
+  var notes = typeof raw.notes === "string" ? raw.notes.slice(0, MAX_NOTES) : "";
+  return {
+    id: typeof raw.id === "string" && raw.id ? String(raw.id).slice(0, 64) : uid(),
+    name: name,
+    cost: cost,
+    cycle: cycle,
+    category: category,
+    renewal: renewal,
+    notes: notes,
+    trim: raw.trim === true
+  };
 }
 
-function sanitizeBill(b) {
-  if (!b || typeof b !== "object") return null;
-  var name = cleanStr(b.name);
-  if (!name) return null;
-  var amount = cleanNum(b.amount, 0, MAX_AMOUNT);
-  if (amount === null) return null;
-  var method = METHODS[b.method] ? b.method : "equal";
-  var occ = {};
-  if (b.occupancy && typeof b.occupancy === "object") {
-    for (var k in b.occupancy) {
-      if (!Object.prototype.hasOwnProperty.call(b.occupancy, k)) continue;
-      var row = b.occupancy[k];
-      if (!row || typeof row !== "object") continue;
-      /* days:null is the "unset" sentinel meaning "default to the period
-         length" — it must survive sanitizing. cleanNum(null) would coerce to
-         0 via Number(null)===0, turning "use default" into an explicit 0. */
-      var daysRaw = row.days;
-      var days = (daysRaw === null || daysRaw === undefined || daysRaw === "")
-        ? null : cleanNum(daysRaw, 0, MAX_DAYS);
-      var guests = cleanNum(row.guests, 0, MAX_DAYS);
-      occ[String(k).slice(0, 40)] = {
-        days: days === null ? null : days,
-        guests: guests === null ? 0 : guests
-      };
-    }
-  }
-  return { id: typeof b.id === "string" && b.id.length <= 40 ? b.id : uid(),
-           name: name, amount: amount,
-           start: cleanDateStr(b.start), end: cleanDateStr(b.end),
-           method: method, occupancy: occ };
-}
-
-function sanitizeState(s) {
-  if (!s || typeof s !== "object") return null;
-  if (!Array.isArray(s.people) || !Array.isArray(s.bills)) return null;
-  var people = [];
-  for (var i = 0; i < s.people.length && people.length < 50; i++) {
-    var p = sanitizePerson(s.people[i]);
-    if (p) people.push(p);
-  }
-  var bills = [];
-  for (var j = 0; j < s.bills.length && bills.length < 200; j++) {
-    var b = sanitizeBill(s.bills[j]);
-    if (b) bills.push(b);
-  }
-  return { people: people, bills: bills };
-}
-
-/* ---------- math ---------- */
-function periodDays(bill) {
-  if (!bill.start || !bill.end) return null;
-  var s = new Date(bill.start + "T12:00:00");
-  var e = new Date(bill.end + "T12:00:00");
-  if (isNaN(s.getTime()) || isNaN(e.getTime()) || e < s) return null;
-  return Math.round((e - s) / 86400000) + 1;
-}
-
-/* Returns { shares: {personId: cents}, note: string, methodUsed: string } */
-function computeBill(bill) {
-  var amountCents = Math.round(bill.amount * 100);
-  var people = state.people;
-  var shares = {};
-  var note = "";
-  var methodUsed = bill.method;
-
-  function weightsOf(fn) {
-    var w = [];
-    for (var i = 0; i < people.length; i++) w.push(fn(people[i]));
-    return w;
-  }
-
-  var weights;
-  if (bill.method === "sqft") {
-    weights = weightsOf(function (p) { return p.sqft; });
-    var totalSqft = 0;
-    for (var i = 0; i < weights.length; i++) totalSqft += weights[i];
-    if (totalSqft <= 0) {
-      methodUsed = "equal";
-      weights = weightsOf(function () { return 1; });
-      note = "No square footage entered, so this bill split equally.";
-    } else {
-      note = "Weighted by room square footage (total " + totalSqft + " sq ft).";
-    }
-  } else if (bill.method === "occupancy") {
-    var pDays = periodDays(bill);
-    weights = weightsOf(function (p) {
-      var row = bill.occupancy[p.id] || { days: null, guests: 0 };
-      var days = (row.days === null || row.days === undefined) ? (pDays === null ? 0 : pDays) : row.days;
-      return days + 0.5 * row.guests;
-    });
-    var totalW = 0;
-    for (var j = 0; j < weights.length; j++) totalW += weights[j];
-    if (totalW <= 0) {
-      methodUsed = "equal";
-      weights = weightsOf(function () { return 1; });
-      note = "No occupancy entered, so this bill split equally.";
-    } else {
-      note = "Weighted by occupant-days: days present + 0.5 per guest day.";
-    }
-  } else {
-    weights = weightsOf(function () { return 1; });
-    note = "Split evenly among all people.";
-  }
-
-  var totalW2 = 0;
-  for (var k = 0; k < weights.length; k++) totalW2 += weights[k];
-
-  var raw = [];
-  var rounded = [];
-  for (var m = 0; m < people.length; m++) {
-    var share = totalW2 > 0 ? (amountCents * weights[m]) / totalW2 : 0;
-    raw.push(share);
-    rounded.push(Math.round(share));
-  }
-  var sumRounded = 0;
-  for (var n = 0; n < rounded.length; n++) sumRounded += rounded[n];
-  var drift = amountCents - sumRounded;
-
-  /* Assign rounding drift to the largest share (first wins ties). */
-  var mathDetail = "";
-  if (rounded.length > 0) {
-    var maxIdx = 0;
-    for (var q = 1; q < rounded.length; q++) {
-      if (rounded[q] > rounded[maxIdx]) maxIdx = q;
-    }
-    if (drift !== 0) {
-      rounded[maxIdx] += drift;
-      mathDetail = " Rounding: shares rounded to the nearest cent left a " +
-        money(Math.abs(drift)) + (drift > 0 ? " shortfall" : " overage") +
-        "; it was assigned to " + people[maxIdx].name + ", the largest share.";
-    }
-  }
-
-  for (var t = 0; t < people.length; t++) shares[people[t].id] = rounded[t];
-  note += mathDetail;
-  return { shares: shares, note: note, methodUsed: methodUsed, amountCents: amountCents };
-}
-
-/* ---------- DOM helpers (no innerHTML anywhere) ---------- */
-function el(tag, attrs, text) {
-  var node = document.createElement(tag);
-  if (attrs) {
-    for (var k in attrs) {
-      if (!Object.prototype.hasOwnProperty.call(attrs, k)) continue;
-      if (k === "class") node.className = attrs[k];
-      else if (k === "hidden") { if (attrs[k]) node.setAttribute("hidden", ""); }
-      else node.setAttribute(k, attrs[k]);
-    }
-  }
-  if (text !== undefined && text !== null) node.textContent = text;
-  return node;
-}
-
-function labelFor(id, text) {
-  var l = el("label", { "for": id }, text);
-  return l;
-}
-
-function findPerson(id) {
-  for (var i = 0; i < state.people.length; i++) {
-    if (state.people[i].id === id) return state.people[i];
-  }
-  return null;
-}
-
-/* ---------- render: people ---------- */
-var peopleList = document.getElementById("peopleList");
-
-function renderPeople() {
-  peopleList.textContent = "";
-  if (state.people.length === 0) {
-    peopleList.appendChild(el("p", { "class": "empty" }, "No people yet — add everyone sharing the bills."));
-  }
-  state.people.forEach(function (p, idx) {
-    var row = el("div", { "class": "person-row" });
-
-    var nameField = el("div", { "class": "field" });
-    var nameId = "personName-" + p.id;
-    nameField.appendChild(labelFor(nameId, "Name"));
-    var nameInput = el("input", { type: "text", id: nameId, maxlength: String(MAX_NAME), value: p.name, "aria-label": "Person " + (idx + 1) + " name" });
-    nameInput.addEventListener("change", function () {
-      var v = cleanStr(nameInput.value);
-      if (v) { p.name = v; nameInput.value = v; save(); renderResults(); }
-      else { nameInput.value = p.name; }
-    });
-    nameField.appendChild(nameInput);
-    row.appendChild(nameField);
-
-    var sqftField = el("div", { "class": "field" });
-    var sqftId = "personSqft-" + p.id;
-    sqftField.appendChild(labelFor(sqftId, "Room sq ft (optional)"));
-    var sqftInput = el("input", { type: "number", id: sqftId, min: "0", max: String(MAX_SQFT), step: "1", inputmode: "numeric", value: p.sqft ? String(p.sqft) : "", "aria-label": p.name + " room square footage" });
-    function applySqft() {
-      var raw = sqftInput.value.trim();
-      if (raw === "") { p.sqft = 0; }
-      else {
-        var n = cleanNum(raw, 0, MAX_SQFT);
-        if (n === null) { sqftInput.value = p.sqft ? String(p.sqft) : ""; return; }
-        p.sqft = n;
-      }
-      save(); renderResults();
-    }
-    sqftInput.addEventListener("input", applySqft);
-    sqftInput.addEventListener("change", applySqft);
-    sqftField.appendChild(sqftInput);
-    row.appendChild(sqftField);
-
-    var del = el("button", { type: "button", "aria-label": "Remove " + p.name }, "Remove");
-    del.addEventListener("click", function () {
-      state.people = state.people.filter(function (x) { return x.id !== p.id; });
-      state.bills.forEach(function (b) { delete b.occupancy[p.id]; });
-      save(); renderPeople(); renderBills(); renderResults();
-    });
-    row.appendChild(del);
-
-    peopleList.appendChild(row);
+/* ---------- filtering / sorting ---------- */
+function visibleSubs() {
+  var q = searchTerm.trim().toLowerCase();
+  var list = subs.filter(function (s) {
+    return !q || s.name.toLowerCase().indexOf(q) !== -1;
   });
+  var by = sortKey;
+  list.sort(function (a, b) {
+    if (by === "cost-asc") return monthlyOf(a) - monthlyOf(b);
+    if (by === "cost-desc") return monthlyOf(b) - monthlyOf(a);
+    if (by === "name") return a.name.localeCompare(b.name);
+    if (by === "category") return a.category.localeCompare(b.category) || a.name.localeCompare(b.name);
+    if (by === "renewal") {
+      var da = daysUntilRenewal(a), db = daysUntilRenewal(b);
+      if (da === null && db === null) return 0;
+      if (da === null) return 1;
+      if (db === null) return -1;
+      return da - db;
+    }
+    return 0;
+  });
+  return list;
 }
 
-/* ---------- render: bills ---------- */
-var billList = document.getElementById("billList");
-var newBillType = document.getElementById("newBillType");
-var customNameWrap = document.getElementById("customNameWrap");
-var newBillCustom = document.getElementById("newBillCustom");
+/* ---------- render: dashboard ---------- */
+function renderDashboard() {
+  var monthly = 0, annual = 0, top = null, topMonthly = 0;
+  for (var i = 0; i < subs.length; i++) {
+    var m = monthlyOf(subs[i]);
+    monthly += m;
+    if (top === null || m > topMonthly) { top = subs[i]; topMonthly = m; }
+  }
+  annual = monthly * 12;
+  document.getElementById("statMonthly").textContent = money.format(monthly);
+  document.getElementById("statAnnual").textContent = money.format(annual);
+  document.getElementById("statCount").textContent = String(subs.length);
+  if (top) {
+    document.getElementById("statTop").textContent = top.name;
+    document.getElementById("statTopSub").textContent = money.format(topMonthly) + " per month";
+  } else {
+    document.getElementById("statTop").textContent = "—";
+    document.getElementById("statTopSub").textContent = "";
+  }
+  document.getElementById("statAvg").textContent = money.format(subs.length ? monthly / subs.length : 0);
+}
 
-newBillType.addEventListener("change", function () {
-  if (newBillType.value === "__custom") customNameWrap.removeAttribute("hidden");
-  else customNameWrap.setAttribute("hidden", "");
-});
+/* ---------- render: renewal watch ---------- */
+function renderRenewals() {
+  var body = document.getElementById("renewBody");
+  clear(body);
+  var upcoming = [], overdue = [];
+  for (var i = 0; i < subs.length; i++) {
+    var d = daysUntilRenewal(subs[i]);
+    if (d === null) continue;
+    if (d < 0) overdue.push({ s: subs[i], days: d });
+    else if (d <= RENEW_WINDOW_DAYS) upcoming.push({ s: subs[i], days: d });
+  }
+  overdue.sort(function (a, b) { return a.days - b.days; });
+  upcoming.sort(function (a, b) { return a.days - b.days; });
 
-function billDisplayName(bill) { return bill.name; }
-
-function renderBills() {
-  billList.textContent = "";
-  if (state.bills.length === 0) {
-    billList.appendChild(el("p", { "class": "empty" }, "No bills yet — add your first utility bill above."));
+  if (!overdue.length && !upcoming.length) {
+    body.appendChild(el("p", "empty", subs.length
+      ? "No renewals in the next " + RENEW_WINDOW_DAYS + " days. Add a renewal date to a subscription to get warned before it charges."
+      : "Add subscriptions with renewal dates and this watchlist will warn you before each charge."));
     return;
   }
-  state.bills.forEach(function (bill) {
-    var card = el("div", { "class": "bill-card" });
-
-    var head = el("div", { "class": "bill-head" });
-
-    var nameField = el("div", { "class": "field" });
-    var nameId = "billName-" + bill.id;
-    nameField.appendChild(labelFor(nameId, "Bill name"));
-    var nameInput = el("input", { type: "text", id: nameId, maxlength: String(MAX_NAME), value: bill.name });
-    nameInput.addEventListener("change", function () {
-      var v = cleanStr(nameInput.value);
-      if (v) { bill.name = v; nameInput.value = v; save(); renderResults(); }
-      else { nameInput.value = bill.name; }
+  function addGroup(items, heading) {
+    body.appendChild(el("h3", null, heading)).style.cssText = "font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:1rem 0 .25rem;";
+    var ul = el("ul", "renew-list");
+    items.forEach(function (it) {
+      var li = el("li");
+      var left = el("div");
+      left.appendChild(el("div", "renew-name", it.s.name));
+      var d = parseISODate(it.s.renewal);
+      var meta = el("div", "renew-meta", dateFmt.format(d) + " · " + money.format(it.s.cost) + CYCLE_SHORT[it.s.cycle] + " · " + it.s.category);
+      left.appendChild(meta);
+      li.appendChild(left);
+      var badge;
+      if (it.days < 0) {
+        var n = -it.days;
+        badge = el("span", "badge overdue", "Overdue " + n + (n === 1 ? " day" : " days"));
+      } else if (it.days === 0) {
+        badge = el("span", "badge today", "Renews today");
+      } else {
+        badge = el("span", "badge soon", "In " + it.days + (it.days === 1 ? " day" : " days"));
+      }
+      li.appendChild(badge);
+      ul.appendChild(li);
     });
-    nameField.appendChild(nameInput);
-    head.appendChild(nameField);
-
-    var amtField = el("div", { "class": "field" });
-    var amtId = "billAmt-" + bill.id;
-    amtField.appendChild(labelFor(amtId, "Amount ($)"));
-    var amtInput = el("input", { type: "number", id: amtId, min: "0", max: String(MAX_AMOUNT), step: "0.01", inputmode: "decimal", value: String(bill.amount) });
-    function applyAmt() {
-      var n = cleanNum(amtInput.value, 0, MAX_AMOUNT);
-      if (n === null) return;
-      bill.amount = n;
-      save(); renderResults();
-    }
-    amtInput.addEventListener("input", applyAmt);
-    amtInput.addEventListener("change", function () {
-      var n = cleanNum(amtInput.value, 0, MAX_AMOUNT);
-      if (n === null) { amtInput.value = String(bill.amount); return; }
-      bill.amount = n; save(); renderResults();
-    });
-    amtField.appendChild(amtInput);
-    head.appendChild(amtField);
-
-    var sField = el("div", { "class": "field" });
-    var sId = "billStart-" + bill.id;
-    sField.appendChild(labelFor(sId, "Period start"));
-    var sInput = el("input", { type: "date", id: sId, value: bill.start });
-    sInput.addEventListener("change", function () {
-      bill.start = cleanDateStr(sInput.value); save(); renderBills(); renderResults();
-    });
-    sField.appendChild(sInput);
-    head.appendChild(sField);
-
-    var eField = el("div", { "class": "field" });
-    var eId = "billEnd-" + bill.id;
-    eField.appendChild(labelFor(eId, "Period end"));
-    var eInput = el("input", { type: "date", id: eId, value: bill.end });
-    eInput.addEventListener("change", function () {
-      bill.end = cleanDateStr(eInput.value); save(); renderBills(); renderResults();
-    });
-    eField.appendChild(eInput);
-    head.appendChild(eField);
-
-    var mField = el("div", { "class": "field" });
-    var mId = "billMethod-" + bill.id;
-    mField.appendChild(labelFor(mId, "Split method"));
-    var mSelect = el("select", { id: mId });
-    [["equal", "Equal"], ["sqft", "By square footage"], ["occupancy", "By occupancy"]].forEach(function (opt) {
-      var o = el("option", { value: opt[0] }, opt[1]);
-      if (bill.method === opt[0]) o.setAttribute("selected", "");
-      mSelect.appendChild(o);
-    });
-    mSelect.addEventListener("change", function () {
-      bill.method = METHODS[mSelect.value] ? mSelect.value : "equal";
-      save(); renderBills(); renderResults();
-    });
-    mField.appendChild(mSelect);
-    head.appendChild(mField);
-
-    var del = el("button", { type: "button", "aria-label": "Delete bill " + bill.name }, "Delete");
-    del.addEventListener("click", function () {
-      state.bills = state.bills.filter(function (x) { return x.id !== bill.id; });
-      save(); renderBills(); renderResults();
-    });
-    head.appendChild(del);
-
-    card.appendChild(head);
-
-    var meta = el("p", { "class": "bill-meta" });
-    var pDays = periodDays(bill);
-    var metaText = "Method: " +
-      (bill.method === "equal" ? "Equal" : bill.method === "sqft" ? "By square footage" : "By occupancy");
-    if (pDays !== null) metaText += " · Period: " + pDays + " days (" + bill.start + " to " + bill.end + ")";
-    else metaText += " · Period dates not set";
-    meta.textContent = metaText;
-    card.appendChild(meta);
-
-    if (bill.method === "occupancy") {
-      card.appendChild(renderOccupancyTable(bill));
-    }
-
-    billList.appendChild(card);
-  });
+    body.appendChild(ul);
+  }
+  if (overdue.length) addGroup(overdue, "Overdue");
+  if (upcoming.length) addGroup(upcoming, "Coming up");
+  /* Timeline: renewals from 30 days ago to 30 days ahead (interactive markers). */
+  var tl = renderRenewalTimeline(overdue.concat(upcoming));
+  if (tl) body.appendChild(tl);
 }
 
-function renderOccupancyTable(bill) {
-  var wrap = el("div");
-  wrap.appendChild(el("h3", null, "Occupancy for this bill"));
-  var pDays = periodDays(bill);
-  var hint = el("p", { "class": "note" },
-    pDays !== null
-      ? "Days present defaults to the period length (" + pDays + " days). Each guest day counts as 0.5 occupant-day."
-      : "Set the bill dates so days present can default to the period length. Each guest day counts as 0.5 occupant-day.");
-  wrap.appendChild(hint);
-
-  if (state.people.length === 0) {
-    wrap.appendChild(el("p", { "class": "empty" }, "Add people first."));
-    return wrap;
+/* ---------- render: categories ---------- */
+function renderCategories() {
+  var body = document.getElementById("catBody");
+  clear(body);
+  var catDetail = document.getElementById("catDetail");
+  if (!catDetail) {
+    catDetail = el("div", "cat-detail");
+    catDetail.id = "catDetail";
+    catDetail.setAttribute("aria-live", "polite");
+    body.parentNode.insertBefore(catDetail, body.nextSibling);
   }
-
-  var table = el("table", { "class": "occ-table" });
-  var thead = el("thead");
-  var hr = el("tr");
-  hr.appendChild(el("th", { scope: "col" }, "Person"));
-  hr.appendChild(el("th", { scope: "col" }, "Days present"));
-  hr.appendChild(el("th", { scope: "col" }, "Guest days"));
-  thead.appendChild(hr);
-  table.appendChild(thead);
-  var tbody = el("tbody");
-
-  state.people.forEach(function (p) {
-    var row = bill.occupancy[p.id] || { days: null, guests: 0 };
-    if (!bill.occupancy[p.id]) bill.occupancy[p.id] = row;
-
-    var tr = el("tr");
-    var th = el("th", { scope: "row" }, p.name);
-    tr.appendChild(th);
-
-    var daysTd = el("td");
-    var daysId = "occDays-" + bill.id + "-" + p.id;
-    var daysInput = el("input", {
-      type: "number", id: daysId, min: "0", max: String(MAX_DAYS), step: "1",
-      inputmode: "numeric", "aria-label": p.name + " days present"
-    });
-    if (row.days !== null && row.days !== undefined) daysInput.value = String(row.days);
-    else daysInput.setAttribute("placeholder", pDays !== null ? String(pDays) : "0");
-    function applyDays() {
-      var raw = daysInput.value.trim();
-      if (raw === "") { row.days = null; }
-      else {
-        var n = cleanNum(raw, 0, MAX_DAYS);
-        if (n === null) return;
-        row.days = n;
+  catDetail.textContent = "";
+  if (!subs.length) {
+    body.appendChild(el("p", "empty", "No subscriptions yet — category totals will appear here."));
+    return;
+  }
+  var totals = {};
+  for (var i = 0; i < subs.length; i++) {
+    var c = subs[i].category;
+    totals[c] = (totals[c] || 0) + monthlyOf(subs[i]);
+  }
+  var rows = Object.keys(totals).map(function (c) { return { cat: c, monthly: totals[c] }; });
+  rows.sort(function (a, b) { return b.monthly - a.monthly; });
+  var max = rows.length ? rows[0].monthly : 1;
+  rows.forEach(function (r) {
+    var row = el("div", "cat-row");
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-pressed", "false");
+    row.setAttribute("aria-label", r.cat + ": " + money.format(r.monthly) + " per month. Activate to spotlight.");
+    var head = el("div", "cat-head");
+    head.appendChild(el("span", "cat-name", r.cat));
+    head.appendChild(el("span", "cat-nums", money.format(r.monthly) + "/mo · " + money.format(r.monthly * 12) + "/yr"));
+    row.appendChild(head);
+    var track = el("div", "bar-track");
+    track.setAttribute("role", "img");
+    track.setAttribute("aria-label", r.cat + ": " + money.format(r.monthly) + " per month");
+    var bar = el("div", "bar");
+    var pct = max > 0 ? Math.max(1.5, (r.monthly / max) * 100) : 1.5;
+    bar.style.width = pct.toFixed(1) + "%";
+    track.appendChild(bar);
+    row.appendChild(track);
+    (function (rr, rrrow) {
+      function act() {
+        var was = rrrow.classList.contains("sel");
+        var sels = body.querySelectorAll(".cat-row.sel");
+        for (var k = 0; k < sels.length; k++) {
+          sels[k].classList.remove("sel");
+          sels[k].setAttribute("aria-pressed", "false");
+        }
+        if (!was) {
+          rrrow.classList.add("sel");
+          rrrow.setAttribute("aria-pressed", "true");
+          var members = subs.filter(function (s) { return s.category === rr.cat; });
+          catDetail.textContent = "";
+          var st = document.createElement("strong");
+          st.textContent = rr.cat + ": ";
+          catDetail.appendChild(st);
+          catDetail.appendChild(document.createTextNode(
+            members.length + " subscription" + (members.length === 1 ? "" : "s") + " — " +
+            members.map(function (s) { return s.name + " (" + money.format(monthlyOf(s)) + "/mo)"; }).join(", ") + "."));
+          Sound.select();
+        } else {
+          catDetail.textContent = "";
+          Sound.click();
+        }
       }
-      save(); renderResults();
-    }
-    daysInput.addEventListener("input", applyDays);
-    daysInput.addEventListener("change", applyDays);
-    daysTd.appendChild(daysInput);
-    tr.appendChild(daysTd);
+      rrrow.addEventListener("click", act);
+      rrrow.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(); }
+      });
+    })(r, row);
+    body.appendChild(row);
+  });
+  /* Donut: share of monthly burn by category (interactive spotlight). */
+  var donut = renderCategoryDonut(rows);
+  if (donut) body.appendChild(donut);
+}
 
-    var guestTd = el("td");
-    var guestId = "occGuest-" + bill.id + "-" + p.id;
-    var guestInput = el("input", {
-      type: "number", id: guestId, min: "0", max: String(MAX_DAYS), step: "1",
-      inputmode: "numeric", value: String(row.guests || 0),
-      "aria-label": p.name + " guest days"
+/* ---------- render: savings ---------- */
+function renderSavings() {
+  var body = document.getElementById("savingsBody");
+  clear(body);
+  var trimmed = subs.filter(function (s) { return s.trim; });
+  trimmed.sort(function (a, b) { return monthlyOf(b) - monthlyOf(a); });
+  var mSave = 0;
+  trimmed.forEach(function (s) { mSave += monthlyOf(s); });
+  var hero = el("div", "savings-hero");
+  var mWrap = el("div");
+  mWrap.appendChild(el("div", "cap", "Projected monthly savings"));
+  mWrap.appendChild(el("div", "big", money.format(mSave)));
+  var aWrap = el("div");
+  aWrap.appendChild(el("div", "cap", "Projected annual savings"));
+  aWrap.appendChild(el("div", "big", money.format(mSave * 12)));
+  hero.appendChild(mWrap);
+  hero.appendChild(aWrap);
+  /* Gauge: projected trim savings as a share of monthly burn (click toggles monthly/annual). */
+  hero.appendChild(renderSavingsGauge(mSave));
+  body.appendChild(hero);
+  /* Hero big-number boxes: click for the cancel-list breakdown, click again or Esc to restore. */
+  var heroDetail = el("p", "stat-detail");
+  heroDetail.setAttribute("aria-live", "polite");
+  body.appendChild(heroDetail);
+  (function(){
+    var boxes = [[mWrap, "Projected monthly savings", 1], [aWrap, "Projected annual savings", 12]];
+    boxes.forEach(function(b){
+      var wrap = b[0], label = b[1], mult = b[2];
+      wrap.classList.add("stat-box");
+      wrap.setAttribute("role", "button");
+      wrap.setAttribute("tabindex", "0");
+      wrap.setAttribute("aria-pressed", "false");
+      wrap.setAttribute("aria-label", label + ". Activate for the cancel-list breakdown.");
+      function act(){
+        var was = wrap.classList.contains("sel");
+        var sels = body.querySelectorAll(".stat-box.sel");
+        for (var k = 0; k < sels.length; k++){ sels[k].classList.remove("sel"); sels[k].setAttribute("aria-pressed", "false"); }
+        if (was){ heroDetail.textContent = ""; Sound.click(); }
+        else {
+          wrap.classList.add("sel");
+          wrap.setAttribute("aria-pressed", "true");
+          var parts = trimmed.map(function(s){ return s.name + " " + money.format(monthlyOf(s) * mult) + (mult === 1 ? "/mo" : "/yr"); });
+          heroDetail.textContent = trimmed.length
+            ? ("Cancel list (" + trimmed.length + "): " + parts.join(" \u00B7 ") + " = " + money.format(mSave * mult) + (mult === 1 ? " per month" : " per year") + ".")
+            : "Nothing marked for trimming yet \u2014 no projected savings.";
+          Sound.select();
+        }
+      }
+      wrap.addEventListener("click", act);
+      wrap.addEventListener("keydown", function(ev){
+        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
     });
-    function applyGuests() {
-      var n = cleanNum(guestInput.value, 0, MAX_DAYS);
-      if (n === null) return;
-      row.guests = n;
-      save(); renderResults();
-    }
-    guestInput.addEventListener("input", applyGuests);
-    guestInput.addEventListener("change", applyGuests);
-    guestTd.appendChild(guestInput);
-    tr.appendChild(guestTd);
+  })();
+  if (!trimmed.length) {
+    body.appendChild(el("p", "empty", "Nothing marked for trimming yet — your projected savings are $0.00."));
+    return;
+  }
+  body.appendChild(el("h3", null, "Cancel list (" + trimmed.length + ")")).style.cssText =
+    "font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 .25rem;";
+  var ul = el("ul", "cancel-list");
+  trimmed.forEach(function (s) {
+    var li = el("li");
+    li.appendChild(el("span", null, s.name));
+    li.appendChild(el("span", null, money.format(monthlyOf(s)) + "/mo"));
+    ul.appendChild(li);
+  });
+  body.appendChild(ul);
+}
 
+/* ---------- render: table ---------- */
+function findSub(id) {
+  for (var i = 0; i < subs.length; i++) if (subs[i].id === id) return subs[i];
+  return null;
+}
+function renderTable() {
+  var tbody = document.getElementById("subTbody");
+  clear(tbody);
+  var list = visibleSubs();
+  document.getElementById("tableCaption").textContent =
+    list.length === subs.length
+      ? "All " + subs.length + " subscriptions, normalized to monthly cost."
+      : "Showing " + list.length + " of " + subs.length + " subscriptions, normalized to monthly cost.";
+  if (!list.length) {
+    var tr = el("tr");
+    var td = el("td", "empty");
+    td.setAttribute("colspan", "8");
+    td.style.textAlign = "center";
+    td.style.padding = "1.5rem";
+    td.textContent = subs.length
+      ? "No subscriptions match your search."
+      : "No subscriptions yet. Add your first one, or load demo data to explore.";
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+    return;
+  }
+  list.forEach(function (s) {
+    var tr = el("tr");
+    /* trim checkbox */
+    var tdTrim = el("td");
+    var chk = el("input", "trim-check");
+    chk.type = "checkbox";
+    chk.checked = !!s.trim;
+    chk.setAttribute("aria-label", "Consider cancelling " + s.name);
+    chk.addEventListener("change", function () {
+      var sub = findSub(s.id);
+      if (sub) { sub.trim = chk.checked; saveData(); renderDashboard(); renderSavings(); }
+    });
+    tdTrim.appendChild(chk);
+    tr.appendChild(tdTrim);
+    /* name */
+    tr.appendChild(el("td", null, s.name));
+    /* cost */
+    var tdCost = el("td", "num");
+    tdCost.appendChild(document.createTextNode(money.format(s.cost)));
+    var suf = el("span", "cycle-suffix", CYCLE_SHORT[s.cycle]);
+    tdCost.appendChild(document.createTextNode(" "));
+    tdCost.appendChild(suf);
+    tr.appendChild(tdCost);
+    /* cycle, category */
+    tr.appendChild(el("td", null, CYCLE_LABEL[s.cycle]));
+    tr.appendChild(el("td", null, s.category));
+    /* renewal */
+    var tdRen = el("td");
+    var d = parseISODate(s.renewal);
+    if (d) {
+      tdRen.appendChild(document.createTextNode(dateFmt.format(d)));
+      var days = daysUntilRenewal(s);
+      if (days !== null && days < 0) {
+        tdRen.appendChild(document.createTextNode(" "));
+        tdRen.appendChild(el("span", "badge overdue", "Overdue"));
+      } else if (days !== null && days <= RENEW_WINDOW_DAYS) {
+        tdRen.appendChild(document.createTextNode(" "));
+        tdRen.appendChild(el("span", "badge soon", days === 0 ? "Today" : days + "d"));
+      }
+    } else {
+      tdRen.appendChild(el("span", "muted", "—"));
+    }
+    tr.appendChild(tdRen);
+    /* per month */
+    tr.appendChild(el("td", "num", money.format(monthlyOf(s))));
+    /* actions */
+    var tdAct = el("td");
+    var acts = el("div", "row-actions");
+    var editBtn = el("button", "small", "Edit");
+    editBtn.type = "button";
+    editBtn.setAttribute("aria-label", "Edit " + s.name);
+    editBtn.addEventListener("click", function () { openDialog(s.id); });
+    var delBtn = el("button", "small danger", "Delete");
+    delBtn.type = "button";
+    delBtn.setAttribute("aria-label", "Delete " + s.name);
+    delBtn.addEventListener("click", function () { deleteSub(s.id); });
+    acts.appendChild(editBtn);
+    acts.appendChild(delBtn);
+    tdAct.appendChild(acts);
+    tr.appendChild(tdAct);
     tbody.appendChild(tr);
   });
-  table.appendChild(tbody);
-  wrap.appendChild(table);
-  return wrap;
+}
+function renderAll() {
+  renderDashboard();
+  renderRenewals();
+  renderCategories();
+  renderSavings();
+  renderTable();
 }
 
-/* ---------- render: results ---------- */
-var resultsEl = document.getElementById("results");
-
-/* Chart palette + per-person color (stable across donut and stacked columns). */
+/* ---------- charts: donut, renewal timeline, savings gauge ---------- */
 var CHART_COLORS = ["#4f46e5", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#06b6d4", "#ef4444", "#0ea5e9", "#84cc16", "#a855f7"];
-function personColor(pid) {
-  for (var ci = 0; ci < state.people.length; ci++) {
-    if (state.people[ci].id === pid) return CHART_COLORS[ci % CHART_COLORS.length];
-  }
-  return CHART_COLORS[0];
-}
+function chartColor(i) { return CHART_COLORS[i % CHART_COLORS.length]; }
 function svgNS(tag, attrs) {
   var n = document.createElementNS("http://www.w3.org/2000/svg", tag);
   if (attrs) for (var k in attrs) {
@@ -938,57 +1063,66 @@ function svgNS(tag, attrs) {
   return n;
 }
 
-/* Interactive share-of-total donut: click a slice to spotlight a person, click again to restore. */
-function renderShareDonut(ranked, grandTotal) {
-  var wrap = el("div", { "class": "chart-wrap" });
-  if (grandTotal <= 0 || !ranked.length) {
-    wrap.appendChild(el("p", { "class": "empty" }, "No amounts yet — the share chart will appear here."));
-    return wrap;
-  }
+/* Donut: monthly burn by category. rows = [{cat, monthly}], sorted desc. */
+function renderCategoryDonut(rows) {
+  var total = 0, i;
+  for (i = 0; i < rows.length; i++) total += rows[i].monthly;
+  if (total <= 0 || !rows.length) return null;
+  var wrap = el("div");
+  wrap.appendChild(el("h3", null, "Share of monthly burn")).style.cssText =
+    "font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:1rem 0 .25rem;";
+  var inner = el("div", "chart-wrap");
   var cx = 100, cy = 100, r = 74, sw = 30;
   var svg = svgNS("svg", { viewBox: "0 0 200 200", width: "220", height: "220", role: "img",
-    "aria-label": "Donut chart of each person's share of the grand total" });
-  var detail = el("p", { "class": "chart-detail" });
+    "aria-label": "Donut chart of monthly spending by category" });
+  var detail = el("p", "stat-detail");
   detail.setAttribute("aria-live", "polite");
-  detail.textContent = "Click a slice to spotlight a person.";
+  detail.textContent = "Click a slice to spotlight a category.";
   var topT = svgNS("text", { x: cx, y: cy - 4, "text-anchor": "middle", "class": "donut-top" });
-  topT.textContent = money(grandTotal);
+  topT.textContent = money.format(total);
   var botT = svgNS("text", { x: cx, y: cy + 20, "text-anchor": "middle", "class": "donut-sub" });
-  botT.textContent = "total";
+  botT.textContent = "per month";
   var segEls = [];
   function act(item) {
     var was = item.g.classList.contains("sel");
-    for (var i = 0; i < segEls.length; i++) {
-      segEls[i].g.classList.remove("sel");
-      segEls[i].g.setAttribute("aria-pressed", "false");
-      segEls[i].c.setAttribute("opacity", "1");
+    for (var a = 0; a < segEls.length; a++) {
+      segEls[a].g.classList.remove("sel");
+      segEls[a].g.setAttribute("aria-pressed", "false");
+      segEls[a].c.setAttribute("opacity", "1");
     }
     if (!was) {
-      for (var j = 0; j < segEls.length; j++) {
-        if (segEls[j] !== item) segEls[j].c.setAttribute("opacity", "0.25");
+      for (var b = 0; b < segEls.length; b++) {
+        if (segEls[b] !== item) segEls[b].c.setAttribute("opacity", "0.25");
       }
       item.g.classList.add("sel");
       item.g.setAttribute("aria-pressed", "true");
-      topT.textContent = money(item.rr.total);
-      botT.textContent = item.rr.name;
+      topT.textContent = money.format(item.rr.monthly);
+      botT.textContent = item.rr.cat;
       detail.textContent = "";
-      detail.appendChild(el("strong", null, item.rr.name + ": "));
+      var st = document.createElement("strong");
+      st.textContent = item.rr.cat + ": ";
+      detail.appendChild(st);
       detail.appendChild(document.createTextNode(
-        money(item.rr.total) + " — " + (item.frac * 100).toFixed(1) + "% of " + money(grandTotal) + " total."));
+        item.count + " subscription" + (item.count === 1 ? "" : "s") + " — " +
+        money.format(item.rr.monthly) + "/mo (" + money.format(item.rr.monthly * 12) + "/yr), " +
+        (item.frac * 100).toFixed(1) + "% of monthly burn."));
       Sound.select();
     } else {
-      topT.textContent = money(grandTotal);
-      botT.textContent = "total";
-      detail.textContent = "Click a slice to spotlight a person.";
+      topT.textContent = money.format(total);
+      botT.textContent = "per month";
+      detail.textContent = "Click a slice to spotlight a category.";
       Sound.click();
     }
   }
   var start = 0;
-  ranked.forEach(function (rr) {
-    var frac = grandTotal > 0 ? rr.total / grandTotal : 0;
-    var col = personColor(rr.id);
+  rows.forEach(function (rr, idx) {
+    var frac = total > 0 ? rr.monthly / total : 0;
+    var col = chartColor(idx);
+    var count = 0;
+    for (var k = 0; k < subs.length; k++) if (subs[k].category === rr.cat) count++;
     var g = svgNS("g", { "class": "donut-seg", role: "button", tabindex: "0", "aria-pressed": "false",
-      "aria-label": rr.name + ": " + money(rr.total) + ", " + (frac * 100).toFixed(1) + " percent of total. Activate to spotlight." });
+      "aria-label": rr.cat + ": " + money.format(rr.monthly) + " per month, " +
+        (frac * 100).toFixed(1) + " percent. Activate to spotlight." });
     var c = svgNS("circle", { cx: cx, cy: cy, r: r, fill: "none", stroke: col, "stroke-width": sw,
       pathLength: "100",
       "stroke-dasharray": Math.max(0, frac * 100 - 1.5).toFixed(2) + " 100",
@@ -1005,7 +1139,7 @@ function renderShareDonut(ranked, grandTotal) {
       g.appendChild(pl);
     }
     svg.appendChild(g);
-    var item = { g: g, c: c, rr: rr, frac: frac };
+    var item = { g: g, c: c, rr: rr, frac: frac, count: count };
     segEls.push(item);
     (function (it) {
       g.addEventListener("click", function () { act(it); });
@@ -1017,376 +1151,380 @@ function renderShareDonut(ranked, grandTotal) {
   });
   svg.appendChild(topT);
   svg.appendChild(botT);
-  wrap.appendChild(svg);
-  var outer = el("div");
-  outer.appendChild(wrap);
-  outer.appendChild(detail);
-  return outer;
-}
-
-/* Interactive stacked columns: composition of each bill by person. */
-function renderBillStacks() {
-  var wrap = el("div");
-  var bills = state.bills;
-  var calcs = bills.map(computeBill);
-  var maxAmt = 0;
-  for (var q = 0; q < calcs.length; q++) if (calcs[q].amountCents > maxAmt) maxAmt = calcs[q].amountCents;
-  if (maxAmt <= 0) {
-    wrap.appendChild(el("p", { "class": "empty" }, "Add bill amounts to see the composition chart."));
-    return wrap;
-  }
-  var colW = 64, gap = 18, padL = 8, padR = 8, baseY = 208, maxH = 168;
-  var W = padL + bills.length * (colW + gap) - gap + padR;
-  var svg = svgNS("svg", { viewBox: "0 0 " + W + " 244", width: String(Math.min(W, 560)), height: "244",
-    role: "img", "aria-label": "Stacked bar chart: composition of each bill by person" });
-  var detail = el("p", { "class": "chart-detail" });
-  detail.setAttribute("aria-live", "polite");
-  detail.textContent = "Composition of each bill by person — click a segment for details.";
-  var segEls = [];
-  function act(item) {
-    var was = item.g.classList.contains("sel");
-    for (var i = 0; i < segEls.length; i++) {
-      segEls[i].g.classList.remove("sel");
-      segEls[i].g.setAttribute("aria-pressed", "false");
-      segEls[i].rect.setAttribute("opacity", "1");
-    }
-    if (!was) {
-      for (var j = 0; j < segEls.length; j++) {
-        if (segEls[j] !== item) segEls[j].rect.setAttribute("opacity", "0.25");
-      }
-      item.g.classList.add("sel");
-      item.g.setAttribute("aria-pressed", "true");
-      detail.textContent = "";
-      detail.appendChild(el("strong", null, item.bill.name + " — " + item.p.name + ": "));
-      detail.appendChild(document.createTextNode(
-        money(item.share) + " (" + (item.frac * 100).toFixed(1) + "% of this bill)."));
-      Sound.select();
-    } else {
-      detail.textContent = "Composition of each bill by person — click a segment for details.";
-      Sound.click();
-    }
-  }
-  bills.forEach(function (bill, bi) {
-    var calc = calcs[bi];
-    var x = padL + bi * (colW + gap);
-    var h = Math.max(2, (calc.amountCents / maxAmt) * maxH);
-    var y = baseY - h;
-    var amtT = svgNS("text", { x: x + colW / 2, y: y - 6, "text-anchor": "middle", "class": "stack-amt" });
-    amtT.textContent = money(calc.amountCents);
-    svg.appendChild(amtT);
-    var nm = bill.name.length > 12 ? bill.name.slice(0, 11) + "…" : bill.name;
-    var nmT = svgNS("text", { x: x + colW / 2, y: baseY + 18, "text-anchor": "middle", "class": "stack-lbl" });
-    nmT.textContent = nm;
-    svg.appendChild(nmT);
-    var acc = 0;
-    state.people.forEach(function (p) {
-      var share = calc.shares[p.id] || 0;
-      if (share <= 0) return;
-      var frac = calc.amountCents > 0 ? share / calc.amountCents : 0;
-      var sh = frac * h;
-      var sy = y + acc * h;
-      acc += frac;
-      var g = svgNS("g", { "class": "stack-seg", role: "button", tabindex: "0", "aria-pressed": "false",
-        "aria-label": bill.name + " — " + p.name + ": " + money(share) + ". Activate to spotlight." });
-      var rect = svgNS("rect", { x: x, y: sy.toFixed(2), width: colW,
-        height: Math.max(0, sh - 1).toFixed(2), fill: personColor(p.id), rx: "3" });
-      g.appendChild(rect);
-      svg.appendChild(g);
-      var item = { g: g, rect: rect, bill: bill, p: p, share: share, frac: frac };
-      segEls.push(item);
-      (function (it) {
-        g.addEventListener("click", function () { act(it); });
-        g.addEventListener("keydown", function (ev) {
-          if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(it); }
-        });
-      })(item);
-    });
-  });
-  wrap.appendChild(svg);
+  inner.appendChild(svg);
+  wrap.appendChild(inner);
   wrap.appendChild(detail);
   return wrap;
 }
 
-function renderResults() {
-  resultsEl.textContent = "";
-
-  if (state.people.length === 0) {
-    resultsEl.appendChild(el("p", { "class": "empty" }, "Add people and bills to see the split."));
-    return;
+/* Renewal timeline: vertical sequence of renewals from 30 days ago to 30 days
+   ahead, with a "today" divider. Click a row to spotlight a renewal. */
+function renderRenewalTimeline(items) {
+  var pts = items.filter(function (it) { return it.days >= -30 && it.days <= 30; });
+  if (!pts.length) return null;
+  pts.sort(function (a, b) { return a.days - b.days; });
+  var box = el("div");
+  box.appendChild(el("h3", null, "Renewal timeline")).style.cssText =
+    "font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:1rem 0 .25rem;";
+  var rowH = 54, topPad = 12, W = 360, X = 16;
+  var H = topPad * 2 + pts.length * rowH;
+  var svg = svgNS("svg", { viewBox: "0 0 " + W + " " + H, width: "360", height: String(H),
+    role: "img", "aria-label": "Vertical timeline of subscription renewals from 30 days ago to 30 days ahead" });
+  svg.setAttribute("style", "max-width:100%;height:auto;display:block;");
+  svg.appendChild(svgNS("line", { x1: X, y1: topPad - 6, x2: X, y2: H - topPad + 6, "class": "tl-axis" }));
+  /* "today" divider between overdue and upcoming rows */
+  var firstUp = -1;
+  for (var f = 0; f < pts.length; f++) { if (pts[f].days >= 0) { firstUp = f; break; } }
+  if (firstUp > 0) {
+    var dy = topPad + firstUp * rowH;
+    svg.appendChild(svgNS("line", { x1: X + 4, y1: dy, x2: W - 52, y2: dy,
+      stroke: "var(--muted)", "stroke-width": "1.5", "stroke-dasharray": "4 4", opacity: "0.7" }));
+    var tdt = svgNS("text", { x: W - 46, y: dy + 4, "class": "tl-day" });
+    tdt.textContent = "today";
+    svg.appendChild(tdt);
   }
-  if (state.bills.length === 0) {
-    resultsEl.appendChild(el("p", { "class": "empty" }, "Add a bill to see the split."));
-    return;
-  }
-
-  var totals = {};
-  state.people.forEach(function (p) { totals[p.id] = 0; });
-  var grandTotal = 0;
-
-  state.bills.forEach(function (bill) {
-    var calc = computeBill(bill);
-
-    var h = el("h3", null, bill.name + " — " + money(calc.amountCents));
-    resultsEl.appendChild(h);
-
-    var table = el("table");
-    var thead = el("thead");
-    var hr = el("tr");
-    hr.appendChild(el("th", { scope: "col" }, "Person"));
-    hr.appendChild(el("th", { scope: "col", "class": "num" }, "Owes"));
-    thead.appendChild(hr);
-    table.appendChild(thead);
-
-    var tbody = el("tbody");
-    var billSum = 0;
-    state.people.forEach(function (p) {
-      var share = calc.shares[p.id] || 0;
-      totals[p.id] += share;
-      billSum += share;
-      var tr = el("tr");
-      tr.appendChild(el("th", { scope: "row" }, p.name));
-      tr.appendChild(el("td", { "class": "num" }, money(share)));
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-
-    var tfoot = el("tfoot");
-    var fr = el("tr");
-    fr.appendChild(el("td", null, "Bill total"));
-    var checkTd = el("td", { "class": "num total-good" }, money(billSum));
-    fr.appendChild(checkTd);
-    tfoot.appendChild(fr);
-    table.appendChild(tfoot);
-    resultsEl.appendChild(table);
-
-    resultsEl.appendChild(el("p", { "class": "math-note" }, calc.note));
-    grandTotal += billSum;
-  });
-
-  /* Totals */
-  resultsEl.appendChild(el("h3", null, "Totals across all bills"));
-  var tTable = el("table");
-  var tThead = el("thead");
-  var tHr = el("tr");
-  tHr.appendChild(el("th", { scope: "col" }, "Person"));
-  tHr.appendChild(el("th", { scope: "col", "class": "num" }, "Total owes"));
-  tThead.appendChild(tHr);
-  tTable.appendChild(tThead);
-  var tBody = el("tbody");
-  state.people.forEach(function (p) {
-    var tr = el("tr");
-    tr.classList.add("tot-row");
-    tr.setAttribute("role", "button");
-    tr.setAttribute("tabindex", "0");
-    tr.setAttribute("aria-pressed", "false");
-    tr.setAttribute("aria-label", p.name + ": owes " + money(totals[p.id]) + ". Activate to spotlight in Who owes what.");
-    (function (pp, trow) {
-      function act() {
-        var row = resultsEl.querySelector(".sf-row[data-pid=\"" + pp.id + "\"]");
-        if (row) {
-          row.click();
-          if (row.classList.contains("sel")) { trow.classList.add("sel"); trow.setAttribute("aria-pressed", "true"); }
-          else { trow.classList.remove("sel"); trow.setAttribute("aria-pressed", "false"); }
-        }
-      }
-      trow.addEventListener("click", act);
-      trow.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(); } });
-    })(p, tr);
-    tr.appendChild(el("th", { scope: "row" }, p.name));
-    tr.appendChild(el("td", { "class": "num" }, money(totals[p.id])));
-    tBody.appendChild(tr);
-  });
-  tTable.appendChild(tBody);
-  var tFoot = el("tfoot");
-  var gfr = el("tr");
-  gfr.appendChild(el("td", null, "Grand total"));
-  gfr.appendChild(el("td", { "class": "num total-good" }, money(grandTotal)));
-  tFoot.appendChild(gfr);
-  tTable.appendChild(tFoot);
-  resultsEl.appendChild(tTable);
-
-  /* Visual: share-of-total donut (interactive spotlight). */
-  var ranked = state.people.map(function (p) { return { id: p.id, name: p.name, total: totals[p.id] }; })
-    .sort(function (a, b) { return b.total - a.total; });
-  resultsEl.appendChild(el("h3", null, "Share of grand total"));
-  resultsEl.appendChild(renderShareDonut(ranked, grandTotal));
-
-  /* Visual: who-owes-what bars, sorted largest share first. */
-  resultsEl.appendChild(el("h3", null, "Who owes what"));
-  var maxTotal = ranked.length ? ranked[0].total : 0;
-  var bars = el("div", { "class": "sf-bars" });
-  var detail = el("p", { "class": "sf-detail" });
+  var detail = el("p", "stat-detail");
   detail.setAttribute("aria-live", "polite");
-  ranked.forEach(function (r) {
-    var row = el("div", {
-      "class": "sf-row", role: "button", tabindex: "0", "aria-pressed": "false",
-      "aria-label": r.name + " owes " + money(r.total) + ". Activate to spotlight.",
-      "data-pid": r.id
-    });
-    row.appendChild(el("div", { "class": "sf-name", title: r.name }, r.name));
-    row.appendChild(el("div", { "class": "sf-val" }, money(r.total)));
-    var track = el("div", { "class": "sf-track" });
-    var fill = el("div", { "class": "sf-fill" });
-    fill.style.width = (maxTotal > 0 ? (r.total / maxTotal * 100) : 0).toFixed(1) + "%";
-    track.appendChild(fill);
-    row.appendChild(track);
-    (function (rr, rrrow) {
+  detail.textContent = "Click a row to spotlight a renewal.";
+  var marks = [];
+  function act(item) {
+    var was = item.g.classList.contains("sel");
+    for (var i = 0; i < marks.length; i++) {
+      marks[i].g.classList.remove("sel");
+      marks[i].g.setAttribute("aria-pressed", "false");
+      marks[i].g.setAttribute("opacity", "1");
+    }
+    if (!was) {
+      for (var j = 0; j < marks.length; j++) {
+        if (marks[j] !== item) marks[j].g.setAttribute("opacity", "0.35");
+      }
+      item.g.classList.add("sel");
+      item.g.setAttribute("aria-pressed", "true");
+      var d = parseISODate(item.s.renewal);
+      detail.textContent = "";
+      var st = document.createElement("strong");
+      st.textContent = item.s.name + ": ";
+      detail.appendChild(st);
+      detail.appendChild(document.createTextNode(
+        "renews " + dateFmt.format(d) + " — " + money.format(item.s.cost) +
+        CYCLE_SHORT[item.s.cycle] + " (" + item.s.category + ")."));
+      Sound.select();
+    } else {
+      detail.textContent = "Click a row to spotlight a renewal.";
+      Sound.click();
+    }
+  }
+  pts.forEach(function (it, idx) {
+    var y = topPad + idx * rowH + rowH / 2;
+    var col = it.days < 0 ? "#ef4444" : (it.days === 0 ? "#f59e0b" : "#4f46e5");
+    var when = it.days < 0 ? (-it.days) + "d ago" : (it.days === 0 ? "today" : "in " + it.days + "d");
+    var g = svgNS("g", { "class": "tl-mark", role: "button", tabindex: "0", "aria-pressed": "false",
+      "aria-label": it.s.name + " renews " +
+        (it.days < 0 ? (-it.days) + " days ago" : (it.days === 0 ? "today" : "in " + it.days + " days")) +
+        ". Activate to spotlight." });
+    g.appendChild(svgNS("rect", { x: 0, y: topPad + idx * rowH, width: W, height: rowH, fill: "transparent" }));
+    g.appendChild(svgNS("circle", { cx: X, cy: y, r: 7, fill: col,
+      stroke: "var(--surface)", "stroke-width": "2.5" }));
+    var nm = svgNS("text", { x: X + 16, y: y - 3, "class": "tl-name" });
+    nm.textContent = it.s.name.length > 26 ? it.s.name.slice(0, 25) + "…" : it.s.name;
+    var d = parseISODate(it.s.renewal);
+    var sb = svgNS("text", { x: X + 16, y: y + 15, "class": "tl-day" });
+    sb.textContent = dateFmt.format(d) + " · " + money.format(it.s.cost) +
+      CYCLE_SHORT[it.s.cycle] + " · " + when;
+    g.appendChild(nm);
+    g.appendChild(sb);
+    svg.appendChild(g);
+    var item = { g: g, s: it.s, days: it.days };
+    marks.push(item);
+    (function (m) {
+      g.addEventListener("click", function () { act(m); });
+      g.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(m); }
+      });
+    })(item);
+  });
+  box.appendChild(svg);
+  box.appendChild(detail);
+  return box;
+}
+
+/* Savings gauge: projected trim savings as a share of monthly burn.
+   Click toggles the center number between monthly and annual. */
+function renderSavingsGauge(mSave) {
+  var monthly = 0;
+  for (var i = 0; i < subs.length; i++) monthly += monthlyOf(subs[i]);
+  var pct = monthly > 0 ? Math.min(100, (mSave / monthly) * 100) : 0;
+  var tile = el("div", "gauge-tile");
+  tile.setAttribute("role", "button");
+  tile.setAttribute("tabindex", "0");
+  tile.setAttribute("aria-pressed", "false");
+  tile.setAttribute("aria-label", "Projected savings gauge: " + pct.toFixed(1) +
+    " percent of monthly burn. Activate to switch between monthly and annual.");
+  var svg = svgNS("svg", { viewBox: "0 0 140 140", width: "140", height: "140", role: "img",
+    "aria-label": "Gauge showing projected savings as a share of monthly burn" });
+  svg.appendChild(svgNS("circle", { cx: 70, cy: 70, r: 56, fill: "none",
+    stroke: "var(--bar-track)", "stroke-width": "14" }));
+  svg.appendChild(svgNS("circle", { cx: 70, cy: 70, r: 56, fill: "none",
+    stroke: "var(--good)", "stroke-width": "14", pathLength: "100",
+    "stroke-dasharray": pct.toFixed(1) + " 100", transform: "rotate(-90 70 70)",
+    "stroke-linecap": "round" }));
+  var top = svgNS("text", { x: 70, y: 66, "text-anchor": "middle", "class": "gauge-top" });
+  var sub = svgNS("text", { x: 70, y: 90, "text-anchor": "middle", "class": "gauge-sub" });
+  var annual = false;
+  function paint() {
+    top.textContent = money.format(annual ? mSave * 12 : mSave);
+    sub.textContent = annual ? "per year" : "per month";
+  }
+  paint();
+  function act() {
+    annual = !annual;
+    tile.setAttribute("aria-pressed", annual ? "true" : "false");
+    paint();
+    Sound.click();
+  }
+  tile.addEventListener("click", act);
+  tile.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(); }
+  });
+  svg.appendChild(top);
+  svg.appendChild(sub);
+  tile.appendChild(svg);
+  tile.appendChild(el("div", "cap", "of monthly burn"));
+  return tile;
+}
+
+/* Dashboard stat cards: click a card for a breakdown, click again to restore. */
+function statBreakdown(key) {
+  if (!subs.length) return null;
+  var monthly = 0, cats = {}, top = null, topM = 0, lo = null, loM = 0, i;
+  for (i = 0; i < subs.length; i++) {
+    var m = monthlyOf(subs[i]);
+    monthly += m;
+    cats[subs[i].category] = (cats[subs[i].category] || 0) + m;
+    if (top === null || m > topM) { top = subs[i]; topM = m; }
+    if (lo === null || m < loM) { lo = subs[i]; loM = m; }
+  }
+  var catNames = Object.keys(cats), topCat = null, topCatM = 0;
+  for (var c in cats) {
+    if (Object.prototype.hasOwnProperty.call(cats, c) && cats[c] > topCatM) { topCatM = cats[c]; topCat = c; }
+  }
+  var n = subs.length;
+  switch (key) {
+    case "monthly":
+      return { lead: "Largest category: ",
+        text: topCat + " at " + money.format(topCatM) + "/mo — " + n + " subscription" +
+          (n === 1 ? "" : "s") + " across " + catNames.length + " categor" + (catNames.length === 1 ? "y" : "ies") + "." };
+    case "annual": {
+      var ts = 0;
+      for (i = 0; i < subs.length; i++) if (subs[i].trim) ts += monthlyOf(subs[i]);
+      return { lead: "12-month projection: ",
+        text: money.format(monthly * 12) + " a year. Marked-for-trim subscriptions would save " +
+          money.format(ts) + "/mo (" + money.format(ts * 12) + "/yr)." };
+    }
+    case "count": {
+      var names = subs.slice(0, 6).map(function (s) { return s.name; });
+      return { lead: "Active: ",
+        text: names.join(", ") + (n > 6 ? " — and " + (n - 6) + " more." : ".") };
+    }
+    case "top": {
+      var d = parseISODate(top.renewal);
+      return { lead: top.name + ": ",
+        text: money.format(top.cost) + CYCLE_SHORT[top.cycle] + " = " + money.format(topM) + "/mo" +
+          (d ? ", renews " + dateFmt.format(d) + "." : ", no renewal date set.") };
+    }
+    case "avg":
+      return { lead: "Range: ",
+        text: money.format(loM) + "/mo (" + lo.name + ") to " + money.format(topM) + "/mo (" + top.name + ")." };
+  }
+  return null;
+}
+function bindStatCards() {
+  var detail = document.getElementById("statDetail");
+  if (!detail) return;
+  var cards = document.querySelectorAll("#totals .stat");
+  var keys = ["monthly", "annual", "count", "top", "avg"];
+  for (var i = 0; i < cards.length && i < keys.length; i++) {
+    (function (card, key) {
+      var lab = card.querySelector(".label");
+      var lbl = lab ? lab.textContent.trim() : "Stat";
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-pressed", "false");
+      card.setAttribute("aria-label", lbl + ". Activate for a breakdown.");
       function act() {
-        var was = rrrow.classList.contains("sel");
-        var sels = resultsEl.querySelectorAll(".sf-row.sel, .tot-row.sel");
-        for (var k = 0; k < sels.length; k++) { sels[k].classList.remove("sel"); sels[k].setAttribute("aria-pressed", "false"); }
+        var was = card.classList.contains("sel");
+        for (var k = 0; k < cards.length; k++) {
+          cards[k].classList.remove("sel");
+          cards[k].setAttribute("aria-pressed", "false");
+        }
         if (!was) {
-          rrrow.classList.add("sel");
-          rrrow.setAttribute("aria-pressed", "true");
-          var pct = grandTotal > 0 ? (rr.total / grandTotal * 100) : 0;
-          detail.innerHTML = "";
-          detail.appendChild(el("strong", null, rr.name + ": "));
-          detail.appendChild(document.createTextNode(
-            money(rr.total) + " \u2014 " + pct.toFixed(1) + "% of " + money(grandTotal) + " total."));
+          card.classList.add("sel");
+          card.setAttribute("aria-pressed", "true");
+          var b = statBreakdown(key);
+          detail.textContent = "";
+          if (b) {
+            var st = document.createElement("strong");
+            st.textContent = b.lead;
+            detail.appendChild(st);
+            detail.appendChild(document.createTextNode(b.text));
+          }
           Sound.select();
         } else {
-          detail.innerHTML = "";
+          detail.textContent = "";
           Sound.click();
         }
       }
-      rrrow.addEventListener("click", act);
-      rrrow.addEventListener("keydown", function (ev) {
+      card.addEventListener("click", act);
+      card.addEventListener("keydown", function (ev) {
         if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(); }
       });
-    })(r, row);
-    bars.appendChild(row);
-  });
-  resultsEl.appendChild(bars);
-  resultsEl.appendChild(detail);
-
-  /* Visual: stacked composition of each bill by person (interactive). */
-  if (state.bills.length > 0) {
-    resultsEl.appendChild(el("h3", null, "Each bill, by person"));
-    resultsEl.appendChild(renderBillStacks());
+    })(cards[i], keys[i]);
   }
-
-  /* Settle up */
-  resultsEl.appendChild(el("h3", null, "Settle up"));
-  var list = el("ul", { "class": "settle-list" });
-  state.people.forEach(function (p) {
-    var li = el("li", {
-      role: "button", tabindex: "0",
-      "aria-label": p.name + " owes " + money(totals[p.id]) + ". Activate to spotlight in Who owes what."
-    });
-    li.appendChild(el("span", null, p.name + " owes"));
-    li.appendChild(el("strong", null, money(totals[p.id])));
-    li.addEventListener("click", function () {
-      var row = bars.querySelector('.sf-row[data-pid="' + p.id + '"]');
-      if (row) row.click();
-    });
-    li.addEventListener("keydown", function (ev) {
-      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); li.click(); }
-    });
-    list.appendChild(li);
-  });
-  resultsEl.appendChild(list);
 }
 
-/* ---------- actions ---------- */
-document.getElementById("addPerson").addEventListener("click", function () {
-  state.people.push({ id: uid(), name: "Person " + (state.people.length + 1), sqft: 0 });
-  save(); renderPeople(); renderBills(); renderResults();
-  Sound.success();
-});
+/* ---------- dialog: add / edit ---------- */
+var dialog, form, formError;
+function openDialog(id) {
+  editingId = id || null;
+  var sub = id ? findSub(id) : null;
+  document.getElementById("dialogTitle").textContent = sub ? "Edit subscription" : "Add subscription";
+  document.getElementById("fName").value = sub ? sub.name : "";
+  document.getElementById("fCost").value = sub ? (Math.round(sub.cost * 100) / 100).toFixed(2) : "";
+  document.getElementById("fCycle").value = sub ? sub.cycle : "monthly";
+  document.getElementById("fCategory").value = sub ? sub.category : "Other";
+  document.getElementById("fRenewal").value = sub ? sub.renewal : "";
+  document.getElementById("fNotes").value = sub ? sub.notes : "";
+  formError.textContent = "";
+  dialog.showModal();
+  document.getElementById("fName").focus();
+}
+function closeDialog() { dialog.close(); }
+function onFormSubmit(e) {
+  e.preventDefault();
+  formError.textContent = "";
+  var name = document.getElementById("fName").value.trim();
+  var costRaw = document.getElementById("fCost").value.trim();
+  var cost = costRaw === "" ? NaN : Number(costRaw);
+  var cycle = document.getElementById("fCycle").value;
+  var category = document.getElementById("fCategory").value;
+  var renewal = document.getElementById("fRenewal").value;
+  var notes = document.getElementById("fNotes").value;
 
-document.getElementById("addBill").addEventListener("click", function () {
-  var type = newBillType.value;
-  var name = type === "__custom" ? cleanStr(newBillCustom.value) : type;
-  if (!name) {
-    if (type === "__custom") { newBillCustom.focus(); return; }
-    name = "Bill";
+  if (!name) { formError.textContent = "Please enter a name."; Sound.error(); return; }
+  if (name.length > MAX_NAME) { formError.textContent = "Name is too long (max " + MAX_NAME + " characters)."; Sound.error(); return; }
+  if (!isFinite(cost) || cost < 0) { formError.textContent = "Cost must be a number of 0 or more."; Sound.error(); return; }
+  if (cost > MAX_COST) { formError.textContent = "That cost looks like a typo — please enter at most " + money.format(MAX_COST) + "."; Sound.error(); return; }
+  if (CYCLES.indexOf(cycle) === -1) { formError.textContent = "Please choose a billing cycle."; Sound.error(); return; }
+  if (CATEGORIES.indexOf(category) === -1) category = "Other";
+  if (renewal && !parseISODate(renewal)) { formError.textContent = "Please enter a valid renewal date."; Sound.error(); return; }
+  if (notes.length > MAX_NOTES) { formError.textContent = "Notes are too long (max " + MAX_NOTES + " characters)."; Sound.error(); return; }
+
+  cost = Math.round(cost * 100) / 100;
+  if (editingId) {
+    var sub = findSub(editingId);
+    if (!sub) { formError.textContent = "That subscription no longer exists."; Sound.error(); return; }
+    sub.name = name; sub.cost = cost; sub.cycle = cycle;
+    sub.category = category; sub.renewal = renewal; sub.notes = notes;
+  } else {
+    subs.push({ id: uid(), name: name, cost: cost, cycle: cycle, category: category, renewal: renewal, notes: notes, trim: false });
   }
-  var amtEl = document.getElementById("newBillAmount");
-  var amount = cleanNum(amtEl.value, 0, MAX_AMOUNT);
-  if (amount === null) amount = 0;
-  var start = cleanDateStr(document.getElementById("newBillStart").value);
-  var end = cleanDateStr(document.getElementById("newBillEnd").value);
-  var method = document.getElementById("newBillMethod").value;
-  if (!METHODS[method]) method = "equal";
-  state.bills.push({
-    id: uid(), name: name, amount: amount, start: start, end: end,
-    method: method, occupancy: {}
-  });
-  amtEl.value = "";
-  newBillCustom.value = "";
-  save(); renderBills(); renderResults();
+  saveData();
+  renderAll();
+  refreshDataStatus();
+  closeDialog();
   Sound.success();
-});
-
-function demoData() {
-  var a = { id: uid(), name: "Alex", sqft: 140 };
-  var j = { id: uid(), name: "Jordan", sqft: 110 };
-  var s = { id: uid(), name: "Sam", sqft: 90 };
-  var electric = {
-    id: uid(), name: "Electric", amount: 120, start: "2026-09-01", end: "2026-09-30",
-    method: "sqft", occupancy: {}
-  };
-  var internet = {
-    id: uid(), name: "Internet", amount: 75, start: "2026-09-01", end: "2026-09-30",
-    method: "occupancy", occupancy: {}
-  };
-  internet.occupancy[a.id] = { days: 30, guests: 0 };
-  internet.occupancy[j.id] = { days: 22, guests: 4 };
-  internet.occupancy[s.id] = { days: 15, guests: 2 };
-  return { people: [a, j, s], bills: [electric, internet] };
+}
+function deleteSub(id) {
+  var sub = findSub(id);
+  if (!sub) return;
+  if (!window.confirm("Delete \"" + sub.name + "\"? This cannot be undone.")) { Sound.click(); return; }
+  subs = subs.filter(function (s) { return s.id !== id; });
+  saveData();
+  renderAll();
+  refreshDataStatus();
+  Sound.success();
 }
 
-document.getElementById("loadDemo").addEventListener("click", function () {
-  if (state.people.length || state.bills.length) {
-    if (!window.confirm("Replace current data with the demo?")) { Sound.click(); return; }
+/* ---------- export / import ---------- */
+function dataMessage(text, isError) {
+  var m = document.getElementById("dataMsg");
+  m.textContent = text;
+  m.style.color = isError ? "var(--bad)" : "var(--good)";
+}
+/* keep the Backup & demo status line truthful after any data mutation */
+function refreshDataStatus() {
+  if (!storageOK) {
+    dataMessage("Browser storage failed — your changes are only kept until this tab closes.", true);
+    return;
   }
-  state = demoData();
-  save(); renderPeople(); renderBills(); renderResults();
-  Sound.success();
-});
-
-document.getElementById("clearAll").addEventListener("click", function () {
-  if (!window.confirm("Delete all people and bills? This cannot be undone.")) { Sound.click(); return; }
-  state = blankState();
-  save(); renderPeople(); renderBills(); renderResults();
-  Sound.success();
-});
-
-document.getElementById("exportBtn").addEventListener("click", function () {
-  var blob = new Blob([JSON.stringify({ version: 1, people: state.people, bills: state.bills }, null, 2)],
-    { type: "application/json" });
-  var a = el("a", { href: URL.createObjectURL(blob), download: "splitfair-export.json" });
+  dataMessage(subs.length + " subscription" + (subs.length === 1 ? "" : "s") + " stored locally.");
+}
+function exportJSON() {
+  if (!subs.length) { dataMessage("Nothing to export — add a subscription first.", true); Sound.error(); return; }
+  var payload = { app: "subaudit", version: 1, exported: new Date().toISOString(), subs: subs };
+  var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  var a = document.createElement("a");
+  a.href = window.URL.createObjectURL(blob);
+  a.download = "subaudit-backup-" + isoOfDate(new Date()) + ".json";
   document.body.appendChild(a);
   a.click();
-  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  a.remove();
+  window.setTimeout(function () { window.URL.revokeObjectURL(a.href); }, 5000);
+  dataMessage("Exported " + subs.length + " subscription" + (subs.length === 1 ? "" : "s") + ".");
   Sound.success();
-});
-
-var importFile = document.getElementById("importFile");
-document.getElementById("importBtn").addEventListener("click", function () { Sound.click(); importFile.click(); });
-importFile.addEventListener("change", function () {
-  var f = importFile.files && importFile.files[0];
-  if (!f) return;
+}
+function importJSONFile(file) {
+  dataMessage("");
   var reader = new FileReader();
+  reader.onerror = function () { dataMessage("Could not read that file.", true); Sound.error(); };
   reader.onload = function () {
-    try {
-      var parsed = JSON.parse(String(reader.result));
-      var clean = sanitizeState(parsed);
-      if (!clean) { Sound.error(); window.alert("Import failed: file is not valid SplitFair data."); return; }
-      state = clean;
-      save(); renderPeople(); renderBills(); renderResults();
-      Sound.success();
-    } catch (e) {
-      Sound.error(); window.alert("Import failed: could not read that file.");
+    var parsed;
+    try { parsed = JSON.parse(reader.result); }
+    catch (e) { dataMessage("That file is not valid JSON.", true); Sound.error(); return; }
+    var arr = Array.isArray(parsed) ? parsed : parsed.subs;
+    if (!Array.isArray(arr)) { dataMessage("No subscription list found in that file.", true); Sound.error(); return; }
+    if (arr.length > 5000) { dataMessage("That file has " + arr.length + " records — imports are capped at 5000. Nothing was changed.", true); Sound.error(); return; }
+    var clean = [], skipped = 0, seen = Object.create(null);
+    for (var i = 0; i < arr.length; i++) {
+      var s = sanitizeSub(arr[i]);
+      if (!s || seen[s.id]) { skipped++; continue; }
+      seen[s.id] = true;
+      clean.push(s);
     }
-    importFile.value = "";
+    if (!clean.length) { dataMessage("No valid subscriptions found (" + skipped + " skipped). Nothing was changed.", true); return; }
+    if (!window.confirm("Replace your current " + subs.length + " subscription(s) with " + clean.length + " imported one(s)?")) return;
+    subs = clean;
+    saveData();
+    renderAll();
+    dataMessage("Imported " + clean.length + " subscription" + (clean.length === 1 ? "" : "s") + (skipped ? " (" + skipped + " invalid skipped)." : "."));
+    Sound.success();
   };
-  reader.readAsText(f);
-});
+  reader.readAsText(file);
+}
+
+/* ---------- demo data / clear ---------- */
+function demoData() {
+  function offset(days) {
+    var t = new Date();
+    t.setDate(t.getDate() + days);
+    return isoOfDate(t);
+  }
+  var rows = [
+    { name: "StreamFlix", cost: 15.49, cycle: "monthly", category: "Streaming", renewal: offset(5), notes: "4K plan, shared with family" },
+    { name: "MusicBox", cost: 11.99, cycle: "monthly", category: "Streaming", renewal: offset(21), notes: "" },
+    { name: "CloudVault 2TB", cost: 119.99, cycle: "yearly", category: "Software & Apps", renewal: offset(9), notes: "Family storage plan" },
+    { name: "NewsDaily", cost: 4.99, cycle: "weekly", category: "News & Media", renewal: offset(-3), notes: "" },
+    { name: "FitTrack Pro", cost: 29.99, cycle: "quarterly", category: "Health & Fitness", renewal: "", notes: "Gym tracking app" },
+    { name: "GamePass Club", cost: 9.99, cycle: "monthly", category: "Memberships", renewal: offset(14), notes: "" }
+  ];
+  return rows.map(function (r) {
+    return { id: uid(), name: r.name, cost: r.cost, cycle: r.cycle, category: r.category, renewal: r.renewal, notes: r.notes, trim: false };
+  });
+}
 
 /* ---------- subtle sounds (Web Audio, no files, offline) ---------- */
 var Sound = (function () {
-  var KEY = "splitfair.sound", on = true, ctx = null;
+  var KEY = "subaudit.sound", on = true, ctx = null;
   try { if (window.localStorage.getItem(KEY) === "off") on = false; } catch (e) {}
   function ac() {
     try {
@@ -1427,11 +1565,11 @@ var Sound = (function () {
   };
 })();
 function bindSoundToggle() {
-  var btn = document.getElementById("soundToggle");
+  var btn = document.getElementById("sound-toggle");
   if (!btn) return;
   function paint() {
     var on = Sound.isOn();
-    btn.textContent = on ? "🔊" : "🔇";
+    btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
     btn.setAttribute("aria-pressed", on ? "true" : "false");
     btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
     btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
@@ -1441,31 +1579,98 @@ function bindSoundToggle() {
 }
 
 /* ---------- theme ---------- */
-var themeToggle = document.getElementById("themeToggle");
-function currentTheme() { return document.documentElement.getAttribute("data-theme") || "light"; }
-function paintThemeButton() {
-  var dark = currentTheme() === "dark";
-  themeToggle.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
-  themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
-  var label = dark ? "Switch to light mode" : "Switch to dark mode";
+var themeToggle;
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeToggle.innerHTML = (t === "dark") ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
+  themeToggle.setAttribute("aria-pressed", t === "dark" ? "true" : "false");
+  var label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
   themeToggle.setAttribute("aria-label", label);
   themeToggle.title = label;
+  storeSet(LS_THEME, t);
 }
-themeToggle.addEventListener("click", function () {
-  var next = currentTheme() === "dark" ? "light" : "dark";
-  document.documentElement.setAttribute("data-theme", next);
-  try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
-  paintThemeButton();
-  Sound.toggleTheme();
-});
-paintThemeButton();
+function initTheme() {
+  var t = storeGet(LS_THEME);
+  if (t !== "light" && t !== "dark") {
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  applyTheme(t);
+}
 
 /* ---------- init ---------- */
-load();
-renderPeople();
-renderBills();
-renderResults();
-bindSoundToggle();
+function init() {
+  dialog = document.getElementById("subDialog");
+  form = document.getElementById("subForm");
+  formError = document.getElementById("formError");
+  themeToggle = document.getElementById("themeToggle");
+
+  var catSel = document.getElementById("fCategory");
+  CATEGORIES.forEach(function (c) {
+    var o = document.createElement("option");
+    o.value = c;
+    o.textContent = c;
+    catSel.appendChild(o);
+  });
+
+  initTheme();
+  loadData();
+  renderAll();
+  bindStatCards();
+  if (!storageOK) {
+    dataMessage("Browser storage is unavailable in this context — your data will work during this session but will not be saved between visits.", true);
+  }
+
+  document.getElementById("addBtn").addEventListener("click", function () { openDialog(null); });
+  document.getElementById("cancelBtn").addEventListener("click", closeDialog);
+  form.addEventListener("submit", onFormSubmit);
+  dialog.addEventListener("click", function (e) {
+    if (e.target === dialog) closeDialog();
+  });
+
+  document.getElementById("searchInput").addEventListener("input", function (e) {
+    searchTerm = e.target.value;
+    renderTable();
+  });
+  document.getElementById("sortSelect").addEventListener("change", function (e) {
+    sortKey = e.target.value;
+    renderTable();
+  });
+  themeToggle.addEventListener("click", function () {
+    var cur = document.documentElement.getAttribute("data-theme");
+    applyTheme(cur === "dark" ? "light" : "dark");
+    Sound.toggleTheme();
+  });
+  bindSoundToggle();
+
+  document.getElementById("exportBtn").addEventListener("click", exportJSON);
+  document.getElementById("importBtn").addEventListener("click", function () {
+    document.getElementById("importFile").click();
+  });
+  document.getElementById("importFile").addEventListener("change", function (e) {
+    if (e.target.files && e.target.files[0]) importJSONFile(e.target.files[0]);
+    e.target.value = "";
+  });
+  document.getElementById("demoBtn").addEventListener("click", function () {
+    if (subs.length && !window.confirm("Replace your current " + subs.length + " subscription(s) with demo data?")) { Sound.click(); return; }
+    subs = demoData();
+    saveData();
+    renderAll();
+    dataMessage("Demo data loaded (" + subs.length + " subscriptions).");
+    Sound.success();
+  });
+  document.getElementById("clearBtn").addEventListener("click", function () {
+    if (!subs.length) { dataMessage("Nothing to clear.", true); Sound.error(); return; }
+    if (!window.confirm("Delete all " + subs.length + " subscriptions? This cannot be undone.")) { Sound.click(); return; }
+    subs = [];
+    saveData();
+    renderAll();
+    dataMessage("All subscriptions cleared.");
+    Sound.success();
+  });
+}
+
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+else init();
 
 /* ---------- sample-data toggle: snapshot user data, realistic demo, exact restore ---------- */
 (function(){
@@ -1480,15 +1685,12 @@ bindSoundToggle();
     btn.title = lbl;
   }
   function snapshot(){
-    try{ snap = JSON.parse(JSON.stringify(state)); }catch(e){ snap = blankState(); }
-    try{
-      var raw = localStorage.getItem(STATE_KEY);
-      snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
-    }catch(e){ snapLS = LS_MISSING; }
+    try{ snap = JSON.parse(JSON.stringify(subs)); }catch(e){ snap = []; }
+    snapLS = storeGet(LS_DATA);
+    if(snapLS === null || snapLS === undefined) snapLS = LS_MISSING;
   }
-  /* Snapshot every transient control: typed-but-uncommitted input values,
-     selects, checked states, plus focus — all keyed by element id so the
-     restore survives the DOM being rebuilt. */
+  /* Snapshot every transient control: typed-but-uncommitted dialog fields,
+     search/sort values, checked states, validation/status text, focus. */
   function snapshotTransient(){
     var ctrls = [];
     var nodes = document.querySelectorAll("input, select, textarea");
@@ -1498,13 +1700,13 @@ bindSoundToggle();
       ctrls.push({ id: n.id, value: n.value, checked: !!n.checked,
                    sel: (n.tagName === "SELECT" ? n.selectedIndex : -1) });
     }
-    var t = { ctrls: ctrls, focus: null };
+    var t = { ctrls: ctrls, search: searchTerm, sort: sortKey, msgs: {}, focus: null };
+    ["formError", "dataMsg"].forEach(function (id) {
+      var m = document.getElementById(id);
+      if(m) t.msgs[id] = m.textContent;
+    });
     try{ var a = document.activeElement; if(a && a.id) t.focus = a.id; }catch(e){}
     return t;
-  }
-  function syncTransientUI(){
-    if (newBillType.value === "__custom") customNameWrap.removeAttribute("hidden");
-    else customNameWrap.setAttribute("hidden", "");
   }
   function restoreTransient(t){
     if(!t) return;
@@ -1515,13 +1717,49 @@ bindSoundToggle();
       if(n.type === "checkbox" || n.type === "radio") n.checked = rec.checked;
       else { n.value = rec.value; if(n.tagName === "SELECT" && rec.sel >= 0) n.selectedIndex = rec.sel; }
     }
-    syncTransientUI();
+    searchTerm = t.search;
+    sortKey = t.sort;
+    for (var id in t.msgs){
+      if(Object.prototype.hasOwnProperty.call(t.msgs, id)){
+        var m = document.getElementById(id);
+        if(m) m.textContent = t.msgs[id];
+      }
+    }
+    renderAll();
     if(t.focus){ var f = document.getElementById(t.focus); if(f && f.focus){ try{ f.focus(); }catch(e){} } }
   }
-  function paintAll(){
-    renderPeople();
-    renderBills();
-    renderResults();
+  function isoPlus(n){
+    var d = new Date(); d.setDate(d.getDate() + n);
+    var m = String(d.getMonth() + 1).padStart(2, "0"), day = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+  function applySample(){
+    subs = [
+      { id: "demo-1", name: "Netflix", cost: 15.49, cycle: "monthly", category: "Streaming",
+        renewal: isoPlus(5), notes: "Standard plan", trim: false },
+      { id: "demo-2", name: "Gym membership", cost: 29.99, cycle: "monthly", category: "Health & Fitness",
+        renewal: isoPlus(20), notes: "", trim: false },
+      { id: "demo-3", name: "Amazon Prime", cost: 139, cycle: "yearly", category: "Memberships",
+        renewal: isoPlus(60), notes: "Renews annually", trim: false },
+      { id: "demo-4", name: "Cloud storage", cost: 2.99, cycle: "monthly", category: "Software & Apps",
+        renewal: isoPlus(2), notes: "200 GB plan", trim: true },
+      { id: "demo-5", name: "Domain renewal", cost: 18, cycle: "yearly", category: "Software & Apps",
+        renewal: isoPlus(10), notes: "Personal domain", trim: false }
+    ];
+    renderAll();
+  }
+  function restore(){
+    subs = snap || [];
+    if(snapLS === LS_MISSING){
+      try{ window.localStorage.removeItem(LS_DATA); }catch(e){}
+      try{ delete memStore[LS_DATA]; }catch(e){}
+    }else{
+      storeSet(LS_DATA, snapLS);
+    }
+    snap = null; snapLS = null;
+    renderAll();
+    restoreTransient(transSnap);
+    transSnap = null;
   }
   btn.addEventListener("click", function(){
     if(!sampleOn){
@@ -1529,20 +1767,11 @@ bindSoundToggle();
       transSnap = snapshotTransient();
       window.__gSampleOn = true;
       sampleOn = true;
-      state = demoData(); /* same demo content as the Load demo button, no replace-confirm */
-      paintAll();
+      applySample();
     }else{
       window.__gSampleOn = false;
       sampleOn = false;
-      state = snap || blankState();
-      try{
-        if(snapLS === LS_MISSING) localStorage.removeItem(STATE_KEY);
-        else localStorage.setItem(STATE_KEY, snapLS);
-      }catch(e){}
-      snap = null; snapLS = null;
-      paintAll();
-      restoreTransient(transSnap);
-      transSnap = null;
+      restore();
     }
     paintSample();
     Sound.click();
@@ -1552,7 +1781,7 @@ bindSoundToggle();
   /* Esc restores any active spotlight (clickability spec) */
   document.addEventListener("keydown", function (ev) {
     if (ev.key !== "Escape") return;
-    var sels = document.querySelectorAll("g.donut-seg.sel, g.stack-seg.sel, .sf-row.sel, .settle-list li.sel");
+    var sels = document.querySelectorAll(".cat-row.sel, .stat.sel, .stat-box.sel, g.sel");
     for (var i = 0; i < sels.length; i++) {
       /* SVG <g> has no .click(); dispatch a bubbling click so its toggle handler runs */
       if (sels[i].click) sels[i].click();
