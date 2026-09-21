@@ -1,5 +1,10 @@
 # SubAudit — CHANGES.md
 
+## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
+- Standardized the header cluster: `.g-header-actions` wrapper with More Apps pill first, icon-only dark-mode button (44x44px circular, moon/sun icon, dynamic aria-label/title — no more "Dark mode: on/off" text), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
+- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `subaudit.sound`, wired into theme toggle, add/edit subscription (validation errors and success), delete (success/cancel), export (success/empty error), import (success/failure), demo load (success/cancel), and clear all (success/cancel).
+- Made the "cost by category" bars interactive: each row is a keyboard-accessible button — activating it spotlights the row and lists the subscriptions in that category with their monthly costs in a detail line; activating again restores.
+
 Build log for the single-file offline app at `index.html` (this directory).
 Built 2026-09-19 per `~/workspace/microtool-research/free-loop/app1-subaudit-SPEC.md`.
 Everything written from scratch (IP clean-room); no external requests; works from file://.
