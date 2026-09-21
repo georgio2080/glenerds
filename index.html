@@ -1,644 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c2570b'/%3E%3Ctext x='32' y='44' font-size='30' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E$%3C/text%3E%3C/svg%3E">
-<meta name="description" content="RecipeCost — free offline recipe cost calculator for home bakers. Cost every ingredient, get per-serving cost, and price with your target profit margin. No signup, works offline.">
-<title>Recipe Cost Calculator for Home Bakers — Ingredient Costing & Pricing | RecipeCost</title>
+<title>Should I Renew My Lease or Move? Free Cost Calculator</title>
+<meta name="description" content="Free lease renewal vs moving calculator: should I renew my lease or move? Compare the true cost of moving vs staying — movers, deposits, fees, overlap rent — and find your break-even month. Offline, private, no account.">
+<script>
+/* Pre-theme: set data-theme before first paint to avoid flash */
+(function(){try{
+  var t=localStorage.getItem("renewormove-theme");
+  if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
+  document.documentElement.setAttribute("data-theme",t);
+}catch(e){}})();
+</script>
 <style>
-/* ===== GLENERDS DESIGN SYSTEM (inlined) ===== */
-/* ==========================================================================
-   GLENERDS DESIGN SYSTEM v1.0
-   --------------------------------------------------------------------------
-   One shared visual language for every Glenerds microtool.
-   Designed to be INLINED into each app's <style> block — keeps the
-   single-file property: zero network requests, file:// safe, no webfonts,
-   no CDNs, no frameworks, no build step.
-
-   Usage: paste this whole file inside a STYLE element in <head>, then use
-   the g- classes below. See INTEGRATION.md for the theme-toggle wiring.
-
-   Conventions:
-   - Every class is prefixed `g-` to avoid collisions.
-   - Theming is driven by `data-theme="light|dark"` on <html>.
-   - First load with no saved choice honors prefers-color-scheme.
-   ========================================================================== */
-
-/* ---------- 1. TOKENS ---------- */
-:root {
-  color-scheme: light;
-
-  /* Surfaces */
-  --g-bg:            #f8fafc;   /* page background: soft cool white */
-  --g-surface:       #ffffff;   /* cards, panels */
-  --g-surface-2:     #f1f5f9;   /* recessed / inset areas, tab track */
-  --g-border:        #e2e8f0;   /* hairlines */
-  --g-border-strong: #cbd5e1;
-
-  /* Text */
-  --g-text:          #0f172a;   /* slate-900 */
-  --g-text-soft:     #334155;   /* slate-700 — secondary text */
-  --g-muted:         #64748b;   /* slate-500 — captions, hints */
-
-  /* Accent: refined indigo */
-  --g-accent:        #4f46e5;   /* indigo-600 */
-  --g-accent-hover:  #4338ca;   /* indigo-700 */
-  --g-accent-ink:    #ffffff;   /* text on accent */
-  --g-accent-soft:   #eef2ff;   /* indigo-50 — tinted fills */
-  --g-accent-ring:   rgba(79, 70, 229, 0.22);
-
-  /* Status */
-  --g-good:          #047857;   /* emerald-700 */
-  --g-good-soft:     #ecfdf5;
-  --g-bad:           #b42318;
-  --g-bad-soft:      #fef3f2;
-  --g-warn:          #b45309;
-  --g-warn-soft:     #fffbeb;
-
-  /* Inputs */
-  --g-input-bg:      #ffffff;
-  --g-input-border:  #cbd5e1;
-  --g-code-bg:       #f1f5f9;
-
-  /* Shape + motion */
-  --g-radius-sm: 8px;
-  --g-radius-md: 12px;
-  --g-radius-lg: 16px;
-  --g-radius-pill: 999px;
-  --g-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --g-shadow-md: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
-  --g-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.10);
-  --g-ease: 160ms ease;
-
-  /* Type */
-  --g-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            "Helvetica Neue", Arial, system-ui, sans-serif;
-  --g-mono: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Consolas,
-            "Liberation Mono", monospace;
+:root,[data-theme="light"]{
+  --bg:#f3f1fa; --card:#ffffff; --text:#1e1b2e; --muted:#6b6584;
+  --border:#e4e0f3; --input-bg:#ffffff; --input-border:#d8d3ea;
+  --chip-bg:#f0edfb; --header-grad:linear-gradient(135deg,#4f46e5 0%,#7c3aed 55%,#9333ea 100%);
+  --primary:#6d28d9; --primary2:#8b5cf6; --btn-text:#ffffff;
+  --btn-bg:#ffffff; --btn-border:#d8d3ea;
+  --shadow:0 8px 24px rgba(109,40,217,.10);
+  --good:#15803d; --good-bg:#dcfce7; --warn:#b45309; --warn-bg:#fef3c7;
+  --table-head:#f0edfb; --zebra:#faf9fe; --bar:#e9e5f7;
+  --danger:#dc2626; --danger-bg:#fee2e2;
 }
-
-/* Dark theme: genuinely designed — deep blue-black, lifted surfaces,
-   brightened indigo. Not an inversion of light. */
-[data-theme="dark"] {
-  color-scheme: dark;
-
-  --g-bg:            #0b0e14;
-  --g-surface:       #141926;
-  --g-surface-2:     #0f1420;
-  --g-border:        #232c40;
-  --g-border-strong: #33405c;
-
-  --g-text:          #f1f5f9;
-  --g-text-soft:     #cbd5e1;
-  --g-muted:         #94a3b8;
-
-  --g-accent:        #818cf8;   /* indigo-400 — readable on dark */
-  --g-accent-hover:  #a5b4fc;   /* indigo-300 */
-  --g-accent-ink:    #ffffff;
-  --g-accent-soft:   rgba(129, 140, 248, 0.14);
-  --g-accent-ring:   rgba(129, 140, 248, 0.35);
-
-  --g-good:          #34d399;
-  --g-good-soft:     rgba(52, 211, 153, 0.12);
-  --g-bad:           #f87171;
-  --g-bad-soft:      rgba(248, 113, 113, 0.12);
-  --g-warn:          #fbbf24;
-  --g-warn-soft:     rgba(251, 191, 36, 0.12);
-
-  --g-input-bg:      #0f1420;
-  --g-input-border:  #33405c;
-  --g-code-bg:       #0f1420;
-
-  --g-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --g-shadow-md: 0 1px 3px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
-  --g-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+[data-theme="dark"]{
+  --bg:#0e0c17; --card:#171425; --text:#f1eefc; --muted:#a49dc2;
+  --border:#2b2644; --input-bg:#1f1b31; --input-border:#3a3357;
+  --chip-bg:#221e38;
+  --primary:#a78bfa; --primary2:#8b5cf6; --btn-text:#1a1430;
+  --btn-bg:#262142; --btn-border:#4a4468;
+  --shadow:0 8px 24px rgba(0,0,0,.35);
+  --good:#4ade80; --good-bg:#14532d; --warn:#fbbf24; --warn-bg:#451a03;
+  --table-head:#221e38; --zebra:#1a1629; --bar:#2b2644;
+  --danger:#f87171; --danger-bg:#450a0a;
 }
-
-/* ---------- 2. BASE ---------- */
-* { box-sizing: border-box; }
-
-.g-app {
-  font-family: var(--g-font);
-  background: var(--g-bg);
-  color: var(--g-text);
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.5}
+.hero{position:static;background:none;color:var(--text);
+  padding:14px 20px 6px;box-shadow:none}
+.hero-inner{max-width:1024px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.logo-badge{width:48px;height:48px;flex:0 0 48px;border-radius:14px;background:var(--primary);
+  display:flex;align-items:center;justify-content:center;border:none}
+.logo-badge svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
+.hero .tagline{margin:2px 0 0;font-size:.85rem;color:var(--muted);opacity:1}
+.theme-pill{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.85rem}
+.theme-pill:hover{background:rgba(255,255,255,.24)}
+.theme-pill svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
+[data-theme="light"] .icon-sun{display:none}
+[data-theme="dark"] .icon-moon{display:none}
+/* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only on the hero gradient */
+.g-header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto}
+.g-round-btn{
+  flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--btn-bg);border:1px solid var(--btn-border);color:var(--text);
+  border-radius:999px;cursor:pointer;font-size:1.1rem;
+  box-shadow:0 2px 8px rgba(0,0,0,.10);
+  transition:border-color .18s ease, transform .18s ease;
 }
-
-/* Page container */
-.g-wrap {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 20px 16px 48px;
+.g-round-btn svg{width:26px;height:26px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.g-round-btn.theme-toggle,.g-round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+.g-round-btn:hover{border-color:var(--primary)}
+.g-round-btn:active{transform:scale(.92);border-color:var(--primary)}
+.g-round-btn:focus{outline:none}
+.g-round-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.g-round-btn.sample-toggle[aria-pressed="true"]{color:var(--primary);border-color:var(--primary);
+  background:color-mix(in srgb, var(--primary) 12%, var(--card))}
+@media(max-width:480px){.g-header-actions{gap:6px}}
+@media(max-width:520px){
+  .hero-inner{flex-wrap:wrap;row-gap:8px}
+  .g-header-actions{width:100%;justify-content:flex-end;margin-left:0}
 }
-
-/* ---------- 3. TYPOGRAPHY ---------- */
-.g-display  { font-size: 1.9rem;  font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;  margin: 0 0 8px; }
-.g-title    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;  margin: 0 0 6px; }
-.g-body     { font-size: 1rem;    color: var(--g-text-soft); margin: 0 0 12px; }
-.g-caption  { font-size: 0.85rem; color: var(--g-muted);    margin: 0; }
-.g-mono     { font-family: var(--g-mono); font-size: 0.9em; }
-
-/* ---------- 4. HEADER ---------- */
-.g-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 6px 0 4px;
+main{max-width:1024px;margin:0 auto;padding:20px 16px 60px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.card-head{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.icon-chip{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:var(--chip-bg);
+  display:flex;align-items:center;justify-content:center}
+.icon-chip svg{width:19px;height:19px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-head h2{margin:0;font-size:1.12rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+input[type=text],input[type=number],select{width:100%;padding:10px 12px;border:1px solid var(--input-border);
+  border-radius:10px;background:var(--input-bg);color:var(--text);font-size:.95rem}
+input:focus,select:focus{outline:2px solid var(--primary2);border-color:var(--primary2)}
+.hint{font-size:.78rem;color:var(--muted);margin-top:4px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;cursor:pointer;
+  font-size:.92rem;font-weight:600;padding:10px 16px}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
+  box-shadow:0 4px 14px rgba(109,40,217,.35)}
+[data-theme="dark"] .btn-primary{color:#fff}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-secondary{background:transparent;border:1px solid var(--input-border);color:var(--text)}
+.btn-secondary:hover{border-color:var(--primary)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+[hidden]{display:none!important}
+.tabs{display:flex;background:var(--chip-bg);border-radius:12px;padding:4px;gap:4px;margin-bottom:14px;max-width:420px}
+.tab{flex:1;border:none;background:transparent;color:var(--muted);border-radius:9px;padding:10px;cursor:pointer;
+  font-weight:600;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:8px}
+.tab.active{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 3px 10px rgba(109,40,217,.35)}
+[data-theme="dark"] .tab.active{color:#fff}
+.err{display:none;color:var(--danger);font-weight:600;font-size:.88rem;margin-top:10px}
+.err.show{display:block}
+/* Verdict */
+.verdict{border-radius:12px;padding:22px 20px;text-align:center;margin-bottom:18px;
+  border:1px solid var(--border);background:var(--card)}
+.verdict[role="button"]{cursor:pointer;transition:box-shadow .18s ease}
+.verdict[role="button"]:focus{outline:none;filter:drop-shadow(0 0 6px var(--primary2))}
+.verdict[role="button"]:focus-visible{outline:none;filter:drop-shadow(0 0 6px var(--primary2))}
+.verdict[role="button"][aria-pressed="true"]{box-shadow:0 0 0 2px var(--primary2)}
+.verdict .v-icon{font-size:2rem}
+.verdict .v-title{font-size:1.5rem;font-weight:800;margin:8px 0 4px}
+.verdict .v-sub{color:var(--muted);font-size:.92rem}
+.verdict.win{background:var(--good-bg);border-color:var(--good)}
+.verdict.win .v-title{color:var(--good)}
+/* Bars */
+.cmp{margin:18px 0 6px}
+.cmp-row{margin-bottom:14px}
+.cmp-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.cmp-label{font-weight:700;font-size:.95rem}
+.cmp-label .tag{display:inline-block;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+  background:var(--good-bg);color:var(--good);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
+.cmp-val{font-weight:800;font-variant-numeric:tabular-nums;font-size:1.05rem}
+.cmp-bar{height:26px;background:var(--bar);border-radius:999px;overflow:hidden}
+.cmp-bar>div{height:100%;border-radius:999px;transition:width .45s ease;
+  background:linear-gradient(90deg,var(--primary),var(--primary2))}
+.cmp-bar.winner>div{background:linear-gradient(90deg,#059669,#34d399)}
+.cmp-sub{font-size:.8rem;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums}
+/* Break-even */
+.breakeven{border-left:4px solid var(--primary);background:var(--chip-bg);border-radius:0 10px 10px 0;
+  padding:14px 18px;margin:16px 0}
+.breakeven p{margin:0;font-size:.95rem}
+.breakeven strong{color:var(--primary)}
+/* Clickable breakdown table rows: hover + drop-shadow focus, no rectangles */
+.trow[role="button"]{cursor:pointer}
+.trow[role="button"]:hover td{background:var(--chip-bg)}
+.trow[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--primary2))}
+.trow[role="button"][aria-pressed="true"] td{color:var(--primary);font-weight:700}
+.trow.dim{opacity:.45}
+/* Clickable break-even box: jumps the chart to the break-even month */
+.breakeven[role="button"]{cursor:pointer;transition:box-shadow .18s ease}
+.breakeven[role="button"]:hover{box-shadow:0 0 0 1px var(--primary2)}
+.breakeven[role="button"]:focus{outline:none;filter:drop-shadow(0 0 6px var(--primary2))}
+/* Table */
+.table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+thead th{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;text-align:left;
+  padding:10px 12px;font-size:.78rem;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+[data-theme="dark"] thead th{color:#fff}
+tbody td{padding:9px 12px;border-top:1px solid var(--border)}
+tbody tr:nth-child(even){background:var(--zebra)}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.total-row td{font-weight:800;border-top:2px solid var(--primary)}
+/* Promo (matches rent-receipt-generator house style) */
+.promo{border-left:4px solid var(--primary);padding:14px 18px}
+.promo p{margin:0;font-size:.95rem}
+.promo a{color:var(--primary);font-weight:700}
+/* Explainer */
+.prose p{margin:0 0 12px;font-size:.95rem}
+.prose p:last-child{margin-bottom:0}
+.prose ul{margin:8px 0 12px;padding-left:20px;font-size:.95rem}
+.prose li{margin-bottom:6px}
+.prose h2{font-size:1.12rem;margin:0 0 10px}
+footer{max-width:1024px;margin:0 auto;padding:24px 16px 40px;color:var(--muted);font-size:.82rem;text-align:center}
+footer a{color:var(--primary);font-weight:600}
+footer .disclaimer{margin-top:10px;font-size:.75rem}
+@media(max-width:640px){
+  .grid2,.grid3{grid-template-columns:1fr}
+  .hero h1{font-size:1.15rem}
+  .logo-badge{display:none}
+  .theme-pill span{display:none}
+  .verdict .v-title{font-size:1.25rem}
+  main{padding:14px 12px 50px}
 }
-.g-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.g-brand-mark {
-  flex: 0 0 auto;
-  width: 40px; height: 40px;
-  border-radius: 12px;
-  background: var(--g-accent);
-  color: var(--g-accent-ink);
-  font-weight: 800; font-size: 1.25rem;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: var(--g-shadow-sm);
-  user-select: none;
-}
-.g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
-.g-tagline { color: var(--g-muted); font-size: 0.92rem; margin: 6px 0 14px; max-width: 56ch; }
-
-/* Theme toggle */
-.g-theme-toggle {
-  flex: 0 0 auto;
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--g-surface);
-  border: 1px solid var(--g-border);
-  color: var(--g-text-soft);
-  border-radius: var(--g-radius-pill);
-  padding: 8px 14px;
-  font-size: 0.88rem; font-weight: 600; font-family: var(--g-font);
-  cursor: pointer;
-  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
-  white-space: nowrap;
-}
-.g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
-.g-theme-toggle:active { transform: scale(0.97); }
-
-/* ---------- 5. TABS (segmented control) ---------- */
-.g-tabs {
-  display: flex; gap: 4px; flex-wrap: wrap;
-  background: var(--g-surface-2);
-  border: 1px solid var(--g-border);
-  border-radius: var(--g-radius-md);
-  padding: 4px;
-  margin: 14px 0;
-}
-.g-tab {
-  flex: 1 1 auto;
-  appearance: none;
-  border: 0; background: transparent;
-  color: var(--g-muted);
-  font-family: var(--g-font);
-  font-size: 0.93rem; font-weight: 600;
-  border-radius: 9px;
-  padding: 10px 14px;
-  cursor: pointer;
-  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
-  white-space: nowrap;
-}
-.g-tab:hover { color: var(--g-text); }
-.g-tab[aria-selected="true"] {
-  background: var(--g-surface);
-  color: var(--g-text);
-  box-shadow: var(--g-shadow-sm);
-}
-.g-tab:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-
-/* ---------- 6. CARDS ---------- */
-.g-card {
-  background: var(--g-surface);
-  border: 1px solid var(--g-border);
-  border-radius: var(--g-radius-lg);
-  padding: 22px;
-  margin: 16px 0;
-  box-shadow: var(--g-shadow-sm);
-}
-.g-card > .g-title { margin-bottom: 4px; }
-.g-card .g-desc { color: var(--g-muted); font-size: 0.92rem; margin: 0 0 14px; }
-.g-card-flat { box-shadow: none; }
-
-/* ---------- 7. BUTTONS ---------- */
-.g-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  font-family: var(--g-font);
-  font-size: 0.95rem; font-weight: 650;
-  border-radius: 10px;
-  padding: 11px 18px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: background var(--g-ease), border-color var(--g-ease),
-              color var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
-  text-decoration: none;
-  line-height: 1.2;
-}
-.g-btn:active { transform: translateY(1px) scale(0.99); }
-.g-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-.g-btn-primary {
-  background: var(--g-accent);
-  border-color: var(--g-accent);
-  color: var(--g-accent-ink);
-  box-shadow: var(--g-shadow-sm);
-}
-.g-btn-primary:hover:not(:disabled) { background: var(--g-accent-hover); border-color: var(--g-accent-hover); }
-
-.g-btn-secondary {
-  background: var(--g-surface);
-  border-color: var(--g-border-strong);
-  color: var(--g-text);
-}
-.g-btn-secondary:hover:not(:disabled) { border-color: var(--g-accent); color: var(--g-accent); }
-
-.g-btn-danger {
-  background: var(--g-bad-soft);
-  border-color: transparent;
-  color: var(--g-bad);
-}
-.g-btn-danger:hover:not(:disabled) { background: var(--g-bad); color: #fff; }
-
-.g-btn-ghost {
-  background: transparent;
-  border-color: transparent;
-  color: var(--g-text-soft);
-}
-.g-btn-ghost:hover:not(:disabled) { background: var(--g-surface-2); color: var(--g-text); }
-
-.g-btn-sm { font-size: 0.85rem; padding: 8px 13px; border-radius: 8px; }
-.g-btn-block { display: flex; width: 100%; }
-.g-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
-
-/* ---------- 8. FORMS ---------- */
-.g-field { margin: 12px 0; }
-.g-label { display: block; font-weight: 650; font-size: 0.92rem; margin-bottom: 6px; color: var(--g-text); }
-.g-hint { font-size: 0.82rem; color: var(--g-muted); margin-top: 6px; }
-
-.g-input, .g-select, .g-textarea {
-  width: 100%;
-  font-family: var(--g-font);
-  font-size: 1rem;
-  color: var(--g-text);
-  background: var(--g-input-bg);
-  border: 1px solid var(--g-input-border);
-  border-radius: 10px;
-  padding: 11px 12px;
-  transition: border-color var(--g-ease), box-shadow var(--g-ease);
-}
-.g-input::placeholder, .g-textarea::placeholder { color: var(--g-muted); opacity: 0.75; }
-.g-input:hover, .g-select:hover, .g-textarea:hover { border-color: var(--g-border-strong); }
-.g-input:focus, .g-select:focus, .g-textarea:focus {
-  outline: none;
-  border-color: var(--g-accent);
-  box-shadow: 0 0 0 3px var(--g-accent-ring);
-}
-.g-textarea { min-height: 96px; resize: vertical; }
-.g-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 36px;
-}
-[data-theme="dark"] .g-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-}
-.g-input:disabled, .g-select:disabled, .g-textarea:disabled {
-  opacity: 0.55; cursor: not-allowed; background: var(--g-surface-2);
-}
-
-/* Validation */
-.g-input.is-invalid, .g-select.is-invalid {
-  border-color: var(--g-bad);
-}
-.g-input.is-invalid:focus, .g-select.is-invalid:focus {
-  box-shadow: 0 0 0 3px var(--g-bad-soft);
-}
-.g-error { display: none; color: var(--g-bad); font-size: 0.86rem; font-weight: 600; margin-top: 6px; }
-.g-error.show { display: block; }
-
-/* Checkbox / radio rows */
-.g-check {
-  display: flex; align-items: flex-start; gap: 10px;
-  font-size: 0.95rem; color: var(--g-text-soft);
-  cursor: pointer; margin: 10px 0;
-}
-.g-check input {
-  appearance: none;
-  flex: 0 0 auto;
-  width: 20px; height: 20px;
-  margin: 1px 0 0;
-  border: 1.5px solid var(--g-input-border);
-  border-radius: 6px;
-  background: var(--g-input-bg);
-  cursor: pointer;
-  position: relative;
-  transition: background var(--g-ease), border-color var(--g-ease);
-}
-.g-check input[type="radio"] { border-radius: 50%; }
-.g-check input:checked { background: var(--g-accent); border-color: var(--g-accent); }
-.g-check input:checked::after {
-  content: "";
-  position: absolute; inset: 0;
-  background: no-repeat center / 12px
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 6.8 11.8 12.5 4.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-.g-check input[type="radio"]:checked::after {
-  background: none;
-  inset: 4px;
-  border-radius: 50%;
-  background: var(--g-accent-ink);
-}
-.g-check input:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--g-accent-ring); }
-
-/* ---------- 9. RESULT PANELS ---------- */
-.g-result {
-  margin-top: 16px;
-  padding: 18px;
-  border-radius: var(--g-radius-md);
-  border: 1px solid var(--g-border);
-  background: var(--g-surface-2);
-}
-.g-big-number {
-  font-size: 2.4rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  margin: 2px 0 6px;
-}
-.g-verdict { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
-.g-verdict-good { color: var(--g-good); }
-.g-verdict-bad  { color: var(--g-bad); }
-.g-verdict-warn { color: var(--g-warn); }
-.g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
-
-/* Show-your-work math block */
-.g-math {
-  font-family: var(--g-mono);
-  font-size: 0.85rem;
-  line-height: 1.7;
-  background: var(--g-code-bg);
-  border: 1px solid var(--g-border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin: 12px 0 0;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  color: var(--g-text-soft);
-}
-
-/* ---------- 10. STAT ROWS ---------- */
-.g-stats { margin: 12px 0 0; border-top: 1px solid var(--g-border); }
-.g-stat {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
-  padding: 10px 2px;
-  border-bottom: 1px solid var(--g-border);
-  font-size: 0.95rem;
-}
-.g-stat:last-child { border-bottom: 0; }
-.g-stat .g-stat-label { color: var(--g-muted); }
-.g-stat .g-stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
-.g-stat .g-stat-value.good { color: var(--g-good); }
-.g-stat .g-stat-value.bad  { color: var(--g-bad); }
-
-/* ---------- 11. TABLES ---------- */
-.g-table-wrap { overflow-x: auto; margin: 12px -4px 0; padding: 0 4px; }
-.g-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.92rem;
-}
-.g-table th {
-  text-align: left;
-  font-size: 0.76rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--g-muted);
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--g-border-strong);
-  white-space: nowrap;
-}
-.g-table td {
-  padding: 10px;
-  border-bottom: 1px solid var(--g-border);
-  color: var(--g-text-soft);
-  font-variant-numeric: tabular-nums;
-}
-.g-table tr:last-child td { border-bottom: 0; }
-.g-table tbody tr { transition: background var(--g-ease); }
-.g-table tbody tr:hover { background: var(--g-surface-2); }
-
-/* ---------- 12. BADGES / PILLS ---------- */
-.g-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 0.78rem; font-weight: 700;
-  border-radius: var(--g-radius-pill);
-  padding: 4px 11px;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-.g-badge-accent { background: var(--g-accent-soft); color: var(--g-accent); }
-.g-badge-good   { background: var(--g-good-soft);   color: var(--g-good); }
-.g-badge-bad    { background: var(--g-bad-soft);    color: var(--g-bad); }
-.g-badge-warn   { background: var(--g-warn-soft);   color: var(--g-warn); }
-.g-badge-neutral{ background: var(--g-surface-2);    color: var(--g-muted); border: 1px solid var(--g-border); }
-.g-badge-dot::before {
-  content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
-}
-
-/* ---------- 13. EMPTY STATES ---------- */
-.g-empty {
-  text-align: center;
-  border: 1.5px dashed var(--g-border-strong);
-  border-radius: var(--g-radius-lg);
-  padding: 36px 20px;
-  margin: 16px 0;
-  color: var(--g-muted);
-}
-.g-empty-icon { font-size: 2rem; margin-bottom: 8px; }
-.g-empty .g-title { font-size: 1.05rem; color: var(--g-text-soft); }
-.g-empty p { font-size: 0.9rem; margin: 4px 0 14px; }
-
-/* ---------- 14. FOOTER ---------- */
-.g-footer {
-  text-align: center;
-  margin: 32px 0 8px;
-  font-size: 0.85rem;
-  color: var(--g-muted);
-}
-.g-footer a { color: var(--g-accent); text-decoration: none; font-weight: 600; }
-.g-footer a:hover { text-decoration: underline; }
-.g-footer .g-fine { display: block; margin-top: 8px; font-size: 0.78rem; }
-
-/* ---------- 15. LAYOUT HELPERS ---------- */
-.g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.g-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-.g-stack > * + * { margin-top: 12px; }
-.g-divider { border: 0; border-top: 1px solid var(--g-border); margin: 20px 0; }
-
-/* ---------- 16. FOCUS (accessibility) ---------- */
-.g-btn:focus-visible,
-.g-theme-toggle:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--g-accent);
-  outline-offset: 2px;
-}
-
-/* ---------- 17. RESPONSIVE ---------- */
-@media (max-width: 560px) {
-  .g-wrap { padding: 14px 12px 40px; }
-  .g-display { font-size: 1.6rem; }
-  .g-card { padding: 18px 16px; border-radius: 14px; }
-  .g-big-number { font-size: 2rem; }
-  .g-grid-2, .g-grid-3 { grid-template-columns: 1fr; }
-  .g-brand-mark { width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px; }
-  .g-brand-name { font-size: 1.2rem; }
-  .g-tab { padding: 9px 10px; font-size: 0.88rem; }
-}
-
-/* ---------- 18. MOTION PREFERENCE ---------- */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; }
-}
-
-/* ---------- 19. ICONS ----------
-   Requires the glenerds-icons.svg sprite inlined in the page (see
-   INTEGRATION.md). <use> inherits stroke from the wrapper, so the two
-   variants are just classes on the <svg> element. */
-.g-icon {
-  width: 24px; height: 24px;
-  flex: 0 0 auto;
-  stroke: currentColor;
-  fill: none;
-  vertical-align: -4px;
-}
-.g-icon-sm { width: 18px; height: 18px; }
-.g-icon-lg { width: 32px; height: 32px; }
-/* Flash variant: brand indigo gradient stroke instead of text color. */
-.g-icon-flash { stroke: url(#g-grad-indigo); }
-.g-btn .g-icon { width: 20px; height: 20px; vertical-align: -3px; }
-.g-tab .g-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; }
-
-/* ---------- 20. APP ICONS ----------
-   iOS-style rounded-square gradient tile + one white glyph.
-   Each app picks its own gradient via --g-ai1 / --g-ai2. */
-.g-appicon {
-  --g-ai1: #6366f1;
-  --g-ai2: #8b5cf6;
-  width: 60px; height: 60px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, var(--g-ai1), var(--g-ai2));
-  display: inline-flex; align-items: center; justify-content: center;
-  box-shadow: var(--g-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  flex: 0 0 auto;
-}
-.g-appicon .g-icon { width: 32px; height: 32px; color: #ffffff; }
-.g-appicon-sm { width: 44px; height: 44px; border-radius: 13px; }
-.g-appicon-sm .g-icon { width: 24px; height: 24px; }
-.g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
-.g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-
-/* ===== APP OVERRIDES (tokens only, no g- restyle) ===== */
-.g-table-wrap { overflow-x: auto; }
-.num { text-align: right; font-variant-numeric: tabular-nums; }
-.g-result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; margin-top: 1rem; }
-.kpi { background: var(--g-surface-2); border: 1px solid var(--g-border); border-radius: 10px; padding: .7rem .9rem; }
-.kpi .k { font-size: .75rem; color: var(--g-muted); text-transform: uppercase; letter-spacing: .04em; }
-.kpi .v { font-size: 1.25rem; font-weight: 700; margin-top: .15rem; font-variant-numeric: tabular-nums; }
-.kpi .v.good { color: #16a34a; } [data-theme="dark"] .kpi .v.good { color: #7de0a3; }
-.kpi .v.warn { color: #d97706; } [data-theme="dark"] .kpi .v.warn { color: #e3c76b; }
-.line-row { display: grid; grid-template-columns: 1fr 90px 110px auto auto; gap: .5rem; align-items: end; margin-bottom: .5rem; }
-@media (max-width: 640px) { .line-row { grid-template-columns: 1fr 72px 96px auto; } .line-row .hide-sm { display: none; } }
-.approx-flag { color: #d97706; font-size: .78rem; } [data-theme="dark"] .approx-flag { color: #e3c76b; }
-@media print { .no-print { display: none !important; } body { background: #fff; } }
-/* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
-.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
-/* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only */
-.round-btn {
-  flex: 0 0 auto;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--g-surface);
-  border: 1px solid var(--g-border);
-  color: var(--g-text);
-  border-radius: 999px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,.10);
-  font-size: 1.1rem;
-}
-.round-btn svg { width: 26px; height: 26px; flex: none; }
-/* Glen FINAL rev 4: all three icons fill their 44px button — flask 26px, theme+sound emoji 1.65rem */
-.round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
-.round-btn:hover { border-color: var(--g-accent); }
-.round-btn:active { transform: scale(.92); border-color: var(--g-accent); }
-.round-btn:focus { outline: none; }
-.round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-/* header spec 2026-09-21: sample ON = accent-soft tint + accent border/icon (NOT a solid
-   accent fill); sound button stays white in all states */
-.round-btn.sample-toggle[aria-pressed="true"] {
-  color: var(--g-accent); border-color: var(--g-accent);
-  background: var(--g-accent-soft);
-}
-/* Cost visuals: breakdown donut, ingredient cost bars, food-cost gauge */
-.viz-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; margin: 14px 0 4px; }
-.cost-chart { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-.cost-donut-box { position: relative; width: min(230px, 68vw); flex: 0 0 auto; }
-.cost-donut { display: block; width: 100%; height: auto; }
-.cc-seg { transition: transform 300ms ease, opacity 300ms ease; cursor: pointer; }
-.cc-seg:focus { outline: none; }
-.cc-seg:focus-visible { filter: drop-shadow(0 0 6px #4f46e5); }
-.cc-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; text-align: center; padding: 0 52px; }
-.cc-center .v { font-size: 1.45rem; font-weight: 800; font-variant-numeric: tabular-nums; }
-.cc-center .l { color: var(--g-muted); font-size: 0.78rem; margin-top: 2px; }
-.cc-legend { display: grid; gap: 8px; align-content: center; }
-.cc-chip { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--g-border); border-radius: 999px; background: var(--g-surface); cursor: pointer; font-size: 0.85rem; color: inherit; font-family: inherit; }
-.cc-chip .dot { width: 12px; height: 12px; border-radius: 4px; flex: none; }
-.cc-chip .amt { font-weight: 700; font-variant-numeric: tabular-nums; }
-.cc-chip .pct { color: var(--g-muted); }
-.cc-chip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.cc-chip.spot { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,.22); }
-.gauge-wrap { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
-.gauge-svg { width: min(210px, 60vw); height: auto; flex: 0 0 auto; }
-.gauge-svg text { font-family: inherit; }
-.gauge-cap { color: var(--g-muted); font-size: 0.82rem; max-width: 220px; }
-.drivers { display: grid; gap: 6px; margin: 8px 0 4px; }
-.driver-row.dim { opacity: .45; }
-.driver-row.spot { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,.22); }
+/* ---- comparison-row spotlight ---- */
+.cmp-row{cursor:pointer;border-radius:10px;padding:8px;margin:0 -8px 14px}
+.cmp-row:hover{background:var(--zebra)}
+.cmp-row.dim{opacity:.4}
+.cmp-row:focus{outline:none}
+.cmp-row:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
+.spot-note{font-size:.88rem;background:var(--chip-bg);border:1px solid var(--border);
+  border-radius:10px;padding:10px 14px;margin:0 0 14px}
+.spot-note strong{color:var(--primary)}
 /* ---- unified chart detail panel (spotlight breakdown) ---- */
-.chart-detail{margin:10px 0 6px;border:1px solid var(--g-border);border-radius:12px;padding:14px 16px;background:var(--g-surface)}
+.chart-detail{margin:0 0 14px;border:1px solid var(--border);border-radius:12px;padding:14px 16px;background:var(--card)}
 .cd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
 .cd-title{font-weight:800;font-size:1.02rem}
-.cd-sub{color:var(--g-muted);font-size:.85rem;margin-top:2px}
-.cd-x{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--g-border);background:var(--g-surface);color:var(--g-text);font-size:1.25rem;line-height:1;cursor:pointer}
+.cd-sub{color:var(--muted);font-size:.85rem;margin-top:2px}
+.cd-x{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:1.25rem;line-height:1;cursor:pointer}
 .cd-rows{display:grid;gap:6px;max-height:260px;overflow:auto}
-.cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--g-surface-2,#f1f5f9)}
+.cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--zebra)}
 .cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.88rem}
-.cd-meta{color:var(--g-muted);font-size:.8rem;white-space:nowrap}
-.cd-val{font-weight:700;font-size:.88rem;white-space:nowrap;color:#4f46e5}
-.cd-foot{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
-.driver-row { display: grid; grid-template-columns: minmax(90px, 190px) 1fr auto; gap: 10px; align-items: center; padding: 7px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; background: none; color: inherit; font-family: inherit; font-size: inherit; text-align: left; width: 100%; }
-.driver-row:hover { border-color: var(--g-border); }
-.driver-row .d-name { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.driver-row .d-track { height: 12px; border-radius: 999px; background: var(--g-surface-2, #f1f5f9); overflow: hidden; }
-.driver-row .d-fill { height: 100%; border-radius: 999px; background: #4f46e5; width: 0; transition: width 300ms ease; }
-.driver-row .d-val { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
-.driver-row:focus { outline: none; }
-.driver-row:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.line-row.flash { outline: 2px solid #4f46e5; outline-offset: 2px; border-radius: 8px; }
-.kpi[role="button"] { cursor: pointer; }
-.kpi[role="button"]:focus { outline: none; }
-.kpi[role="button"]:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-@media (max-width: 480px) {
-  .g-header-actions { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-}
+.cd-meta{color:var(--muted);font-size:.8rem;white-space:nowrap}
+.cd-val{font-weight:700;font-size:.88rem;white-space:nowrap;color:var(--primary)}
+/* ---- cost curve (multi-series line) ---- */
+.chart-kicker{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--muted);margin-bottom:6px}
+#costCurve{cursor:crosshair;border-radius:10px}
+#costCurve:focus{outline:none}
+#costCurve:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
+#costCurve svg{width:100%;height:auto;display:block;touch-action:manipulation}
+.ax{stroke:var(--border);stroke-width:1}
+.axlbl{fill:var(--muted);font-size:11px;font-family:inherit}
+.curve-hit{fill:transparent;cursor:pointer}
+.curve-sel{stroke:var(--primary);stroke-width:1.5;stroke-dasharray:4 3}
+.chart-legend{display:flex;gap:8px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin:2px 0 8px}
+.chart-legend .sw{display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.lg-btn{display:inline-flex;align-items:center;background:none;border:1px solid var(--border);border-radius:999px;
+  padding:5px 12px;font-size:.82rem;color:var(--muted);cursor:pointer}
+.lg-btn:hover{border-color:var(--primary)}
+.lg-btn[aria-pressed="false"]{opacity:.55}
+.lg-btn:focus{outline:none}
+.lg-btn:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
+.chart-readout{font-size:.88rem;margin-top:8px;min-height:1.6em}
+.chart-readout .muted{color:var(--muted)}
+/* ---- moving-cost breakdown bars ---- */
+.bkd-row{cursor:pointer;border:1px solid transparent;border-radius:10px;padding:8px 10px;margin:0 -10px 4px}
+.bkd-row:hover{background:var(--zebra)}
+.bkd-row.dim{opacity:.4}
+.bkd-row:focus{outline:none}
+.bkd-row:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
+.bkd-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:5px;font-size:.88rem}
+.bkd-name{font-weight:600}
+.bkd-amt{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bkd-bar{height:20px;background:var(--bar);border-radius:999px;overflow:hidden}
+.bkd-bar>div{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--primary2));transition:width .45s ease}
+.bkd-pct{font-size:.78rem;color:var(--muted);margin-top:3px}
+/* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
+.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: #ffffff; /* header spec + legibility rule: white text on accent in BOTH modes */
+  color: #fff;
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -646,7 +246,8 @@ a:focus-visible {
   box-shadow: 0 1px 2px rgba(0,0,0,.12);
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+[data-theme="dark"] .g-store-btn, [data-theme="dark"] .g-store-btn:hover { color: #fff; }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .g-cta-strip {
@@ -663,7 +264,7 @@ a:focus-visible {
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; transform: translateY(-0.04em); }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; vertical-align: -0.08em; }
 [data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
@@ -673,1300 +274,877 @@ a:focus-visible {
   .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
 }
 </style>
-<script>
-/* Pre-paint theme init — shared glenerds-theme key */
-(function(){var t=null;try{t=localStorage.getItem('glenerds-theme')}catch(e){}
-if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
-document.documentElement.setAttribute('data-theme',t);})();
-function gToggleTheme(){var h=document.documentElement;
-var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
-h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catch(e){}}
-</script>
 </head>
-<body class="g-app">
-<!-- ==========================================================================
-     GLENERDS ICON SET v1.0 — inline SVG <symbol> sprite
-     --------------------------------------------------------------------------
-     Inline this whole file right after <body> in each app (or paste the
-     <svg> block). Zero external requests. See INTEGRATION.md for usage.
-
-     - 24x24 grid, stroke-based line icons, stroke-width 2, round caps/joins.
-     - Clean variant inherits text color (currentColor).
-     - Flash variant: add class "g-icon-flash" to the <svg> wrapper and the
-       stroke renders in the brand indigo gradient instead.
-     - All geometry inherits from the symbol; do not set stroke/fill on <use>.
-     ========================================================================== -->
-<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <linearGradient id="g-grad-indigo" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
-      <stop offset="0" stop-color="#818cf8"/>
-      <stop offset="1" stop-color="#4f46e5"/>
-    </linearGradient>
-    <linearGradient id="g-grad-sunset" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
-      <stop offset="0" stop-color="#fb7185"/>
-      <stop offset="1" stop-color="#f59e0b"/>
-    </linearGradient>
-    <linearGradient id="g-grad-ocean" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
-      <stop offset="0" stop-color="#34d399"/>
-      <stop offset="1" stop-color="#0ea5e9"/>
-    </linearGradient>
-    <linearGradient id="g-grad-royal" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
-      <stop offset="0" stop-color="#c084fc"/>
-      <stop offset="1" stop-color="#6366f1"/>
-    </linearGradient>
-  </defs>
-
-  <!-- calculator -->
-  <symbol id="g-i-calc" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="6.5" y="3" width="11" height="18" rx="2"/>
-    <path d="M9.5 7.5h5"/>
-    <path d="M9.5 12h.02M12 12h.02M14.5 12h.02M9.5 15.5h.02M12 15.5h.02M14.5 15.5h.02"/>
-  </symbol>
-
-  <!-- chart / graph (bars) -->
-  <symbol id="g-i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 20h16"/>
-    <path d="M7.5 20v-6.5M12 20V6.5M16.5 20v-9.5"/>
-  </symbol>
-
-  <!-- calendar -->
-  <symbol id="g-i-cal" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>
-    <path d="M8 3v3.5M16 3v3.5M3.5 10h17"/>
-  </symbol>
-
-  <!-- checkmark -->
-  <symbol id="g-i-check" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4.8 12.6l4.7 4.7L19.2 7.2"/>
-  </symbol>
-
-  <!-- streak flame -->
-  <symbol id="g-i-flame" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 3.2c.9 2.8-.5 4.3-1.7 5.6C8.7 10.5 7 12.4 7 15.2a5 5 0 0010 0c0-2-1-3.5-2-4.9-.4 1.1-1.1 1.9-2.1 2.3.4-3-.4-6.7-.9-9.4z"/>
-  </symbol>
-
-  <!-- star -->
-  <symbol id="g-i-star" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/>
-  </symbol>
-
-  <!-- moon -->
-  <symbol id="g-i-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M20.2 14.8A8.3 8.3 0 019.2 3.8a8.3 8.3 0 1011 11z"/>
-  </symbol>
-
-  <!-- sun -->
-  <symbol id="g-i-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="4.2"/>
-    <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/>
-  </symbol>
-
-  <!-- plus -->
-  <symbol id="g-i-plus" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 5.5v13M5.5 12h13"/>
-  </symbol>
-
-  <!-- trash -->
-  <symbol id="g-i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4.5 6.8h15"/>
-    <path d="M9.5 6.2V4.8a1.3 1.3 0 011.3-1.3h2.4a1.3 1.3 0 011.3 1.3v1.4"/>
-    <path d="M6.8 6.8l.9 12.4a1.6 1.6 0 001.6 1.5h5.4a1.6 1.6 0 001.6-1.5l.9-12.4"/>
-    <path d="M10 10.8v5.5M14 10.8v5.5"/>
-  </symbol>
-
-  <!-- download -->
-  <symbol id="g-i-download" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 4v10.5"/>
-    <path d="M7.6 11L12 15.4 16.4 11"/>
-    <path d="M4.5 19.5h15"/>
-  </symbol>
-
-  <!-- upload -->
-  <symbol id="g-i-upload" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 15.5V5"/>
-    <path d="M7.6 9.4L12 5l4.4 4.4"/>
-    <path d="M4.5 19.5h15"/>
-  </symbol>
-
-  <!-- settings gear -->
-  <symbol id="g-i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="3.4"/>
-    <path d="M12 5v2.2M12 16.8V19M5 12h2.2M16.8 12H19M7.1 7.1l1.5 1.5M15.4 15.4l1.5 1.5M16.9 7.1l-1.5 1.5M8.6 15.4l-1.5 1.5"/>
-  </symbol>
-
-  <!-- heart -->
-  <symbol id="g-i-heart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 20.5c-5-3.4-8.5-6.8-8.5-10.6C3.5 7.1 5.7 5 8.4 5c1.5 0 2.8.8 3.6 2 .8-1.2 2.1-2 3.6-2 2.7 0 4.9 2.1 4.9 4.9 0 3.8-3.5 7.2-8.5 10.6z"/>
-  </symbol>
-
-  <!-- clock -->
-  <symbol id="g-i-clock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="8.3"/>
-    <path d="M12 7.3V12l3.2 2"/>
-  </symbol>
-
-  <!-- target -->
-  <symbol id="g-i-target" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="8.3"/>
-    <circle cx="12" cy="12" r="4.8"/>
-    <circle cx="12" cy="12" r="1.4"/>
-  </symbol>
-
-  <!-- trophy -->
-  <symbol id="g-i-trophy" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M7.5 4h9v4.5a4.5 4.5 0 01-9 0V4z"/>
-    <path d="M7.5 5.5H4.5a3.5 3.5 0 003.8 3.8M16.5 5.5h3a3.5 3.5 0 01-3.8 3.8"/>
-    <path d="M12 13v4M8.5 20.5h7"/>
-  </symbol>
-
-  <!-- tag -->
-  <symbol id="g-i-tag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M20.6 13.4L11 3.8a2 2 0 00-1.4-.6H5a1.8 1.8 0 00-1.8 1.8v4.6c0 .5.2 1 .6 1.4l9.6 9.6a1.9 1.9 0 002.7 0l4.5-4.5a1.9 1.9 0 000-2.7z"/>
-    <circle cx="8" cy="8" r="1.4"/>
-  </symbol>
-
-  <!-- search -->
-  <symbol id="g-i-search" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="11" cy="11" r="6.5"/>
-    <path d="M15.8 15.8l4.7 4.7"/>
-  </symbol>
-
-  <!-- edit pencil -->
-  <symbol id="g-i-edit" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 20l1.2-4.2L16.7 4.3a2 2 0 012.9 2.9L8.1 18.7 4 20z"/>
-    <path d="M14.8 6.2l2.9 2.9"/>
-  </symbol>
-
-  <!-- share -->
-  <symbol id="g-i-share" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="6.5" cy="12" r="2.5"/>
-    <circle cx="17" cy="5.8" r="2.5"/>
-    <circle cx="17" cy="18.2" r="2.5"/>
-    <path d="M8.7 10.9l6.1-3.5M8.7 13.1l6.1 3.5"/>
-  </symbol>
-
-  <!-- lock -->
-  <symbol id="g-i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/>
-    <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/>
-    <path d="M12 14.5v2"/>
-  </symbol>
-
-  <!-- sparkles -->
-  <symbol id="g-i-sparkles" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8-4.8-1.7 4.8-1.7L12 3.5z"/>
-    <path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/>
-  </symbol>
-
-  <!-- home -->
-  <symbol id="g-i-home" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 11.2L12 4l8 7.2"/>
-    <path d="M6.2 9.8V20h11.6V9.8"/>
-    <path d="M10 20v-4.8h4V20"/>
-  </symbol>
-
-  <!-- back arrow -->
-  <symbol id="g-i-back" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M14.8 5.5L8.3 12l6.5 6.5"/>
-  </symbol>
-
-  <!-- close X -->
-  <symbol id="g-i-x" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M6 6l12 12M18 6L6 18"/>
-  </symbol>
-
-  <!-- info -->
-  <symbol id="g-i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="8.3"/>
-    <path d="M12 11v5"/>
-    <path d="M12 7.6v.2"/>
-  </symbol>
-
-  <!-- wallet -->
-  <symbol id="g-i-wallet" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3" y="6.5" width="18" height="13" rx="3"/>
-    <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
-    <circle cx="17.5" cy="14.8" r="1.1"/>
-  </symbol>
-
-  <!-- list -->
-  <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
-    <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
-  </symbol>
-
-  <!-- bell -->
-  <symbol id="g-i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M6.2 16v-4.8a5.8 5.8 0 0111.6 0V16l1.7 2.8H4.5L6.2 16z"/>
-    <path d="M10 20.5a2.2 2.2 0 004 0"/>
-  </symbol>
-</svg>
-
-<div class="g-wrap">
-
-<header class="g-header">
-  <div class="g-brand">
-    <span class="g-appicon g-appicon-sm" style="--g-ai1:#22c55e;--g-ai2:#84cc16">
-      <svg class="g-icon" aria-hidden="true"><use href="#g-i-calc"/></svg>
-    </span>
-    <h1 class="g-brand-name">RecipeCost</h1>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="logo-badge" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>
+    </div>
+    <div>
+      <h1>RenewOrMove</h1>
+      <p class="tagline">Lease renewal vs moving cost calculator — the true math on staying or going.</p>
+    </div>
+    <div class="g-header-actions no-print">
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+      <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data" onclick="setSample(!sampleOn);Sound.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button class="g-round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button class="g-round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)" onclick="toggleSound(this)">🔊</button>
+    </div>
   </div>
-  <div class="g-header-actions">
-  <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-<button class="round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data" onclick="setSample(!sampleOn);Sound.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-<button class="round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" onclick="gToggleTheme();paintTheme();Sound.toggleTheme();Sound.click();">🌙</button>
-<button class="round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)" onclick="toggleSound(this)">&#128266;</button>
-</div>
 </header>
-<p class="g-tagline">Recipe cost calculator for home bakers — know exactly what each batch costs and price it with confidence.</p>
+<main>
 
-<div class="g-tabs no-print" role="tablist" aria-label="Sections">
-  <button class="g-tab" role="tab" id="tab-ing" aria-selected="true" onclick="showTab('ing')">Ingredients</button>
-  <button class="g-tab" role="tab" id="tab-rec" aria-selected="false" onclick="showTab('rec')">Recipes</button>
-</div>
+  <section class="card prose" aria-labelledby="why-h">
+    <h2 id="why-h">Your landlord raised the rent. Should you stay?</h2>
+    <p>A renewal offer is never just the new rent number. Moving has a real price tag — movers, a new security deposit, application fees, days of double rent, utility setups, cleaning the old place — and staying has a hidden one: every extra dollar of rent, times every month you're locked in.</p>
+    <p>Most tenants compare <strong>monthly rent vs monthly rent</strong> and stop there. That's the wrong comparison. The right one is <strong>total cost over the lease term</strong>, including every one-time moving cost:</p>
+    <ul>
+      <li><strong>Staying:</strong> horizon × your renewal rent.</li>
+      <li><strong>Moving:</strong> horizon × the rent at a new place <em>plus</em> everything you pay once to move.</li>
+    </ul>
+    <p>Enter your numbers below and get a clear verdict: which option is cheaper over your comparison period, a line-by-line breakdown, and the break-even month — the point where moving's upfront costs finally pay off (if they ever do).</p>
+  </section>
 
-<!-- ================= INGREDIENTS ================= -->
-<section id="panel-ing" role="tabpanel" aria-labelledby="tab-ing">
-  <div class="g-card">
-    <p class="g-title">Ingredient library</p>
-    <p class="g-desc">Enter what you paid per package. RecipeCost works out the cost per gram, ml, or piece automatically.</p>
-    <div class="g-grid-2">
-      <div class="g-field">
-        <label class="g-label" for="ing-name">Ingredient name</label>
-        <input class="g-input" id="ing-name" type="text" placeholder="All-purpose flour" autocomplete="off">
+  <section class="card" aria-labelledby="rent-h">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></svg></div>
+      <h2 id="rent-h">Your rent</h2>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label for="curRent">Current monthly rent ($)</label>
+        <input type="number" id="curRent" min="0" step="0.01" placeholder="1,500" inputmode="decimal">
       </div>
-      <div class="g-field">
-        <label class="g-label" for="ing-price">Package price ($)</label>
-        <input class="g-input" id="ing-price" type="number" min="0" step="0.01" placeholder="4.99">
-      </div>
-      <div class="g-field">
-        <label class="g-label" for="ing-qty">Package size</label>
-        <input class="g-input" id="ing-qty" type="number" min="0" step="any" placeholder="5000">
-      </div>
-      <div class="g-field">
-        <label class="g-label" for="ing-unit">Package unit</label>
-        <select class="g-input" id="ing-unit"></select>
-      </div>
-      <div class="g-field">
-        <label class="g-label" for="ing-gpc">Grams per cup <span class="g-hint" style="display:inline">(optional — for cup↔gram conversion)</span></label>
-        <input class="g-input" id="ing-gpc" type="number" min="0" step="any" placeholder="e.g. 120 for flour">
-      </div>
-      <div class="g-field">
-        <label class="g-label" for="ing-gpe">Grams per piece <span class="g-hint" style="display:inline">(optional — for count items like eggs)</span></label>
-        <input class="g-input" id="ing-gpe" type="number" min="0" step="any" placeholder="e.g. 50 for an egg">
-      </div>
-      <div class="g-field" style="align-self:end">
-        <div class="g-btn-row">
-          <button class="g-btn g-btn-primary" id="ing-add" onclick="addIngredient()">Add ingredient</button>
-          <button class="g-btn g-btn-secondary" onclick="clearIngForm()">Clear</button>
-        </div>
+      <div class="field">
+        <label for="horizon">Comparison horizon (months)</label>
+        <input type="number" id="horizon" min="1" max="60" step="1" placeholder="12" inputmode="numeric">
+        <div class="hint">Usually your lease length: 1–60 months.</div>
       </div>
     </div>
-    <p class="g-error" id="ing-err"></p>
-  </div>
-
-  <div class="g-card">
-    <p class="g-title">Your ingredients <span class="g-badge g-badge-neutral" id="ing-count">0</span></p>
-    <div class="g-table-wrap"><table class="g-table" id="ing-table">
-      <thead><tr><th>Ingredient</th><th class="num">Package</th><th class="num">Unit cost</th><th class="no-print"></th></tr></thead>
-      <tbody id="ing-tbody"></tbody>
-    </table></div>
-    <div class="g-empty" id="ing-empty">
-      <p class="g-title">No ingredients yet</p>
-      <p class="g-desc">Add the ingredients you buy — with package size and price — and costing takes care of itself.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ================= RECIPES ================= -->
-<section id="panel-rec" role="tabpanel" aria-labelledby="tab-rec" hidden>
-  <div class="g-card no-print">
-    <div class="g-field">
-      <label class="g-label" for="rec-select">Recipe</label>
-      <div class="g-btn-row">
-        <select class="g-input" id="rec-select" onchange="selectRecipe(this.value)" style="flex:1"></select>
-        <button class="g-btn g-btn-primary" onclick="newRecipe()">New</button>
-        <button class="g-btn g-btn-danger" onclick="deleteRecipe()">Delete</button>
+    <div class="field">
+      <label>Renewal offer</label>
+      <div class="tabs" role="tablist" aria-label="Renewal offer format">
+        <button class="tab active" id="tabAmt" role="tab" aria-selected="true">New rent ($)</button>
+        <button class="tab" id="tabPct" role="tab" aria-selected="false">Increase (%)</button>
       </div>
     </div>
-  </div>
-
-  <div id="rec-editor">
-    <div class="g-card">
-      <p class="g-title">Recipe details</p>
-      <div class="g-grid-3">
-        <div class="g-field">
-          <label class="g-label" for="rec-name">Recipe name</label>
-          <input class="g-input" id="rec-name" type="text" placeholder="Chocolate chip cookies" oninput="recField('name', this.value)">
-        </div>
-        <div class="g-field">
-          <label class="g-label" for="rec-yield">Batch yield (pieces / servings)</label>
-          <input class="g-input" id="rec-yield" type="number" min="0" step="any" placeholder="24" oninput="recField('yieldQty', num(this.value))">
-        </div>
-        <div class="g-field">
-          <label class="g-label" for="rec-yieldunit">Yield unit</label>
-          <input class="g-input" id="rec-yieldunit" type="text" placeholder="cookies" value="pieces" oninput="recField('yieldUnit', this.value)">
-        </div>
+    <div class="grid2">
+      <div class="field" id="wrapAmt">
+        <label for="renewRentAmt">New monthly rent if you renew ($)</label>
+        <input type="number" id="renewRentAmt" min="0" step="0.01" placeholder="1,650" inputmode="decimal">
+      </div>
+      <div class="field" id="wrapPct" hidden>
+        <label for="renewPct">Rent increase (%)</label>
+        <input type="number" id="renewPct" min="-50" max="200" step="0.1" placeholder="5" inputmode="decimal">
+        <div class="hint" id="pctComputed"></div>
+      </div>
+      <div class="field">
+        <label for="newPlaceRent">Expected rent at a new place ($/mo)</label>
+        <input type="number" id="newPlaceRent" min="0" step="0.01" placeholder="1,450" inputmode="decimal">
+        <div class="hint">What you'd realistically pay elsewhere.</div>
       </div>
     </div>
+  </section>
 
-    <div class="g-card">
-      <p class="g-title">Ingredients in this recipe</p>
-      <div id="lines"></div>
-      <div class="g-btn-row no-print">
-        <button class="g-btn g-btn-secondary" onclick="addLine()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-plus"/></svg> Add ingredient line</button>
-      </div>
-      <p class="g-error" id="line-err"></p>
+  <section class="card" aria-labelledby="costs-h">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><rect x="1" y="6" width="14" height="11" rx="1"/><path d="M15 10h4l4 4v3h-8z"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg></div>
+      <h2 id="costs-h">One-time moving costs</h2>
     </div>
-
-    <div class="g-card">
-      <p class="g-title">Labor, packaging &amp; overhead</p>
-      <div class="g-grid-2">
-        <div class="g-field">
-          <label class="g-label" for="rec-hours">Your hours on this batch</label>
-          <input class="g-input" id="rec-hours" type="number" min="0" step="any" placeholder="1.5" oninput="recField('laborHours', num(this.value))">
-        </div>
-        <div class="g-field">
-          <label class="g-label" for="rec-rate">Hourly rate ($)</label>
-          <input class="g-input" id="rec-rate" type="number" min="0" step="any" placeholder="20" oninput="recField('laborRate', num(this.value))">
-        </div>
-        <div class="g-field">
-          <label class="g-label" for="rec-pack">Packaging cost per piece ($)</label>
-          <input class="g-input" id="rec-pack" type="number" min="0" step="any" placeholder="0.25" oninput="recField('packagingPerUnit', num(this.value))">
-        </div>
-        <div class="g-field">
-          <label class="g-label" for="rec-oh">Overhead % <span class="g-hint" style="display:inline">(electricity, wear, fees)</span></label>
-          <input class="g-input" id="rec-oh" type="number" min="0" step="any" placeholder="10" oninput="recField('overheadPct', num(this.value))">
-        </div>
-        <div class="g-field">
-          <label class="g-label" for="rec-margin">Target profit margin %</label>
-          <input class="g-input" id="rec-margin" type="number" min="0" max="95" step="any" placeholder="50" oninput="recField('targetMarginPct', num(this.value))">
-          <p class="g-hint">Margin = profit ÷ selling price. 50% margin means half the price is profit.</p>
-        </div>
-      </div>
+    <div class="grid2">
+      <div class="field"><label for="cMovers">Movers / truck rental ($)</label><input type="number" id="cMovers" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
+      <div class="field"><label for="cDeposit">New security deposit ($)</label><input type="number" id="cDeposit" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
+      <div class="field"><label for="cFees">Application / admin fees ($)</label><input type="number" id="cFees" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
+      <div class="field"><label for="cOverlapDays">Overlap rent (days double-paying)</label><input type="number" id="cOverlapDays" min="0" max="365" step="1" placeholder="0" inputmode="numeric">
+        <div class="hint" id="overlapComputed"></div></div>
+      <div class="field"><label for="cUtilities">Utility setup / transfer fees ($)</label><input type="number" id="cUtilities" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
+      <div class="field"><label for="cCleaning">Cleaning / repairs at old place ($)</label><input type="number" id="cCleaning" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
+      <div class="field"><label for="cMisc">Misc moving costs ($)</label><input type="number" id="cMisc" min="0" step="0.01" placeholder="0" inputmode="decimal">
+        <div class="hint">Packing supplies, pet fees, time off work…</div></div>
     </div>
+  </section>
 
-    <div class="g-card" id="summary-card">
-      <p class="g-title">Cost &amp; pricing summary</p>
-      <div class="g-result-grid" id="summary-grid"></div>
-      <div class="viz-row">
-        <div class="cost-chart">
-          <div class="cost-donut-box">
-            <svg class="cost-donut" viewBox="0 0 248 248" role="img" aria-labelledby="cc-t">
-              <title id="cc-t">Batch cost breakdown donut chart</title>
-              <circle cx="124" cy="124" r="95" fill="none" stroke="var(--g-surface-2, #f1f5f9)" stroke-width="34"/>
-              <path id="cc-ing" class="cc-seg" d="" fill="none" stroke="#4f46e5" stroke-width="34"/>
-              <path id="cc-lab" class="cc-seg" d="" fill="none" stroke="#10b981" stroke-width="34"/>
-              <path id="cc-pac" class="cc-seg" d="" fill="none" stroke="#f59e0b" stroke-width="34"/>
-              <path id="cc-ovh" class="cc-seg" d="" fill="none" stroke="#8b5cf6" stroke-width="34"/>
-            </svg>
-            <div class="cc-center"><div class="v" id="cc-total">–</div><div class="l" id="cc-sub">batch cost</div></div>
-          </div>
-          <div class="cc-legend" id="cc-legend"></div>
+  <section class="card" aria-labelledby="results-h">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
+      <h2 id="results-h">Your verdict</h2>
+    </div>
+    <div class="err" id="inputErr" role="alert"></div>
+    <div id="resultsBody" hidden>
+      <div class="verdict" id="verdictBox" role="button" tabindex="0" aria-pressed="false" aria-label="Verdict — activate to see how it was computed">
+        <div class="v-icon" id="vIcon">🏠</div>
+        <div class="v-title" id="vTitle"></div>
+        <div class="v-sub" id="vSub"></div>
+      </div>
+      <div class="cmp">
+        <div class="cmp-row" id="stayRow" role="button" tabindex="0" aria-pressed="false" aria-label="Spotlight staying costs">
+          <div class="cmp-top"><span class="cmp-label" id="stayLabel">Staying<span class="tag" id="stayTag" hidden>Cheaper</span></span><span class="cmp-val" id="stayTotal"></span></div>
+          <div class="cmp-bar" id="stayBarWrap"><div id="stayBar"></div></div>
+          <div class="cmp-sub" id="staySub"></div>
         </div>
-        <div class="gauge-wrap">
-          <svg class="gauge-svg" viewBox="0 0 300 185" role="img" aria-labelledby="fc-t">
-            <title id="fc-t">Food cost percent gauge, target at or under 35 percent</title>
-            <path d="M45 150 A105 105 0 0 1 255 150" fill="none" stroke="var(--g-border, #e2e8f0)" stroke-width="22" stroke-linecap="round"/>
-            <path id="fc-arc" d="" fill="none" stroke="#10b981" stroke-width="22" stroke-linecap="round"/>
-            <line id="fc-needle" x1="150" y1="150" x2="45" y2="150" stroke="var(--g-text, #0f172a)" stroke-width="5" stroke-linecap="round"/>
-            <circle cx="150" cy="150" r="10" fill="var(--g-text, #0f172a)"/>
-            <text id="fc-num" x="150" y="110" text-anchor="middle" style="fill:var(--g-text, #0f172a);font-size:30px;font-weight:800">–</text>
-            <text x="150" y="142" text-anchor="middle" style="fill:var(--g-muted, #64748b);font-size:12px;letter-spacing:.08em">FOOD COST %</text>
-          </svg>
-          <div class="gauge-cap" id="fc-cap">Healthy food cost is ≤ 35%.</div>
+        <div class="cmp-row" id="moveRow" role="button" tabindex="0" aria-pressed="false" aria-label="Spotlight moving costs">
+          <div class="cmp-top"><span class="cmp-label" id="moveLabel">Moving<span class="tag" id="moveTag" hidden>Cheaper</span></span><span class="cmp-val" id="moveTotal"></span></div>
+          <div class="cmp-bar" id="moveBarWrap"><div id="moveBar"></div></div>
+          <div class="cmp-sub" id="moveSub"></div>
         </div>
       </div>
-      <p class="g-title" style="margin-top:1rem">Top ingredient costs</p>
-      <div class="drivers" id="drivers"></div>
+      <div class="spot-note" id="cmpNote" hidden></div>
       <div class="chart-detail" id="chartDetail" aria-live="polite" hidden></div>
-      <div class="g-math" id="summary-math" style="margin-top:1rem"></div>
-      <div class="g-btn-row no-print" style="margin-top:1rem">
-        <button class="g-btn g-btn-secondary" onclick="window.print()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-download"/></svg> Print / save PDF</button>
-        <button class="g-btn g-btn-ghost" onclick="exportData()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-share"/></svg> Export data</button>
-        <button class="g-btn g-btn-ghost" onclick="document.getElementById('import-file').click()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-upload"/></svg> Import data</button>
-        <input type="file" id="import-file" accept="application/json" hidden onchange="importData(this)">
+      <div class="breakeven" id="breakevenBox" role="button" tabindex="0" aria-pressed="false" aria-label="Break-even — activate to see this month on the cost chart"><p id="breakevenText"></p></div>
+      <h3 style="font-size:1rem;margin:18px 0 8px">Cost over time</h3>
+      <div class="chart-kicker">Cumulative cost · month by month</div>
+      <div class="chart-legend" id="curveLegend">
+        <button type="button" class="lg-btn" data-series="stay" aria-pressed="true"><span class="sw" style="background:#8b5cf6"></span>Staying</button>
+        <button type="button" class="lg-btn" data-series="move" aria-pressed="true"><span class="sw" style="background:#10b981"></span>Moving</button>
       </div>
-      <p class="g-error" id="rec-err"></p>
+      <div id="costCurve" tabindex="0" role="img" aria-label="Cumulative cost comparison chart. Tab to a month and press Enter to inspect it, press again to release, or use left and right arrows."></div>
+      <div class="chart-readout" id="curveReadout"></div>
+      <h3 style="font-size:1rem;margin:18px 0 8px">Line-by-line breakdown</h3>
+      <div class="table-scroll">
+        <table aria-label="Cost breakdown">
+          <thead><tr><th scope="col">Item</th><th scope="col" style="text-align:right">Staying</th><th scope="col" style="text-align:right">Moving</th></tr></thead>
+          <tbody id="breakdownBody"></tbody>
+        </table>
+      </div>
+      <h3 style="font-size:1rem;margin:18px 0 8px">Where the moving money goes</h3>
+      <div class="chart-kicker">One-time moving costs</div>
+      <div id="bkdBody"></div>
+      <div class="spot-note" id="bkdNote" hidden></div>
     </div>
-  </div>
-  <div class="g-empty" id="rec-empty" hidden>
-    <p class="g-title">No recipes yet</p>
-    <p class="g-desc">Create your first recipe, add ingredient lines from your library, and see the true cost per piece.</p>
-    <div class="g-btn-row"><button class="g-btn g-btn-primary" onclick="newRecipe()">New recipe</button></div>
-  </div>
-</section>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="calcBtn">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h3"/></svg>
+        <span>Calculate</span>
+      </button>
+      <button class="btn btn-secondary" id="resetBtn">
+        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+        <span>Start over</span>
+      </button>
+    </div>
+  </section>
 
+  <section class="card promo" aria-label="Related tool">
+    <p>Moving out? Make sure you get your deposit back — <a href="https://glenerds.gumroad.com/l/depositcheck">DepositCheck</a> — $9 one-time.</p>
+  </section>
+
+</main>
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
   <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
-
-<footer class="g-footer">
-  Free offline tool <a href="https://glenerds.gumroad.com">by Glenerds</a> — no signup, no tracking, your data never leaves this device.
+<footer>
+  <div>RenewOrMove — your data never leaves this device.</div>
+  <div>by <a href="https://glenerds.gumroad.com">Glenerds</a></div>
+  <div class="disclaimer">Educational estimates only — not financial advice. Overlap rent is estimated as days × (current rent ÷ 30). Deposit assumes no refund within the horizon.</div>
 </footer>
-</div>
 <script>
 "use strict";
-/* ================= RecipeCost — offline recipe costing for home bakers ================= */
-var STORE_KEY = 'recipecost.v1';
+/* ============ RenewOrMove ============ */
+var LS_STATE = "renewormove-state-v1";
+var LS_THEME = "renewormove-theme";
 
-/* ---------- units ---------- */
-var MASS = { g: 1, kg: 1000, oz: 28.349523125, lb: 453.59237 };
-var VOL  = { ml: 1, l: 1000, tsp: 4.92892159375, tbsp: 14.78676478125, cup: 236.5882365 };
-var EACH = { each: 1, pc: 1, pcs: 1, piece: 1, pieces: 1 };
-var UNIT_GROUPS = [
-  { label: 'Weight', units: ['g', 'kg', 'oz', 'lb'] },
-  { label: 'Volume', units: ['ml', 'l', 'tsp', 'tbsp', 'cup'] },
-  { label: 'Count',  units: ['each'] }
-];
-function unitDim(u) {
-  u = String(u).toLowerCase();
-  if (Object.prototype.hasOwnProperty.call(MASS, u)) return 'mass';
-  if (Object.prototype.hasOwnProperty.call(VOL, u)) return 'vol';
-  return 'each';
-}
-function toBase(qty, unit) { /* grams | ml | count */
-  var u = String(unit).toLowerCase(), d = unitDim(u);
-  if (d === 'mass') return qty * MASS[u];
-  if (d === 'vol') return qty * VOL[u];
-  return qty;
-}
-function fmtMoney(n) {
-  if (!isFinite(n)) return '—';
-  return (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2);
-}
-function num(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
-function esc(s) {
-  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
   });
 }
-function uid() { return 'x' + Math.random().toString(36).slice(2, 10); }
+function money(n){
+  return n.toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+}
+function money2(n){
+  return n.toLocaleString("en-US",{style:"currency",currency:"USD",minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function num(id){
+  var v = parseFloat($(id).value);
+  return isFinite(v) ? v : NaN;
+}
+function numOr(id, dflt){
+  var v = num(id);
+  return isNaN(v) ? dflt : v;
+}
 
-/* ---------- state ---------- */
-var state = { ingredients: [], recipes: [] };
+/* ---- theme (spec reference: emoji icon, white round button adapts via vars) ---- */
+function paintTheme(){
+  var dark = document.documentElement.getAttribute("data-theme") === "dark";
+  var b = $("themeToggle"); if (!b) return;
+  b.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
+  var l = dark ? "Switch to light mode" : "Switch to dark mode";
+  b.setAttribute("aria-pressed", dark ? "true" : "false");
+  b.setAttribute("aria-label", l); b.title = l;
+}
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  try{ localStorage.setItem(LS_THEME, t); }catch(e){}
+  paintTheme();
+}
+$("themeToggle").addEventListener("click", function(){
+  var cur = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  setTheme(cur); Sound.toggleTheme(); Sound.click();
+});
+
+/* ---- sample data toggle (transient: snapshot user data, never persisted) ---- */
 var sampleOn = false, sampleSnap = null;
-function load() {
-  try {
-    var raw = localStorage.getItem(STORE_KEY);
-    if (raw) {
-      var d = JSON.parse(raw);
-      if (d && Array.isArray(d.ingredients) && Array.isArray(d.recipes)) state = d;
-    }
-  } catch (e) { /* corrupted storage -> start fresh */ state = { ingredients: [], recipes: [] }; }
-  sanitizeState();
-  /* First run starts EMPTY — the flask toggle shows transient sample data instead of persisted demo. */
+function paintSample(){
+  var b = $("sampleToggle"); if (!b) return;
+  /* ON tint comes from .sample-toggle[aria-pressed="true"] CSS — white button per spec */
+  var l = sampleOn ? "Clear sample data" : "Try sample data";
+  b.setAttribute("aria-pressed", sampleOn ? "true" : "false");
+  b.setAttribute("aria-label", l); b.title = l;
 }
-function save() {
-  if (sampleOn) return; /* sample data is transient — never persisted */
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+function fillSample(){
+  var vals = {curRent:"1500",renewRentAmt:"1575",renewPct:"5",horizon:"12",newPlaceRent:"1450",
+    cMovers:"900",cDeposit:"1450",cFees:"150",cOverlapDays:"7",cUtilities:"120",cCleaning:"200",cMisc:"100"};
+  FIELDS.forEach(function(id){ $(id).value = vals[id] || ""; });
+  setMode("amt", true);
+  calculate(false);
 }
-/* Harden against hand-edited / corrupted data (import file or localStorage):
-   guarantees the shapes recipeTotals/renderLines/renderIngredients assume. */
-function sanitizeState() {
-  if (!Array.isArray(state.ingredients)) state.ingredients = [];
-  if (!Array.isArray(state.recipes)) state.recipes = [];
-  state.ingredients = state.ingredients.filter(function (i) { return i && typeof i === 'object'; });
-  state.recipes = state.recipes.filter(function (r) { return r && typeof r === 'object'; });
-  var NUMS = ['yieldQty', 'laborHours', 'laborRate', 'packagingPerUnit', 'overheadPct', 'targetMarginPct'];
-  /* Imported ids are interpolated into HTML/attribute sinks on render, so only
-     uid()-safe ids survive: anything else is regenerated and references remapped.
-     Units are whitelisted so crafted strings can't slip into the cost math. */
-  var ID_OK = /^[A-Za-z0-9_-]+$/;
-  var UNIT_OK = Object.keys(MASS).concat(Object.keys(VOL)).concat(Object.keys(EACH));
-  function goodUnit(u) { u = String(u).toLowerCase(); return UNIT_OK.indexOf(u) !== -1 ? u : 'each'; }
-  var idMap = {};
-  state.ingredients.forEach(function (i) {
-    if (typeof i.id !== 'string' || !ID_OK.test(i.id)) {
-      var old = i.id; i.id = uid(); if (old != null) idMap[String(old)] = i.id;
-    }
-    i.pkgQty = num(i.pkgQty); i.pkgPrice = num(i.pkgPrice);
-    if (i.pkgQty < 0) i.pkgQty = 0; if (i.pkgPrice < 0) i.pkgPrice = 0;
-    i.pkgUnit = goodUnit(i.pkgUnit);
-  });
-  state.recipes.forEach(function (r) {
-    if (typeof r.id !== 'string' || !ID_OK.test(r.id)) r.id = uid();
-    if (!Array.isArray(r.lines)) r.lines = [];
-    NUMS.forEach(function (f) { r[f] = Math.max(0, num(r[f])); });
-    r.lines = r.lines.filter(function (ln) { return ln && typeof ln === 'object'; });
-    r.lines.forEach(function (ln) {
-      ln.qty = Math.max(0, num(ln.qty));
-      if (typeof ln.ingId === 'string' && idMap[ln.ingId]) ln.ingId = idMap[ln.ingId];
-      ln.unit = goodUnit(ln.unit);
-    });
-  });
-}
-/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
-function paintSample() {
-  var b = document.getElementById('sampleToggle'); if (!b) return;
-  var l = sampleOn ? 'Clear sample data' : 'Try sample data';
-  b.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
-  b.setAttribute('aria-label', l); b.title = l;
-}
-function fillSample() {
-  var flour = uid(), sugar = uid(), butter = uid(), egg = uid(), choc = uid(), salt = uid();
-  state.ingredients = [
-    { id: flour, name: 'All-purpose flour', pkgQty: 5000, pkgUnit: 'g', pkgPrice: 4.99, gPerCup: 120 },
-    { id: sugar, name: 'Granulated sugar', pkgQty: 4000, pkgUnit: 'g', pkgPrice: 3.89, gPerCup: 200 },
-    { id: butter, name: 'Unsalted butter', pkgQty: 16, pkgUnit: 'oz', pkgPrice: 4.49, gPerCup: 227 },
-    { id: egg, name: 'Large eggs', pkgQty: 12, pkgUnit: 'each', pkgPrice: 3.29, gPerCup: 0, gPerEach: 50 },
-    { id: choc, name: 'Chocolate chips', pkgQty: 2000, pkgUnit: 'g', pkgPrice: 6.49, gPerCup: 170 },
-    { id: salt, name: 'Fine sea salt', pkgQty: 737, pkgUnit: 'g', pkgPrice: 2.79, gPerCup: 288 }
-  ];
-  var r = blankRecipe();
-  r.name = 'Chocolate Chip Cookies'; r.yieldQty = 24; r.yieldUnit = 'cookies';
-  r.laborHours = 0.75; r.laborRate = 18; r.packagingPerUnit = 0.25;
-  r.overheadPct = 15; r.targetMarginPct = 60;
-  r.lines = [
-    { ingId: flour, qty: 360, unit: 'g' },
-    { ingId: sugar, qty: 200, unit: 'g' },
-    { ingId: butter, qty: 226, unit: 'g' },
-    { ingId: egg, qty: 2, unit: 'each' },
-    { ingId: choc, qty: 340, unit: 'g' },
-    { ingId: salt, qty: 5, unit: 'g' }
-  ];
-  state.recipes = [r];
-  currentRecipeId = r.id;
-  renderIngredients(); renderRecipeSelect(); renderRecipe();
-  showTab('rec');
-}
-/* transient (uncommitted) form values live only in the DOM — snapshot by id so
-   sample-off restores the exact pre-sample form state even across re-renders */
-function snapForm() {
-  var o = {}, els = document.querySelectorAll('input[id],select[id],textarea[id]');
-  for (var i = 0; i < els.length; i++) { var e = els[i];
-    o[e.id] = (e.type === 'checkbox' || e.type === 'radio') ? (e.checked ? '1' : '0') : e.value; }
-  return o;
-}
-function restoreForm(snap) {
-  if (!snap) return;
-  for (var id in snap) { if (!Object.prototype.hasOwnProperty.call(snap, id)) continue;
-    var e = document.getElementById(id); if (!e) continue; var v = snap[id];
-    if (e.type === 'checkbox' || e.type === 'radio') e.checked = (v === '1'); else e.value = v; }
-}
-function setSample(on) {
-  if (on && !sampleOn) {
-    sampleSnap = JSON.stringify({ state: state, currentRecipeId: currentRecipeId,
-      tab: document.getElementById('tab-ing').getAttribute('aria-selected') === 'true' ? 'ing' : 'rec',
-      form: snapForm() });
+function setSample(on){
+  window.__gSampleOn = !!on; /* global save-guard for the whole sample cycle */
+  if (on && !sampleOn){
+    sampleSnap = { mode: renewMode, vals: {} };
+    FIELDS.forEach(function(id){ sampleSnap.vals[id] = $(id).value; });
     sampleOn = true;
     fillSample();
-  } else if (!on && sampleOn) {
+  } else if (!on && sampleOn){
     sampleOn = false;
-    try { var s = JSON.parse(sampleSnap);
-      if (s && s.state) { state = s.state; currentRecipeId = s.currentRecipeId; } } catch (e) {}
-    sampleSnap = null;
-    renderIngredients(); renderRecipeSelect(); renderRecipe();
-    try { restoreForm(s.form); showTab(s.tab === 'rec' ? 'rec' : 'ing'); } catch (e) {}
+    var snap = sampleSnap; sampleSnap = null;
+    if (snap){
+      FIELDS.forEach(function(id){ $(id).value = snap.vals[id] || ""; });
+      setMode(snap.mode === "pct" ? "pct" : "amt", true);
+    }
+    updateHints();
+    var has = FIELDS.some(function(id){ return $(id).value !== ""; });
+    if (has) calculate(true); else $("resultsBody").hidden = true;
   }
   paintSample();
 }
 
-/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
-var Sound = (function () {
-  var K = 'recipecost.sound', on = true, ctx = null;
-  try { if (window.localStorage.getItem(K) === 'off') on = false; } catch (e) {}
-  function ac() { try {
-    if (!ctx) { var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; ctx = new AC(); }
-    return ctx; } catch (e) { return null; } }
-  function tone(freq, dur, type, vol, delay) {
+/* ---- subtle sounds (Web Audio oscillator, no files, offline) ---- */
+var Sound = (function(){
+  var K = "renewormove.sound", on = true, ctx = null;
+  try { if (window.localStorage.getItem(K) === "off") on = false; } catch(e){}
+  function ac(){ try {
+    if (!ctx){ var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; ctx = new AC(); }
+    return ctx; } catch(e){ return null; } }
+  function tone(freq, dur, type, vol, delay){
     var c = ac(); if (!c) return;
-    function play() { try {
+    function play(){ try {
       var t = c.currentTime + (delay || 0), o = c.createOscillator(), g = c.createGain();
-      o.type = type || 'sine'; o.frequency.value = freq;
+      o.type = type || "sine"; o.frequency.value = freq;
       g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.05); } catch (e) {} }
-    if (c.state === 'suspended') { c.resume().then(play, play); } else { play(); }
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.05); } catch(e){} }
+    if (c.state === "suspended"){ c.resume().then(play, play); } else { play(); }
   }
   return {
-    isOn: function () { return on; },
-    toggle: function () { on = !on; try { window.localStorage.setItem(K, on ? 'on' : 'off'); } catch (e) {} return on; },
-    click: function () { if (on) tone(520, 0.06, 'sine', 0.045); },
-    select: function () { if (on) { tone(660, 0.07, 'sine', 0.055); tone(880, 0.09, 'sine', 0.045, 0.06); } },
-    success: function () { if (on) { tone(660, 0.09, 'sine', 0.06); tone(990, 0.12, 'sine', 0.05, 0.08); } },
-    error: function () { if (on) tone(170, 0.16, 'sawtooth', 0.045); },
-    toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
+    isOn: function(){ return on; },
+    toggle: function(){ on = !on; try{ window.localStorage.setItem(K, on ? "on" : "off"); }catch(e){} return on; },
+    click: function(){ if (on) tone(520, 0.06, "sine", 0.045); },
+    success: function(){ if (on){ tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
+    error: function(){ if (on) tone(170, 0.16, "sawtooth", 0.045); },
+    toggleTheme: function(){ if (on) tone(440, 0.06, "triangle", 0.05); }
   };
 })();
-function paintSoundBtn(btn) {
+function paintSoundBtn(btn){
+  /* spec reference: emoji icon, button stays white in all states */
   var on = Sound.isOn();
-  btn.innerHTML = on ? '&#128266;' : '&#128263;';
-  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
-  btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
-  btn.setAttribute('data-sound', on ? 'on' : 'muted');
+  btn.textContent = on ? "🔊" : "🔇";
+  btn.setAttribute("aria-pressed", on ? "true" : "false");
+  btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
+  btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
 }
-function toggleSound(btn) {
+function toggleSound(btn){
   Sound.toggle();
   paintSoundBtn(btn);
   Sound.click();
 }
 
-/* ---------- theme icon paint ---------- */
-function paintTheme() {
-  var t = document.documentElement.getAttribute('data-theme') || 'light', dark = t === 'dark';
-  var b = document.getElementById('themeToggle'); if (!b) return;
-  var l = dark ? 'Switch to light mode' : 'Switch to dark mode';
-  b.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19"; /* header spec: emoji shows the mode you GET */
-  b.setAttribute('aria-pressed', dark ? 'true' : 'false');
-  b.setAttribute('aria-label', l); b.title = l;
-  b.setAttribute('data-mode', dark ? 'dark' : 'light');
+/* ---- renewal mode tabs ---- */
+var renewMode = "amt";
+function setMode(m, skipSave){
+  renewMode = m;
+  var isAmt = (m === "amt");
+  $("tabAmt").classList.toggle("active", isAmt);
+  $("tabPct").classList.toggle("active", !isAmt);
+  $("tabAmt").setAttribute("aria-selected", isAmt ? "true" : "false");
+  $("tabPct").setAttribute("aria-selected", !isAmt ? "true" : "false");
+  $("wrapAmt").hidden = !isAmt;
+  $("wrapPct").hidden = isAmt;
+  if (!skipSave) saveState();
+  updateHints();
+  calculate(true);
+}
+$("tabAmt").addEventListener("click", function(){ setMode("amt"); Sound.click(); });
+$("tabPct").addEventListener("click", function(){ setMode("pct"); Sound.click(); });
+/* keyboard: arrow keys move between renewal-mode tabs */
+[$("tabAmt"), $("tabPct")].forEach(function(btn, idx, arr){
+  btn.addEventListener("keydown", function(e){
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft"){
+      var next = (idx + (e.key === "ArrowRight" ? 1 : arr.length - 1)) % arr.length;
+      arr[next].focus();
+      arr[next].click();
+      e.preventDefault();
+    }
+  });
+});
+
+function effectiveRenewRent(){
+  var cur = num("curRent");
+  if (renewMode === "pct"){
+    var pct = num("renewPct");
+    if (isNaN(cur) || isNaN(pct)) return NaN;
+    return cur * (1 + pct/100);
+  }
+  return num("renewRentAmt");
+}
+function overlapCost(){
+  var days = numOr("cOverlapDays", 0);
+  var cur = num("curRent");
+  if (isNaN(cur) || cur <= 0 || days <= 0) return 0;
+  return days * cur / 30;
+}
+function updateHints(){
+  var cur = num("curRent");
+  if (renewMode === "pct"){
+    var pct = num("renewPct");
+    if (!isNaN(cur) && cur > 0 && !isNaN(pct)){
+      $("pctComputed").textContent = "New rent: " + money2(cur * (1 + pct/100)) + "/mo";
+    } else { $("pctComputed").textContent = ""; }
+  }
+  var days = numOr("cOverlapDays", 0);
+  if (!isNaN(cur) && cur > 0 && days > 0){
+    $("overlapComputed").textContent = "≈ " + money2(overlapCost()) + " at " + days + " day" + (days === 1 ? "" : "s") + " × (" + money2(cur) + " ÷ 30)";
+  } else { $("overlapComputed").textContent = ""; }
 }
 
-/* ---------- ingredient costing ---------- */
-function pkgBaseQty(ing) { return toBase(ing.pkgQty, ing.pkgUnit); }
-function unitCost(ing) { /* cost per gram / ml / each */
-  var b = pkgBaseQty(ing);
-  if (!(b > 0)) return 0;
-  return ing.pkgPrice / b;
+/* ---- persistence ---- */
+var FIELDS = ["curRent","renewRentAmt","renewPct","horizon","newPlaceRent",
+  "cMovers","cDeposit","cFees","cOverlapDays","cUtilities","cCleaning","cMisc"];
+function saveState(){
+  if (window.__gSampleOn || sampleOn) return; /* sample data is transient — never persisted */
+  try{
+    var s = {mode: renewMode};
+    FIELDS.forEach(function(id){ s[id] = $(id).value; });
+    localStorage.setItem(LS_STATE, JSON.stringify(s));
+  }catch(e){}
 }
-function unitCostLabel(ing) {
-  var d = unitDim(ing.pkgUnit);
-  return d === 'mass' ? 'per gram' : d === 'vol' ? 'per ml' : 'each';
-}
-/* cost of qty+unit of ingredient ing. Returns {cost, approx} */
-function lineCost(ing, qty, unit) {
-  if (!(qty > 0)) return { cost: 0, approx: false };
-  var pd = unitDim(ing.pkgUnit), ld = unitDim(unit);
-  var uc = unitCost(ing);
-  if (pd === ld) return { cost: toBase(qty, unit) / pkgBaseQty(ing) * ing.pkgPrice, approx: false };
-  var gpc = num(ing.gPerCup), gpe = num(ing.gPerEach);
-  /* count <-> weight via grams-per-piece */
-  if (pd === 'each' && ld === 'mass') {
-    if (!(gpe > 0)) return { cost: 0, approx: false, err: 'needs grams-per-piece' };
-    return { cost: toBase(qty, unit) * (ing.pkgPrice / (ing.pkgQty * gpe)), approx: false };
-  }
-  if (pd === 'mass' && ld === 'each') {
-    if (!(gpe > 0)) return { cost: 0, approx: false, err: 'needs grams-per-piece' };
-    return { cost: qty * gpe * uc, approx: false };
-  }
-  if (pd === 'each' || ld === 'each') return { cost: 0, approx: false, err: 'cannot convert' };
-  /* mass <-> volume via grams-per-cup */
-  var cups;
-  if (ld === 'vol') cups = toBase(qty, unit) / VOL.cup;
-  else {
-    if (!(gpc > 0)) return { cost: 0, approx: false, err: 'needs grams-per-cup' };
-    cups = toBase(qty, unit) / gpc;
-  }
-  var approx = !(gpc > 0);
-  if (pd === 'mass') return { cost: cups * (gpc > 0 ? gpc : VOL.cup) * uc, approx: approx };
-  return { cost: cups * VOL.cup * uc, approx: approx };
-}
-function lineCostHTML(ing, ln) {
-  var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
-  if (lc.err) return '<span class="approx-flag" title="' + esc(lc.err) + ' — add it on the Ingredients tab">needs conversion</span>';
-  return fmtMoney(lc.cost) + (lc.approx ? ' <span class="approx-flag" title="Used water-density fallback — add grams-per-cup for accuracy">≈</span>' : '');
+function loadState(){
+  try{
+    var raw = localStorage.getItem(LS_STATE);
+    if (!raw) return false;
+    var s = JSON.parse(raw);
+    if (!s || typeof s !== "object") return false;
+    FIELDS.forEach(function(id){ if (typeof s[id] === "string") $(id).value = s[id]; });
+    setMode(s.mode === "pct" ? "pct" : "amt");
+    return true;
+  }catch(e){ return false; }
 }
 
-/* ---------- tabs ---------- */
-function showTab(which) {
-  var ing = which === 'ing';
-  document.getElementById('panel-ing').hidden = !ing;
-  document.getElementById('panel-rec').hidden = ing;
-  document.getElementById('tab-ing').setAttribute('aria-selected', ing ? 'true' : 'false');
-  document.getElementById('tab-rec').setAttribute('aria-selected', ing ? 'false' : 'true');
+/* ---- validation + calculation ---- */
+function validate(){
+  var cur = num("curRent");
+  var horizon = num("horizon");
+  var newPlace = num("newPlaceRent");
+  var renewRent = effectiveRenewRent();
+  if (isNaN(cur) || cur <= 0) return "Enter a current monthly rent greater than $0.";
+  if (renewMode === "amt"){
+    if (isNaN(renewRent) || renewRent <= 0) return "Enter the new monthly rent if you renew (must be greater than $0).";
+  } else {
+    var pct = num("renewPct");
+    if (isNaN(pct)) return "Enter the rent increase as a percentage.";
+    if (pct < -50 || pct > 200) return "Rent increase must be between −50% and 200%.";
+    if (isNaN(renewRent) || renewRent <= 0) return "That increase makes the renewal rent $0 or less — check your numbers.";
+  }
+  if (isNaN(horizon) || horizon < 1 || horizon > 60 || Math.floor(horizon) !== horizon)
+    return "Horizon must be a whole number of months from 1 to 60.";
+  if (isNaN(newPlace) || newPlace <= 0) return "Enter the expected rent at a new place (must be greater than $0).";
+  var costs = [["cMovers","Movers"],["cDeposit","Security deposit"],["cFees","Application/admin fees"],
+    ["cOverlapDays","Overlap days"],["cUtilities","Utility fees"],["cCleaning","Cleaning/repairs"],["cMisc","Misc costs"]];
+  for (var i = 0; i < costs.length; i++){
+    var v = numOr(costs[i][0], 0); /* empty = $0 */
+    if (v < 0) return costs[i][1] + " must be $0 or more.";
+  }
+  var days = num("cOverlapDays");
+  if (days > 365) return "Overlap days can't exceed 365.";
+  return null;
+}
+
+function breakEvenMonth(movingCosts, monthlySave, horizon){
+  /* smallest whole month m where moving becomes strictly cheaper than staying */
+  if (movingCosts <= 0) return monthlySave > 0 ? 1 : null;
+  if (monthlySave <= 0) return null;
+  var m = Math.floor(movingCosts / monthlySave) + 1;
+  return (m <= horizon) ? m : null;
+}
+
+function calculate(silent){
+  updateHints();
+  var err = validate();
+  if (err){
+    $("inputErr").textContent = err;
+    $("inputErr").classList.add("show");
+    $("resultsBody").hidden = true; /* never show stale numbers next to an error */
+    return null;
+  }
+  $("inputErr").classList.remove("show");
+  var cur = num("curRent");
+  var renewRent = effectiveRenewRent();
+  var horizon = num("horizon");
+  var newPlace = num("newPlaceRent");
+  var overlap = overlapCost();
+  var moveItems = [
+    ["Movers / truck rental", numOr("cMovers", 0)],
+    ["New security deposit", numOr("cDeposit", 0)],
+    ["Application / admin fees", numOr("cFees", 0)],
+    ["Overlap rent", overlap],
+    ["Utility setup / transfer fees", numOr("cUtilities", 0)],
+    ["Cleaning / repairs at old place", numOr("cCleaning", 0)],
+    ["Misc moving costs", numOr("cMisc", 0)]
+  ];
+  var movingCosts = moveItems.reduce(function(a, r){ return a + r[1]; }, 0);
+  var stayTotal = horizon * renewRent;
+  var moveTotal = horizon * newPlace + movingCosts;
+  var diff = stayTotal - moveTotal; /* >0 => moving cheaper */
+  var stayCheaper = diff < 0;
+  var savings = Math.abs(diff);
+
+  /* verdict */
+  var vb = $("verdictBox");
+  vb.classList.add("win");
+  if (diff === 0){
+    $("vIcon").textContent = "⚖️";
+    $("vTitle").textContent = "It's a wash";
+    $("vSub").textContent = "Both options cost " + money(stayTotal) + " over " + horizon + " months. Pick the one you like better.";
+  } else if (stayCheaper){
+    $("vIcon").textContent = "🏠";
+    $("vTitle").textContent = "Staying saves you " + money(savings);
+    $("vSub").textContent = "over " + horizon + " months — renewing at " + money2(renewRent) + "/mo beats moving at " + money2(newPlace) + "/mo plus " + money(movingCosts) + " in one-time costs.";
+  } else {
+    $("vIcon").textContent = "🚚";
+    $("vTitle").textContent = "Moving saves you " + money(savings);
+    $("vSub").textContent = "over " + horizon + " months — a new place at " + money2(newPlace) + "/mo beats renewing at " + money2(renewRent) + "/mo, even after " + money(movingCosts) + " in one-time moving costs.";
+  }
+
+  /* bars */
+  var max = Math.max(stayTotal, moveTotal, 1);
+  $("stayTotal").textContent = money(stayTotal);
+  $("moveTotal").textContent = money(moveTotal);
+  $("stayBar").style.width = (stayTotal / max * 100).toFixed(2) + "%";
+  $("moveBar").style.width = (moveTotal / max * 100).toFixed(2) + "%";
+  var tie = (diff === 0);
+  $("stayBarWrap").classList.toggle("winner", stayCheaper || tie);
+  $("moveBarWrap").classList.toggle("winner", !stayCheaper || tie);
+  $("stayTag").hidden = !stayCheaper || tie;
+  $("moveTag").hidden = stayCheaper || tie;
+  $("staySub").textContent = horizon + " months × " + money2(renewRent) + "/mo renewal rent";
+  $("moveSub").textContent = horizon + " months × " + money2(newPlace) + "/mo + " + money(movingCosts) + " one-time moving costs";
+
+  /* break-even */
+  var monthlySave = renewRent - newPlace;
+  var be = breakEvenMonth(movingCosts, monthlySave, horizon);
+  var bt = $("breakevenText");
+  if (be === null){
+    if (monthlySave <= 0){
+      bt.innerHTML = "Break-even: <strong>never within " + horizon + " months</strong>. " +
+        "The new place (" + money2(newPlace) + "/mo) doesn't save anything monthly versus renewing (" +
+        money2(renewRent) + "/mo), so the " + money(movingCosts) + " in one-time costs never pays off.";
+    } else {
+      bt.innerHTML = "Break-even: <strong>never within " + horizon + " months</strong>. " +
+        "You'd save " + money2(monthlySave) + "/mo at the new place, but it takes longer than your horizon to recover the " +
+        money(movingCosts) + " in one-time moving costs.";
+    }
+  } else if (be === 1){
+    bt.innerHTML = "Break-even: <strong>month 1</strong>. " +
+      "With " + money(movingCosts) + " in one-time moving costs and a lower monthly rent, moving is cheaper from the very first month.";
+  } else {
+    bt.innerHTML = "Break-even: <strong>month " + be + "</strong>. " +
+      "Staying is cheaper for the first " + (be - 1) + " month" + (be - 1 === 1 ? "" : "s") +
+      "; from month " + be + " on, moving is the cheaper option.";
+  }
+
+  /* breakdown table */
+  var html = "";
+  html += row("Rent — " + horizon + " mo × " + money2(renewRent) + "/mo (renewal)", stayTotal, "", "staying", stayTotal);
+  html += row("Rent — " + horizon + " mo × " + money2(newPlace) + "/mo (new place)", "", horizon * newPlace, "moving", horizon * newPlace);
+  moveItems.forEach(function(r){
+    html += row(r[0] + " (one-time)", "", r[1], "moving", r[1]);
+  });
+  html += '<tr class="total-row"><td>Total</td><td class="num">' + money(stayTotal) + '</td><td class="num">' + money(moveTotal) + '</td></tr>';
+  $("breakdownBody").innerHTML = html;
+
+  /* visuals: reset spotlights, then render */
+  ["stayRow", "moveRow"].forEach(function(id){
+    var el = $(id); el.classList.remove("dim"); el.setAttribute("aria-pressed", "false");
+  });
+  var vb0 = $("verdictBox"); if (vb0) vb0.setAttribute("aria-pressed", "false");
+  $("cmpNote").hidden = true;
+  $("chartDetail").hidden = true; $("chartDetail").innerHTML = "";
+  renderCostCurve(renewRent, newPlace, movingCosts, horizon, be);
+  renderBkd(moveItems, movingCosts);
+
+  $("resultsBody").hidden = false;
+  lastCalc = {stayTotal: stayTotal, moveTotal: moveTotal, renewRent: renewRent,
+    newPlace: newPlace, movingCosts: movingCosts, moveItems: moveItems, horizon: horizon, be: be};
+  return {stayTotal: stayTotal, moveTotal: moveTotal, diff: diff, be: be};
+}
+function row(label, stay, move, side, amt){
+  return '<tr class="trow" role="button" tabindex="0" aria-pressed="false" data-side="' + side + '" data-amt="' + amt + '"' +
+    ' aria-label="' + esc(label) + ' — activate for share of the ' + side + ' total">' +
+    "<td>" + esc(label) + "</td><td class=\"num\">" +
+    (stay === "" ? "—" : money(stay)) + "</td><td class=\"num\">" +
+    (move === "" ? "—" : money(move)) + "</td></tr>";
+}
+
+/* ---- cost curve: cumulative stay vs move by month (multi-series line) ---- */
+var curveData = null, curveSel = -1;
+var curveHidden = {stay:false, move:false}; /* legend series toggles */
+var CURVE_STAY = "#8b5cf6", CURVE_MOVE = "#10b981";
+function renderCostCurve(renewRent, newPlace, movingCosts, horizon, be){
+  var W = 560, H = 270, padL = 58, padR = 12, padT = 12, padB = 30;
+  var iw = W - padL - padR, ih = H - padT - padB;
+  var max = Math.max(horizon * renewRent, horizon * newPlace + movingCosts, 1);
+  function X(m){ return padL + (horizon === 1 ? iw / 2 : (m - 1) / (horizon - 1) * iw); }
+  function Y(v){ return padT + ih - (v / max) * ih; }
+  var s = "", g;
+  for (g = 0; g <= 4; g++){
+    var gv = max * g / 4, gy = Y(gv);
+    s += '<line class="ax" x1="' + padL + '" y1="' + gy.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + gy.toFixed(1) + '"/>' +
+      '<text class="axlbl" x="' + (padL - 6) + '" y="' + (gy + 4).toFixed(1) + '" text-anchor="end">' + money(gv) + '</text>';
+  }
+  if (be !== null){
+    var bx = X(be);
+    s += '<line class="curve-sel" x1="' + bx.toFixed(1) + '" y1="' + padT + '" x2="' + bx.toFixed(1) + '" y2="' + (padT + ih) + '"/>' +
+      '<text class="axlbl" x="' + bx.toFixed(1) + '" y="' + (padT + ih + 18) + '" text-anchor="middle">break-even</text>';
+  }
+  function path(fn, stroke, cls){
+    var d = "";
+    for (var m = 1; m <= horizon; m++){ d += (m === 1 ? "M" : "L") + X(m).toFixed(1) + " " + Y(fn(m)).toFixed(1); }
+    return '<path class="curve-line ' + cls + '" d="' + d + '" fill="none" stroke="' + stroke + '" stroke-width="2.5" stroke-linecap="round"/>';
+  }
+  s += path(function(m){ return m * renewRent; }, CURVE_STAY, "curve-stay");
+  s += path(function(m){ return m * newPlace + movingCosts; }, CURVE_MOVE, "curve-move");
+  var tickEvery = Math.max(1, Math.ceil(horizon / 6));
+  for (var t = 1; t <= horizon; t += tickEvery){
+    s += '<text class="axlbl" x="' + X(t).toFixed(1) + '" y="' + (padT + ih + 18) + '" text-anchor="middle">' + t + '</text>';
+  }
+  s += '<text class="axlbl" x="' + (padL + iw / 2).toFixed(1) + '" y="' + (H - 2) + '" text-anchor="middle">month</text>';
+  for (var m2 = 1; m2 <= horizon; m2++){
+    var hw = iw / Math.max(horizon, 1);
+    var hx = (horizon === 1) ? padL + iw / 2 - hw / 2 : padL + (m2 - 1) / (horizon - 1) * iw - hw / 2;
+    s += '<rect class="curve-hit" data-m="' + m2 + '" tabindex="0" role="button" aria-label="Month ' + m2 + ' — activate to compare staying versus moving costs" x="' + hx.toFixed(1) + '" y="' + padT +
+      '" width="' + hw.toFixed(1) + '" height="' + ih + '"><title>Month ' + m2 + '</title></rect>';
+  }
+  $("costCurve").innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Cumulative cost by month for staying versus moving">' +
+    s + '<g id="curveSelDot"></g></svg>';
+  (function(){ /* honor legend series toggles after re-render */
+    var svg = $("costCurve").querySelector("svg"); if (!svg) return;
+    if (curveHidden.stay) svg.querySelectorAll(".curve-stay").forEach(function(p){ p.style.display = "none"; });
+    if (curveHidden.move) svg.querySelectorAll(".curve-move").forEach(function(p){ p.style.display = "none"; });
+  })();
+  curveData = {renewRent: renewRent, newPlace: newPlace, movingCosts: movingCosts, horizon: horizon, be: be};
+  curveSel = -1;
+  $("curveReadout").innerHTML = curveHint();
+}
+function curveHint(){
+  return '<span class="muted">Click a month (or focus the chart and use ← →) to compare.</span>';
+}
+function selectCurveMonth(m){
+  if (!curveData || m < 1 || m > curveData.horizon) return;
+  if (curveSel === m){ /* second click releases back to the default view */
+    curveSel = -1;
+    $("curveReadout").innerHTML = curveHint();
+    var g = $("costCurve").querySelector("#curveSelDot"); if (g) g.innerHTML = "";
+    Sound.click(); return;
+  }
+  curveSel = m;
+  var d = curveData;
+  var sv = m * d.renewRent, mv = m * d.newPlace + d.movingCosts;
+  var diff = sv - mv, note;
+  if (diff === 0) note = "— dead even.";
+  else if (diff > 0) note = "— <strong>moving cheaper by " + money(diff) + "</strong>.";
+  else note = "— <strong>staying cheaper by " + money(-diff) + "</strong>.";
+  $("curveReadout").innerHTML = "Month " + m + ": Staying <strong>" + money(sv) + "</strong> · Moving <strong>" +
+    money(mv) + "</strong> " + note;
+  var g = $("costCurve").querySelector("#curveSelDot"); if (!g) return;
+  var W = 560, padL = 58, padR = 12, padT = 12, padB = 30;
+  var iw = W - padL - padR, ih = 270 - padT - padB;
+  var max = Math.max(d.horizon * d.renewRent, d.horizon * d.newPlace + d.movingCosts, 1);
+  var x = padL + (d.horizon === 1 ? iw / 2 : (m - 1) / (d.horizon - 1) * iw);
+  var ys = padT + ih - (sv / max) * ih, ym = padT + ih - (mv / max) * ih;
+  g.innerHTML = '<circle cx="' + x.toFixed(1) + '" cy="' + ys.toFixed(1) + '" r="5" fill="' + CURVE_STAY + '" stroke="#fff" stroke-width="2"/>' +
+    '<circle cx="' + x.toFixed(1) + '" cy="' + ym.toFixed(1) + '" r="5" fill="' + CURVE_MOVE + '" stroke="#fff" stroke-width="2"/>';
+}
+/* ---- moving-cost breakdown bars (clickable spotlight) ---- */
+function renderBkd(moveItems, movingCosts){
+  var host = $("bkdBody");
+  var items = moveItems.filter(function(r){ return r[1] > 0; });
+  if (!items.length){
+    host.innerHTML = '<p class="hint" style="margin:0">No one-time moving costs entered — add some above to see the breakdown.</p>';
+    $("bkdNote").hidden = true;
+    return;
+  }
+  var maxI = items.reduce(function(a, r){ return Math.max(a, r[1]); }, 1);
+  host.innerHTML = items.map(function(r){
+    var pc = (r[1] / movingCosts * 100);
+    return '<div class="bkd-row" role="button" tabindex="0" aria-pressed="false" data-amt="' + r[1] + '" data-name="' + esc(r[0]) + '"' +
+      ' aria-label="' + esc(r[0]) + ', ' + money(r[1]) + ', ' + pc.toFixed(1) + ' percent of moving costs">' +
+      '<div class="bkd-top"><span class="bkd-name">' + esc(r[0]) + '</span><span class="bkd-amt">' + money(r[1]) + '</span></div>' +
+      '<div class="bkd-bar"><div style="width:' + (r[1] / maxI * 100).toFixed(1) + '%"></div></div>' +
+      '<div class="bkd-pct">' + pc.toFixed(1) + '% of one-time moving costs</div></div>';
+  }).join("");
+  $("bkdNote").hidden = true;
+}
+function bkdToggle(row){
+  var rows = $("bkdBody").querySelectorAll(".bkd-row");
+  var was = row.getAttribute("aria-pressed") === "true";
+  rows.forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
+  var note = $("bkdNote");
+  if (was){ note.hidden = true; Sound.click(); return; }
+  rows.forEach(function(r){ if (r !== row) r.classList.add("dim"); });
+  row.setAttribute("aria-pressed", "true");
+  var amt = parseFloat(row.getAttribute("data-amt")), name = row.getAttribute("data-name");
+  var total = curveData ? curveData.movingCosts : 0;
+  note.innerHTML = "<strong>" + esc(name) + "</strong>: " + money(amt) +
+    (total > 0 ? " — " + (amt / total * 100).toFixed(1) + "% of your " + money(total) + " one-time moving costs." : "");
+  note.hidden = false;
   Sound.click();
 }
-
-/* ---------- ingredients UI ---------- */
-function fillUnitSelect() {
-  var sel = document.getElementById('ing-unit');
-  sel.innerHTML = '';
-  UNIT_GROUPS.forEach(function (g) {
-    var og = document.createElement('optgroup'); og.label = g.label;
-    g.units.forEach(function (u) {
-      var o = document.createElement('option'); o.value = u; o.textContent = u; og.appendChild(o);
-    });
-    sel.appendChild(og);
-  });
+/* ---- comparison-row spotlight ---- */
+var lastCalc = null; /* last calculate() inputs, for the breakdown panel */
+function cmpToggle(which){
+  var stay = $("stayRow"), move = $("moveRow"), note = $("cmpNote");
+  var target = (which === "stay") ? stay : move, other = (which === "stay") ? move : stay;
+  var was = target.getAttribute("aria-pressed") === "true";
+  [stay, move].forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
+  $("chartDetail").hidden = true; $("chartDetail").innerHTML = "";
+  if (was){ note.hidden = true; Sound.click(); return; }
+  target.setAttribute("aria-pressed", "true");
+  other.classList.add("dim");
+  var sv = $("stayTotal").textContent, mv = $("moveTotal").textContent;
+  note.innerHTML = "<strong>" + (which === "stay" ? "Staying" : "Moving") + " spotlight:</strong> " +
+    (which === "stay" ? sv : mv) + " total vs " + (which === "stay" ? mv : sv) + ".";
+  note.hidden = false;
+  renderCmpDetail(which);
+  Sound.click();
 }
-var editingIngId = null;
-function ingErr(msg) {
-  var el = document.getElementById('ing-err');
-  el.textContent = msg || ''; el.classList.toggle('show', !!msg);
-}
-function addIngredient() {
-  var name = document.getElementById('ing-name').value.trim();
-  var price = num(document.getElementById('ing-price').value);
-  var qty = num(document.getElementById('ing-qty').value);
-  var unit = document.getElementById('ing-unit').value;
-  var gpc = num(document.getElementById('ing-gpc').value);
-  var gpe = num(document.getElementById('ing-gpe').value);
-  if (!name) { Sound.error(); return ingErr('Give the ingredient a name.'); }
-  if (!(price >= 0) || !(qty > 0)) { Sound.error(); return ingErr('Enter a package price and a package size greater than zero.'); }
-  ingErr('');
-  if (editingIngId) {
-    var ing = state.ingredients.find(function (i) { return i.id === editingIngId; });
-    if (ing) { ing.name = name; ing.pkgPrice = price; ing.pkgQty = qty; ing.pkgUnit = unit; ing.gPerCup = gpc; ing.gPerEach = gpe; }
-    editingIngId = null;
-    document.getElementById('ing-add').textContent = 'Add ingredient';
+/* Real breakdown behind the spotlighted comparison total: every cost component. */
+function renderCmpDetail(which){
+  var box = $("chartDetail");
+  if (!box || !lastCalc) return;
+  var d = lastCalc, title = "", sub = "", rows = [];
+  if (which === "stay"){
+    title = "Staying — cost breakdown";
+    sub = money(d.stayTotal) + " over " + d.horizon + " months · vs " + money(d.moveTotal) + " moving";
+    rows.push({name: "Rent — " + d.horizon + " mo × " + money2(d.renewRent) + "/mo (renewal)",
+      meta: "recurring rent", val: d.stayTotal});
   } else {
-    state.ingredients.push({ id: uid(), name: name, pkgPrice: price, pkgQty: qty, pkgUnit: unit, gPerCup: gpc, gPerEach: gpe });
-  }
-  save(); clearIngForm(); renderIngredients(); renderRecipeSelect(); Sound.success();
-}
-function clearIngForm() {
-  ['ing-name', 'ing-price', 'ing-qty', 'ing-gpc', 'ing-gpe'].forEach(function (id) { document.getElementById(id).value = ''; });
-  editingIngId = null; document.getElementById('ing-add').textContent = 'Add ingredient'; ingErr('');
-}
-function editIngredient(id) {
-  var ing = state.ingredients.find(function (i) { return i.id === id; });
-  if (!ing) return;
-  document.getElementById('ing-name').value = ing.name;
-  document.getElementById('ing-price').value = ing.pkgPrice;
-  document.getElementById('ing-qty').value = ing.pkgQty;
-  document.getElementById('ing-unit').value = ing.pkgUnit;
-  document.getElementById('ing-gpc').value = ing.gPerCup || '';
-  document.getElementById('ing-gpe').value = ing.gPerEach || '';
-  editingIngId = id;
-  document.getElementById('ing-add').textContent = 'Save changes';
-  document.getElementById('ing-name').focus();
-}
-function deleteIngredient(id) {
-  var used = state.recipes.some(function (r) { return r.lines.some(function (l) { return l.ingId === id; }); });
-  if (used && !confirm('This ingredient is used in a recipe. Delete it anyway?')) return;
-  state.ingredients = state.ingredients.filter(function (i) { return i.id !== id; });
-  state.recipes.forEach(function (r) { r.lines = r.lines.filter(function (l) { return l.ingId !== id; }); });
-  save(); renderIngredients(); renderRecipe(); Sound.click();
-}
-function renderIngredients() {
-  var tb = document.getElementById('ing-tbody');
-  tb.innerHTML = '';
-  document.getElementById('ing-count').textContent = state.ingredients.length;
-  document.getElementById('ing-empty').style.display = state.ingredients.length ? 'none' : '';
-  state.ingredients.forEach(function (ing) {
-    var tr = document.createElement('tr');
-    var uc = unitCost(ing);
-    var ucTxt = uc < 0.01 ? '$' + uc.toFixed(4) : fmtMoney(uc);
-    tr.innerHTML =
-      '<td>' + esc(ing.name) + '</td>' +
-      '<td class="num">' + esc(String(ing.pkgQty)) + ' ' + esc(ing.pkgUnit) + ' @ ' + fmtMoney(ing.pkgPrice) + '</td>' +
-      '<td class="num">' + ucTxt + ' ' + unitCostLabel(ing) + '</td>' +
-      '<td class="num no-print"><button class="g-btn g-btn-ghost g-btn-sm" onclick="editIngredient(\'' + ing.id + '\')">Edit</button> ' +
-      '<button class="g-btn g-btn-ghost g-btn-sm" onclick="deleteIngredient(\'' + ing.id + '\')">Delete</button></td>';
-    tb.appendChild(tr);
-  });
-}
-
-/* ---------- recipes ---------- */
-var currentRecipeId = null;
-function blankRecipe() {
-  return { id: uid(), name: '', yieldQty: 0, yieldUnit: 'pieces', lines: [],
-           laborHours: 0, laborRate: 0, packagingPerUnit: 0, overheadPct: 10, targetMarginPct: 50 };
-}
-function cur() { return state.recipes.find(function (r) { return r.id === currentRecipeId; }); }
-function renderRecipeSelect() {
-  var sel = document.getElementById('rec-select');
-  sel.innerHTML = '';
-  state.recipes.forEach(function (r) {
-    var o = document.createElement('option');
-    o.value = r.id; o.textContent = r.name || '(unnamed recipe)';
-    if (r.id === currentRecipeId) o.selected = true;
-    sel.appendChild(o);
-  });
-  var has = state.recipes.length > 0;
-  document.getElementById('rec-editor').hidden = !has;
-  document.getElementById('rec-empty').hidden = has;
-}
-function newRecipe() {
-  var r = blankRecipe();
-  state.recipes.push(r); currentRecipeId = r.id;
-  save(); renderRecipeSelect(); renderRecipe(); Sound.success();
-  document.getElementById('rec-name').focus();
-}
-function selectRecipe(id) { currentRecipeId = id; renderRecipe(); Sound.select(); }
-function deleteRecipe() {
-  var r = cur(); if (!r) return;
-  if (!confirm('Delete "' + (r.name || 'this recipe') + '"?')) return;
-  state.recipes = state.recipes.filter(function (x) { return x.id !== r.id; });
-  currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
-  save(); renderRecipeSelect(); renderRecipe(); Sound.click();
-}
-function recField(field, val) {
-  var r = cur(); if (!r) return;
-  if (field !== 'name' && field !== 'yieldUnit') val = Math.max(0, val); /* typed negatives bypass min="0" */
-  r[field] = val; save();
-  if (field === 'name') renderRecipeSelect(); /* keep the dropdown label in sync while typing */
-  renderSummary();
-}
-function lineField(idx, field, val) {
-  var r = cur(); if (!r || !r.lines[idx]) return;
-  if (field === 'qty') val = Math.max(0, val); /* typed negatives bypass min="0" */
-  r.lines[idx][field] = val; save();
-  /* update this line's cost in place — never rebuild the row while typing */
-  var cell = document.getElementById('linecost-' + idx);
-  if (cell) {
-    var ing = state.ingredients.find(function (i) { return i.id === r.lines[idx].ingId; });
-    cell.innerHTML = lineCostHTML(ing, r.lines[idx]);
-  }
-  renderSummary();
-}
-function addLine() {
-  var r = cur(); if (!r) return;
-  if (!state.ingredients.length) {
-    var e = document.getElementById('line-err');
-    e.textContent = 'Add ingredients to your library first (Ingredients tab).';
-    e.classList.add('show'); return;
-  }
-  r.lines.push({ ingId: state.ingredients[0].id, qty: 0, unit: state.ingredients[0].pkgUnit });
-  save(); renderLines(); renderSummary(); Sound.click();
-}
-function removeLine(idx) {
-  var r = cur(); if (!r) return;
-  r.lines.splice(idx, 1); save(); renderLines(); renderSummary(); Sound.click();
-}
-function lineUnitOptions(selected) {
-  var html = '';
-  UNIT_GROUPS.forEach(function (g) {
-    html += '<optgroup label="' + g.label + '">';
-    g.units.forEach(function (u) {
-      html += '<option value="' + u + '"' + (u === selected ? ' selected' : '') + '>' + u + '</option>';
+    title = "Moving — cost breakdown";
+    sub = money(d.moveTotal) + " over " + d.horizon + " months · vs " + money(d.stayTotal) + " staying";
+    rows.push({name: "Rent — " + d.horizon + " mo × " + money2(d.newPlace) + "/mo (new place)",
+      meta: "recurring rent", val: d.horizon * d.newPlace});
+    d.moveItems.forEach(function(r){
+      if (r[1] > 0) rows.push({name: r[0] + " (one-time)", meta: "one-time", val: r[1]});
     });
-    html += '</optgroup>';
-  });
-  return html;
-}
-function renderLines() {
-  var r = cur(), host = document.getElementById('lines');
-  host.innerHTML = '';
-  document.getElementById('line-err').classList.remove('show');
-  if (!r) return;
-  r.lines.forEach(function (ln, idx) {
-    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
-    var row = document.createElement('div');
-    row.className = 'line-row';
-    var opts = state.ingredients.map(function (i) {
-      return '<option value="' + i.id + '"' + (i.id === ln.ingId ? ' selected' : '') + '>' + esc(i.name) + '</option>';
-    }).join('');
-    var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
-    var costTxt = lineCostHTML(ing, ln);
-    row.innerHTML =
-      '<div class="g-field" style="margin:0"><select class="g-input" onchange="lineField(' + idx + ',\'ingId\',this.value)">' + opts + '</select></div>' +
-      '<div class="g-field" style="margin:0"><input class="g-input" type="number" min="0" step="any" placeholder="Qty" value="' + esc(String(ln.qty || '')) + '" oninput="lineField(' + idx + ',\'qty\',num(this.value))"></div>' +
-      '<div class="g-field" style="margin:0"><select class="g-input" onchange="lineField(' + idx + ',\'unit\',this.value)">' + lineUnitOptions(ln.unit) + '</select></div>' +
-      '<div class="num hide-sm" id="linecost-' + idx + '" style="font-variant-numeric:tabular-nums">' + costTxt + '</div>' +
-      '<div class="no-print"><button class="g-btn g-btn-ghost g-btn-sm" onclick="removeLine(' + idx + ')" aria-label="Remove line">✕</button></div>';
-    host.appendChild(row);
-  });
-}
-
-/* ---------- summary ---------- */
-function recipeTotals(r) {
-  var ingTotal = 0, approx = false, missing = 0, errGpc = 0, errGpe = 0, errConv = 0;
-  r.lines.forEach(function (ln) {
-    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
-    if (!ing) { missing++; return; }
-    var lc = lineCost(ing, num(ln.qty), ln.unit);
-    if (lc.err === 'needs grams-per-cup') errGpc++;
-    else if (lc.err === 'needs grams-per-piece') errGpe++;
-    else if (lc.err) errConv++;
-    ingTotal += lc.cost;
-    if (lc.approx) approx = true;
-  });
-  var labor = num(r.laborHours) * num(r.laborRate);
-  var pack = num(r.packagingPerUnit) * num(r.yieldQty);
-  var subtotal = ingTotal + labor + pack;
-  var overhead = subtotal * num(r.overheadPct) / 100;
-  var total = subtotal + overhead;
-  var y = num(r.yieldQty);
-  var perUnit = y > 0 ? total / y : 0;
-  var margin = num(r.targetMarginPct);
-  var price = (margin < 100 && margin >= 0 && y > 0) ? perUnit / (1 - margin / 100) : 0;
-  return { ingTotal: ingTotal, labor: labor, pack: pack, overhead: overhead, total: total,
-           perUnit: perUnit, price: price, profitUnit: price - perUnit,
-           profitBatch: (price - perUnit) * y, approx: approx, missing: missing,
-           errGpc: errGpc, errGpe: errGpe, errConv: errConv };
-}
-/* ---------- cost visuals: breakdown donut, ingredient bars, food-cost gauge ---------- */
-var CC_R = 95, CC_CX = 124, CC_CY = 124;
-var ccSel = null; /* 'ing' | 'lab' | 'pac' | 'ovh' | null */
-var ccLast = null; /* last recipeTotals, for spotlight repaints */
-var chartSpotKind = null; /* 'cost' | 'driver' | null — which visual owns #chartDetail */
-var driverSpotIdx = null; /* recipe line index spotlighted via the driver bars, or null */
-var CC_PARTS = [
-  ['ing', 'Ingredients', '#4f46e5'],
-  ['lab', 'Labor', '#10b981'],
-  ['pac', 'Packaging', '#f59e0b'],
-  ['ovh', 'Overhead', '#8b5cf6']
-];
-function ccPolar(deg) {
-  var rad = deg * Math.PI / 180;
-  return [CC_CX + CC_R * Math.cos(rad), CC_CY + CC_R * Math.sin(rad)];
-}
-function ccSegPath(frac, startDeg, gapDeg) {
-  if (!(frac > 0)) return '';
-  var a0 = startDeg + gapDeg / 2, a1 = startDeg + frac * 360 - gapDeg / 2;
-  if (frac >= 0.9999) { /* full ring: two arcs */
-    var p1 = ccPolar(-90), p2 = ccPolar(90);
-    return 'M ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) +
-      ' A ' + CC_R + ' ' + CC_R + ' 0 1 1 ' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2) +
-      ' A ' + CC_R + ' ' + CC_R + ' 0 1 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
-  }
-  var s = ccPolar(a0), e = ccPolar(a1);
-  return 'M ' + s[0].toFixed(2) + ' ' + s[1].toFixed(2) +
-    ' A ' + CC_R + ' ' + CC_R + ' 0 ' + ((a1 - a0) > 180 ? 1 : 0) + ' 1 ' +
-    e[0].toFixed(2) + ' ' + e[1].toFixed(2);
-}
-function ccFlip(key) {
-  ccSel = (ccSel === key) ? null : key;
-  chartSpotKind = ccSel ? 'cost' : (driverSpotIdx !== null ? 'driver' : null);
-  if (ccLast) paintCostChart(ccLast);
-  renderChartDetail();
-  Sound.select();
-}
-/* Real breakdown behind the spotlighted cost slice or driver bar: every line behind
-   the number. Activating again (or the panel's close button) releases to totals. */
-function renderChartDetail() {
-  var box = document.getElementById('chartDetail');
-  if (!box) return;
-  var kind = chartSpotKind;
-  if (kind === 'cost' && !ccSel) kind = driverSpotIdx !== null ? 'driver' : null;
-  if (kind === 'driver' && driverSpotIdx === null) kind = ccSel ? 'cost' : null;
-  if (!kind) { box.hidden = true; box.innerHTML = ''; return; }
-  var t = ccLast, r = cur();
-  if (!t || !(t.total > 0) || !r) { box.hidden = true; box.innerHTML = ''; return; }
-  var title = '', sub = '', rows = [], foot = '';
-  if (kind === 'cost') {
-    var ci = CC_PARTS.filter(function (p) { return p[0] === ccSel; })[0];
-    var v = { ing: t.ingTotal, lab: t.labor, pac: t.pack, ovh: t.overhead }[ccSel];
-    title = ci[1] + ' — breakdown';
-    sub = fmtMoney(v) + ' · ' + (v / t.total * 100).toFixed(1) + '% of ' + fmtMoney(t.total) + ' batch';
-    if (ccSel === 'ing') {
-      rows = r.lines.map(function (ln) {
-        var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
-        var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
-        return { name: ing ? ing.name : '(missing ingredient)',
-          meta: num(ln.qty) + ' ' + (ln.unit || '') + ' · ' + (t.ingTotal > 0 ? (lc.cost / t.ingTotal * 100).toFixed(1) : '0') + '% of ingredients',
-          val: fmtMoney(lc.cost), cost: lc.cost };
-      }).filter(function (x) { return x.cost > 0; })
-        .sort(function (a, b) { return b.cost - a.cost; })
-        .map(function (x) { return { name: x.name, meta: x.meta, val: x.val }; });
-    } else if (ccSel === 'lab') {
-      rows = [{ name: num(r.laborHours) + ' hrs × ' + fmtMoney(num(r.laborRate)) + '/hr', meta: 'labor', val: fmtMoney(t.labor) }];
-      if (num(r.yieldQty) > 0) rows.push({ name: 'Per ' + String(r.yieldUnit || 'unit'), meta: 'labor share', val: fmtMoney(t.labor / num(r.yieldQty)) });
-    } else if (ccSel === 'pac') {
-      rows = [{ name: fmtMoney(num(r.packagingPerUnit)) + ' × ' + num(r.yieldQty) + ' ' + String(r.yieldUnit || 'units'), meta: 'packaging', val: fmtMoney(t.pack) }];
-    } else {
-      var sub2 = t.ingTotal + t.labor + t.pack;
-      rows = [{ name: num(r.overheadPct) + '% of ' + fmtMoney(sub2), meta: 'ingredients + labor + packaging', val: fmtMoney(t.overhead) }];
-    }
-  } else {
-    var ln = r.lines[driverSpotIdx];
-    var ing = ln ? state.ingredients.find(function (i) { return i.id === ln.ingId; }) : null;
-    if (!ln || !ing) { box.hidden = true; box.innerHTML = ''; return; }
-    var lc = lineCost(ing, num(ln.qty), ln.unit);
-    title = ing.name + ' — cost detail';
-    sub = fmtMoney(lc.cost) + ' · ' + (t.ingTotal > 0 ? (lc.cost / t.ingTotal * 100).toFixed(1) : '0') + '% of ingredient costs';
-    rows = [
-      { name: 'Quantity used', meta: 'recipe line', val: num(ln.qty) + ' ' + (ln.unit || '') },
-      { name: 'Line cost', meta: 'this recipe', val: fmtMoney(lc.cost) },
-      { name: 'Share of ingredients', meta: fmtMoney(t.ingTotal) + ' total', val: (t.ingTotal > 0 ? (lc.cost / t.ingTotal * 100).toFixed(1) : '0') + '%' }
-    ];
-    foot = '<div class="cd-foot"><button type="button" class="g-btn g-btn-secondary" id="chartDetailFind">Find in recipe →</button></div>';
   }
   var html = '<div class="cd-head"><div><div class="cd-title">' + esc(title) + '</div>' +
     '<div class="cd-sub">' + esc(sub) + '</div></div>' +
-    '<button type="button" class="cd-x" id="chartDetailX" aria-label="Clear selection and show totals">×</button></div>';
-  if (rows.length) {
-    html += '<div class="cd-rows">' + rows.map(function (x) {
-      return '<div class="cd-row"><span class="cd-name">' + esc(x.name) + '</span>' +
-        '<span class="cd-meta">' + esc(x.meta) + '</span>' +
-        '<span class="cd-val">' + esc(x.val) + '</span></div>';
-    }).join('') + '</div>';
-  } else html += '<p class="empty">No lines behind this number.</p>';
-  box.innerHTML = html + foot; box.hidden = false;
-  var x = document.getElementById('chartDetailX');
-  if (x) x.addEventListener('click', function () {
-    if (kind === 'cost' && ccSel) ccFlip(ccSel);
-    else if (driverSpotIdx !== null) driverSpot(driverSpotIdx);
-  });
-  var fb = document.getElementById('chartDetailFind');
-  if (fb) fb.addEventListener('click', function () { driverFind(driverSpotIdx); });
+    '<button type="button" class="cd-x" id="chartDetailX" aria-label="Clear selection and show totals">×</button></div>' +
+    '<div class="cd-rows">' + rows.map(function(r){
+      return '<div class="cd-row"><span class="cd-name">' + esc(r.name) + '</span>' +
+        '<span class="cd-meta">' + esc(r.meta) + '</span>' +
+        '<span class="cd-val">' + money(r.val) + '</span></div>';
+    }).join("") + '</div>';
+  box.innerHTML = html; box.hidden = false;
+  var x = $("chartDetailX");
+  if (x) x.addEventListener("click", function(){ cmpToggle(which); });
 }
-function paintCostChart(t) {
-  var vals = { ing: t.ingTotal, lab: t.labor, pac: t.pack, ovh: t.overhead };
-  var total = t.total, ok = total > 0;
-  if (ccSel && !(vals[ccSel] > 0)) ccSel = null;
-  var off = -90, gapDeg = 360 * 0.012;
-  CC_PARTS.forEach(function (p) {
-    var el = document.getElementById('cc-' + p[0]);
-    if (!el) return;
-    var frac = ok ? vals[p[0]] / total : 0;
-    el.setAttribute('d', ccSegPath(frac, off, gapDeg));
-    var mid = off + frac * 180;
-    if (ccSel === p[0] && frac > 0) {
-      var rad = mid * Math.PI / 180;
-      el.style.transform = 'translate(' + (Math.cos(rad) * 10).toFixed(1) + 'px,' + (Math.sin(rad) * 10).toFixed(1) + 'px)';
-      el.style.opacity = '1';
-    } else {
-      el.style.transform = '';
-      el.style.opacity = ccSel ? '0.4' : '1';
-    }
-    off += frac * 360;
+function wireSpotRow(id, which){
+  var el = $(id); if (!el) return;
+  el.addEventListener("click", function(){ cmpToggle(which); });
+  el.addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); cmpToggle(which); }
   });
-  var leg = document.getElementById('cc-legend');
-  leg.innerHTML = '';
-  CC_PARTS.forEach(function (p) {
-    var v = vals[p[0]], pct = ok ? v / total * 100 : 0;
-    var chip = document.createElement('button');
-    chip.type = 'button';
-    chip.className = 'cc-chip' + (ccSel === p[0] ? ' spot' : '');
-    chip.setAttribute('aria-pressed', ccSel === p[0] ? 'true' : 'false');
-    chip.setAttribute('aria-label', p[1] + ' ' + fmtMoney(v) + ' — activate to spotlight');
-    chip.innerHTML = '<span class="dot" style="background:' + p[2] + '"></span>' +
-      '<span>' + esc(p[1]) + '</span> <span class="amt">' + fmtMoney(v) + '</span>' +
-      '<span class="pct">' + (ok ? pct.toFixed(1) + '%' : '') + '</span>';
-    (function (key, hasVal) {
-      chip.addEventListener('click', function () { if (hasVal) ccFlip(key); });
-    })(p[0], ok && v > 0);
-    leg.appendChild(chip);
-  });
-  var tot = document.getElementById('cc-total'), sub = document.getElementById('cc-sub');
-  if (ok && ccSel) {
-    var ci = CC_PARTS.filter(function (p) { return p[0] === ccSel; })[0];
-    tot.textContent = fmtMoney(vals[ccSel]);
-    sub.textContent = ci[1] + ' · ' + (vals[ccSel] / total * 100).toFixed(1) + '% of batch';
-  } else {
-    tot.textContent = ok ? fmtMoney(total) : '–';
-    sub.textContent = ok ? 'batch cost' : 'add ingredient lines';
+}
+/* ---- verdict box: tap to see exactly how the verdict was computed ---- */
+function verdictToggle(){
+  var box = $("verdictBox"), det = $("chartDetail");
+  var was = box.getAttribute("aria-pressed") === "true";
+  if (was || !lastCalc){
+    box.setAttribute("aria-pressed", "false");
+    det.hidden = true; det.innerHTML = "";
+    Sound.click(); return;
   }
+  box.setAttribute("aria-pressed", "true");
+  var d = lastCalc, diff = d.stayTotal - d.moveTotal;
+  var diffTxt = diff === 0 ? "dead even" : (diff > 0 ? "moving saves " + money(diff) : "staying saves " + money(-diff));
+  det.innerHTML = '<div class="cd-head"><div><div class="cd-title">How the verdict was computed</div>' +
+    '<div class="cd-sub">Staying ' + money(d.stayTotal) + ' vs moving ' + money(d.moveTotal) +
+    ' over ' + d.horizon + ' months — ' + esc(diffTxt) + '.</div></div>' +
+    '<button type="button" class="cd-x" id="verdictX" aria-label="Close verdict detail">×</button></div>' +
+    '<div class="cd-rows">' +
+    '<div class="cd-row"><span class="cd-name">Staying: ' + d.horizon + ' mo × ' + money2(d.renewRent) + '/mo (renewal)</span>' +
+    '<span class="cd-val">' + money(d.stayTotal) + '</span></div>' +
+    '<div class="cd-row"><span class="cd-name">Moving: ' + d.horizon + ' mo × ' + money2(d.newPlace) + '/mo + ' +
+    money(d.movingCosts) + ' one-time</span><span class="cd-val">' + money(d.moveTotal) + '</span></div></div>';
+  det.hidden = false;
+  var x = $("verdictX");
+  if (x) x.addEventListener("click", function(e){ e.stopPropagation(); verdictToggle(); });
+  Sound.click();
 }
-function wireCostChart() {
-  CC_PARTS.forEach(function (p) {
-    var el = document.getElementById('cc-' + p[0]);
-    if (!el) return;
-    el.setAttribute('tabindex', '0');
-    el.setAttribute('role', 'button');
-    el.setAttribute('aria-label', p[1] + ' slice — activate to spotlight');
-    (function (key) {
-      function go() {
-        if (!ccLast || !(ccLast.total > 0)) return;
-        var v = { ing: ccLast.ingTotal, lab: ccLast.labor, pac: ccLast.pack, ovh: ccLast.overhead }[key];
-        if (v > 0) ccFlip(key);
-      }
-      el.addEventListener('click', go);
-      el.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
-      });
-    })(p[0]);
-  });
+/* ---- chart legend: toggle a series on/off ---- */
+function legendToggle(btn){
+  var series = btn.getAttribute("data-series");
+  var on = btn.getAttribute("aria-pressed") === "true";
+  btn.setAttribute("aria-pressed", on ? "false" : "true");
+  curveHidden[series] = on;
+  var svg = $("costCurve").querySelector("svg");
+  if (svg) svg.querySelectorAll(".curve-" + series).forEach(function(p){ p.style.display = on ? "none" : ""; });
+  Sound.click();
 }
-/* top ingredient cost bars — click a bar to find that line in the recipe */
-function paintDrivers(r, t) {
-  var host = document.getElementById('drivers');
-  host.innerHTML = '';
-  if (!r || !r.lines.length) return;
-  var rows = [];
-  r.lines.forEach(function (ln, idx) {
-    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
-    var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
-    if (lc.cost > 0) rows.push({ idx: idx, name: ing ? ing.name : '(missing ingredient)', cost: lc.cost });
+/* ---- breakdown table rows: click to see the item's share of its side's total ---- */
+function trowToggle(tr){
+  var rows = $("breakdownBody").querySelectorAll(".trow"), det = $("chartDetail");
+  var was = tr.getAttribute("aria-pressed") === "true";
+  rows.forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
+  if (was){ det.hidden = true; det.innerHTML = ""; Sound.click(); return; }
+  tr.setAttribute("aria-pressed", "true");
+  rows.forEach(function(r){ if (r !== tr) r.classList.add("dim"); });
+  var side = tr.getAttribute("data-side"), amt = parseFloat(tr.getAttribute("data-amt"));
+  var label = tr.querySelector("td").textContent;
+  var total = lastCalc ? (side === "staying" ? lastCalc.stayTotal : lastCalc.moveTotal) : 0;
+  var pct = total > 0 ? (amt / total * 100).toFixed(1) + "%" : "—";
+  det.innerHTML = '<div class="cd-head"><div><div class="cd-title">' + esc(label) + '</div>' +
+    '<div class="cd-sub">' + money(amt) + ' — ' + pct + ' of the ' + esc(side) + ' total (' + money(total) + ')</div></div>' +
+    '<button type="button" class="cd-x" id="trowX" aria-label="Clear selection">×</button></div>';
+  det.hidden = false;
+  var x = $("trowX");
+  if (x) x.addEventListener("click", function(e){ e.stopPropagation(); trowToggle(tr); });
+  Sound.click();
+}
+/* ---- break-even box: jump the cost curve to the break-even month ---- */
+function breakevenToggle(){
+  var box = $("breakevenBox");
+  if (!curveData || !lastCalc) return;
+  var m = lastCalc.be || curveData.horizon; /* never breaks even: show the final month's gap */
+  if (curveSel === m){ selectCurveMonth(m); box.setAttribute("aria-pressed", "false"); return; }
+  if (curveSel !== -1) selectCurveMonth(curveSel); /* release the current month first */
+  selectCurveMonth(m);
+  box.setAttribute("aria-pressed", "true");
+  var cv = $("costCurve");
+  if (cv && cv.scrollIntoView) cv.scrollIntoView({block: "center", behavior: "smooth"});
+  Sound.click();
+}
+/* ---- Escape releases every spotlight back to the default view ---- */
+function releaseAll(){
+  ["stayRow", "moveRow"].forEach(function(id){
+    var r = $(id); if (r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); }
   });
-  rows.sort(function (a, b) { return b.cost - a.cost; });
-  rows = rows.slice(0, 6);
-  if (!rows.length) return;
-  var max = rows[0].cost;
-  rows.forEach(function (dr) {
-    var b = document.createElement('button');
-    b.type = 'button'; b.className = 'driver-row';
-    b.setAttribute('data-idx', dr.idx);
-    b.setAttribute('aria-label', dr.name + ' costs ' + fmtMoney(dr.cost) + ' — activate to spotlight');
-    b.innerHTML = '<span class="d-name">' + esc(dr.name) + '</span>' +
-      '<span class="d-track"><span class="d-fill" style="display:block;width:' + (dr.cost / max * 100).toFixed(1) + '%"></span></span>' +
-      '<span class="d-val">' + fmtMoney(dr.cost) + '</span>';
-    (function (idx) { b.addEventListener('click', function () { driverSpot(idx); }); })(dr.idx);
-    host.appendChild(b);
-  });
-  /* spotlight survives re-renders; stale index clears */
-  if (driverSpotIdx !== null && !(r.lines[driverSpotIdx])) {
-    driverSpotIdx = null; chartSpotKind = ccSel ? 'cost' : null;
+  var v = $("verdictBox"); if (v) v.setAttribute("aria-pressed", "false");
+  var bk = $("bkdBody");
+  if (bk) bk.querySelectorAll(".bkd-row").forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
+  var det = $("chartDetail"); if (det){ det.hidden = true; det.innerHTML = ""; }
+  var note = $("cmpNote"); if (note) note.hidden = true;
+  var bn = $("bkdNote"); if (bn) bn.hidden = true;
+  var bd = $("breakdownBody");
+  if (bd) bd.querySelectorAll(".trow").forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
+  var be0 = $("breakevenBox"); if (be0) be0.setAttribute("aria-pressed", "false");
+  if (curveSel !== -1){
+    curveSel = -1;
+    var ro = $("curveReadout"); if (ro) ro.innerHTML = curveHint();
+    var g = $("costCurve").querySelector("#curveSelDot"); if (g) g.innerHTML = "";
   }
-  paintDriverSpot();
-  renderChartDetail();
+  Sound.click();
 }
-/* top ingredient bars use the unified spotlight: dim the rest, show the cost detail
-   (the find-in-recipe jump now lives on a button inside the detail panel) */
-function driverSpot(idx) {
-  driverSpotIdx = (driverSpotIdx === idx) ? null : idx;
-  chartSpotKind = driverSpotIdx !== null ? 'driver' : (ccSel ? 'cost' : null);
-  paintDriverSpot();
-  renderChartDetail();
-  if (driverSpotIdx !== null) Sound.select(); else Sound.click();
-}
-function paintDriverSpot() {
-  Array.prototype.forEach.call(document.querySelectorAll('#drivers .driver-row'), function (b) {
-    var on = driverSpotIdx !== null && parseInt(b.getAttribute('data-idx'), 10) === driverSpotIdx;
-    b.classList.toggle('spot', on);
-    b.classList.toggle('dim', driverSpotIdx !== null && !on);
-  });
-}
-/* Esc clears any chart spotlight (cost donut slice / chip / driver bar) */
-document.addEventListener('keydown', function (e) {
-  if (e.key !== 'Escape') return;
-  if (!ccSel && driverSpotIdx === null) return;
-  ccSel = null; driverSpotIdx = null; chartSpotKind = null;
-  if (ccLast) paintCostChart(ccLast);
-  paintDriverSpot(); renderChartDetail(); Sound.click();
+
+$("calcBtn").addEventListener("click", function(){
+  saveState();
+  var r = calculate(false);
+  if (r) Sound.success(); else Sound.error();
 });
-function driverFind(idx) {
-  var rows = document.getElementById('lines').children;
-  Array.prototype.forEach.call(rows, function (x) { x.classList.remove('flash'); });
-  var row = rows[idx];
-  if (!row) return;
-  row.classList.add('flash');
-  try { row.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
-  Sound.select();
-  setTimeout(function () { row.classList.remove('flash'); }, 1600);
-}
-/* food-cost gauge: needle over 0–60%, healthy at or under 35% */
-function paintFoodGauge(t, pct, ok) {
-  var arc = document.getElementById('fc-arc');
-  if (!arc) return;
-  var f = ok ? pct / 60 : 0;
-  if (f > 1) f = 1;
-  var th = (180 - f * 180) * Math.PI / 180;
-  arc.setAttribute('d', ok ? 'M45 150 A105 105 0 0 1 ' + (150 + 105 * Math.cos(th)).toFixed(1) + ' ' + (150 - 105 * Math.sin(th)).toFixed(1) : '');
-  arc.setAttribute('stroke', !ok ? '#94a3b8' : (pct <= 35 ? '#10b981' : (pct <= 45 ? '#f59e0b' : '#ef4444')));
-  var nd = document.getElementById('fc-needle');
-  nd.setAttribute('x2', (150 + 78 * Math.cos(th)).toFixed(1));
-  nd.setAttribute('y2', (150 - 78 * Math.sin(th)).toFixed(1));
-  document.getElementById('fc-num').textContent = ok ? pct.toFixed(1) + '%' : '–';
-  document.getElementById('fc-cap').textContent = !ok ? 'Set a yield and target margin to price this recipe.' :
-    (pct <= 35 ? 'Healthy — at or under the 35% target.' :
-    (pct <= 45 ? 'High — consider raising the price or trimming costs.' : 'Too high — this recipe loses margin fast.'));
-}
-/* KPI cards copy their value on click */
-function copyKpiText(txt, el) {
-  function flash() {
-    var v = el.querySelector('.v'); if (!v) return;
-    var orig = v.textContent;
-    v.textContent = 'Copied';
-    Sound.select();
-    setTimeout(function () { v.textContent = orig; }, 900);
-  }
-  try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(txt).then(flash, flash);
-    } else {
-      var ta = document.createElement('textarea');
-      ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); } catch (e) {}
-      ta.remove(); flash();
-    }
-  } catch (e) { flash(); }
-}
-function wireKpis() {
-  var grid = document.getElementById('summary-grid');
-  if (!grid) return;
-  function act(target) {
-    var k = target.closest ? target.closest('.kpi') : null;
-    if (!k) return;
-    var v = k.querySelector('.v');
-    if (v) copyKpiText(v.textContent.trim(), k);
-  }
-  grid.addEventListener('click', function (e) { act(e.target); });
-  grid.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(e.target); }
-  });
-}
-function renderSummary() {
-  var r = cur(); if (!r) return;
-  var t = recipeTotals(r);
-  var y = num(r.yieldQty);
-  var foodPct = (t.price > 0 && y > 0) ? (t.ingTotal / (t.price * y) * 100) : 0;
-  function kpi(label, val, cls) {
-    var l = esc(label);
-    return '<div class="kpi" tabindex="0" role="button" title="Click to copy" aria-label="Copy ' + l + ': ' + esc(val) + '"><div class="k">' + l + '</div><div class="v' + (cls ? ' ' + cls : '') + '">' + val + '</div></div>';
-  }
-  /* singular-ish unit word for "Cost per cookie" style labels ("cookies" -> "cookie") */
-  function perUnitWord() {
-    var w = String(r.yieldUnit || 'piece');
-    return (/s$/i.test(w) && w.length > 2) ? w.slice(0, -1) : w;
-  }
-  var priceCls = t.price > 0 ? 'good' : '';
-  document.getElementById('summary-grid').innerHTML =
-    kpi('Total batch cost', fmtMoney(t.total)) +
-    kpi('Cost per ' + perUnitWord(), fmtMoney(t.perUnit)) +
-    kpi('Suggested price', t.price > 0 ? fmtMoney(t.price) : '—', priceCls) +
-    kpi('Profit per ' + perUnitWord(), t.price > 0 ? fmtMoney(t.profitUnit) : '—') +
-    kpi('Profit per batch', t.price > 0 ? fmtMoney(t.profitBatch) : '—') +
-    kpi('Food cost %', t.price > 0 ? foodPct.toFixed(1) + '%' : '—', foodPct > 35 ? 'warn' : '');
-  ccLast = t;
-  paintCostChart(t);
-  paintDrivers(r, t);
-  paintFoodGauge(t, foodPct, t.price > 0 && y > 0);
-  var math =
-    'Ingredients ' + fmtMoney(t.ingTotal) + ' + labor ' + fmtMoney(t.labor) +
-    ' + packaging ' + fmtMoney(t.pack) + ' + overhead ' + fmtMoney(t.overhead) +
-    ' = ' + fmtMoney(t.total) + ' total' +
-    (y > 0 ? ' ÷ ' + y + ' = ' + fmtMoney(t.perUnit) + ' per ' + esc(perUnitWord()) : '') +
-    (t.price > 0 ? ' → price at ' + num(r.targetMarginPct) + '% margin: ' +
-      fmtMoney(t.perUnit) + ' ÷ (1 − ' + (num(r.targetMarginPct) / 100).toFixed(2) + ') = ' + fmtMoney(t.price) : '');
-  if (t.approx) math += ' · <span class="approx-flag">≈ some lines used water-density fallback — add grams-per-cup on the Ingredients tab for exact costs</span>';
-  if (t.errGpc) math += ' · <span class="approx-flag">' + t.errGpc + ' line(s) need a grams-per-cup value to cost</span>';
-  if (t.errGpe) math += ' · <span class="approx-flag">' + t.errGpe + ' line(s) need a grams-per-piece value to cost</span>';
-  if (t.errConv) math += ' · <span class="approx-flag">' + t.errConv + ' line(s) cannot convert between count and weight/volume</span>';
-  if (t.missing) math += ' · <span class="approx-flag">' + t.missing + ' line(s) reference a missing ingredient — re-link them above</span>';
-  document.getElementById('summary-math').innerHTML = math;
-}
-function renderRecipe() {
-  var r = cur();
-  renderRecipeSelect();
-  if (!r) { renderSummary && null; return; }
-  document.getElementById('rec-name').value = r.name || '';
-  document.getElementById('rec-yield').value = r.yieldQty || '';
-  document.getElementById('rec-yieldunit').value = r.yieldUnit || 'pieces';
-  document.getElementById('rec-hours').value = r.laborHours || '';
-  document.getElementById('rec-rate').value = r.laborRate || '';
-  document.getElementById('rec-pack').value = r.packagingPerUnit || '';
-  document.getElementById('rec-oh').value = r.overheadPct;
-  document.getElementById('rec-margin').value = r.targetMarginPct;
-  renderLines(); renderSummary();
-}
+$("resetBtn").addEventListener("click", function(){
+  Sound.click();
+  FIELDS.forEach(function(id){ $(id).value = ""; });
+  $("horizon").value = "12";
+  setMode("amt", true);
+  try{ localStorage.removeItem(LS_STATE); }catch(e){}
+  $("inputErr").classList.remove("show");
+  $("resultsBody").hidden = true;
+});
+FIELDS.forEach(function(id){
+  $(id).addEventListener("input", function(){ saveState(); calculate(true); });
+});
 
-/* ---------- export / import ---------- */
-function download(name, text, type) {
-  var blob = new Blob([text], { type: type || 'application/json' });
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = name;
-  document.body.appendChild(a); a.click();
-  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-}
-function exportData() { download('recipecost-backup.json', JSON.stringify(state, null, 2)); Sound.success(); }
-function importData(input) {
-  var f = input.files && input.files[0]; if (!f) return;
-  var rd = new FileReader();
-  rd.onload = function () {
-    try {
-      var d = JSON.parse(rd.result);
-      if (!d || !Array.isArray(d.ingredients) || !Array.isArray(d.recipes)) throw new Error('bad file');
-      state = d; sanitizeState();
-      currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
-      save(); renderIngredients(); renderRecipe(); Sound.success();
-    } catch (e) {
-      var el = document.getElementById('rec-err');
-      el.textContent = 'Could not import that file — it is not a RecipeCost backup.';
-      el.classList.add('show'); Sound.error();
-    }
-    input.value = '';
-  };
-  rd.readAsText(f);
-}
-
-/* ---------- init ---------- */
-document.addEventListener('DOMContentLoaded', function () {
-  load();
-  fillUnitSelect();
-  renderIngredients();
-  currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
-  renderRecipe();
+/* ---- init ---- */
+(function(){
+  if (!loadState()){ $("horizon").value = "12"; }
+  updateHints();
   paintTheme(); paintSample();
-  wireCostChart(); wireKpis();
-  var sb = document.getElementById('soundToggle');
-  if (sb) paintSoundBtn(sb);
-});
+  var sb = $("soundToggle"); if (sb) paintSoundBtn(sb);
+  /* chart + spotlight wiring (delegated, survives re-renders) */
+  wireSpotRow("stayRow", "stay");
+  wireSpotRow("moveRow", "move");
+  /* verdict box + legend wiring */
+  var vb = $("verdictBox");
+  vb.addEventListener("click", verdictToggle);
+  vb.addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); verdictToggle(); }
+  });
+  var lg = $("curveLegend");
+  if (lg) lg.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".lg-btn") : null;
+    if (b) legendToggle(b);
+  });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") releaseAll(); });
+  $("costCurve").addEventListener("click", function(e){
+    var r = e.target.closest ? e.target.closest(".curve-hit") : null;
+    if (r) selectCurveMonth(parseInt(r.getAttribute("data-m"), 10));
+  });
+  $("costCurve").addEventListener("keydown", function(e){
+    if ((e.key === "Enter" || e.key === " ") && curveData){
+      var r = e.target.closest ? e.target.closest(".curve-hit") : null;
+      if (r){ e.preventDefault(); selectCurveMonth(parseInt(r.getAttribute("data-m"), 10)); }
+      return;
+    }
+    if ((e.key === "ArrowRight" || e.key === "ArrowLeft") && curveData){
+      e.preventDefault();
+      var m = curveSel < 1 ? (e.key === "ArrowRight" ? 1 : curveData.horizon)
+                           : curveSel + (e.key === "ArrowRight" ? 1 : -1);
+      selectCurveMonth(Math.max(1, Math.min(curveData.horizon, m)));
+    }
+  });
+  $("bkdBody").addEventListener("click", function(e){
+    var row = e.target.closest ? e.target.closest(".bkd-row") : null;
+    if (row) bkdToggle(row);
+  });
+  $("bkdBody").addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){
+      var row = e.target.closest ? e.target.closest(".bkd-row") : null;
+      if (row){ e.preventDefault(); bkdToggle(row); }
+    }
+  });
+  /* breakdown table rows + break-even box wiring (delegated, survives re-renders) */
+  var bd = $("breakdownBody");
+  bd.addEventListener("click", function(e){
+    var tr = e.target.closest ? e.target.closest(".trow") : null;
+    if (tr) trowToggle(tr);
+  });
+  bd.addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){
+      var tr = e.target.closest ? e.target.closest(".trow") : null;
+      if (tr){ e.preventDefault(); trowToggle(tr); }
+    }
+  });
+  var beBox = $("breakevenBox");
+  beBox.addEventListener("click", breakevenToggle);
+  beBox.addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); breakevenToggle(); }
+  });
+  if (loadStateHadValues()){ calculate(true); }
+  function loadStateHadValues(){
+    return FIELDS.some(function(id){ return $(id).value !== "" && $(id).value !== null; });
+  }
+})();
 </script>
 </body>
 </html>

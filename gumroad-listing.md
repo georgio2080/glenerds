@@ -1,62 +1,37 @@
-# Gumroad listing draft — RecipeCost
+# Gumroad listing draft — RenewOrMove
 
-## Title (SEO-first, keyword-first)
+## Title
+Should I Renew My Lease or Move? Free Cost Calculator
 
-Recipe Cost Calculator for Home Bakers — Food Costing, Pricing & Profit Margin Tool
+## Permalink
+`renew-lease-or-move-calculator`
 
 ## Price
-
-$9 (one-time purchase, no subscription)
-
-## Thumbnail
-
-gallery/cover-square-1200.png
+$0 (free tool)
 
 ## Description
+**Your landlord raised the rent — should you stay or go?** RenewOrMove answers the question every renter asks: compare the true cost of renewing your lease against moving, down to the last dollar. Most people underestimate moving costs — this calculator itemizes every one of them, then shows you the exact month moving pays for itself.
 
-Stop guessing what your bakes cost. RecipeCost tells home bakers and cottage-food sellers
-exactly what each recipe costs to make — and exactly what to charge.
+**What's inside:**
+- 🏠 Your rent — current rent, renewal offer rent, and expected rent at a new place
+- 📦 Itemized moving costs — movers/truck rental, security deposit, application fees, overlap rent, utility transfers, cleaning/repairs, and more
+- 📅 Comparison horizon — total cost over 6, 12, 24, or 36 months
+- ⚖️ Break-even analysis — the exact month moving becomes cheaper than renewing, with a clear stay-or-go verdict
+- ⌨️ Live results — recalculates as you type
+- 🌙 Dark mode, works on phone/tablet/computer
 
-**What you get**
+**Private by design:** 100% offline single HTML file. No account, no ads, no subscription, no tracking — your rent numbers never leave your device. Your inputs are saved in your browser automatically. Free forever.
 
-- Ingredient library: save every ingredient with its package size and price; the app works
-  out the true cost per gram, per ml, or per piece
-- Automatic unit conversion: buy flour by the bag, bake by the cup — RecipeCost converts
-  (including eggs and other count items used by weight)
-- True batch costing: ingredients + your labor + packaging + overhead, all itemized
-- Pricing for profit: set your target margin and get a suggested selling price, profit per
-  piece, profit per batch, and food-cost percentage
-- Unlimited recipes, all saved on your device
-- Print-ready cost sheets (print straight to PDF)
-- JSON backup / restore — your data moves with you
+**How it works:** download the ZIP, unzip it, and open the HTML file in any browser — on your phone, tablet, or computer. No install, no server, no account needed. Just enter your rent numbers and see your answer live.
 
-**Why RecipeCost instead of a spreadsheet or a subscription app?**
+**More from Glenerds:** free offline tools for renters and movers — [Rent Receipt Generator](https://glenerds.gumroad.com) (printable landlord receipts) and [HomeInventory](https://glenerds.gumroad.com) (insurance-ready home inventory) — plus the whole collection in the Glenerds store: https://glenerds.gumroad.com
 
-- One-time purchase — no monthly fee, ever
-- Works offline — no account, no internet, no data harvesting
-- Single file — open it in any browser on any device, keep it forever
+By Glenerds. https://glenerds.gumroad.com
 
-Perfect for home bakeries, cottage-food businesses, farmers-market sellers, and anyone who
-sells cakes, cookies, bread, or desserts and wants to price with confidence.
+_This tool is 100% free. If you were ever charged for this product, contact us for a full refund._
 
-**How it works**
+## Thumbnail/gallery
+Thumbnail: `gallery/cover-square-1200.png` (verified). Gallery screenshots from `gallery/` (rent inputs, moving costs, verdict/break-even, dark mode, mobile).
 
-Download the ZIP, open the single HTML file in any browser — no install, no account,
-no internet. Your ingredient library and recipes save on your device and stay yours
-forever.
-
-*By Glenerds — simple offline tools for people who make things: https://glenerds.gumroad.com*
-
----
-
-Related Glenerds tools: [GardenCal](https://glenerds.gumroad.com) — vegetable garden planting
-calendar by zone; [CraftCost](https://glenerds.gumroad.com) — pricing calculator for
-handmade & craft sellers. More one-time-purchase tools at https://glenerds.gumroad.com
-
-*Affiliates welcome — 30% commission, auto-approved. Share RecipeCost with your baking
-audience and earn on every sale: https://glenerds.gumroad.com/affiliates*
-
-## Tags / categories
-
-baking, recipe costing, food costing, home bakery, cottage food, pricing calculator,
-profit margin, small business
+## Tags
+renew lease or move, should i renew my lease, moving cost calculator, lease renewal calculator, break even moving, rent increase, apartment moving costs
