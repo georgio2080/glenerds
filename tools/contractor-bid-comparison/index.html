@@ -14,6 +14,20 @@
 <script>
 (function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
 </script><link rel="stylesheet" href="../../style.css">
+<style>
+/* bid visual: paired per-item bars (A vs B), biggest gap first */
+.cb-vis{display:grid;gap:12px;margin:14px 0 4px}
+.cb-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:baseline}
+.cb-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cb-gap{font-variant-numeric:tabular-nums;font-size:.85rem;white-space:nowrap;color:var(--muted)}
+.cb-pair{display:grid;grid-template-columns:1.4rem minmax(0,1fr) auto;gap:6px;align-items:center;margin-top:3px}
+.cb-lbl{font-weight:700;font-size:.85rem;text-align:center}
+.cb-track{height:12px;border-radius:999px;background:var(--border);overflow:hidden}
+.cb-fill{height:100%}
+.cb-fill.a{background:var(--accent)}
+.cb-fill.b{background:#f59e0b}
+.cb-val{font-variant-numeric:tabular-nums;font-size:.85rem;white-space:nowrap}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -90,6 +104,7 @@ device.</p>
 <table><thead><tr><th>Item</th><th id="cb-ha">Bid A</th><th id="cb-hb">Bid B</th><th>Gap</th><th></th></tr></thead>
 <tbody id="cb-rows"></tbody></table>
 <p id="cb-totals" style="font-size:1.1rem"></p>
+<div id="cb-vis" class="cb-vis" role="img" aria-label="Bid comparison chart"></div>
 <p class="small">A gap over 15% gets flagged &mdash; that is the line item to question on the call. Everything stays in your browser.</p>
 </div>
 <p class="small" style="margin-top:1rem"><strong>Adding a third bid, or judging bids against your ARV?</strong> <a href="../../products/flipbid-reconciler/index.html">FlipBid Reconciler</a> normalizes up to 3 bids and projects profit against your deal.</p>
@@ -141,6 +156,54 @@ device.</p>
       '<strong>Total A: '+money(ta)+'</strong> &nbsp;|&nbsp; <strong>Total B: '+money(tb2)+'</strong>';
     document.getElementById('cb-na').value=data.na||'';
     document.getElementById('cb-nb').value=data.nb||'';
+    /* paired bid bars, biggest gap first (visual representation) */
+    var cvis=document.getElementById('cb-vis');cvis.innerHTML='';
+    cvis.style.display=data.items.length?'':'none';
+    if(data.items.length){
+      var citems=data.items.map(function(it){
+        var a=it.a||0,b=it.b||0;
+        var gap=(a&&b)?Math.abs(a-b)/Math.max(a,b)*100:((a||b)?100:0);
+        return {desc:it.desc||'(no description)',a:a,b:b,gap:gap};
+      });
+      var cmx=Math.max.apply(null,citems.map(function(x){return Math.max(x.a,x.b);}).concat([ta,tb2,1]));
+      var pairRow=function(name,a,b,clsA,clsB){
+        var h=document.createElement('div');h.className='cb-head';
+        var nm=document.createElement('div');nm.className='cb-name';nm.textContent=name;
+        h.appendChild(nm);cvis.appendChild(h);
+        [['A',a,'a'],['B',b,'b']].forEach(function(p){
+          var pr=document.createElement('div');pr.className='cb-pair';
+          var lb=document.createElement('div');lb.className='cb-lbl';lb.textContent=p[0];
+          var tr=document.createElement('div');tr.className='cb-track';
+          var fl=document.createElement('div');fl.className='cb-fill '+p[2];
+          fl.style.width=(cmx>0?(p[1]/cmx*100):0).toFixed(1)+'%';
+          tr.appendChild(fl);
+          var vl=document.createElement('div');vl.className='cb-val';vl.textContent=money(p[1]);
+          pr.appendChild(lb);pr.appendChild(tr);pr.appendChild(vl);cvis.appendChild(pr);
+        });
+      };
+      pairRow('Totals — A '+(data.na||'')+' vs B '+(data.nb||''),ta,tb2);
+      var hd=document.createElement('div');hd.className='cb-head';
+      hd.innerHTML='<div class="cb-gap">line items, biggest gap first:</div>';cvis.appendChild(hd);
+      citems.sort(function(x,y){return y.gap-x.gap;}).forEach(function(x){
+        var head=document.createElement('div');head.className='cb-head';
+        var nm=document.createElement('div');nm.className='cb-name';nm.textContent=x.desc;
+        var gp=document.createElement('div');gp.className='cb-gap';
+        gp.textContent=x.gap.toFixed(0)+'% gap'+(x.gap>15?' ⚠':'');
+        head.appendChild(nm);head.appendChild(gp);cvis.appendChild(head);
+        [['A',x.a,'a'],['B',x.b,'b']].forEach(function(p){
+          var pr=document.createElement('div');pr.className='cb-pair';
+          var lb=document.createElement('div');lb.className='cb-lbl';lb.textContent=p[0];
+          var tr=document.createElement('div');tr.className='cb-track';
+          var fl=document.createElement('div');fl.className='cb-fill '+p[2];
+          fl.style.width=(cmx>0?(p[1]/cmx*100):0).toFixed(1)+'%';
+          tr.appendChild(fl);
+          var vl=document.createElement('div');vl.className='cb-val';vl.textContent=money(p[1]);
+          pr.appendChild(lb);pr.appendChild(tr);pr.appendChild(vl);cvis.appendChild(pr);
+        });
+      });
+      cvis.setAttribute('aria-label','Bid comparison: Total A '+money(ta)+', Total B '+money(tb2)+
+        '; items by gap: '+citems.map(function(x){return x.desc+' '+x.gap.toFixed(0)+'%';}).join(', '));
+    }
   }
   document.getElementById('cb-add').onclick=function(){
     var desc=prompt('Line item description (e.g. Kitchen demo):');
