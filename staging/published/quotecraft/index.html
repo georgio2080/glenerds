@@ -215,6 +215,22 @@ tbody tr{transition:background .12s ease}
 .vbar-track{flex:1;height:14px;border-radius:7px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden;min-width:40px}
 .vbar-fill{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
 .vbar-val{flex:0 0 auto;min-width:76px;text-align:right;font-size:.88rem;font-variant-numeric:tabular-nums;font-weight:600}
+.vbar-cap{margin-top:8px;font-size:.85rem;color:var(--muted);min-height:1.3em}
+/* clickable chart segments: spotlight on select, shape-following focus glow (never outline on SVG) */
+.vseg{cursor:pointer;transition:opacity .25s ease}
+.vseg:focus{outline:none}
+.vseg:focus-visible{filter:drop-shadow(0 0 5px var(--accent,#4f46e5))}
+.vseg-hit{cursor:pointer}
+.leg-btn{cursor:pointer;border-radius:6px;padding:2px 4px;margin:-2px -4px}
+.leg-btn:hover{background:var(--surface-2)}
+.leg-btn:focus{outline:none}
+.leg-btn:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:1px}
+.leg-sel{background:var(--surface-2)}
+.vbar-btn{cursor:pointer;border-radius:8px}
+.vbar-btn:hover .vbar-track{border-color:var(--accent)}
+.vbar-btn:focus{outline:none}
+.vbar-btn:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:2px}
+.vbar-sel .vbar-track{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .footnote strong{color:var(--ink)}
 
 /* ============ misc ============ */
@@ -464,6 +480,7 @@ footer.site a{color:var(--muted)}
         <div class="donut-box">
           <svg id="viz-donut" viewBox="0 0 120 120" role="img" aria-label="Grand total composition chart"></svg>
           <div class="viz-legend" id="viz-legend"></div>
+          <p class="hint">Tip: click a slice or its legend row to spotlight it.</p>
         </div>
         <div class="bars-box">
           <h3>Cost by line item</h3>
@@ -966,6 +983,16 @@ function renderTotals(q){
 
 /* ---------- quote visuals: donut + line-item bars (all text via textContent) ---------- */
 var SVGNS = "http://www.w3.org/2000/svg";
+/* spotlight selection (click a color/segment/bar to spotlight it; click again to release) */
+var vizDonutSel = null;
+var vizBarSel = null;
+function toggleVizDonut(label){ vizDonutSel = (vizDonutSel === label) ? null : label; refreshVisuals(); }
+function toggleVizBar(desc){ vizBarSel = (vizBarSel === desc) ? null : desc; refreshVisuals(); }
+function refreshVisuals(){
+  var q = (typeof cur !== "undefined" && cur.quoteId) ? getQuote(cur.quoteId) : null;
+  if(q) renderVisuals(q, calcTotals(q));
+}
+function vizKeyHandler(e, fn){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); fn(); } }
 function renderVisuals(q, t){
   var card = document.getElementById("visuals-card");
   var empty = document.getElementById("viz-empty");
@@ -991,6 +1018,8 @@ function renderVisuals(q, t){
   bg.setAttribute("stroke-width", 20);
   svg.appendChild(bg);
   var off = 0;
+  var segLabels = segs.filter(function(s){ return s.value > 0 && t.total > 0; }).map(function(s){ return s.label; });
+  if(vizDonutSel && segLabels.indexOf(vizDonutSel) < 0) vizDonutSel = null;
   segs.forEach(function(s){
     if(s.value <= 0 || t.total <= 0) return;
     var len = s.value / t.total * C;
@@ -1002,10 +1031,36 @@ function renderVisuals(q, t){
     c.setAttribute("stroke-dashoffset", (-off).toFixed(2));
     c.setAttribute("transform", "rotate(-90 60 60)");
     c.setAttribute("stroke-linecap", "butt");
+    c.setAttribute("class", "vseg");
+    c.setAttribute("tabindex", "0");
+    c.setAttribute("role", "button");
+    c.setAttribute("aria-label", "Spotlight " + s.label + ": " + fmt(s.value) + ". Activate to toggle.");
+    if(vizDonutSel && vizDonutSel !== s.label) c.setAttribute("opacity", "0.22");
+    if(vizDonutSel === s.label) c.setAttribute("style", "filter:drop-shadow(0 0 5px " + s.color + ")");
+    (function(lbl){
+      c.addEventListener("click", function(){ toggleVizDonut(lbl); });
+      c.addEventListener("keydown", function(e){ vizKeyHandler(e, function(){ toggleVizDonut(lbl); }); });
+    })(s.label);
     svg.appendChild(c);
+    /* fat invisible hit ring so thin slices stay easy to tap */
+    var h = document.createElementNS(SVGNS, "circle");
+    h.setAttribute("cx", 60); h.setAttribute("cy", 60); h.setAttribute("r", R);
+    h.setAttribute("fill", "none"); h.setAttribute("stroke", "rgba(0,0,0,0)");
+    h.setAttribute("stroke-width", 36);
+    h.setAttribute("stroke-dasharray", len.toFixed(2) + " " + (C - len).toFixed(2));
+    h.setAttribute("stroke-dashoffset", (-off).toFixed(2));
+    h.setAttribute("transform", "rotate(-90 60 60)");
+    h.setAttribute("stroke-linecap", "butt");
+    h.setAttribute("pointer-events", "stroke");
+    h.setAttribute("class", "vseg-hit");
+    h.setAttribute("aria-hidden", "true");
+    (function(lbl){ h.addEventListener("click", function(){ toggleVizDonut(lbl); }); })(s.label);
+    svg.appendChild(h);
     off += len;
   });
-  var label = fmt(t.total);
+  var selSeg = null;
+  if(vizDonutSel){ for(var sxi = 0; sxi < segs.length; sxi++) if(segs[sxi].label === vizDonutSel) selSeg = segs[sxi]; }
+  var label = fmt(selSeg ? selSeg.value : t.total);
   var te = document.createElementNS(SVGNS, "text");
   te.setAttribute("x", 60); te.setAttribute("y", 58);
   te.setAttribute("text-anchor", "middle");
@@ -1018,14 +1073,22 @@ function renderVisuals(q, t){
   cap.setAttribute("x", 60); cap.setAttribute("y", 74);
   cap.setAttribute("text-anchor", "middle");
   cap.setAttribute("font-size", "8.5"); cap.setAttribute("style", "fill:var(--muted)");
-  cap.textContent = "Grand total";
+  cap.textContent = selSeg ? selSeg.label : "Grand total";
   svg.appendChild(cap);
 
   var legend = document.getElementById("viz-legend");
   while(legend.firstChild) legend.removeChild(legend.firstChild);
   segs.forEach(function(s){
     if(s.value <= 0) return;
-    var row = el("div", {class:"leg"});
+    var row = el("div", {class:"leg leg-btn"});
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("role", "button");
+    row.setAttribute("aria-label", "Spotlight " + s.label + ": " + fmt(s.value));
+    if(vizDonutSel === s.label) row.classList.add("leg-sel");
+    (function(lbl){
+      row.addEventListener("click", function(){ toggleVizDonut(lbl); });
+      row.addEventListener("keydown", function(e){ vizKeyHandler(e, function(){ toggleVizDonut(lbl); }); });
+    })(s.label);
     var sw = el("span", {class:"sw"}); sw.style.background = s.color;
     row.appendChild(sw);
     row.appendChild(el("span", null, s.label));
@@ -1044,14 +1107,25 @@ function renderVisuals(q, t){
   /* bars: line items by value (value sits in its own column — never overlaps the bar) */
   var bars = document.getElementById("viz-bars");
   while(bars.firstChild) bars.removeChild(bars.firstChild);
-  var items = (q.items || []).map(function(it){
+  var allPos = (q.items || []).map(function(it){
     return { desc: it.desc || "(no description)", cents: lineCents(it.qty, it.unitCents) };
-  }).filter(function(r){ return r.cents > 0; })
-    .sort(function(a, b){ return b.cents - a.cents; })
-    .slice(0, 8);
+  }).filter(function(r){ return r.cents > 0; });
+  var allCents = allPos.reduce(function(a, r){ return a + r.cents; }, 0);
+  var items = allPos.sort(function(a, b){ return b.cents - a.cents; }).slice(0, 8);
   var max = items.length ? items[0].cents : 0;
+  var barDescs = items.map(function(r){ return r.desc; });
+  if(vizBarSel && barDescs.indexOf(vizBarSel) < 0) vizBarSel = null;
   items.forEach(function(r){
-    var row = el("div", {class:"vbar-row"});
+    var row = el("div", {class:"vbar-row vbar-btn"});
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("role", "button");
+    row.setAttribute("aria-label", "Spotlight line item " + r.desc + ": " + fmt(r.cents));
+    if(vizBarSel && vizBarSel !== r.desc) row.style.opacity = "0.35";
+    if(vizBarSel === r.desc) row.classList.add("vbar-sel");
+    (function(d){
+      row.addEventListener("click", function(){ toggleVizBar(d); });
+      row.addEventListener("keydown", function(e){ vizKeyHandler(e, function(){ toggleVizBar(d); }); });
+    })(r.desc);
     row.appendChild(el("span", {class:"vbar-name", title: r.desc}, r.desc));
     var track = el("span", {class:"vbar-track"});
     var fill = el("span", {class:"vbar-fill"});
@@ -1061,6 +1135,18 @@ function renderVisuals(q, t){
     row.appendChild(el("span", {class:"vbar-val"}, fmt(r.cents)));
     bars.appendChild(row);
   });
+  var bcap = el("div", {class:"vbar-cap"});
+  if(vizBarSel){
+    var bsel = null;
+    items.forEach(function(r){ if(r.desc === vizBarSel) bsel = r; });
+    if(bsel){
+      var pct = allCents > 0 ? Math.round(bsel.cents / allCents * 100) : 0;
+      bcap.textContent = bsel.desc + ": " + fmt(bsel.cents) + " (" + pct + "% of line items)";
+    }
+  } else {
+    bcap.textContent = "Tip: click a bar to spotlight it.";
+  }
+  bars.appendChild(bcap);
 }
 
 /* ---------- print view (customer document; NO Glenerds footer) ---------- */
@@ -1212,6 +1298,7 @@ function initTheme(){
 function bindEditor(){
   var q = getQuote(cur.quoteId);
   if(!q) return;
+  var prevSig = JSON.stringify([q.customer,q.contact,q.date,q.validUntil,q.status,q.discountType,q.discountValue,q.taxRate,q.terms]);
   q.customer = cleanText(document.getElementById("f-cust-name").value, MAX.text);
   q.contact = cleanText(document.getElementById("f-cust-contact").value, MAX.contact);
   var dEl = document.getElementById("f-quote-date");
@@ -1265,7 +1352,11 @@ function bindEditor(){
   }
   q.terms = cleanText(document.getElementById("f-terms").value, MAX.terms);
   saveSoon();
-  renderTotals(q);
+  /* skip the re-render when nothing actually changed (e.g. blur after typing):
+     rebuilding the visuals DOM between mousedown and mouseup would swallow the
+     click on a chart segment. */
+  var newSig = JSON.stringify([q.customer,q.contact,q.date,q.validUntil,q.status,q.discountType,q.discountValue,q.taxRate,q.terms]);
+  if(newSig !== prevSig) renderTotals(q);
 }
 function addOrSaveItem(){
   var q = getQuote(cur.quoteId);

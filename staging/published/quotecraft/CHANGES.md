@@ -1,5 +1,12 @@
 # QuoteCraft — CHANGES.md
 
+## 2026-09-21 — clickable visuals (Glen's chart-interaction rule)
+- **Donut slices, legend rows, and line-item bars are all clickable/tappable.** Clicking a color spotlights it: the associated number/label swaps into the donut center (or a caption under the bars), other segments dim, and the selected slice gets a shape-following drop-shadow glow. Clicking again releases back to the total. Full keyboard support (Tab + Enter/Space) with `role="button"` and accessible labels.
+- **Fat invisible hit rings** (36-unit transparent stroke, `pointer-events="stroke"`) make thin slices easy to tap on touch screens.
+- **SVG focus rule honored:** `outline:none` on segments; `:focus-visible` uses a drop-shadow glow that follows the segment shape — never a rectangular outline.
+- **First-click fix:** `bindEditor` no longer re-renders totals/visuals when nothing actually changed (signature comparison), so a blur-triggered re-render can't rebuild the visuals DOM between mousedown and mouseup and swallow the click on a segment.
+- Gallery `3-totals-panel.png` re-shot to show the new hint text and bar caption; bundle ZIP rebuilt (byte-match verified).
+
 ## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
 - **New "Visuals" card in the quote editor**, right under Totals. Two first-class data visuals, both driven by the live quote and re-rendered on every edit:
   - **Grand-total donut** (net revenue vs tax; discount shown as a "saved" legend row). Bounded center label per the chart standard: r=48 / 20-unit ring in a 120 viewBox (76-unit hole), 13px label with a hard 64-unit `textLength` cap applied conditionally for labels over 9 chars. Ring segments always partition the grand total exactly (dash lengths sum to the full circumference — verified in Node).
