@@ -246,6 +246,44 @@ footer.site a { color: var(--muted); }
   section.card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
   a { color: #111; text-decoration: none; }
 }
+/* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
+.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.g-store-btn {
+  display: inline-flex; align-items: center;
+  background: var(--g-accent, #4f46e5);
+  color: var(--g-accent-ink, #ffffff);
+  border-radius: var(--g-radius-pill, 999px);
+  padding: 8px 15px;
+  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
+  text-decoration: none; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:active { transform: scale(0.97); }
+.g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.g-cta-strip {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 28px 0 0; padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(79,70,229,.08);
+  border: 1px solid rgba(79,70,229,.28);
+  color: inherit;
+  font-size: 0.95rem; font-weight: 600;
+  text-decoration: none;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
+.g-cta-strip:active { transform: scale(0.99); }
+.g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+@media (max-width: 440px) {
+  .g-store-btn { padding: 8px 12px; }
+  .g-header-actions { gap: 6px; }
+}
+@media print {
+  .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -259,6 +297,7 @@ footer.site a { color: var(--muted); }
       </div>
     </div>
     <button type="button" id="theme-toggle" aria-label="Toggle dark mode"><span class="ic-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 019.4 4 8.4 8.4 0 1020 14.6z"/></svg></span><span class="ic-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.8M12 18.7v2.8M2.5 12h2.8M18.7 12h2.8M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/></svg></span><span id="themeLabel">Dark mode</span></button>
+    <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
   </header>
 
   <main>
@@ -356,7 +395,10 @@ footer.site a { color: var(--muted); }
     </section>
   </main>
 
-  <footer class="site">
+  <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+</a>
+<footer class="site">
     <a href="https://glenerds.gumroad.com">by Glenerds</a>
   </footer>
 </div>

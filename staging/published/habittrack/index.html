@@ -614,6 +614,44 @@ a:focus-visible {
   .stats{grid-template-columns:repeat(2,1fr)}
   .modal{padding:20px 18px}
 }
+/* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
+.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.g-store-btn {
+  display: inline-flex; align-items: center;
+  background: var(--g-accent, #4f46e5);
+  color: var(--g-accent-ink, #ffffff);
+  border-radius: var(--g-radius-pill, 999px);
+  padding: 8px 15px;
+  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
+  text-decoration: none; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:active { transform: scale(0.97); }
+.g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.g-cta-strip {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 28px 0 0; padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(79,70,229,.08);
+  border: 1px solid rgba(79,70,229,.28);
+  color: inherit;
+  font-size: 0.95rem; font-weight: 600;
+  text-decoration: none;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
+.g-cta-strip:active { transform: scale(0.99); }
+.g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+@media (max-width: 440px) {
+  .g-store-btn { padding: 8px 12px; }
+  .g-header-actions { gap: 6px; }
+}
+@media print {
+  .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
+}
 </style>
 <script>
 /* Pre-paint theme init: same storage key the app has always used (habittrack.theme).
@@ -849,9 +887,12 @@ document.documentElement.setAttribute('data-theme',t);})();
       </span>
       <h1 class="g-brand-name">HabitTrack</h1>
     </div>
-    <button class="g-theme-toggle" id="themeBtn" aria-label="Toggle dark mode">
+    <div class="g-header-actions">
+  <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+<button class="g-theme-toggle" id="themeBtn" aria-label="Toggle dark mode">
       <svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon" id="themeUse"/></svg><span id="themeLabel">Dark</span>
     </button>
+</div>
   </header>
   <h2 class="g-tagline">Free daily habit tracker with streaks. Works fully offline — your habits never leave your device.</h2>
 
@@ -883,7 +924,11 @@ document.documentElement.setAttribute('data-theme',t);})();
     <div id="impMsg"></div>
   </div>
 
-  <footer class="g-footer">
+  <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+</a>
+
+<footer class="g-footer">
     Made for people who like streaks. <a href="https://glenerds.gumroad.com">by Glenerds</a>
   </footer>
 </div>

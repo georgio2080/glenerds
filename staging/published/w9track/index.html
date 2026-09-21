@@ -230,6 +230,44 @@ footer.site a{color:var(--accent)}
   table{min-width:0}
   .pill, .stat .num, .flag .fmsg{-webkit-print-color-adjust:exact; print-color-adjust:exact}
 }
+/* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
+.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.g-store-btn {
+  display: inline-flex; align-items: center;
+  background: var(--g-accent, #4f46e5);
+  color: var(--g-accent-ink, #ffffff);
+  border-radius: var(--g-radius-pill, 999px);
+  padding: 8px 15px;
+  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
+  text-decoration: none; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:active { transform: scale(0.97); }
+.g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.g-cta-strip {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 28px 0 0; padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(79,70,229,.08);
+  border: 1px solid rgba(79,70,229,.28);
+  color: inherit;
+  font-size: 0.95rem; font-weight: 600;
+  text-decoration: none;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
+.g-cta-strip:active { transform: scale(0.99); }
+.g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+@media (max-width: 440px) {
+  .g-store-btn { padding: 8px 12px; }
+  .g-header-actions { gap: 6px; }
+}
+@media print {
+  .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -238,7 +276,10 @@ footer.site a{color:var(--accent)}
   <div class="controls">
     <label for="yearSelect" class="hidden">Tax year</label>
     <select id="yearSelect" style="width:auto;min-height:44px;margin:0" aria-label="Tax year"></select>
+    <div class="g-header-actions">
+    <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
     <button id="themeToggle" type="button" class="theme-toggle" aria-label="Toggle dark mode"><svg class='ic-moon' viewBox='0 0 24 24' aria-hidden='true'><path d='M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg><svg class='ic-sun' viewBox='0 0 24 24' aria-hidden='true'><circle cx='12' cy='12' r='4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><path d='M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19' stroke='black' stroke-width='2' stroke-linecap='round'/></svg><span id="themeLabel">Dark</span></button>
+  </div>
   </div>
 </header>
 <main>
@@ -334,6 +375,9 @@ footer.site a{color:var(--accent)}
     <p>Your data lives only in this browser&rsquo;s local storage. Clearing browser data erases it, so use <strong>Export JSON</strong> in the Data section to keep a backup. Keep the signed W-9 forms themselves in your own files &mdash; W9Track is the checklist, not the filing cabinet.</p>
   </section>
 </main>
+<a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+</a>
 <footer class="site">
   <p>W9Track — your data never leaves this device. Not tax advice; confirm with your accountant.</p>
   <p>by <a href="https://glenerds.gumroad.com">Glenerds</a></p>
