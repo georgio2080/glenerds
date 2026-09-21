@@ -1,5 +1,8 @@
 # QuoteCraft — CHANGES.md
 
+## 2026-09-21 — gallery re-shot with post-rollout chrome
+- All 9 gallery images re-shot against the current live build. The old set predated the More Apps/CTA rollout (missing the "More Apps" button and promo banner) — Grok's batch-1 FAIL on the old covers was adjudicated: chrome staleness confirmed, sample-data objection rejected (populated covers are intentional per Glen's dense-cover standard). New set uses seeded sample data (Maya Chen / Sent / $212.00; Dan Okafor / Draft / $120.00). 7-mobile re-shot scrolled-right so TOTAL and Open buttons are fully visible. No source changes; bundle ZIP untouched (gallery not included).
+
 ## 2026-09-21 — spotlight reset on quote switch (Gemini bench finding)
 - `openQuote` now clears `vizDonutSel`/`vizBarSel`, so a donut/bar spotlight from one quote never carries over cosmetically into the next opened quote. Bundle ZIP rebuilt (byte-match verified).
 
