@@ -990,8 +990,25 @@ var vizBarSel = null;
 function toggleVizDonut(label){ vizDonutSel = (vizDonutSel === label) ? null : label; refreshVisuals(); }
 function toggleVizBar(desc){ vizBarSel = (vizBarSel === desc) ? null : desc; refreshVisuals(); }
 function refreshVisuals(){
+  /* keep keyboard focus on the spotlight control across the re-render, so
+     Enter/Space can toggle it back off without re-tabbing */
+  var fkey = null;
+  try{
+    var ae = document.activeElement;
+    var card = document.getElementById("visuals-card");
+    if(ae && ae.getAttribute && card && card.contains(ae) && ae !== document.body){
+      fkey = ae.getAttribute("aria-label") || ("t:" + (ae.textContent || ""));
+    }
+  }catch(e){}
   var q = (typeof cur !== "undefined" && cur.quoteId) ? getQuote(cur.quoteId) : null;
   if(q) renderVisuals(q, calcTotals(q));
+  if(fkey){
+    var els = document.querySelectorAll("#visuals-card [role='button']");
+    for(var i = 0; i < els.length; i++){
+      var k = els[i].getAttribute("aria-label") || ("t:" + (els[i].textContent || ""));
+      if(k === fkey){ els[i].focus(); break; }
+    }
+  }
 }
 function vizKeyHandler(e, fn){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); fn(); } }
 function renderVisuals(q, t){

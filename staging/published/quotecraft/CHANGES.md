@@ -1,5 +1,8 @@
 # QuoteCraft — CHANGES.md
 
+## 2026-09-21 — keyboard focus retained across visual re-render (parent testing)
+- `refreshVisuals()` now restores focus to the spotlight control (donut slice, legend row, or bar) after rebuilding the visuals DOM, matched by stable `aria-label`. Previously, activating a visual with Enter/Space dropped focus to `<body>`, so toggling it back off required tabbing back in. Mouse/touch behavior unchanged.
+
 ## 2026-09-21 — gallery re-shot with post-rollout chrome
 - All 9 gallery images re-shot against the current live build. The old set predated the More Apps/CTA rollout (missing the "More Apps" button and promo banner) — Grok's batch-1 FAIL on the old covers was adjudicated: chrome staleness confirmed, sample-data objection rejected (populated covers are intentional per Glen's dense-cover standard). New set uses seeded sample data (Maya Chen / Sent / $212.00; Dan Okafor / Draft / $120.00). 7-mobile re-shot scrolled-right so TOTAL and Open buttons are fully visible. No source changes; bundle ZIP untouched (gallery not included).
 
