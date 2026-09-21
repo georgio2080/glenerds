@@ -227,7 +227,8 @@ function gToggleTheme() {
 .macro-pie-box { position: relative; width: min(300px, 80vw); flex: 0 0 auto; }
 .macro-pie { display: block; width: 100%; height: auto; }
 .macro-pie-track { stroke: var(--g-surface-2); }
-.pie-seg { transition: transform 300ms ease, opacity 300ms ease; }
+.pie-seg { transition: transform 300ms ease, opacity 300ms ease; cursor: pointer; }
+.pie-seg:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
 .macro[data-macro] { cursor: pointer; border-radius: 10px; }
 .macro[data-macro]:hover .bar { border-color: var(--g-accent); }
 .macro[data-macro].sel .bar { border-color: var(--g-accent); box-shadow: 0 0 0 1px var(--g-accent); }
@@ -1034,7 +1035,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       <div id="pace" class="notice" hidden></div>
 
       <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Daily macros</p>
-      <p class="macro-hint">Tip: click a macro to spotlight its slice in the chart below.</p>
+      <p class="macro-hint">Tip: click a macro or its slice to spotlight it.</p>
       <div class="macro" data-macro="p" role="button" tabindex="0" aria-pressed="false" title="Spotlight protein in the chart">
         <div class="top"><span class="name macro-protein">Protein</span><span class="mvals"><b id="o-p-kcal">–</b> kcal · <span id="o-p-g">–</span> <span class="pct" id="o-p-p"></span></span></div>
         <div class="bar"><div id="o-p-bar" class="bar-fill bar-protein" style="width:0%"></div></div>
@@ -1373,22 +1374,34 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     }
   }
   function repaintPie() { paintPie(pieState.p, pieState.c, pieState.f, pieState.target); }
-  // clicking a macro bar spotlights its slice (click again to release)
-  Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (m) {
-    function toggle() {
-      var k = m.getAttribute('data-macro');
-      pieSelected = (pieSelected === k) ? null : k;
-      Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (o) {
-        var on = pieSelected === o.getAttribute('data-macro');
-        o.classList.toggle('sel', on);
-        o.setAttribute('aria-pressed', on ? 'true' : 'false');
-      });
-      repaintPie();
-    }
-    m.addEventListener('click', toggle);
-    m.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  // clicking a macro bar OR its pie slice spotlights it (click again to release)
+  var macroNames = { p: 'protein', c: 'carbs', f: 'fat' };
+  function setSelected(key) {
+    pieSelected = (pieSelected === key) ? null : key;
+    Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (o) {
+      var on = pieSelected === o.getAttribute('data-macro');
+      o.classList.toggle('sel', on);
+      o.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
+    repaintPie();
+  }
+  function wireToggle(el, key) {
+    el.addEventListener('click', function () {
+      if (pieState[key] > 0) setSelected(key);
+    });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (pieState[key] > 0) setSelected(key); }
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (m) {
+    wireToggle(m, m.getAttribute('data-macro'));
+  });
+  [['pie-p', 'p'], ['pie-c', 'c'], ['pie-f', 'f']].forEach(function (t) {
+    var el = $(t[0]);
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', macroNames[t[1]] + ' slice — activate to spotlight');
+    wireToggle(el, t[1]);
   });
 
   function compute() {
