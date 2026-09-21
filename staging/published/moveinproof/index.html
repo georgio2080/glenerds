@@ -96,42 +96,47 @@
   .logo-badge svg { width: 26px; height: 26px; color: #fff; }
   .brand h1 { margin: 0; font-size: 1.4rem; letter-spacing: .2px; color: #fff; }
   .brand p { margin: 2px 0 0; color: rgba(255,255,255,.85); font-size: .85rem; }
-  .theme-btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-    border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: rgba(255,255,255,.14);
-    color: #fff; font-family: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; white-space: nowrap;
-  }
-  .theme-btn:hover { background: rgba(255,255,255,.26); }
-  .theme-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  .theme-btn svg { width: 18px; height: 18px; flex: none; }
-  #sound-toggle {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-    border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: rgba(255,255,255,.14);
-    color: #fff; font-size: 1.05rem; line-height: 1; cursor: pointer;
-  }
-  #sound-toggle:hover { background: rgba(255,255,255,.26); }
-  #sound-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  /* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
-  .sample-toggle {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-    border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: rgba(255,255,255,.14);
-    color: #fff; font-family: inherit; cursor: pointer; white-space: nowrap;
-  }
-  .sample-toggle svg { width: 18px; height: 18px; flex: none; }
-  .sample-toggle:hover { background: rgba(255,255,255,.26); }
-  .sample-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  .sample-toggle[aria-pressed="true"] { background: var(--accent, #4f46e5); border-color: var(--accent, #4f46e5); color: #fff; }
+  /* Header cluster reference (2026-09-21): exact HenTrack bytes mapped to this app's
+     vars — --surface (card), --border (line), --text (ink), --accent1, --accent-soft. */
+  .round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+  .round-btn svg{width:26px;height:26px;flex:none}
+  .round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+  .round-btn:hover{border-color:var(--accent1)}
+  .round-btn:focus{outline:none}
+  .round-btn:focus-visible{outline:2px solid var(--accent1);outline-offset:2px}
+  .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent1);border-color:var(--accent1);background:var(--accent-soft)}
   /* ---------- interactive condition-overview rows ---------- */
   .ov-row[role="button"] { cursor: pointer; }
   .ov-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent1, #4f46e5)); }
   .ov-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent1, #4f46e5); border-radius: 8px; }
   .ov-detail { margin-top: .5rem; font-size: .85rem; color: var(--muted); min-height: 1.2em; }
   .ov-detail strong { color: var(--text); }
-  html[data-theme="light"] .icon-sun { display: none; }
-  html[data-theme="dark"] .icon-moon { display: none; }
+  /* ---------- donut chart: defect severity mix (2026-09-21) ---------- */
+  .donut-wrap { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: .4rem; }
+  .donut-svg { width: 132px; height: 132px; flex: none; }
+  .donut-svg text { pointer-events: none; } /* center labels must not eat segment clicks */
+  .donut-seg { cursor: pointer; transition: opacity .15s ease; }
+  .donut-seg:focus { outline: none; filter: drop-shadow(0 0 4px var(--accent1, #4f46e5)); }
+  .donut-seg.dim { opacity: .25; }
+  .donut-legend { display: grid; gap: .35rem; font-size: .88rem; }
+  .donut-legend .lg-row { display: flex; align-items: center; gap: .5rem; }
+  .donut-legend .lg-dot { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+  .donut-legend .lg-val { font-weight: 700; font-variant-numeric: tabular-nums; }
+  /* ---------- funnel: documentation completeness (2026-09-21) ---------- */
+  .funnel { display: grid; gap: .45rem; margin-top: .4rem; }
+  .funnel-stage {
+    margin: 0 auto; border: 0; font: inherit; color: #fff;
+    border-radius: 10px; padding: .55rem .9rem; min-height: 44px;
+    display: flex; align-items: center; justify-content: space-between; gap: .8rem;
+    cursor: pointer; transition: filter .15s ease;
+  }
+  .funnel-stage:hover { filter: brightness(1.08); }
+  .funnel-stage:focus { outline: none; filter: drop-shadow(0 0 4px var(--accent1, #4f46e5)) brightness(1.08); }
+  .funnel-stage.sel { filter: drop-shadow(0 0 4px var(--accent1, #4f46e5)); }
+  .funnel-stage .fs-name { font-weight: 700; font-size: .92rem; }
+  .funnel-stage .fs-val { font-weight: 800; font-variant-numeric: tabular-nums; }
+  .funnel-detail { margin-top: .5rem; font-size: .85rem; color: var(--muted); min-height: 1.2em; }
+  .funnel-detail strong { color: var(--text); }
   main { max-width: 46rem; margin: 0 auto; padding: 1rem; display: grid; gap: 1rem; }
   section.card {
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
@@ -280,7 +285,7 @@
     .rep-thumbs img { width: 110px; height: 110px; }
   }
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
-.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.g-header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
@@ -309,7 +314,7 @@
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -331,9 +336,9 @@
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button type="button" class="theme-btn" id="themeToggle" aria-pressed="false"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
-      <button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">🔊</button>
+      <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button type="button" class="round-btn theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
 
 <main>
@@ -397,7 +402,7 @@
 </main>
 
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer class="site">
   <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
@@ -569,6 +574,7 @@ function applyTheme(t) {
   var label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
   btn.setAttribute("aria-label", label);
   btn.title = label;
+  btn.textContent = t === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19";
   try { localStorage.setItem(LS_THEME, t); } catch (e) {}
 }
 function initTheme() {
@@ -637,6 +643,7 @@ function bindSoundToggle() {
     btn.setAttribute("aria-pressed", on ? "true" : "false");
     btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
     btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+    /* Sound button stays white (var(--surface)) in all states per the 2026-09-21 header reference. */
   }
   btn.addEventListener("click", function () { Sound.toggle(); paint(); Sound.click(); });
   paint();
@@ -1013,6 +1020,190 @@ function ovBars(title, rows) {
   g.appendChild(detail);
   return g;
 }
+/* Donut chart: defect severity mix (gallery vocabulary — part-to-whole).
+   Click/Enter/Space spotlights one severity and lists its items; again restores. */
+function defectDonut() {
+  var g = h("div", "ov-group");
+  g.appendChild(h("h4", null, "Defect severity mix"));
+  var counts = { minor: 0, moderate: 0, major: 0 };
+  var items = { minor: [], moderate: [], major: [] };
+  state.rooms.forEach(function (r) {
+    (r.defects || []).forEach(function (d) {
+      if (SEVS.indexOf(d.severity) >= 0) {
+        counts[d.severity]++;
+        items[d.severity].push(r.name + ": " + (d.item || "(untitled)"));
+      }
+    });
+  });
+  var total = counts.minor + counts.moderate + counts.major;
+  var segs = [
+    ["Minor", counts.minor, "var(--warn)"],
+    ["Moderate", counts.moderate, "var(--accent1)"],
+    ["Major", counts.major, "var(--bad)"]
+  ];
+  var wrap = h("div", "donut-wrap");
+  var NS = "http://www.w3.org/2000/svg";
+  var svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("viewBox", "0 0 120 120");
+  svg.classList.add("donut-svg");
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", "Defect severity: " + counts.minor + " minor, " +
+    counts.moderate + " moderate, " + counts.major + " major.");
+  var R = 46, C = 2 * Math.PI * R, acc = 0;
+  var detail = h("div", "ov-detail");
+  detail.setAttribute("aria-live", "polite");
+  detail.textContent = total ? "Tap a segment or legend row to see the items." : "No defects logged yet.";
+  var circles = [];
+  if (!total) {
+    var ring = document.createElementNS(NS, "circle");
+    ring.setAttribute("cx", "60"); ring.setAttribute("cy", "60"); ring.setAttribute("r", String(R));
+    ring.setAttribute("fill", "none"); ring.setAttribute("stroke-width", "18");
+    ring.style.stroke = "var(--border)";
+    svg.appendChild(ring);
+  }
+  segs.forEach(function (sg) {
+    var frac = total ? sg[1] / total : 0;
+    var c = document.createElementNS(NS, "circle");
+    c.setAttribute("cx", "60"); c.setAttribute("cy", "60"); c.setAttribute("r", String(R));
+    c.setAttribute("fill", "none"); c.setAttribute("stroke-width", "18");
+    c.style.stroke = sg[2];
+    c.setAttribute("stroke-dasharray", (frac * C).toFixed(2) + " " + C.toFixed(2));
+    c.setAttribute("stroke-dashoffset", (-acc * C).toFixed(2));
+    c.setAttribute("transform", "rotate(-90 60 60)");
+    c.classList.add("donut-seg");
+    c.setAttribute("tabindex", "0");
+    c.setAttribute("role", "button");
+    c.setAttribute("aria-pressed", "false");
+    c.setAttribute("aria-label", sg[0] + ": " + sg[1] + " of " + total + ". Activate to spotlight.");
+    circles.push(c);
+    svg.appendChild(c);
+    acc += frac;
+  });
+  var label = document.createElementNS(NS, "text");
+  label.setAttribute("x", "60"); label.setAttribute("y", "56");
+  label.setAttribute("text-anchor", "middle");
+  label.setAttribute("font-size", "22"); label.setAttribute("font-weight", "800");
+  label.style.fill = "var(--text)";
+  label.textContent = String(total);
+  var cap = document.createElementNS(NS, "text");
+  cap.setAttribute("x", "60"); cap.setAttribute("y", "76");
+  cap.setAttribute("text-anchor", "middle");
+  cap.setAttribute("font-size", "11");
+  cap.style.fill = "var(--muted)";
+  cap.textContent = total === 1 ? "defect" : "defects";
+  svg.appendChild(label); svg.appendChild(cap);
+  var sel = null;
+  function act(sg, c) {
+    var was = (sel === sg[0]);
+    circles.forEach(function (x) { x.classList.remove("dim"); x.setAttribute("aria-pressed", "false"); });
+    sel = null;
+    detail.innerHTML = "";
+    if (!was) {
+      sel = sg[0];
+      circles.forEach(function (x) { if (x !== c) x.classList.add("dim"); });
+      c.setAttribute("aria-pressed", "true");
+      label.textContent = String(sg[1]);
+      cap.textContent = sg[0].toLowerCase();
+      detail.appendChild(h("strong", null, sg[0] + " — " + sg[1] + (sg[1] === 1 ? " defect: " : " defects: ")));
+      detail.appendChild(document.createTextNode(items[sg[0].toLowerCase()].join("; ") || "(none)"));
+      Sound.select();
+    } else {
+      label.textContent = String(total);
+      cap.textContent = total === 1 ? "defect" : "defects";
+      detail.textContent = total ? "Tap a segment or legend row to see the items." : "No defects logged yet.";
+      Sound.click();
+    }
+  }
+  segs.forEach(function (sg, i) {
+    var c = circles[i];
+    c.addEventListener("click", function () { act(sg, c); });
+    c.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(sg, c); }
+    });
+  });
+  wrap.appendChild(svg);
+  g.appendChild(wrap);
+  g.appendChild(detail);
+  return g;
+}
+/* Funnel: documentation completeness — conversion between inspection stages
+   (gallery vocabulary). Click a stage to see which rooms are missing that
+   step; click again to restore. */
+function docFunnel() {
+  var g = h("div", "ov-group");
+  g.appendChild(h("h4", null, "Documentation completeness"));
+  var rooms = state.rooms;
+  function missing(pred) {
+    return rooms.filter(function (r) { return !pred(r); }).map(function (r) { return r.name; });
+  }
+  var stages = [
+    ["Rooms documented", rooms.length, missing(function () { return true; }), "#6366f1"],
+    ["Condition rated", rooms.filter(function (r) { return RATINGS.indexOf(r.rating) >= 0; }).length,
+      missing(function (r) { return RATINGS.indexOf(r.rating) >= 0; }), "#818cf8"],
+    ["Evidence captured", rooms.filter(function (r) {
+        return (r.notes && r.notes.trim()) || (r.photos && r.photos.length) ||
+               (r.defects || []).some(function (d) { return d.photos && d.photos.length; });
+      }).length,
+      missing(function (r) {
+        return (r.notes && r.notes.trim()) || (r.photos && r.photos.length) ||
+               (r.defects || []).some(function (d) { return d.photos && d.photos.length; });
+      }), "#a78bfa"],
+    ["Report-ready", rooms.filter(function (r) {
+        return RATINGS.indexOf(r.rating) >= 0 &&
+          ((r.notes && r.notes.trim()) || (r.photos && r.photos.length) ||
+           (r.defects || []).some(function (d) { return d.photos && d.photos.length; }));
+      }).length, [], "#6d5df6"]
+  ];
+  var readyMissing = rooms.filter(function (r) {
+    return !(RATINGS.indexOf(r.rating) >= 0 &&
+      ((r.notes && r.notes.trim()) || (r.photos && r.photos.length) ||
+       (r.defects || []).some(function (d) { return d.photos && d.photos.length; })));
+  }).map(function (r) { return r.name; });
+  stages[3][2] = readyMissing;
+  var max = Math.max(1, stages[0][1]);
+  var funnel = h("div", "funnel");
+  var detail = h("div", "funnel-detail");
+  detail.setAttribute("aria-live", "polite");
+  detail.textContent = rooms.length ? "Tap a stage to see which rooms are missing that step." : "Add rooms to start the funnel.";
+  var sel = null;
+  stages.forEach(function (st) {
+    var b = h("button", "funnel-stage");
+    b.type = "button";
+    var w = st[1] > 0 ? Math.max(38, Math.round(st[1] / max * 100)) : 38;
+    b.style.width = w + "%";
+    b.style.background = st[3];
+    b.setAttribute("aria-pressed", "false");
+    b.setAttribute("aria-label", st[0] + ": " + st[1] + " of " + max + ". Activate to see missing rooms.");
+    b.appendChild(h("span", "fs-name", st[0]));
+    b.appendChild(h("span", "fs-val", String(st[1])));
+    b.addEventListener("click", function () {
+      var was = (sel === st[0]);
+      var sels = funnel.querySelectorAll(".funnel-stage.sel");
+      for (var k = 0; k < sels.length; k++) {
+        sels[k].classList.remove("sel");
+        sels[k].setAttribute("aria-pressed", "false");
+      }
+      sel = null;
+      detail.innerHTML = "";
+      if (!was) {
+        sel = st[0];
+        b.classList.add("sel");
+        b.setAttribute("aria-pressed", "true");
+        detail.appendChild(h("strong", null, st[0] + ": "));
+        detail.appendChild(document.createTextNode(
+          st[2].length ? "missing for " + st[2].join(", ") : "all rooms complete this step."));
+        Sound.select();
+      } else {
+        detail.textContent = rooms.length ? "Tap a stage to see which rooms are missing that step." : "Add rooms to start the funnel.";
+        Sound.click();
+      }
+    });
+    funnel.appendChild(b);
+  });
+  g.appendChild(funnel);
+  g.appendChild(detail);
+  return g;
+}
 function renderReport() {
   var rep = document.getElementById("report");
   while (rep.firstChild) rep.removeChild(rep.firstChild);
@@ -1060,6 +1251,8 @@ function renderReport() {
     ["Moderate", sevCounts["moderate"], "var(--accent1)", nameList(sevItems["moderate"])],
     ["Major", sevCounts["major"], "var(--bad)", nameList(sevItems["major"])]
   ]));
+  ov.appendChild(defectDonut());
+  ov.appendChild(docFunnel());
   rep.appendChild(ov);
   }
 
@@ -1259,7 +1452,76 @@ document.addEventListener("DOMContentLoaded", function () {
 (function () {
   var btn = document.getElementById("sample-toggle");
   if (!btn) return;
-  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {};
+  var sampleOn = false, snap = null, snapLS = null, snapUI = null, LS_MISSING = {};
+  function paintSample() {
+    var lbl = sampleOn ? "Clear sample data" : "Try sample data";
+    btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
+    btn.setAttribute("aria-label", lbl);
+    btn.title = lbl;
+  }
+  /* Snapshot ALL transient UI state, not just persisted data: typed-but-
+     uncommitted input/select/textarea values (header fields, room names,
+     notes, add-room and defect forms), checked radios/checkboxes, the open
+     defect edit card, the #msg line, and interactive report selections. */
+  function snapshotUI() {
+    var ui = { fields: [], msg: null, editing: editingDefectId, clicks: [] };
+    try {
+      document.querySelectorAll("input, textarea, select").forEach(function (el) {
+        if (el.type === "file") return; /* unreadable by design; import resets it */
+        var key = null;
+        if (el.id) key = "#" + el.id;
+        else {
+          var room = el.closest ? el.closest("[data-room]") : null;
+          var cls = String(el.className || "").split(" ").filter(function (c) {
+            return c && (c.indexOf("de-") === 0 || c.indexOf("d-") === 0);
+          })[0];
+          if (room && room.getAttribute("data-room") && cls) key = room.getAttribute("data-room") + "|" + cls;
+        }
+        if (!key) return;
+        var isCheck = el.type === "checkbox" || el.type === "radio";
+        ui.fields.push({ key: key,
+          value: isCheck ? null : el.value,
+          checked: isCheck ? !!el.checked : null });
+      });
+      var m = document.getElementById("msg");
+      if (m) ui.msg = { text: m.textContent, alert: m.classList.contains("alert") };
+      /* interactive report selections: overview rows, donut segments, funnel
+         stages — re-clicked by deterministic aria-label after re-render */
+      document.querySelectorAll('#report [aria-pressed="true"]').forEach(function (el) {
+        var a = el.getAttribute("aria-label");
+        if (a) ui.clicks.push(a);
+      });
+    } catch (e) {}
+    return ui;
+  }
+  function restoreUI(ui) {
+    if (!ui) return;
+    try {
+      ui.fields.forEach(function (f) {
+        var el = null;
+        if (f.key.charAt(0) === "#") el = document.getElementById(f.key.slice(1));
+        else {
+          var parts = f.key.split("|");
+          el = document.querySelector('[data-room="' + parts[0] + '"] .' + parts[1]);
+        }
+        if (!el) return;
+        if (f.value !== null && f.value !== undefined) { try { el.value = f.value; } catch (e) {} }
+        if (f.checked !== null && f.checked !== undefined) el.checked = f.checked;
+      });
+      var m = document.getElementById("msg");
+      if (m && ui.msg) {
+        m.textContent = ui.msg.text;
+        m.classList.toggle("alert", !!ui.msg.alert);
+      }
+      (ui.clicks || []).forEach(function (a) {
+        var el = null;
+        document.querySelectorAll('#report [aria-pressed]').forEach(function (x) {
+          if (x.getAttribute("aria-label") === a) el = x;
+        });
+        if (el && el.getAttribute("aria-pressed") !== "true") el.click();
+      });
+    } catch (e) {}
+  }
   function paintSample() {
     var lbl = sampleOn ? "Clear sample data" : "Try sample data";
     btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
@@ -1298,12 +1560,15 @@ document.addEventListener("DOMContentLoaded", function () {
       else localStorage.setItem(LS_KEY, snapLS);
     } catch (e) {}
     snap = null; snapLS = null;
-    editingDefectId = null;
+    var ui = snapUI; snapUI = null;
+    editingDefectId = (ui && ui.editing) || null;
     renderAll();
+    restoreUI(ui);
   }
   btn.addEventListener("click", function () {
     if (!sampleOn) {
       snapshot();
+      snapUI = snapshotUI();
       window.__gSampleOn = true;
       sampleOn = true;
       applySample();
@@ -1317,6 +1582,20 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   paintSample();
 })();
+/* Esc clears chart spotlights (click again / Esc restores default view) */
+document.addEventListener("keydown", function (e) {
+  if (e.key !== "Escape") return;
+  var hit = false;
+  var segs = document.querySelectorAll('.donut-svg circle.donut-seg[aria-pressed="true"]');
+  var rows = document.querySelectorAll('.ov-row.sel');
+  var sts = document.querySelectorAll('.funnel-stage.sel');
+  var i, els = [];
+  for (i = 0; i < segs.length; i++) els.push(segs[i]);
+  for (i = 0; i < rows.length; i++) els.push(rows[i]);
+  for (i = 0; i < sts.length; i++) els.push(sts[i]);
+  els.forEach(function (el) { el.click(); hit = true; });
+  if (hit) Sound.click();
+});
 </script>
 </body>
 </html>

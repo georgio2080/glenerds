@@ -87,57 +87,25 @@
   .logo-badge svg { width: 26px; height: 26px; }
   .brand h1 { font-size: 1.4rem; margin: 0; letter-spacing: .2px; }
   .brand p { margin: 2px 0 0; font-size: .88rem; opacity: .92; }
-  .theme-pill {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,.16);
-    border: 1px solid rgba(255,255,255,.4);
-    color: #fff;
-    border-radius: 999px;
-    padding: 0;
-    width: 44px; height: 44px; min-width: 44px; min-height: 44px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .theme-pill:hover { background: rgba(255,255,255,.26); }
-  .theme-pill:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  /* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
-  .sample-toggle {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,.16);
-    border: 1px solid rgba(255,255,255,.4);
-    color: #fff;
-    border-radius: 999px;
-    padding: 0;
-    width: 44px; height: 44px; min-width: 44px; min-height: 44px;
-    cursor: pointer;
-  }
-  .sample-toggle svg { width: 18px; height: 18px; flex: none; }
-  .sample-toggle:hover { background: rgba(255,255,255,.26); }
-  .sample-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  .sample-toggle[aria-pressed="true"] { background: var(--accent, #1f7a5c); border-color: var(--accent, #1f7a5c); color: #fff; }
-  #sound-toggle {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,.16);
-    border: 1px solid rgba(255,255,255,.4);
-    color: #fff;
-    border-radius: 999px;
-    padding: 0;
-    width: 44px; height: 44px; min-width: 44px; min-height: 44px;
-    font-size: 1.05rem; line-height: 1;
-    cursor: pointer;
-  }
-  #sound-toggle:hover { background: rgba(255,255,255,.26); }
-  #sound-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  /* ---------- spec header cluster (2026-09-21) ---------- */
+  .round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card,var(--surface,#fff));border:1px solid var(--line,var(--border,rgba(0,0,0,.16)));color:var(--ink,var(--text,var(--fg,#1f2937)));box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+  .round-btn svg{width:26px;height:26px;flex:none}
+  .round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+  .round-btn:hover{border-color:var(--accent,#4f46e5)}
+  .round-btn:focus{outline:none}
+  .round-btn:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:2px}
+  .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(99,102,241,.12))}
+  .g-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;row-gap:6px;justify-content:flex-end}
   /* ---------- interactive who-owes-what rows ---------- */
   .sf-row[role="button"] { cursor: pointer; }
   .sf-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
   .sf-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent, #1f7a5c); border-radius: 8px; }
   .sf-detail { margin: 8px 0 0; font-size: .85rem; color: var(--muted, #5b6472); min-height: 1.2em; }
   .sf-detail strong { color: var(--text, #1c2330); }
-  .theme-pill svg { width: 18px; height: 18px; }
-  .theme-pill .ic-sun { display: none; }
-  [data-theme="dark"] .theme-pill .ic-sun { display: inline; }
-  [data-theme="dark"] .theme-pill .ic-moon { display: none; }
+  /* clickable totals-table person rows: tie to the Who-owes-what spotlight */
+  .tot-row[role="button"] { cursor: pointer; }
+  .tot-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
+  .tot-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent, #1f7a5c); border-radius: 4px; }
   /* ---------- layout ---------- */
   main { max-width: 900px; margin: 0 auto; padding: 20px 16px 48px; }
   section.card {
@@ -305,12 +273,27 @@
     .field { flex: 1 1 140px; }
     .toolbar button { flex: 1 1 auto; }
   }
+/* ---------- charts (donut + stacked columns) ---------- */
+.chart-wrap { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin: 8px 0 2px; }
+.chart-wrap svg { display: block; max-width: 100%; height: auto; }
+.donut-seg, .stack-seg, .settle-list li[role="button"] { cursor: pointer; }
+.donut-seg:focus-visible, .stack-seg:focus-visible { outline: none; filter: drop-shadow(0 0 4px rgba(79,70,229,.9)); }
+.donut-seg.sel circle { stroke-width: 34; }
+.donut-top, .donut-sub, .donut-pct, .stack-lbl, .stack-amt { pointer-events: none; }
+.chart-detail { margin: 8px 0 0; font-size: .85rem; color: var(--muted); min-height: 1.2em; }
+.chart-detail strong { color: var(--text); }
+.donut-top { font-size: 1.25rem; font-weight: 800; fill: var(--text); }
+.donut-sub { font-size: .9rem; fill: var(--muted); }
+.donut-pct { font-size: .72rem; font-weight: 700; fill: #fff; pointer-events: none; }
+.stack-lbl { font-size: .72rem; fill: var(--muted); }
+.stack-amt { font-size: .72rem; font-weight: 700; fill: var(--text); font-variant-numeric: tabular-nums; }
+.settle-list li[role="button"]:focus-visible { outline: none; filter: drop-shadow(0 0 3px rgba(79,70,229,.9)); }
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
-.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: var(--g-accent-ink, #ffffff);
+  color: #fff;
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -318,7 +301,7 @@
   box-shadow: 0 1px 2px rgba(0,0,0,.12);
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .g-cta-strip {
@@ -335,7 +318,8 @@
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -357,9 +341,9 @@
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-    <button type="button" id="themeToggle" class="theme-pill" aria-pressed="false"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.5A8 8 0 1 1 10.5 4 6.5 6.5 0 0 0 20 13.5z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></button>
-      <button type="button" id="soundToggle" class="theme-pill sound-pill" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">🔊</button>
+      <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+    <button type="button" id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button type="button" id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
   </div>
 </header>
@@ -435,7 +419,7 @@
 </main>
 
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer>
   <a href="https://glenerds.gumroad.com">by Glenerds</a>
@@ -939,6 +923,191 @@ function renderOccupancyTable(bill) {
 /* ---------- render: results ---------- */
 var resultsEl = document.getElementById("results");
 
+/* Chart palette + per-person color (stable across donut and stacked columns). */
+var CHART_COLORS = ["#4f46e5", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#06b6d4", "#ef4444", "#0ea5e9", "#84cc16", "#a855f7"];
+function personColor(pid) {
+  for (var ci = 0; ci < state.people.length; ci++) {
+    if (state.people[ci].id === pid) return CHART_COLORS[ci % CHART_COLORS.length];
+  }
+  return CHART_COLORS[0];
+}
+function svgNS(tag, attrs) {
+  var n = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  if (attrs) for (var k in attrs) {
+    if (Object.prototype.hasOwnProperty.call(attrs, k)) n.setAttribute(k, attrs[k]);
+  }
+  return n;
+}
+
+/* Interactive share-of-total donut: click a slice to spotlight a person, click again to restore. */
+function renderShareDonut(ranked, grandTotal) {
+  var wrap = el("div", { "class": "chart-wrap" });
+  if (grandTotal <= 0 || !ranked.length) {
+    wrap.appendChild(el("p", { "class": "empty" }, "No amounts yet — the share chart will appear here."));
+    return wrap;
+  }
+  var cx = 100, cy = 100, r = 74, sw = 30;
+  var svg = svgNS("svg", { viewBox: "0 0 200 200", width: "220", height: "220", role: "img",
+    "aria-label": "Donut chart of each person's share of the grand total" });
+  var detail = el("p", { "class": "chart-detail" });
+  detail.setAttribute("aria-live", "polite");
+  detail.textContent = "Click a slice to spotlight a person.";
+  var topT = svgNS("text", { x: cx, y: cy - 4, "text-anchor": "middle", "class": "donut-top" });
+  topT.textContent = money(grandTotal);
+  var botT = svgNS("text", { x: cx, y: cy + 20, "text-anchor": "middle", "class": "donut-sub" });
+  botT.textContent = "total";
+  var segEls = [];
+  function act(item) {
+    var was = item.g.classList.contains("sel");
+    for (var i = 0; i < segEls.length; i++) {
+      segEls[i].g.classList.remove("sel");
+      segEls[i].g.setAttribute("aria-pressed", "false");
+      segEls[i].c.setAttribute("opacity", "1");
+    }
+    if (!was) {
+      for (var j = 0; j < segEls.length; j++) {
+        if (segEls[j] !== item) segEls[j].c.setAttribute("opacity", "0.25");
+      }
+      item.g.classList.add("sel");
+      item.g.setAttribute("aria-pressed", "true");
+      topT.textContent = money(item.rr.total);
+      botT.textContent = item.rr.name;
+      detail.textContent = "";
+      detail.appendChild(el("strong", null, item.rr.name + ": "));
+      detail.appendChild(document.createTextNode(
+        money(item.rr.total) + " — " + (item.frac * 100).toFixed(1) + "% of " + money(grandTotal) + " total."));
+      Sound.select();
+    } else {
+      topT.textContent = money(grandTotal);
+      botT.textContent = "total";
+      detail.textContent = "Click a slice to spotlight a person.";
+      Sound.click();
+    }
+  }
+  var start = 0;
+  ranked.forEach(function (rr) {
+    var frac = grandTotal > 0 ? rr.total / grandTotal : 0;
+    var col = personColor(rr.id);
+    var g = svgNS("g", { "class": "donut-seg", role: "button", tabindex: "0", "aria-pressed": "false",
+      "aria-label": rr.name + ": " + money(rr.total) + ", " + (frac * 100).toFixed(1) + " percent of total. Activate to spotlight." });
+    var c = svgNS("circle", { cx: cx, cy: cy, r: r, fill: "none", stroke: col, "stroke-width": sw,
+      pathLength: "100",
+      "stroke-dasharray": Math.max(0, frac * 100 - 1.5).toFixed(2) + " 100",
+      "stroke-dashoffset": (-start * 100).toFixed(2),
+      transform: "rotate(-90 " + cx + " " + cy + ")" });
+    g.appendChild(c);
+    /* percentage label at the slice centroid for slices big enough to read */
+    if (frac >= 0.08) {
+      var ang = (start + frac / 2) * Math.PI * 2 - Math.PI / 2;
+      var pl = svgNS("text", { x: (cx + r * Math.cos(ang)).toFixed(1),
+        y: (cy + r * Math.sin(ang)).toFixed(1), "text-anchor": "middle",
+        "dominant-baseline": "middle", "class": "donut-pct" });
+      pl.textContent = Math.round(frac * 100) + "%";
+      g.appendChild(pl);
+    }
+    svg.appendChild(g);
+    var item = { g: g, c: c, rr: rr, frac: frac };
+    segEls.push(item);
+    (function (it) {
+      g.addEventListener("click", function () { act(it); });
+      g.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(it); }
+      });
+    })(item);
+    start += frac;
+  });
+  svg.appendChild(topT);
+  svg.appendChild(botT);
+  wrap.appendChild(svg);
+  var outer = el("div");
+  outer.appendChild(wrap);
+  outer.appendChild(detail);
+  return outer;
+}
+
+/* Interactive stacked columns: composition of each bill by person. */
+function renderBillStacks() {
+  var wrap = el("div");
+  var bills = state.bills;
+  var calcs = bills.map(computeBill);
+  var maxAmt = 0;
+  for (var q = 0; q < calcs.length; q++) if (calcs[q].amountCents > maxAmt) maxAmt = calcs[q].amountCents;
+  if (maxAmt <= 0) {
+    wrap.appendChild(el("p", { "class": "empty" }, "Add bill amounts to see the composition chart."));
+    return wrap;
+  }
+  var colW = 64, gap = 18, padL = 8, padR = 8, baseY = 208, maxH = 168;
+  var W = padL + bills.length * (colW + gap) - gap + padR;
+  var svg = svgNS("svg", { viewBox: "0 0 " + W + " 244", width: String(Math.min(W, 560)), height: "244",
+    role: "img", "aria-label": "Stacked bar chart: composition of each bill by person" });
+  var detail = el("p", { "class": "chart-detail" });
+  detail.setAttribute("aria-live", "polite");
+  detail.textContent = "Composition of each bill by person — click a segment for details.";
+  var segEls = [];
+  function act(item) {
+    var was = item.g.classList.contains("sel");
+    for (var i = 0; i < segEls.length; i++) {
+      segEls[i].g.classList.remove("sel");
+      segEls[i].g.setAttribute("aria-pressed", "false");
+      segEls[i].rect.setAttribute("opacity", "1");
+    }
+    if (!was) {
+      for (var j = 0; j < segEls.length; j++) {
+        if (segEls[j] !== item) segEls[j].rect.setAttribute("opacity", "0.25");
+      }
+      item.g.classList.add("sel");
+      item.g.setAttribute("aria-pressed", "true");
+      detail.textContent = "";
+      detail.appendChild(el("strong", null, item.bill.name + " — " + item.p.name + ": "));
+      detail.appendChild(document.createTextNode(
+        money(item.share) + " (" + (item.frac * 100).toFixed(1) + "% of this bill)."));
+      Sound.select();
+    } else {
+      detail.textContent = "Composition of each bill by person — click a segment for details.";
+      Sound.click();
+    }
+  }
+  bills.forEach(function (bill, bi) {
+    var calc = calcs[bi];
+    var x = padL + bi * (colW + gap);
+    var h = Math.max(2, (calc.amountCents / maxAmt) * maxH);
+    var y = baseY - h;
+    var amtT = svgNS("text", { x: x + colW / 2, y: y - 6, "text-anchor": "middle", "class": "stack-amt" });
+    amtT.textContent = money(calc.amountCents);
+    svg.appendChild(amtT);
+    var nm = bill.name.length > 12 ? bill.name.slice(0, 11) + "…" : bill.name;
+    var nmT = svgNS("text", { x: x + colW / 2, y: baseY + 18, "text-anchor": "middle", "class": "stack-lbl" });
+    nmT.textContent = nm;
+    svg.appendChild(nmT);
+    var acc = 0;
+    state.people.forEach(function (p) {
+      var share = calc.shares[p.id] || 0;
+      if (share <= 0) return;
+      var frac = calc.amountCents > 0 ? share / calc.amountCents : 0;
+      var sh = frac * h;
+      var sy = y + acc * h;
+      acc += frac;
+      var g = svgNS("g", { "class": "stack-seg", role: "button", tabindex: "0", "aria-pressed": "false",
+        "aria-label": bill.name + " — " + p.name + ": " + money(share) + ". Activate to spotlight." });
+      var rect = svgNS("rect", { x: x, y: sy.toFixed(2), width: colW,
+        height: Math.max(0, sh - 1).toFixed(2), fill: personColor(p.id), rx: "3" });
+      g.appendChild(rect);
+      svg.appendChild(g);
+      var item = { g: g, rect: rect, bill: bill, p: p, share: share, frac: frac };
+      segEls.push(item);
+      (function (it) {
+        g.addEventListener("click", function () { act(it); });
+        g.addEventListener("keydown", function (ev) {
+          if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(it); }
+        });
+      })(item);
+    });
+  });
+  wrap.appendChild(svg);
+  wrap.appendChild(detail);
+  return wrap;
+}
+
 function renderResults() {
   resultsEl.textContent = "";
 
@@ -1007,6 +1176,23 @@ function renderResults() {
   var tBody = el("tbody");
   state.people.forEach(function (p) {
     var tr = el("tr");
+    tr.classList.add("tot-row");
+    tr.setAttribute("role", "button");
+    tr.setAttribute("tabindex", "0");
+    tr.setAttribute("aria-pressed", "false");
+    tr.setAttribute("aria-label", p.name + ": owes " + money(totals[p.id]) + ". Activate to spotlight in Who owes what.");
+    (function (pp, trow) {
+      function act() {
+        var row = resultsEl.querySelector(".sf-row[data-pid=\"" + pp.id + "\"]");
+        if (row) {
+          row.click();
+          if (row.classList.contains("sel")) { trow.classList.add("sel"); trow.setAttribute("aria-pressed", "true"); }
+          else { trow.classList.remove("sel"); trow.setAttribute("aria-pressed", "false"); }
+        }
+      }
+      trow.addEventListener("click", act);
+      trow.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(); } });
+    })(p, tr);
     tr.appendChild(el("th", { scope: "row" }, p.name));
     tr.appendChild(el("td", { "class": "num" }, money(totals[p.id])));
     tBody.appendChild(tr);
@@ -1020,10 +1206,14 @@ function renderResults() {
   tTable.appendChild(tFoot);
   resultsEl.appendChild(tTable);
 
+  /* Visual: share-of-total donut (interactive spotlight). */
+  var ranked = state.people.map(function (p) { return { id: p.id, name: p.name, total: totals[p.id] }; })
+    .sort(function (a, b) { return b.total - a.total; });
+  resultsEl.appendChild(el("h3", null, "Share of grand total"));
+  resultsEl.appendChild(renderShareDonut(ranked, grandTotal));
+
   /* Visual: who-owes-what bars, sorted largest share first. */
   resultsEl.appendChild(el("h3", null, "Who owes what"));
-  var ranked = state.people.map(function (p) { return { name: p.name, total: totals[p.id] }; })
-    .sort(function (a, b) { return b.total - a.total; });
   var maxTotal = ranked.length ? ranked[0].total : 0;
   var bars = el("div", { "class": "sf-bars" });
   var detail = el("p", { "class": "sf-detail" });
@@ -1031,7 +1221,8 @@ function renderResults() {
   ranked.forEach(function (r) {
     var row = el("div", {
       "class": "sf-row", role: "button", tabindex: "0", "aria-pressed": "false",
-      "aria-label": r.name + " owes " + money(r.total) + ". Activate to spotlight."
+      "aria-label": r.name + " owes " + money(r.total) + ". Activate to spotlight.",
+      "data-pid": r.id
     });
     row.appendChild(el("div", { "class": "sf-name", title: r.name }, r.name));
     row.appendChild(el("div", { "class": "sf-val" }, money(r.total)));
@@ -1043,7 +1234,7 @@ function renderResults() {
     (function (rr, rrrow) {
       function act() {
         var was = rrrow.classList.contains("sel");
-        var sels = bars.querySelectorAll(".sf-row.sel");
+        var sels = resultsEl.querySelectorAll(".sf-row.sel, .tot-row.sel");
         for (var k = 0; k < sels.length; k++) { sels[k].classList.remove("sel"); sels[k].setAttribute("aria-pressed", "false"); }
         if (!was) {
           rrrow.classList.add("sel");
@@ -1069,13 +1260,29 @@ function renderResults() {
   resultsEl.appendChild(bars);
   resultsEl.appendChild(detail);
 
+  /* Visual: stacked composition of each bill by person (interactive). */
+  if (state.bills.length > 0) {
+    resultsEl.appendChild(el("h3", null, "Each bill, by person"));
+    resultsEl.appendChild(renderBillStacks());
+  }
+
   /* Settle up */
   resultsEl.appendChild(el("h3", null, "Settle up"));
   var list = el("ul", { "class": "settle-list" });
   state.people.forEach(function (p) {
-    var li = el("li");
+    var li = el("li", {
+      role: "button", tabindex: "0",
+      "aria-label": p.name + " owes " + money(totals[p.id]) + ". Activate to spotlight in Who owes what."
+    });
     li.appendChild(el("span", null, p.name + " owes"));
     li.appendChild(el("strong", null, money(totals[p.id])));
+    li.addEventListener("click", function () {
+      var row = bars.querySelector('.sf-row[data-pid="' + p.id + '"]');
+      if (row) row.click();
+    });
+    li.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); li.click(); }
+    });
     list.appendChild(li);
   });
   resultsEl.appendChild(list);
@@ -1239,6 +1446,7 @@ var themeToggle = document.getElementById("themeToggle");
 function currentTheme() { return document.documentElement.getAttribute("data-theme") || "light"; }
 function paintThemeButton() {
   var dark = currentTheme() === "dark";
+  themeToggle.textContent = dark ? "☀️" : "🌙";
   themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
   var label = dark ? "Switch to light mode" : "Switch to dark mode";
   themeToggle.setAttribute("aria-label", label);
@@ -1265,6 +1473,7 @@ bindSoundToggle();
   var btn = document.getElementById("sample-toggle");
   if(!btn) return;
   var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {};
+  var transSnap = null;
   function paintSample(){
     var lbl = sampleOn ? "Clear sample data" : "Try sample data";
     btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
@@ -1278,6 +1487,38 @@ bindSoundToggle();
       snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
     }catch(e){ snapLS = LS_MISSING; }
   }
+  /* Snapshot every transient control: typed-but-uncommitted input values,
+     selects, checked states, plus focus — all keyed by element id so the
+     restore survives the DOM being rebuilt. */
+  function snapshotTransient(){
+    var ctrls = [];
+    var nodes = document.querySelectorAll("input, select, textarea");
+    for (var i = 0; i < nodes.length; i++){
+      var n = nodes[i];
+      if(!n.id) continue;
+      ctrls.push({ id: n.id, value: n.value, checked: !!n.checked,
+                   sel: (n.tagName === "SELECT" ? n.selectedIndex : -1) });
+    }
+    var t = { ctrls: ctrls, focus: null };
+    try{ var a = document.activeElement; if(a && a.id) t.focus = a.id; }catch(e){}
+    return t;
+  }
+  function syncTransientUI(){
+    if (newBillType.value === "__custom") customNameWrap.removeAttribute("hidden");
+    else customNameWrap.setAttribute("hidden", "");
+  }
+  function restoreTransient(t){
+    if(!t) return;
+    var ctrls = t.ctrls || [];
+    for (var i = 0; i < ctrls.length; i++){
+      var rec = ctrls[i], n = document.getElementById(rec.id);
+      if(!n) continue;
+      if(n.type === "checkbox" || n.type === "radio") n.checked = rec.checked;
+      else { n.value = rec.value; if(n.tagName === "SELECT" && rec.sel >= 0) n.selectedIndex = rec.sel; }
+    }
+    syncTransientUI();
+    if(t.focus){ var f = document.getElementById(t.focus); if(f && f.focus){ try{ f.focus(); }catch(e){} } }
+  }
   function paintAll(){
     renderPeople();
     renderBills();
@@ -1286,6 +1527,7 @@ bindSoundToggle();
   btn.addEventListener("click", function(){
     if(!sampleOn){
       snapshot();
+      transSnap = snapshotTransient();
       window.__gSampleOn = true;
       sampleOn = true;
       state = demoData(); /* same demo content as the Load demo button, no replace-confirm */
@@ -1300,12 +1542,24 @@ bindSoundToggle();
       }catch(e){}
       snap = null; snapLS = null;
       paintAll();
+      restoreTransient(transSnap);
+      transSnap = null;
     }
     paintSample();
     Sound.click();
   });
   paintSample();
 })();
+  /* Esc restores any active spotlight (clickability spec) */
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key !== "Escape") return;
+    var sels = document.querySelectorAll("g.donut-seg.sel, g.stack-seg.sel, .sf-row.sel, .settle-list li.sel");
+    for (var i = 0; i < sels.length; i++) {
+      /* SVG <g> has no .click(); dispatch a bubbling click so its toggle handler runs */
+      if (sels[i].click) sels[i].click();
+      else sels[i].dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    }
+  });
 </script>
 </body>
 </html>

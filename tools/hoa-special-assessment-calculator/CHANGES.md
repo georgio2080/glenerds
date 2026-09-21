@@ -1,5 +1,10 @@
 # HOA Special Assessment Calculator — Change Log
 
+## 2026-09-21 — Header spec normalization + expanded clickability (Glenerds sweep, retrofit pass)
+- Header cluster normalized to the HenTrack reference spec: More Apps pill now `var(--g-accent,#4f46e5)` with white text in both modes; theme toggle is emoji (🌙/☀️ at 1.65rem, icon shows the mode you get) instead of the SVG moon/sun experiment; sound toggle is emoji at 1.65rem on a white round button; flask is spec #14 SVG with larger bubbles rendered at 26px; sample-ON state is the accent-soft tint (no solid fill). Header prints hidden.
+- Clickability expanded per the "natural charts" rule: the "Your estimated share" headline is now a keyboard-accessible button that reveals the full calculation chain (gross share − reserve share = out of pocket, months of dues). Result table rows were already clickable; Esc now restores any row spotlight. SVG focus uses drop-shadow, never rectangular outlines.
+- Sample-data restore is now byte-identical: the raw localStorage string is snapshotted on toggle-on and restored verbatim on toggle-off (with a skip-save guard so the restore calc pass cannot rewrite the key; key removed if it did not exist).
+
 ## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
 - Standardized the header cluster: `.g-header-actions` wrapper with More Apps pill first, icon-only dark-mode button (44x44px, moon/sun icon, dynamic aria-label/title — no more text label), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
 - Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `hoacalc.sound`, wired into theme toggle and the Calculate button.

@@ -68,34 +68,15 @@ header.top{display:flex;align-items:center;justify-content:space-between;padding
 .brand h1{font-size:1.45rem;margin:0;letter-spacing:-.01em}
 .brand .tagline{margin:1px 0 0;font-size:.85rem;color:var(--muted)}
 /* ---------- header cluster: More Apps pill + flask + theme + sound (icon-only 44px circular) ---------- */
-.g-header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-#theme-toggle{
-  width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;border-radius:999px;
-  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
-  border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:var(--shadow);
-}
-#theme-toggle svg{width:18px;height:18px;flex:none}
-#theme-toggle .ic-sun{display:none}
-html[data-theme="dark"] #theme-toggle .ic-sun{display:inline}
-html[data-theme="dark"] #theme-toggle .ic-moon{display:none}
-#theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-#sound-toggle{
-  width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;border-radius:999px;
-  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
-  border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:var(--shadow);
-  font-size:1.05rem;line-height:1;
-}
-#sound-toggle:hover{border-color:var(--accent)}
-#sound-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.sample-toggle{
-  width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;border-radius:999px;
-  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
-  border:1px solid var(--line);background:var(--surface);color:var(--muted);box-shadow:var(--shadow);
-}
-.sample-toggle svg{width:18px;height:18px;flex:none}
-.sample-toggle:hover{border-color:var(--accent);color:var(--ink)}
-.sample-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.sample-toggle[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+/* Header cluster reference (2026-09-21): exact HenTrack bytes mapped to this app's
+   vars — --surface (card), --line, --ink, --accent (accent-soft inline fallback). */
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--surface);border:1px solid var(--line);color:var(--ink);box-shadow:var(--shadow);flex:none;font-size:1.1rem}
+.round-btn svg{width:26px;height:26px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+.round-btn:hover{border-color:var(--accent)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:rgba(79,70,229,.12)}
 
 /* ============ buttons ============ */
 button{font:inherit;cursor:pointer;min-height:var(--tap);padding:10px 18px;border-radius:12px;
@@ -198,6 +179,28 @@ tbody tr{transition:background .12s ease}
 .status.Draft{color:var(--muted)} .status.Sent{color:var(--accent)}
 .status.Accepted{color:var(--ok)} .status.Declined{color:var(--danger)}
 
+/* ============ pipeline funnel ============ */
+#pipe-funnel{display:grid;gap:8px;margin-top:6px}
+.pipe-row{display:grid;grid-template-columns:104px minmax(0,1fr) auto;gap:10px;align-items:center;
+  cursor:pointer;border-radius:10px;padding:6px 8px;margin:-6px -8px}
+.pipe-row:hover{background:var(--surface-2)}
+.pipe-row:focus{outline:none}
+.pipe-row:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.pipe-row.pipe-sel{background:var(--surface-2);box-shadow:inset 0 0 0 2px var(--accent)}
+.pipe-lab{font-weight:700;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pipe-track{display:block;height:22px;border-radius:999px;background:var(--surface-2);
+  border:1px solid var(--line);overflow:hidden;min-width:40px}
+.pipe-fill{display:block;height:100%;border-radius:999px}
+.pipe-val{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.pipe-decl{display:flex;align-items:center;gap:8px;margin-top:2px;font-size:.85rem;color:var(--muted);
+  cursor:pointer;border-radius:8px;padding:5px 8px}
+.pipe-decl:hover{background:var(--surface-2)}
+.pipe-decl:focus{outline:none}
+.pipe-decl:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.pipe-decl.pipe-sel{background:var(--surface-2);box-shadow:inset 0 0 0 2px var(--danger);color:var(--ink)}
+.pipe-decl .sw{width:10px;height:10px;border-radius:50%;background:var(--danger);flex:none}
+.pipe-decl .pipe-val{margin-left:auto}
+
 /* ============ totals ============ */
 .totals{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
@@ -237,6 +240,10 @@ tbody tr{transition:background .12s ease}
 .vseg{cursor:pointer;transition:opacity .25s ease}
 .vseg:focus{outline:none}
 .vseg:focus-visible{filter:drop-shadow(0 0 5px var(--accent,#4f46e5))}
+/* clickable quote rows: a first-time user taps a row to open the quote */
+.q-row{cursor:pointer}
+.q-row:focus{outline:none}
+.q-row:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:-2px}
 .vseg-hit{cursor:pointer}
 .leg-btn{cursor:pointer;border-radius:6px;padding:2px 4px;margin:-2px -4px}
 .leg-btn:hover{background:var(--surface-2)}
@@ -294,7 +301,7 @@ footer.site a{color:var(--muted)}
   nav.tabs button{font-size:.85rem;padding:10px 8px}
 }
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
-.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.g-header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
@@ -323,7 +330,8 @@ footer.site a{color:var(--muted)}
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
+html[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -347,9 +355,9 @@ footer.site a{color:var(--muted)}
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
-      <button id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
+      <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button id="theme-toggle" class="round-btn theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button id="sound-toggle" class="round-btn sound-toggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
   </header>
 
@@ -365,6 +373,12 @@ footer.site a{color:var(--muted)}
   <section id="view-list" aria-label="Quotes list">
     <div class="actions" style="margin-bottom:14px">
       <button type="button" id="btn-new-quote" class="primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>New quote</button>
+    </div>
+    <div class="card" id="pipe-card">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18l-7 8v6l-4 2v-8z"/></svg></span>Pipeline</h2>
+      <div id="pipe-funnel" role="group" aria-label="Quote pipeline by status"></div>
+      <p class="hint" id="pipe-hint" style="margin:8px 0 0">Click a stage to spotlight those quotes.</p>
+      <p class="empty" id="pipe-empty" hidden>No quotes yet — the pipeline appears here once you add quotes.</p>
     </div>
     <div class="card">
       <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg></span>Quotes</h2>
@@ -571,7 +585,7 @@ footer.site a{color:var(--muted)}
   </section>
 
   <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer class="site">by <a href="https://glenerds.gumroad.com" rel="noopener">Glenerds</a></footer>
 </div>
@@ -930,6 +944,17 @@ function renderList(){
   qs.forEach(function(q){
     var t = calcTotals(q);
     var tr = el("tr");
+    tr.className = "q-row";
+    tr.setAttribute("tabindex","0");
+    tr.setAttribute("aria-label","Open quote "+qnum(q.num)+", "+(q.customer || "no customer")+", "+fmt(t.total));
+    tr.addEventListener("click", function(ev){
+      if(ev.target && ev.target.closest && ev.target.closest("button")) return;
+      openQuote(q.id);
+    });
+    tr.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openQuote(q.id); }
+    });
+    if(pipeSel && q.status !== pipeSel) tr.style.opacity = "0.38";
     var tdNum = el("td",null,qnum(q.num)); tdNum.style.fontWeight="600";
     tr.appendChild(tdNum);
     tr.appendChild(el("td",null,q.date));
@@ -944,6 +969,81 @@ function renderList(){
     tr.appendChild(tdA);
     tb.appendChild(tr);
   });
+  renderPipeline();
+}
+/* ---------- pipeline funnel: Draft -> Sent -> Accepted (+ Declined aside); click a stage to spotlight ---------- */
+var PIPE_STAGES = [
+  { st: "Draft", color: "#94a3b8" },
+  { st: "Sent", color: "#4f46e5" },
+  { st: "Accepted", color: "#10b981" }
+];
+function renderPipeline(){
+  var wrap = document.getElementById("pipe-funnel");
+  if(!wrap) return;
+  while(wrap.firstChild) wrap.removeChild(wrap.firstChild);
+  var qs = state.quotes || [];
+  var has = qs.length > 0;
+  document.getElementById("pipe-empty").hidden = has;
+  document.getElementById("pipe-hint").hidden = !has;
+  wrap.style.display = has ? "" : "none";
+  if(!has){ pipeSel = null; return; }
+  var stillThere = qs.some(function(q){ return q.status === pipeSel; });
+  if(!stillThere) pipeSel = null;
+  var data = PIPE_STAGES.map(function(s){
+    var list = qs.filter(function(q){ return q.status === s.st; });
+    var val = list.reduce(function(a,q){ return a + calcTotals(q).total; }, 0);
+    return { st: s.st, color: s.color, count: list.length, value: val };
+  });
+  var maxC = Math.max(1, Math.max.apply(null, data.map(function(d){ return d.count; })));
+  data.forEach(function(d){
+    var row = el("div",{class:"pipe-row"});
+    row.setAttribute("tabindex","0");
+    row.setAttribute("role","button");
+    row.setAttribute("aria-pressed", pipeSel === d.st ? "true" : "false");
+    row.setAttribute("aria-label", d.st + ": " + d.count + (d.count === 1 ? " quote" : " quotes") + ", " + fmt(d.value) + ". Activate to spotlight.");
+    if(pipeSel === d.st) row.classList.add("pipe-sel");
+    if(pipeSel && pipeSel !== d.st) row.style.opacity = "0.4";
+    (function(st){
+      var act = function(){
+        pipeSel = (pipeSel === st) ? null : st;
+        renderList();
+        Sound.click();
+      };
+      row.addEventListener("click", act);
+      row.addEventListener("keydown", function(e){ vizKeyHandler(e, act); });
+    })(d.st);
+    row.appendChild(el("span",{class:"pipe-lab"}, d.st + " · " + d.count));
+    var track = el("span",{class:"pipe-track"});
+    var fill = el("span",{class:"pipe-fill"});
+    fill.style.width = Math.max(7, Math.round(d.count / maxC * 100)) + "%";
+    fill.style.background = d.color;
+    track.appendChild(fill);
+    row.appendChild(track);
+    row.appendChild(el("span",{class:"pipe-val"}, fmt(d.value)));
+    wrap.appendChild(row);
+  });
+  var declined = qs.filter(function(q){ return q.status === "Declined"; });
+  if(declined.length){
+    var dval = declined.reduce(function(a,q){ return a + calcTotals(q).total; }, 0);
+    var dr = el("div",{class:"pipe-decl"});
+    dr.setAttribute("tabindex","0");
+    dr.setAttribute("role","button");
+    dr.setAttribute("aria-pressed", pipeSel === "Declined" ? "true" : "false");
+    dr.setAttribute("aria-label","Declined: " + declined.length + (declined.length === 1 ? " quote" : " quotes") + ", " + fmt(dval) + ". Activate to spotlight.");
+    if(pipeSel === "Declined") dr.classList.add("pipe-sel");
+    if(pipeSel && pipeSel !== "Declined") dr.style.opacity = "0.4";
+    var dact = function(){
+      pipeSel = (pipeSel === "Declined") ? null : "Declined";
+      renderList();
+      Sound.click();
+    };
+    dr.addEventListener("click", dact);
+    dr.addEventListener("keydown", function(e){ vizKeyHandler(e, dact); });
+    dr.appendChild(el("span",{class:"sw"}));
+    dr.appendChild(el("span",null,"Declined · " + declined.length));
+    dr.appendChild(el("span",{class:"pipe-val"}, fmt(dval)));
+    wrap.appendChild(dr);
+  }
 }
 function renderItems(q){
   var tb = document.getElementById("items-tbody");
@@ -1007,6 +1107,7 @@ function renderTotals(q){
 var SVGNS = "http://www.w3.org/2000/svg";
 /* spotlight selection (click a color/segment/bar to spotlight it; click again to release) */
 var vizDonutSel = null;
+var pipeSel = null; /* pipeline funnel spotlight: null | "Draft" | "Sent" | "Accepted" | "Declined" */
 var vizBarSel = null;
 function toggleVizDonut(label){ vizDonutSel = (vizDonutSel === label) ? null : label; refreshVisuals(); }
 function toggleVizBar(desc){ vizBarSel = (vizBarSel === desc) ? null : desc; refreshVisuals(); }
@@ -1364,10 +1465,11 @@ function bindSoundToggle(){
   if(!btn) return;
   function paint(){
     var on = Sound.isOn();
-    btn.innerHTML = on ? "&#128266;" : "&#128263;";
+    btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
     btn.setAttribute("aria-pressed", on ? "true" : "false");
     btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
     btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+    /* Sound button stays white (var(--surface)) in all states per the 2026-09-21 header reference. */
   }
   btn.addEventListener("click", function(){ Sound.toggle(); paint(); Sound.click(); });
   paint();
@@ -1382,6 +1484,7 @@ function setTheme(mode){
   btn.setAttribute("aria-label", lbl);
   btn.title = lbl;
   btn.setAttribute("aria-pressed", mode === "dark" ? "true" : "false");
+  btn.textContent = mode === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19";
   try{ window.localStorage.setItem(THEME_KEY, mode); }catch(e){}
 }
 function initTheme(){
@@ -1664,6 +1767,14 @@ function bindSampleToggle(){
   });
   paintSample();
 }
+
+/* Esc restores any active spotlight (clickability spec) */
+document.addEventListener("keydown", function(e){
+  if(e.key !== "Escape") return;
+  if(!pipeSel && !vizDonutSel && !vizBarSel) return;
+  pipeSel = null; vizDonutSel = null; vizBarSel = null;
+  renderList(); refreshVisuals(); Sound.click();
+});
 
 /* ---------- init ---------- */
 initTheme();

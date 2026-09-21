@@ -50,8 +50,6 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
   border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.85rem}
 .theme-pill:hover{background:rgba(255,255,255,.24)}
 .theme-pill svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
-[data-theme="light"] .icon-sun{display:none}
-[data-theme="dark"] .icon-moon{display:none}
 main{max-width:1024px;margin:0 auto;padding:20px 16px 60px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;
   box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
@@ -117,6 +115,11 @@ tbody tr:nth-child(even){background:var(--zebra)}
 canvas.chart{width:100%;height:260px;display:block}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin:8px 0}
 .legend span{display:inline-flex;align-items:center;gap:6px}
+.legend-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 6px;margin:0;font:inherit;color:inherit;cursor:pointer;border-radius:6px}
+.legend-btn:hover{text-decoration:underline}
+.legend-btn:focus{outline:none}
+.legend-btn:focus-visible{outline:2px solid var(--g-accent,#4f46e5);outline-offset:2px}
+.legend-btn[aria-pressed="true"]{font-weight:700}
 .dot{width:12px;height:12px;border-radius:50%;display:inline-block}
 .notice{border-left:4px solid var(--primary);background:var(--chip-bg);border-radius:0 10px 10px 0;
   padding:12px 16px;margin:12px 0;font-size:.92rem}
@@ -144,7 +147,7 @@ footer a{color:var(--primary)}
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: var(--g-accent-ink, #ffffff);
+  color: #ffffff;
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -164,17 +167,59 @@ a.g-store-btn, header.hero .g-store-btn { color: #ffffff; }
   cursor: pointer; background: var(--card); border: 1px solid var(--border);
   color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none;
 }
-.round-btn svg { width: 18px; height: 18px; flex: none; }
+.round-btn svg { width: 26px; height: 26px; flex: none; }
 .round-btn:hover { border-color: var(--g-accent, #4f46e5); }
 .round-btn:focus { outline: none; }
 .round-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
+/* header spec 2026-09-21: white round buttons; sample ON = accent-soft tint + accent
+   border/icon (NOT a solid accent fill); sound button stays white in all states */
 .round-btn.sample-toggle[aria-pressed="true"] {
-  color: var(--g-accent, #4f46e5); border-color: var(--g-accent, #4f46e5);
-  background: color-mix(in srgb, var(--g-accent, #4f46e5) 12%, transparent);
+  color: var(--g-accent, #4f46e5);
+  border-color: var(--g-accent, #4f46e5);
+  background: var(--g-accent-soft, #eef2ff);
 }
-.round-btn.theme-toggle .icon-sun { display: none; }
-[data-theme="dark"] .round-btn.theme-toggle .icon-sun { display: inline; }
-[data-theme="dark"] .round-btn.theme-toggle .icon-moon { display: none; }
+/* clickable comparison stat cards (click isolates that strategy's line) */
+.stat.spot-card { cursor: pointer; }
+.stat.spot-card:hover { border-color: var(--g-accent, #4f46e5); }
+.stat.spot-card:focus { outline: none; }
+.stat.spot-card:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.stat.spot-card[aria-pressed="true"] { border-color: var(--g-accent, #4f46e5); box-shadow: 0 0 0 2px var(--g-accent, #4f46e5); }
+.chart-cap { font-size: .8rem; color: var(--muted); margin: 6px 0 0; }
+/* balance-share donut */
+.donut-wrap { display: grid; grid-template-columns: 190px 1fr; gap: 18px; align-items: center; margin-top: 14px; }
+.donut-wrap svg { width: 100%; max-width: 190px; height: auto; display: block; margin: 0 auto; }
+.donut-seg { cursor: pointer; transition: opacity .15s; }
+.donut-seg:focus { outline: none; filter: drop-shadow(0 0 4px var(--g-accent, #4f46e5)); }
+.donut-legend { display: grid; gap: 6px; }
+.dl-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+  background: none; border: 1px solid transparent; border-radius: 8px; padding: 6px 8px;
+  color: var(--text); font-size: .82rem; cursor: pointer; }
+.dl-item:hover { border-color: var(--border); }
+.dl-item:focus { outline: none; }
+.dl-item:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 1px; }
+.dl-item[aria-pressed="true"] { border-color: var(--g-accent, #4f46e5); background: var(--zebra); }
+.dl-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.dl-item .dl-amt { margin-left: auto; font-weight: 700; white-space: nowrap; }
+.donut-detail { font-size: .85rem; color: var(--muted); margin-top: 10px; min-height: 1.4em; }
+.donut-detail strong { color: var(--text); }
+/* payoff-order timeline */
+.timeline { display: flex; align-items: stretch; gap: 0; margin-top: 14px; overflow-x: auto; padding-bottom: 4px; }
+.tl-step { flex: 1 1 0; min-width: 120px; text-align: center; cursor: pointer; background: none; border: none;
+  color: var(--text); padding: 6px 4px; border-radius: 10px; font-family: inherit; }
+.tl-step:hover { background: var(--zebra); }
+.tl-step:focus { outline: none; }
+.tl-step:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.tl-dot { width: 30px; height: 30px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: .8rem; background: var(--zebra); border: 2px solid var(--border); color: var(--text); position: relative; z-index: 1; }
+.tl-step[aria-pressed="true"] .tl-dot { background: var(--g-accent, #4f46e5); border-color: var(--g-accent, #4f46e5); color: #fff; }
+.tl-name { font-size: .8rem; font-weight: 700; }
+.tl-when { font-size: .72rem; color: var(--muted); }
+.tl-rail { align-self: center; flex: 0 0 18px; height: 2px; background: var(--border); margin: 0 -4px; position: relative; top: -21px; }
+.tl-note { font-size: .8rem; color: var(--muted); margin-top: 8px; min-height: 1.4em; }
+.tl-note strong { color: var(--text); }
+.sub-h { font-size: .95rem; font-weight: 800; margin: 18px 0 2px; }
+@media (max-width: 640px) { .donut-wrap { grid-template-columns: 1fr; } }
 @media (max-width: 640px) {
   .hero-inner { flex-wrap: wrap; }
   .g-header-actions { margin-left: 0; gap: 6px; }
@@ -193,7 +238,8 @@ a.g-store-btn, header.hero .g-store-btn { color: #ffffff; }
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -215,11 +261,8 @@ a.g-store-btn, header.hero .g-store-btn { color: #ffffff; }
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      </button>
+      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">&#x1F319;</button>
       <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
     </div>
   </div>
@@ -277,12 +320,22 @@ a.g-store-btn, header.hero .g-store-btn { color: #ffffff; }
     <div id="compareEmpty" class="notice">Add at least one debt above to see the comparison.</div>
     <div id="compareWrap" hidden>
       <div class="stat-cards" id="compareCards"></div>
-      <div class="legend">
-        <span><span class="dot" style="background:#6366f1"></span>Snowball</span>
-        <span><span class="dot" style="background:#8b5cf6"></span>Avalanche</span>
-        <span><span class="dot" style="background:#14b8a6"></span>Custom</span>
+      <div class="legend" role="group" aria-label="Strategy lines">
+        <button type="button" class="legend-btn" data-strat="snowball" aria-pressed="false" aria-label="Snowball — click to isolate its line"><span class="dot" style="background:#6366f1"></span>Snowball</button>
+        <button type="button" class="legend-btn" data-strat="avalanche" aria-pressed="false" aria-label="Avalanche — click to isolate its line"><span class="dot" style="background:#8b5cf6"></span>Avalanche</button>
+        <button type="button" class="legend-btn" data-strat="custom" aria-pressed="false" aria-label="Custom — click to isolate its line"><span class="dot" style="background:#14b8a6"></span>Custom</button>
       </div>
       <canvas class="chart" id="balanceChart" aria-label="Remaining balance over time chart"></canvas>
+      <p class="chart-cap" id="chartCap">Click a strategy card above to isolate its line — click again to show all.</p>
+      <h3 class="sub-h">Where your balance sits</h3>
+      <div class="donut-wrap">
+        <svg id="donutSvg" viewBox="0 0 200 200" role="img" aria-label="Balance share by debt"></svg>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+      <div class="donut-detail" id="donutDetail" aria-live="polite"></div>
+      <h3 class="sub-h">Payoff order timeline <span class="chart-cap" id="tlStrat"></span></h3>
+      <div class="timeline" id="payoffTl" role="list" aria-label="Payoff order timeline"></div>
+      <div class="tl-note" id="tlNote" aria-live="polite"></div>
     </div>
   </section>
 
@@ -325,7 +378,7 @@ a.g-store-btn, header.hero .g-store-btn { color: #ffffff; }
   </section>
 </main>
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer>
   <div>DebtPayoff Strategy Planner — your data never leaves this device.</div>
@@ -357,6 +410,8 @@ function applyTheme(t){
   var btn=$("themeToggle"), dark=(t==="dark"), lbl=dark?"Switch to light mode":"Switch to dark mode";
   btn.setAttribute("aria-pressed",dark?"true":"false");
   btn.setAttribute("aria-label",lbl); btn.title=lbl;
+  btn.textContent = dark ? "☀️" : "🌙"; /* header spec: emoji icon shows the mode you GET */
+  if(window.paintSoundBtn) window.paintSoundBtn();
   drawChart();
 }
 $("themeToggle").addEventListener("click",function(){
@@ -369,7 +424,7 @@ $("themeToggle").addEventListener("click",function(){
 var state = { debts:[], order:[], strategy:"snowball", extraMonthly:0, schedStrat:"snowball" };
 var editingId = null;
 
-var sampleOn=false, sampleSnap=null;
+var sampleOn=false, sampleSnap=null, sampleDom=null;
 function save(){
   if(sampleOn) return; /* sample data is transient — never persisted */
   try{ localStorage.setItem(LS_STATE, JSON.stringify(state)); }catch(e){}
@@ -422,7 +477,12 @@ function paintSample(){
 function setSample(on){
   if(on && !sampleOn){
     sampleSnap=JSON.stringify(state);
+    /* transient (uncommitted) form + control state — snapshot the DOM too */
+    sampleDom={ fName:$("fName").value, fBalance:$("fBalance").value, fApr:$("fApr").value, fMin:$("fMin").value,
+      extraRange:$("extraRange").value, schedStrat:$("schedStrat").value, debtErr:$("debtErr").textContent,
+      addLabel:$("addDebtBtn").querySelector("span").textContent, cancelHidden:$("cancelEditBtn").hidden };
     sampleOn=true; editingId=null;
+    window._spotDebt=null; window._spotStrat=null;
     state.debts=[
       {id:uid(),name:"Personal loan",balance:2500,apr:7.99,minPayment:80},
       {id:uid(),name:"Store card",balance:4200,apr:29.99,minPayment:126},
@@ -438,6 +498,17 @@ function setSample(on){
     sampleOn=false;
     try{ var s=JSON.parse(sampleSnap); if(s&&typeof s==="object") state=s; }catch(e){}
     sampleSnap=null; editingId=null;
+    window._spotDebt=null; window._spotStrat=null;
+    /* restore the exact transient form/control values, not just committed state */
+    if(sampleDom){
+      $("fName").value=sampleDom.fName; $("fBalance").value=sampleDom.fBalance;
+      $("fApr").value=sampleDom.fApr; $("fMin").value=sampleDom.fMin;
+      $("extraRange").value=sampleDom.extraRange; $("schedStrat").value=sampleDom.schedStrat;
+      $("debtErr").textContent=sampleDom.debtErr;
+      $("addDebtBtn").querySelector("span").textContent=sampleDom.addLabel;
+      $("cancelEditBtn").hidden=sampleDom.cancelHidden;
+      sampleDom=null;
+    }
     renderAll();
     $("demoNotice").hidden=true;
   }
@@ -477,10 +548,12 @@ var Sound=(function(){
   var btn=$("soundToggle"); if(!btn) return;
   function paint(){ var on=Sound.isOn();
     btn.innerHTML=on?"&#128266;":"&#128263;";
+    btn.setAttribute("data-snd",on?"on":"off");
     btn.setAttribute("aria-pressed",on?"true":"false");
     btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
     btn.title="Toggle sounds ("+(on?"on":"off")+")";
   }
+  window.paintSoundBtn=paint;
   btn.addEventListener("click",function(){ Sound.toggle(); paint(); Sound.click(); });
   paint();
 })();
@@ -500,6 +573,7 @@ function simulate(strategy, extraMonthly){
   var order=orderFor(strategy);
   var totalInterest=0, totalPaid=0, month=0, streak=0, prevBal=Infinity;
   var schedule=[];
+  var paidOff=[], paidSeen=Object.create(null); /* per-debt payoff months — recording only, no math change */
   var now=new Date(); var startY=now.getFullYear(), startM=now.getMonth();
   var startBal=debts.reduce(function(s,d){return s+d.bal;},0);
   if(startBal<=0.004) return {never:true,reason:"empty"};
@@ -529,6 +603,8 @@ function simulate(strategy, extraMonthly){
     }
     totalPaid+=mPaid;
     var bal=debts.reduce(function(s,x){return s+Math.max(0,x.bal);},0);
+    for(var pi=0;pi<debts.length;pi++){ var pd=debts[pi];
+      if(pd.bal<=0.004 && !paidSeen[pd.id]){ paidSeen[pd.id]=1; paidOff.push({id:pd.id,month:month}); } }
     schedule.push({month:month,paid:mPaid,interest:mInt,balance:bal,
       date:new Date(startY,startM+month-1,1)});
     if(mPaid<=1e-9) return {never:true,reason:"stuck"};
@@ -539,7 +615,7 @@ function simulate(strategy, extraMonthly){
   if(month>=MAX_MONTHS) return {never:true,reason:"toolong"};
   var payoff=new Date(startY,startM+month-1,1);
   return {never:false,months:month,totalInterest:totalInterest,totalPaid:totalPaid,
-    startBal:startBal,schedule:schedule,
+    startBal:startBal,schedule:schedule,paidOff:paidOff,
     payoffLabel:payoff.toLocaleDateString("en-US",{month:"short",year:"numeric"})};
 }
 
@@ -661,13 +737,39 @@ function moveOrder(id,dir){
   save(); renderOrder(); renderCompare(); renderSchedule();
 }
 
+/* strategy-line spotlight shared by cards + legend; canvas point inspection */
+window._chartSpot=null;
+function toggleSpotStrat(s){ window._spotStrat=(window._spotStrat===s)?null:s; Sound.select(); renderCompare(); }
+function paintChartCap(){
+  var cap=$("chartCap"); if(!cap) return;
+  var res=window._cmpResults;
+  if(window._chartSpot!=null && res){
+    var m=window._chartSpot, parts=[];
+    ["snowball","avalanche","custom"].forEach(function(s){
+      var r=res[s]; if(r.never||!r.schedule.length) return;
+      var pt=null; for(var i=0;i<r.schedule.length;i++){ if(r.schedule[i].month<=m) pt=r.schedule[i]; else break; }
+      parts.push(STRAT_NAMES[s]+" "+money(pt?pt.balance:0).replace(".00",""));
+    });
+    cap.textContent="Month "+m+" — remaining balance: "+parts.join(" · ")+" — click the chart again to clear.";
+    return;
+  }
+  cap.textContent=window._spotStrat ?
+    ("Showing "+STRAT_NAMES[window._spotStrat]+" only — click its card again to show all.") :
+    "Click a strategy card above to isolate its line — click again to show all.";
+}
 function renderCompare(){
   var empty=state.debts.length===0;
   $("compareEmpty").hidden=!empty; $("compareWrap").hidden=empty;
-  if(empty) return;
+  if(empty){ /* clear stale visuals so off-sample/empty state is truly empty */
+    $("donutSvg").innerHTML=""; $("donutLegend").innerHTML=""; $("donutDetail").textContent="";
+    $("payoffTl").innerHTML=""; $("tlNote").textContent="";
+    return;
+  }
   var results={};
   ["snowball","avalanche","custom"].forEach(function(s){ results[s]=simulate(s,state.extraMonthly); });
-  var wrap=$("compareCards"); wrap.innerHTML="";
+  var wrap=$("compareCards");
+  var cfa=document.activeElement, cfk=cfa&&cfa.getAttribute?cfa.getAttribute("data-strat"):null;
+  wrap.innerHTML="";
   var best=null,bestInt=Infinity;
   ["snowball","avalanche","custom"].forEach(function(s){
     var r=results[s];
@@ -675,7 +777,15 @@ function renderCompare(){
   });
   ["snowball","avalanche","custom"].forEach(function(s){
     var r=results[s];
-    var card=document.createElement("div"); card.className="stat";
+    var card=document.createElement("div"); card.className="stat spot-card";
+    card.setAttribute("data-strat",s);
+    card.tabIndex=0; card.setAttribute("role","button");
+    card.setAttribute("aria-pressed",window._spotStrat===s?"true":"false");
+    card.setAttribute("aria-label",STRAT_NAMES[s]+" — click to isolate its line on the chart");
+    (function(strat){
+      card.addEventListener("click",function(){ toggleSpotStrat(strat); });
+      card.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggleSpotStrat(strat); } });
+    })(s);
     var html="";
     if(s===best) html+='<span class="best">Lowest interest</span>';
     html+='<div class="s-label">'+STRAT_NAMES[s]+'</div>';
@@ -693,7 +803,12 @@ function renderCompare(){
     wrap.appendChild(card);
   });
   window._cmpResults=results;
+  document.querySelectorAll(".legend-btn").forEach(function(b){ b.setAttribute("aria-pressed", window._spotStrat===b.getAttribute("data-strat")?"true":"false"); });
+  paintChartCap();
   drawChart();
+  renderDonut();
+  renderTimeline(results);
+  if(cfk){ var nc=wrap.querySelector('.spot-card[data-strat="'+cfk+'"]'); if(nc)nc.focus({preventScroll:true}); }
 }
 
 function drawChart(){
@@ -730,13 +845,134 @@ function drawChart(){
   }
   ["snowball","avalanche","custom"].forEach(function(s){
     var r=res[s]; if(r.never||!r.schedule.length) return;
-    ctx.strokeStyle=STRAT_COLORS[s]; ctx.lineWidth=2.5; ctx.beginPath();
+    var spot=window._spotStrat;
+    ctx.globalAlpha=spot?(s===spot?1:0.15):1;
+    ctx.strokeStyle=STRAT_COLORS[s]; ctx.lineWidth=(spot&&s===spot)?4:2.5; ctx.beginPath();
     r.schedule.forEach(function(pt,i){
       var x=padL+iw*pt.month/maxM, y=padT+ih-(ih*pt.balance/maxB);
       if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
     });
-    ctx.stroke();
+    ctx.stroke(); ctx.globalAlpha=1;
   });
+  if(window._chartSpot!=null){
+    var sx=padL+iw*window._chartSpot/maxM;
+    ctx.save(); ctx.setLineDash([5,4]); ctx.strokeStyle=dark?"#a5b4fc":"#4f46e5"; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(sx,padT); ctx.lineTo(sx,padT+ih); ctx.stroke(); ctx.restore();
+  }
+}
+
+/* ---------- balance-share donut (gallery SHARE) + payoff-order timeline (gallery STEPS) ---------- */
+var DEBT_COLORS=["#6366f1","#8b5cf6","#14b8a6","#f59e0b","#ef4444","#0ea5e9","#ec4899","#84cc16"];
+window._spotDebt=null; window._spotStrat=null;
+function toggleSpotDebt(id){
+  window._spotDebt=(window._spotDebt===id)?null:id;
+  Sound.select(); renderDonut(); renderTimeline(window._cmpResults);
+}
+function renderDonut(){
+  var svg=$("donutSvg"), leg=$("donutLegend"), det=$("donutDetail");
+  if(!svg) return;
+  /* keep keyboard focus on the same debt across the rebuild so Enter/Space can toggle back */
+  var fa=document.activeElement, fk=fa&&fa.getAttribute?fa.getAttribute("data-did"):null;
+  svg.innerHTML=""; leg.innerHTML="";
+  var debts=state.debts.slice();
+  var total=debts.reduce(function(s,d){return s+d.balance;},0);
+  var spot=window._spotDebt;
+  if(!debts.length||total<=0){ det.textContent=""; return; }
+  var NS="http://www.w3.org/2000/svg", C=2*Math.PI*70, cum=0;
+  debts.forEach(function(d,i){
+    var frac=d.balance/total, len=frac*C, col=DEBT_COLORS[i%DEBT_COLORS.length];
+    var c=document.createElementNS(NS,"circle");
+    c.setAttribute("cx",100); c.setAttribute("cy",100); c.setAttribute("r",70);
+    c.setAttribute("fill","none"); c.setAttribute("stroke",col);
+    c.setAttribute("stroke-width",spot===d.id?36:26);
+    c.setAttribute("stroke-dasharray",Math.max(0.1,len-1.5)+" "+C);
+    c.setAttribute("stroke-dashoffset",-cum);
+    c.setAttribute("transform","rotate(-90 100 100)");
+    c.setAttribute("class","donut-seg");
+    c.setAttribute("data-did",d.id);
+    c.setAttribute("tabindex","0"); c.setAttribute("role","button");
+    c.setAttribute("aria-label",d.name+": "+money(d.balance)+" ("+Math.round(frac*100)+"%) — click for details");
+    if(spot&&spot!==d.id) c.setAttribute("opacity","0.25");
+    (function(id){ function t(){ toggleSpotDebt(id); }
+      c.addEventListener("click",t);
+      c.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); t(); } });
+    })(d.id);
+    svg.appendChild(c);
+    cum+=len;
+    var b=document.createElement("button"); b.className="dl-item";
+    b.setAttribute("data-did",d.id);
+    b.setAttribute("aria-pressed",spot===d.id?"true":"false");
+    b.setAttribute("aria-label",d.name+" — click to spotlight");
+    b.innerHTML='<span class="dl-dot" style="background:'+col+'"></span><span class="dl-name"></span><span class="dl-amt"></span>';
+    b.querySelector(".dl-name").textContent=d.name;
+    b.querySelector(".dl-amt").textContent=money(d.balance);
+    (function(id){ b.addEventListener("click",function(){ toggleSpotDebt(id); }); })(d.id);
+    leg.appendChild(b);
+  });
+  var sd=debts.filter(function(d){return d.id===spot;})[0];
+  function txt(y,size,weight,str){
+    var t=document.createElementNS(NS,"text");
+    t.setAttribute("x",100); t.setAttribute("y",y); t.setAttribute("text-anchor","middle");
+    t.setAttribute("font-size",size); t.setAttribute("font-weight",weight);
+    t.setAttribute("fill","var(--text)"); t.setAttribute("pointer-events","none");
+    t.textContent=str; svg.appendChild(t);
+  }
+  if(sd){ txt(97,17,800,Math.round(sd.balance/total*100)+"%"); txt(118,11,600,sd.name.slice(0,18)); }
+  else { txt(97,17,800,money(total).replace(".00","")); txt(118,11,600,"total balance"); }
+  if(sd){
+    var pos=orderFor(state.strategy).indexOf(sd.id);
+    det.innerHTML="<strong>"+esc(sd.name)+"</strong> — "+money(sd.balance)+" · "+sd.apr+"% APR · "+
+      money(sd.minPayment)+"/mo min · "+Math.round(sd.balance/total*100)+"% of total balance"+
+      (pos>=0?" · #"+(pos+1)+" in "+STRAT_NAMES[state.strategy]+" order":"")+". Click the slice again to clear.";
+  }else{
+    det.innerHTML="Total balance <strong>"+money(total)+"</strong> across "+debts.length+
+      " debt"+(debts.length>1?"s":"")+" — click a slice or legend item for details.";
+  }
+  if(fk){ var ne=svg.querySelector('circle.donut-seg[data-did="'+fk+'"]')||leg.querySelector('button.dl-item[data-did="'+fk+'"]'); if(ne)ne.focus({preventScroll:true}); }
+}
+function renderTimeline(results){
+  var tl=$("payoffTl"), note=$("tlNote"), lab=$("tlStrat");
+  if(!tl) return;
+  /* keep keyboard focus on the same step across the rebuild so Space can toggle back */
+  var rfa=document.activeElement, rfk=rfa&&rfa.getAttribute?rfa.getAttribute("data-fk"):null;
+  tl.innerHTML="";
+  var s=state.strategy, r=results&&results[s];
+  lab.textContent="— "+STRAT_NAMES[s]+" plan";
+  if(!r||r.never||!r.paidOff||!r.paidOff.length){ note.textContent=""; return; }
+  var byId=Object.create(null); state.debts.forEach(function(d){byId[d.id]=d;});
+  var now=new Date();
+  r.paidOff.forEach(function(p,i){
+    var d=byId[p.id]; if(!d) return;
+    var dt=new Date(now.getFullYear(),now.getMonth()+p.month-1,1);
+    var when=dt.toLocaleDateString("en-US",{month:"short",year:"numeric"});
+    var st=document.createElement("button");
+    st.className="tl-step"; st.setAttribute("role","listitem");
+    st.setAttribute("data-fk","tl-"+p.id);
+    st.setAttribute("aria-pressed",window._spotDebt===p.id?"true":"false");
+    st.setAttribute("aria-label","Step "+(i+1)+": "+d.name+", paid off "+when+" — click for details");
+    st.innerHTML='<div class="tl-dot">'+(i+1)+'</div><div class="tl-name"></div><div class="tl-when"></div>';
+    st.querySelector(".tl-name").textContent=d.name;
+    st.querySelector(".tl-when").textContent=when;
+    if(window._spotDebt && window._spotDebt!==p.id) st.style.opacity="0.35"; /* dim the rest */
+    (function(id,monthN,whenS){ st.addEventListener("click",function(){
+      if(window._spotDebt===id){ window._spotDebt=null; }
+      else{ window._spotDebt=id; }
+      Sound.select(); renderDonut(); renderTimeline(window._cmpResults);
+    }); })(p.id,p.month,when);
+    tl.appendChild(st);
+    if(i<r.paidOff.length-1){ var rail=document.createElement("div"); rail.className="tl-rail"; tl.appendChild(rail); }
+  });
+  var sd=state.debts.filter(function(d){return d.id===window._spotDebt;})[0];
+  if(sd){
+    var sp=r.paidOff.filter(function(p){return p.id===sd.id;})[0];
+    var sdt=sp?new Date(now.getFullYear(),now.getMonth()+sp.month-1,1).toLocaleDateString("en-US",{month:"short",year:"numeric"}):"";
+    note.innerHTML="<strong>"+esc(sd.name)+"</strong> — "+money(sd.balance)+" at "+sd.apr+"% APR, "+
+      money(sd.minPayment)+"/mo minimum — paid off <strong>"+esc(sdt)+"</strong>, month "+(sp?sp.month:"?")+
+      " of the "+STRAT_NAMES[s]+" plan.";
+  }else{
+    note.textContent="Click a step to see that debt's payoff details.";
+  }
+  if(rfk){ var rne=tl.querySelector('[data-fk="'+rfk+'"]'); if(rne) rne.focus({preventScroll:true}); }
 }
 
 function renderSchedule(){
@@ -767,6 +1003,39 @@ function renderSchedule(){
 function renderAll(){
   renderDebts(); renderStrategy(); renderCompare(); renderSchedule();
 }
+/* balance chart: click/tap inspects that month's balances; Enter/Space inspects the midpoint */
+function chartMonthFromX(clientX){
+  var cv=$("balanceChart"), res=window._cmpResults; if(!cv||!res) return null;
+  var r=cv.getBoundingClientRect(), x=clientX-r.left, maxM=0;
+  ["snowball","avalanche","custom"].forEach(function(s){ if(!res[s].never) maxM=Math.max(maxM,res[s].months); });
+  if(maxM<=0) return null;
+  var padL=64,padR=12, W=cv.clientWidth||900, iw=W-padL-padR;
+  return Math.max(0,Math.min(maxM,Math.round((x-padL)/iw*maxM)));
+}
+function toggleChartSpot(m){ window._chartSpot=(window._chartSpot===m)?null:m; Sound.select(); paintChartCap(); drawChart(); }
+(function(){
+  var cv=$("balanceChart"); if(!cv) return;
+  cv.setAttribute("tabindex","0"); cv.setAttribute("role","button");
+  cv.setAttribute("aria-label","Remaining balance over time chart. Click to inspect a month's balances; keyboard: Enter or Space inspects the midpoint month.");
+  cv.style.cursor="pointer";
+  cv.addEventListener("click",function(e){ var m=chartMonthFromX(e.clientX); if(m!=null) toggleChartSpot(m); });
+  cv.addEventListener("keydown",function(e){
+    if(e.key==="Enter"||e.key===" "){ e.preventDefault();
+      var res=window._cmpResults, maxM=0;
+      if(res)["snowball","avalanche","custom"].forEach(function(s){ if(!res[s].never) maxM=Math.max(maxM,res[s].months); });
+      if(maxM>0) toggleChartSpot(Math.round(maxM/2)); }
+  });
+  document.querySelectorAll(".legend-btn").forEach(function(b){
+    b.addEventListener("click",function(){ toggleSpotStrat(b.getAttribute("data-strat")); });
+  });
+})();
+/* Esc clears any active spotlight (balance donut / legend / timeline debt, strategy card, chart point) */
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape")return;
+  if(!window._spotDebt&&!window._spotStrat&&window._chartSpot==null)return;
+  window._spotDebt=null; window._spotStrat=null; window._chartSpot=null;
+  renderDonut(); renderTimeline(window._cmpResults); renderCompare(); Sound.select();
+});
 
 /* ---------- events ---------- */
 $("addDebtBtn").addEventListener("click",submitDebt);

@@ -23,6 +23,7 @@
   --shadow:0 8px 24px rgba(15,118,110,.10);
   --good:#15803d; --good-bg:#dcfce7; --warn:#b45309; --warn-bg:#fef3c7;
   --danger:#dc2626; --danger-bg:#fee2e2;
+  --ch1:#197b63; --ch2:#f06f52; --ch3:#c98f14; --ch4:#3478d4; --ch5:#c45e93;
 }
 [data-theme="dark"]{
   --bg:#0c1117; --card:#141b24; --text:#eef3f7; --muted:#9fb0c3;
@@ -31,6 +32,7 @@
   --shadow:0 8px 24px rgba(0,0,0,.35);
   --good:#4ade80; --good-bg:#14532d; --warn:#fbbf24; --warn-bg:#451a03;
   --danger:#f87171; --danger-bg:#450a0a;
+  --ch1:#58c9a7; --ch2:#ff8468; --ch3:#f5c555; --ch4:#68a5f2; --ch5:#e77eb5;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -51,15 +53,45 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
 .g-header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto}
 .g-round-btn{flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
   display:inline-flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);color:#fff;
+  background:var(--card);border:1px solid var(--border);color:var(--text);
   border-radius:999px;cursor:pointer;font-size:1.1rem;
-  transition:background .18s ease, transform .18s ease}
-.g-round-btn svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.g-round-btn:hover{background:rgba(255,255,255,.24)}
+  box-shadow:0 2px 8px rgba(0,0,0,.10);
+  transition:border-color .18s ease, transform .18s ease}
+.g-round-btn svg{width:26px;height:26px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.g-round-btn.theme-toggle,.g-round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+.g-round-btn:hover{border-color:var(--primary)}
 .g-round-btn:active{transform:scale(0.97)}
 .g-round-btn:focus{outline:none}
-.g-round-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.g-round-btn.sample-toggle[aria-pressed="true"]{border-color:#fff;background:rgba(255,255,255,.32)}
+.g-round-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.g-round-btn.sample-toggle[aria-pressed="true"]{color:var(--primary);border-color:var(--primary);
+  background:color-mix(in srgb, var(--primary) 12%, var(--card))}
+/* ---- Receipt insights (charts) ---- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:10px}
+.kpi{background:var(--chip-bg);border-radius:10px;padding:10px 12px}
+.kpi[role="button"]{cursor:pointer;border:1px solid transparent;transition:border-color .18s ease}
+.kpi[role="button"]:hover{border-color:var(--primary)}
+.kpi[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--primary2))}
+.kpi[role="button"][aria-pressed="true"]{border-color:var(--primary)}
+.kpi .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700}
+.kpi .v{font-size:1.28rem;font-weight:700}
+#kpiDet{margin-bottom:14px}
+.hist-item[role="button"]{cursor:pointer;border-radius:8px}
+.hist-item[role="button"]:hover{background:var(--chip-bg)}
+.hist-item[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--primary2))}
+.charts2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:700px){.charts2{grid-template-columns:1fr}}
+.ch-panel h3{margin:0 0 8px;font-size:.95rem}
+.ch-panel svg{width:100%;height:auto;display:block}
+svg .seg,svg .ch-bar{cursor:pointer}
+svg .seg:focus,svg .ch-bar:focus{outline:none;filter:drop-shadow(0 0 5px rgba(14,116,144,.9))}
+.ch-bar:focus{outline:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.28))}
+.ch-leg{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--input-border);
+  background:var(--input-bg);color:var(--text);border-radius:999px;padding:5px 12px;
+  font-size:.8rem;cursor:pointer;margin:3px 6px 3px 0}
+.ch-leg .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.ch-leg[aria-pressed="true"]{border-color:var(--primary);box-shadow:0 0 0 2px rgba(14,116,144,.28)}
+.ch-leg:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
+.ch-det{margin-top:10px;font-size:.9rem;background:var(--chip-bg);border-radius:10px;padding:10px 14px;min-height:2.6em}
 @media(max-width:480px){.g-header-actions{gap:6px}}
 @media(max-width:520px){
   .hero-inner{flex-wrap:wrap;row-gap:8px}
@@ -146,7 +178,7 @@ footer>div{margin-bottom:6px}
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: var(--g-accent-ink, #ffffff);
+  color: #fff;
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -154,7 +186,8 @@ footer>div{margin-bottom:6px}
   box-shadow: 0 1px 2px rgba(0,0,0,.12);
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+[data-theme="dark"] .g-store-btn, [data-theme="dark"] .g-store-btn:hover { color: #fff; }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .g-cta-strip {
@@ -171,7 +204,7 @@ footer>div{margin-bottom:6px}
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; vertical-align: -0.08em; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -192,9 +225,9 @@ footer>div{margin-bottom:6px}
     </div>
     <div class="g-header-actions no-print">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button class="g-round-btn" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"></button>
-      <button class="g-round-btn" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+      <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button class="g-round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button class="g-round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
   </div>
 </header>
@@ -311,6 +344,15 @@ footer>div{margin-bottom:6px}
     </section>
   </div>
 
+  <!-- RECEIPT INSIGHTS -->
+  <section class="card no-print" id="insightsCard" aria-label="Receipt insights">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg></div>
+      <h2>Receipt insights</h2>
+    </div>
+    <div id="insightsBody"></div>
+  </section>
+
   <!-- HISTORY -->
   <section class="card no-print" aria-label="Receipt history">
     <div class="card-head">
@@ -327,7 +369,7 @@ footer>div{margin-bottom:6px}
 </main>
 
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer>
   <div>RentReceipt &mdash; Free Rent Receipt Generator. Your data never leaves this device.</div>
@@ -344,12 +386,6 @@ var F=["landlord","tenant","amount","datePaid","method","receiptNo","period","ad
 
 /* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
 var sampleOn=false, sampleSnap=null, sampleHist=null;
-function paintSample(){
-  var b=$("sampleToggle"); if(!b)return;
-  var l=sampleOn?"Clear sample data":"Try sample data";
-  b.setAttribute("aria-pressed",sampleOn?"true":"false");
-  b.setAttribute("aria-label",l); b.title=l;
-}
 function rawGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function rawSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
 function fillSample(){
@@ -362,22 +398,47 @@ function fillSample(){
      address:"123 Maple St, Bloomington, IN 47401",memo:"Rent for August 2026"},
     {id:"s2",receiptNo:"RR-0040",tenant:"Alex Johnson",amount:1450,datePaid:"2026-07-15",
      landlord:"Maple Street Properties",method:"Cash",period:"July 2026",
+     address:"123 Maple St, Bloomington, IN 47401",memo:""},
+    {id:"s3",receiptNo:"RR-0039",tenant:"Alex Johnson",amount:1450,datePaid:"2026-06-15",
+     landlord:"Maple Street Properties",method:"Bank transfer",period:"June 2026",
      address:"123 Maple St, Bloomington, IN 47401",memo:""}
   ];
   renderHistory();
   updatePreview();
 }
+/* snapshot every scrap of transient UI: form values, validation styling + messages, draft, counters */
+function snapValidation(){
+  var o={};
+  F.forEach(function(f){
+    var box=document.querySelector('.field[data-f="'+f+'"]');
+    o[f]={inv:box?box.classList.contains("invalid"):false,
+          err:box&&box.querySelector(".err")?box.querySelector(".err").textContent:""};
+  });
+  o.formErr=$("formErr").textContent;
+  return o;
+}
+function restoreValidation(o){
+  if(!o)return;
+  F.forEach(function(f){
+    var box=document.querySelector('.field[data-f="'+f+'"]');
+    if(!box)return;
+    box.classList.toggle("invalid",!!(o[f]&&o[f].inv));
+    var slot=box.querySelector(".err");
+    if(slot)slot.textContent=(o[f]&&o[f].err)||"";
+  });
+  $("formErr").textContent=o.formErr||"";
+}
 function setSample(on){
   if(on&&!sampleOn){
-    sampleSnap={form:formData(),hist:rawGet(K.hist),draft:rawGet(K.draft),next:rawGet(K.next)};
-    sampleOn=true;
+    sampleSnap={form:formData(),val:snapValidation(),hist:rawGet(K.hist),draft:rawGet(K.draft),next:rawGet(K.next)};
+    sampleOn=true; window.__gSampleOn=true;
     fillSample();
   }else if(!on&&sampleOn){
-    sampleOn=false;
+    sampleOn=false; window.__gSampleOn=false;
     var snap=sampleSnap; sampleSnap=null; sampleHist=null;
     if(snap){
       rawSet(K.hist,snap.hist); rawSet(K.draft,snap.draft); rawSet(K.next,snap.next);
-      setForm(snap.form); renderHistory();
+      setForm(snap.form); restoreValidation(snap.val); renderHistory();
     }
   }
   paintSample();
@@ -409,31 +470,37 @@ var Sound=(function(){
     toggleTheme:function(){if(on)tone(440,0.06,"triangle",0.05);}
   };
 })();
+/* ---------- theme (spec reference: emoji icon, white round button adapts via vars) ---------- */
+function paintTheme(){
+  var dark=document.documentElement.getAttribute("data-theme")==="dark";
+  var b=$("themeToggle"); if(!b)return;
+  b.textContent=dark?"☀️":"🌙";
+  var l=dark?"Switch to light mode":"Switch to dark mode";
+  b.setAttribute("aria-pressed",dark?"true":"false");
+  b.setAttribute("aria-label",l); b.title=l;
+}
 function paintSoundBtn(btn){
+  /* spec reference: emoji icon, button stays white in all states */
   var on=Sound.isOn();
-  btn.innerHTML=on?"&#128266;":"&#128263;";
+  btn.textContent=on?"🔊":"🔇";
   btn.setAttribute("aria-pressed",on?"true":"false");
   btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
   btn.title="Toggle sounds ("+(on?"on":"off")+")";
 }
 function toggleSound(btn){Sound.toggle();paintSoundBtn(btn);Sound.click();}
-
-/* ---------- theme icon paint ---------- */
-function paintTheme(){
-  var dark=document.documentElement.getAttribute("data-theme")==="dark";
-  var b=$("themeToggle"); if(!b)return;
-  b.innerHTML=dark
-    ?'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
-    :'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
-  var l=dark?"Switch to light mode":"Switch to dark mode";
-  b.setAttribute("aria-pressed",dark?"true":"false");
+function paintSample(){
+  var b=$("sampleToggle"); if(!b)return;
+  var l=sampleOn?"Clear sample data":"Try sample data";
+  b.setAttribute("aria-pressed",sampleOn?"true":"false");
   b.setAttribute("aria-label",l); b.title=l;
+  /* ON tint comes from .sample-toggle[aria-pressed="true"] CSS — white button per spec */
 }
+function paintHeader(){paintTheme();paintSample();paintSoundBtn($("soundToggle"));}
 
 function load(key,fallback){try{var v=localStorage.getItem(key);return v==null?fallback:JSON.parse(v);}catch(e){return fallback;}}
 function store(key,val){
   /* sample data is transient — never persisted (theme writes stay allowed) */
-  if(sampleOn&&key!==K.theme)return;
+  if(window.__gSampleOn||sampleOn){if(key!==K.theme)return;}
   try{localStorage.setItem(key,key===K.theme?val:JSON.stringify(val));}catch(e){}
 }
 
@@ -525,16 +592,215 @@ function getHistory(){
   var h=load(K.hist,[]);return Array.isArray(h)?h:[];
 }
 function setHistory(h){store(K.hist,h);}
+
+/* ---------- receipt insights: monthly bars + payment-method donut ---------- */
+var CH_COLORS=["var(--ch1)","var(--ch2)","var(--ch3)","var(--ch4)","var(--ch5)"];
+function monthLabel(ym){var p=ym.split("-"),d=new Date(+p[0],+p[1]-1,1);
+  return d.toLocaleDateString("en-US",{month:"short",year:"numeric"});}
+function monthlyAgg(){
+  var map={},h=getHistory();
+  h.forEach(function(r){
+    var k=(r.datePaid||"").slice(0,7);
+    if(!/^\d{4}-\d{2}$/.test(k))return;
+    if(!map[k])map[k]={total:0,count:0};
+    map[k].total+=isFinite(r.amount)?r.amount:0; map[k].count++;
+  });
+  return Object.keys(map).sort().map(function(k){
+    return{key:k,label:monthLabel(k),total:map[k].total,count:map[k].count};
+  });
+}
+function methodAgg(){
+  var map={},h=getHistory();
+  h.forEach(function(r){
+    var m=r.method||"Other";
+    if(!map[m])map[m]={total:0,count:0};
+    map[m].total+=isFinite(r.amount)?r.amount:0; map[m].count++;
+  });
+  return Object.keys(map).map(function(k){return{method:k,total:map[k].total,count:map[k].count};});
+}
+/* gallery-style donut: dashed-circle segments, center readout */
+function donutSVG(uidp,segs,total,topText,subText){
+  var C=345.6,acc=0,i;
+  var g="";
+  for(i=0;i<segs.length;i++){
+    var frac=total>0?segs[i].value/total:0;
+    var len=segs.length>1?Math.max(frac*C-1.4,0.6):C;
+    g+='<g class="seg" tabindex="0" role="button" data-i="'+i+'" aria-pressed="false" aria-label="'+esc(segs[i].label+": "+segs[i].hint)+'">'
+      +'<circle cx="80" cy="80" r="55" fill="none" stroke="'+segs[i].color+'" stroke-width="24"'
+      +' stroke-dasharray="'+len.toFixed(1)+" "+C.toFixed(1)+'" stroke-dashoffset="'+(-acc).toFixed(1)+'"/></g>';
+    acc+=frac*C;
+  }
+  return '<svg viewBox="0 0 160 160" role="img" aria-label="Payment method breakdown donut chart">'
+    +'<circle cx="80" cy="80" r="55" fill="none" stroke="var(--border)" stroke-width="24"/>'
+    +'<g fill="none" transform="rotate(-90 80 80)">'+g+'</g>'
+    +'<text x="80" y="78" text-anchor="middle" pointer-events="none" style="font-size:20px;font-weight:700;fill:var(--text)" id="'+uidp+'-top">'+esc(topText)+'</text>'
+    +'<text x="80" y="98" text-anchor="middle" pointer-events="none" style="font-size:10.5px;letter-spacing:1.2px;fill:var(--muted)" id="'+uidp+'-sub">'+esc(subText)+'</text></svg>';
+}
+function legendHTML(segs){
+  return '<div class="ch-legend">'+segs.map(function(s,i){
+    return '<button type="button" class="ch-leg" data-i="'+i+'" aria-pressed="false">'
+      +'<span class="sw" style="background:'+s.color+'"></span><span>'+esc(s.label)+'</span>'
+      +'<span style="color:var(--muted)">'+esc(s.hint)+'</span></button>';
+  }).join("")+'</div>';
+}
+function barsSVG(months){
+  var W=380,padL=100,rowH=40,top=8;
+  var max=Math.max.apply(null,months.map(function(m){return m.total;}).concat([0]));
+  var H=top+months.length*rowH+6,s="";
+  months.forEach(function(m,i){
+    var y=top+i*rowH,bw=max>0?Math.max(Math.round(m.total/max*180),3):0;
+    s+='<g class="ch-bar" tabindex="0" role="button" data-i="'+i+'" aria-pressed="false"'
+      +' aria-label="'+esc(m.label+": "+fmtMoney(m.total)+", "+m.count+" receipts")+'">'
+      +'<text x="0" y="'+(y+21)+'" style="font-size:12px;fill:var(--muted)">'+esc(m.label)+'</text>'
+      +'<rect x="'+padL+'" y="'+(y+8)+'" width="'+bw+'" height="20" rx="5" fill="var(--ch1)"/>'
+      +'<text x="'+(padL+bw+8)+'" y="'+(y+21)+'" style="font-size:12px;font-weight:600;fill:var(--text)">'+esc(fmtMoney(m.total))+'</text></g>';
+  });
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Monthly rent totals bar chart">'+s+'</svg>';
+}
+/* shared select-to-spotlight behavior: click/Enter/Space spotlights an item and
+   swaps the detail readout; clicking again restores the default view */
+function wireSelectable(scope,segs,fmtDetail,fmtDefault,detId,onPick){
+  var det=$(detId),sel=-1;
+  var items=scope.querySelectorAll(".seg,.ch-bar");
+  function pick(i){
+    sel=(sel===i?-1:i);
+    items.forEach(function(g,gi){
+      g.style.opacity=(sel===-1||sel===gi)?"1":"0.25";
+      g.setAttribute("aria-pressed",sel===gi?"true":"false");
+    });
+    scope.querySelectorAll(".ch-leg").forEach(function(l,li){
+      l.setAttribute("aria-pressed",sel===li?"true":"false");
+    });
+    det.innerHTML=sel===-1?fmtDefault():fmtDetail(segs[sel]);
+    if(onPick)onPick(sel);
+  }
+  items.forEach(function(g,i){
+    g.addEventListener("click",function(){pick(i);Sound.click();});
+    g.addEventListener("keydown",function(e){
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(i);Sound.click();}
+    });
+  });
+  scope.querySelectorAll(".ch-leg").forEach(function(l,i){
+    l.addEventListener("click",function(){pick(i);Sound.click();});
+  });
+  /* Escape restores the default view for this chart's spotlight */
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape"&&sel!==-1){pick(sel);Sound.click();}
+  });
+  det.innerHTML=fmtDefault(); /* seed the default readout immediately */
+}
+function renderInsights(){
+  var body=$("insightsBody"),h=getHistory();
+  if(!h.length){
+    body.innerHTML='<div class="empty">Save a few receipts and charts of monthly totals and payment methods will appear here.</div>';
+    return;
+  }
+  var sum=0,i; for(i=0;i<h.length;i++){if(isFinite(h[i].amount))sum+=h[i].amount;}
+  var months=monthlyAgg(),methods=methodAgg();
+  var mTotal=months.reduce(function(a,m){return a+m.total;},0);
+  var segs=methods.map(function(m,mi){
+    return{label:m.method,value:m.total,count:m.count,
+      hint:(mTotal>0?Math.round(m.total/mTotal*1000)/10:0)+"%",
+      color:CH_COLORS[mi%CH_COLORS.length]};
+  });
+  body.innerHTML=
+    '<div class="kpis">'
+    +'<div class="kpi" data-kpi="total" role="button" tabindex="0" aria-pressed="false" aria-label="Total collected — activate for the month-by-month breakdown"><div class="k">Total collected</div><div class="v">'+esc(fmtMoney(sum))+'</div></div>'
+    +'<div class="kpi" data-kpi="count" role="button" tabindex="0" aria-pressed="false" aria-label="Receipts — activate for the breakdown by payment method"><div class="k">Receipts</div><div class="v">'+h.length+'</div></div>'
+    +'<div class="kpi" data-kpi="avg" role="button" tabindex="0" aria-pressed="false" aria-label="Average receipt — activate for smallest, largest and median receipt"><div class="k">Average receipt</div><div class="v">'+esc(fmtMoney(sum/h.length))+'</div></div></div>'
+    +'<div class="ch-det" id="kpiDet" hidden></div>'
+    +'<div class="charts2">'
+    +'<div class="ch-panel"><h3>Monthly totals</h3><div id="barsWrap">'+barsSVG(months)+'</div>'
+    +'<div class="ch-det" id="barsDet"></div></div>'
+    +'<div class="ch-panel"><h3>Payment methods</h3>'
+    +'<div id="donutWrap" style="max-width:225px;margin:0 auto">'+donutSVG("mDonut",segs,mTotal,fmtMoney(mTotal),"TOTAL")+legendHTML(segs)+'</div>'
+    +'<div class="ch-det" id="donutDet"></div></div></div>';
+  wireSelectable($("barsWrap"),months,
+    function(m){return "<strong>"+esc(m.label)+"</strong> &mdash; "+esc(fmtMoney(m.total))+" &middot; "+m.count+" receipt"+(m.count===1?"":"s")+" &middot; avg "+esc(fmtMoney(m.total/m.count))+".";},
+    function(){return "<strong>"+esc(fmtMoney(mTotal))+"</strong> collected across "+months.length+" month"+(months.length===1?"":"s")+". Tap a bar for the breakdown.";},
+    "barsDet");
+  wireSelectable($("donutWrap"),segs,
+    function(s){return "<strong>"+esc(s.label)+"</strong> &mdash; "+esc(fmtMoney(s.value))+" ("+esc(s.hint)+") &middot; "+s.count+" receipt"+(s.count===1?"":"s")+".";},
+    function(){return "All methods &mdash; <strong>"+esc(fmtMoney(mTotal))+"</strong> across "+h.length+" receipts. Tap a slice or a legend chip for the breakdown.";},
+    "donutDet",
+    function(i){
+      $("mDonut-top").textContent=i===-1?fmtMoney(mTotal):fmtMoney(segs[i].value);
+      $("mDonut-sub").textContent=i===-1?"TOTAL":segs[i].label.toUpperCase();
+    });
+  wireKpis(body); /* KPI breakdown readouts */
+}
+/* ---------- KPI detail: tap a KPI for the breakdown behind it ---------- */
+function kpiToggle(el){
+  var kind=el.getAttribute("data-kpi"),det=$("kpiDet");
+  var was=el.getAttribute("aria-pressed")==="true";
+  var scope=det?det.parentNode:null;
+  if(scope){var ks=scope.querySelectorAll(".kpi[role=\"button\"]");for(var i=0;i<ks.length;i++)ks[i].setAttribute("aria-pressed","false");}
+  if(was||!det){if(det){det.hidden=true;det.innerHTML="";}Sound.click();return;}
+  var h=getHistory(),html="",sum=0,j;
+  for(j=0;j<h.length;j++){if(isFinite(h[j].amount))sum+=h[j].amount;}
+  if(kind==="total"){
+    var months=monthlyAgg();
+    html="<strong>Collected by month</strong> &mdash; "+months.map(function(m){
+      return esc(m.label)+": <span class=\"money\">"+esc(fmtMoney(m.total))+"</span> ("+m.count+")";
+    }).join(" &middot; ")+".";
+  }else if(kind==="count"){
+    var methods=methodAgg();
+    html="<strong>"+h.length+" receipts by payment method</strong> &mdash; "+methods.map(function(m){
+      return esc(m.method)+": "+m.count;
+    }).join(" &middot; ")+".";
+  }else if(kind==="avg"){
+    var amts=h.filter(function(r){return isFinite(r.amount);});
+    if(amts.length){
+      var sorted=amts.map(function(r){return r.amount;}).sort(function(a,b){return a-b;});
+      var min=sorted[0],max=sorted[sorted.length-1];
+      var med=sorted.length%2?sorted[(sorted.length-1)/2]:(sorted[sorted.length/2-1]+sorted[sorted.length/2])/2;
+      var minR=null,maxR=null;
+      for(j=0;j<amts.length;j++){if(amts[j].amount===min&&!minR)minR=amts[j];if(amts[j].amount===max&&!maxR)maxR=amts[j];}
+      html="<strong>Average "+esc(fmtMoney(sum/amts.length))+"</strong> &mdash; smallest "+esc(fmtMoney(min))+
+        (minR&&minR.receiptNo?" ("+esc(minR.receiptNo)+")":"")+" &middot; largest "+esc(fmtMoney(max))+
+        (maxR&&maxR.receiptNo?" ("+esc(maxR.receiptNo)+")":"")+" &middot; median "+esc(fmtMoney(med))+".";
+    }
+  }
+  if(!html){Sound.click();return;}
+  el.setAttribute("aria-pressed","true");
+  det.innerHTML=html;det.hidden=false;
+  Sound.click();
+}
+function wireKpis(scope){
+  if(!scope)return;
+  scope.querySelectorAll(".kpi[role=\"button\"]").forEach(function(k){
+    k.addEventListener("click",function(){kpiToggle(k);});
+    k.addEventListener("keydown",function(e){
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();kpiToggle(k);}
+    });
+  });
+}
 function renderHistory(){
   var list=$("historyList"),h=getHistory();
+  renderInsights();
   list.innerHTML="";
   if(!h.length){list.innerHTML='<div class="empty">No saved receipts yet. Fill out the form and hit \u201cSave receipt\u201d.</div>';return;}
   var shown=h.slice().reverse();
   shown.forEach(function(r){
     var div=document.createElement("div");
     div.className="hist-item";
+    /* tap a history row to load that receipt back into the form + preview */
+    div.setAttribute("role","button");
+    div.setAttribute("tabindex","0");
+    div.setAttribute("aria-label","Receipt "+(r.receiptNo||"")+" — activate to load into the form");
     div.innerHTML='<div class="grow"><div class="num">'+esc(r.receiptNo||"—")+'</div>'+
       '<div class="meta">'+esc(r.tenant||"")+' · '+(isFinite(r.amount)?fmtMoney(r.amount):"")+' · '+(r.datePaid?esc(fmtDate(r.datePaid)):"")+'</div></div>';
+    div.addEventListener("click",function(e){
+      if(e.target&&e.target.closest&&e.target.closest("button"))return;
+      setForm(r);updatePreview();
+      var pv=$("previewCard");if(pv)pv.scrollIntoView({behavior:"smooth",block:"start"});
+      Sound.click();
+    });
+    div.addEventListener("keydown",function(e){
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();setForm(r);updatePreview();
+        var pv=$("previewCard");if(pv)pv.scrollIntoView({behavior:"smooth",block:"start"});
+        Sound.click();}
+    });
     var rp=document.createElement("button");
     rp.type="button";rp.className="btn btn-secondary btn-sm";rp.textContent="Reprint";
     rp.addEventListener("click",function(){setForm(r);window.print();});
@@ -555,6 +821,17 @@ function renderHistory(){
 F.forEach(function(f){
   $(f).addEventListener("input",function(){updatePreview();});
   $(f).addEventListener("change",function(){updatePreview();});
+});
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"){
+    var det=$("kpiDet");
+    if(det&&!det.hidden){
+      det.hidden=true;det.innerHTML="";
+      var ks=document.querySelectorAll(".kpi[role=\"button\"]");
+      for(var i=0;i<ks.length;i++)ks[i].setAttribute("aria-pressed","false");
+      Sound.click();
+    }
+  }
 });
 $("saveBtn").addEventListener("click",function(){
   var d=formData(),errs=validate(d);
@@ -594,14 +871,14 @@ $("themeToggle").addEventListener("click",function(){
   var nxt=cur==="dark"?"light":"dark";
   document.documentElement.setAttribute("data-theme",nxt);
   store(K.theme,nxt);
-  paintTheme(); Sound.toggleTheme(); Sound.click();
+  paintHeader(); Sound.toggleTheme(); Sound.click();
 });
 $("sampleToggle").addEventListener("click",function(){setSample(!sampleOn);Sound.click();});
 $("soundToggle").addEventListener("click",function(){toggleSound(this);});
 
 /* ---------- init ---------- */
 (function init(){
-  paintTheme();paintSample();paintSoundBtn($("soundToggle"));
+  paintHeader();
   var draft=load(K.draft,null);
   if(draft&&typeof draft==="object"){
     F.forEach(function(f){if(typeof draft[f]==="string")$(f).value=draft[f];});

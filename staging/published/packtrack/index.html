@@ -108,44 +108,15 @@ html[data-theme="dark"] body {
 .logo-badge svg { width: 26px; height: 26px; color: #fff; }
 .app-header h1 { font-size: 1.5rem; margin: 0; letter-spacing: -.02em; color: #fff; }
 .app-header .tagline { color: rgba(255,255,255,.85); font-size: .88rem; margin: 2px 0 0; }
-.theme-toggle {
-  margin-left: auto;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,.16);
-  border: 1px solid rgba(255,255,255,.4);
-  color: #fff; border-radius: 999px; padding: 0;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px;
-  font-weight: 600; cursor: pointer; box-shadow: none;
-}
-.theme-toggle:hover { background: rgba(255,255,255,.28); border-color: rgba(255,255,255,.6); }
-.theme-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-.theme-toggle svg { width: 17px; height: 17px; }
-.theme-toggle .ic-sun { display: none; }
-html[data-theme="dark"] .theme-toggle .ic-sun { display: inline; }
-html[data-theme="dark"] .theme-toggle .ic-moon { display: none; }
-/* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
-.sample-toggle {
-  display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,.16);
-  border: 1px solid rgba(255,255,255,.4);
-  color: #fff; border-radius: 999px; padding: 0;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px;
-  cursor: pointer; box-shadow: none;
-}
-.sample-toggle svg { width: 18px; height: 18px; flex: none; }
-.sample-toggle:hover { background: rgba(255,255,255,.28); border-color: rgba(255,255,255,.6); }
-.sample-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-.sample-toggle[aria-pressed="true"] { background: var(--accent, #4f46e5); border-color: var(--accent, #4f46e5); color: #fff; }
-#sound-toggle {
-  display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,.16);
-  border: 1px solid rgba(255,255,255,.4);
-  color: #fff; border-radius: 999px; padding: 0;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px;
-  font-size: 1.05rem; line-height: 1; cursor: pointer; box-shadow: none;
-}
-#sound-toggle:hover { background: rgba(255,255,255,.28); border-color: rgba(255,255,255,.6); }
-#sound-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* Header cluster reference (2026-09-21): exact HenTrack bytes mapped to this app's
+   vars — --bg-elev (card), --border (line), --text (ink), --accent, --accent-soft. */
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg-elev);border:1px solid var(--border);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn svg{width:26px;height:26px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+.round-btn:hover{border-color:var(--accent)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
 /* ---------- interactive dashboard rows ---------- */
 .ru-row[role="button"] { cursor: pointer; }
 .ru-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
@@ -267,6 +238,24 @@ html[data-theme="dark"] .stat:nth-child(5) { --chip-ic: url("data:image/svg+xml,
   background: var(--grad);
 }
 .room-pill b { font-weight: 800; }
+/* clickable stat cards: activate to filter the box list or jump to a section */
+.stat[role="button"] { cursor: pointer; }
+.stat[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #4f46e5)); }
+.stat.stat-sel { box-shadow: inset 0 0 0 2px var(--accent, #4f46e5); }
+[id$="-h"] { scroll-margin-top: 96px; }
+/* Boxes-by-room donut */
+.donut-wrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 8px; }
+#room-donut { width: 152px; height: 152px; flex: none; }
+#room-donut .vseg { cursor: pointer; }
+#room-donut .vseg:focus { outline: none; filter: drop-shadow(0 0 4px var(--accent, #4f46e5)); }
+.donut-legend { display: grid; gap: 6px; flex: 1 1 210px; }
+.donut-legend .leg-row { display: flex; align-items: center; gap: 9px; font-size: .9rem; font-weight: 600; border-radius: 9px; padding: 5px 9px; }
+.donut-legend .leg-row[role="button"] { cursor: pointer; }
+.donut-legend .leg-row[role="button"]:hover { background: var(--accent-soft); }
+.donut-legend .leg-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #4f46e5)); }
+.donut-legend .leg-row.leg-sel { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent, #4f46e5); }
+.donut-legend .sw { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+.donut-legend .amt { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 800; }
 /* unpack progress by room (visual representation) */
 .ru-title { font-size: .88rem; color: var(--text-muted); font-weight: 600; margin-top: 12px; }
 .room-unpack { display: grid; gap: 8px; margin-top: 6px; }
@@ -452,12 +441,11 @@ html[data-theme="dark"] .box-actions .small.danger::before {
   .app-header { padding: 14px 14px; }
   .logo-badge { width: 40px; height: 40px; }
   .app-header h1 { font-size: 1.3rem; }
-  .theme-toggle { padding: 7px 12px; font-size: .85rem; }
   .boxes-grid { grid-template-columns: 1fr; }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
 }
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
-.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.g-header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
@@ -486,7 +474,7 @@ html[data-theme="dark"] .box-actions .small.danger::before {
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -507,11 +495,11 @@ html[data-theme="dark"] .box-actions .small.danger::before {
       <p class="tagline">Moving box inventory &mdash; know where everything is packed.</p>
     </div>
   </div>
-  <div class="g-header-actions" style="margin-left:auto">
+  <div class="g-header-actions">
     <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-    <button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
-    <button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
+    <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+    <button type="button" class="round-btn theme-toggle" id="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+    <button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
   </div>
 </header>
 
@@ -522,6 +510,12 @@ html[data-theme="dark"] .box-actions .small.danger::before {
     <h2 id="dash-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>Dashboard</h2>
     <div class="stat-grid" id="stat-grid" role="group" aria-label="Totals"></div>
     <div class="room-counts" id="room-counts" role="group" aria-label="Boxes per room — activate a room for its box list"></div>
+    <div class="ru-title">Boxes by room</div>
+    <div class="donut-wrap" id="room-donut-wrap">
+      <svg id="room-donut" viewBox="0 0 120 120" role="img" aria-label="Boxes by room"></svg>
+      <div class="donut-legend" id="room-donut-legend"></div>
+    </div>
+    <p class="empty" id="room-donut-empty" hidden>No boxes yet — add a box to see the room breakdown.</p>
     <div class="ru-title">Unpack progress by room</div>
     <div class="room-unpack" id="room-unpack" role="group" aria-label="Unpack progress by room"></div>
     <div class="progress-wrap">
@@ -604,7 +598,7 @@ html[data-theme="dark"] .box-actions .small.danger::before {
 </main>
 
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer class="app-footer">
   <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
@@ -632,6 +626,8 @@ const LIMITS = { numberMin: 1, numberMax: 9999, roomLen: 40, labelLen: 40, itemL
 let state = { boxes: [], customRooms: [], nextNumber: 101 };
 let unpackMode = false;
 let selectedColor = "";
+let boxFilter = null; /* stat-card filter: null | "packed" | "open" | "unpacked" */
+let roomPills = {};   /* room name -> pill element, rebuilt by renderDashboard */
 
 // ---------- Sanitizers ----------
 function cleanStr(v, max) {
@@ -725,6 +721,8 @@ function applyTheme(mode) {
   const label = mode === "dark" ? "Switch to light mode" : "Switch to dark mode";
   btn.setAttribute("aria-label", label);
   btn.title = label;
+  btn.setAttribute("aria-pressed", mode === "dark" ? "true" : "false");
+  btn.textContent = mode === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19";
   try { localStorage.setItem(THEME_KEY, mode); } catch (e) {}
 }
 function initTheme() {
@@ -791,10 +789,11 @@ function bindSoundToggle() {
   if (!btn) return;
   const paint = () => {
     const on = Sound.isOn();
-    btn.innerHTML = on ? "&#128266;" : "&#128263;";
+    btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
     btn.setAttribute("aria-pressed", on ? "true" : "false");
     btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
     btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+    /* Sound button stays white (var(--bg-elev)) in all states per the 2026-09-21 header reference. */
   };
   btn.addEventListener("click", () => { Sound.toggle(); paint(); Sound.click(); });
   paint();
@@ -821,22 +820,40 @@ function renderDashboard() {
   const totalItems = boxes.reduce((a, b) => a + b.items.length, 0);
   const packed = boxes.filter(b => b.packed).length;
   const unpackedBoxes = boxes.filter(b => b.packed && b.items.length && b.items.every(i => i.unpacked)).length;
-  const stats = [
-    ["Boxes", boxes.length],
-    ["Items", totalItems],
-    ["Packed", packed],
-    ["Open", boxes.length - packed],
-    ["Fully unpacked", unpackedBoxes]
+  const statDefs = [
+    { lbl: "Boxes", n: boxes.length, f: null, jump: "boxes-h", hint: "Jump to the box list." },
+    { lbl: "Items", n: totalItems, f: null, jump: "search-h", hint: "Jump to item search." },
+    { lbl: "Packed", n: packed, f: "packed", jump: "boxes-h", hint: "Filter the box list to sealed boxes." },
+    { lbl: "Open", n: boxes.length - packed, f: "open", jump: "boxes-h", hint: "Filter the box list to open boxes." },
+    { lbl: "Fully unpacked", n: unpackedBoxes, f: "unpacked", jump: "boxes-h", hint: "Filter the box list to fully unpacked boxes." }
   ];
-  for (const [lbl, n] of stats) {
+  for (const d of statDefs) {
     const s = el("div", "stat");
-    const num = el("div", "num"); txt(num, String(n));
-    const lab = el("div", "lbl"); txt(lab, lbl);
+    s.setAttribute("role", "button");
+    s.setAttribute("tabindex", "0");
+    const active = !!d.f && boxFilter === d.f;
+    if (active) s.classList.add("stat-sel");
+    s.setAttribute("aria-pressed", active ? "true" : "false");
+    s.setAttribute("aria-label", d.lbl + ": " + d.n + ". Activate to " + (d.f ? (active ? "clear the filter. " : "filter the box list. ") : "") + d.hint);
+    const num = el("div", "num"); txt(num, String(d.n));
+    const lab = el("div", "lbl"); txt(lab, d.lbl);
     s.appendChild(num); s.appendChild(lab);
+    const activate = () => {
+      boxFilter = (d.f && boxFilter !== d.f) ? d.f : null;
+      renderAll();
+      const t = document.getElementById(d.jump);
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+      Sound.select();
+    };
+    s.addEventListener("click", activate);
+    s.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(); }
+    });
     grid.appendChild(s);
   }
   const rc = document.getElementById("room-counts");
   while (rc.firstChild) rc.removeChild(rc.firstChild);
+  roomPills = {};
   let rcDetail = document.getElementById("room-counts-detail");
   if (!rcDetail) {
     rcDetail = el("div", "ru-detail");
@@ -869,10 +886,12 @@ function renderDashboard() {
       } else {
         Sound.click();
       }
+      renderRoomDonut();
     });
     pill.addEventListener("keydown", e => {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pill.click(); }
     });
+    roomPills[r] = pill;
     rc.appendChild(pill);
   }
   // unpack progress across packed boxes
@@ -945,6 +964,121 @@ function renderDashboard() {
     ru.appendChild(row);
   }
   ru.setAttribute("aria-label", "Unpack progress by room: " + ruAria.join(", "));
+  renderRoomDonut();
+}
+
+// ---------- Boxes-by-room donut (interactive: activate a segment to spotlight the room) ----------
+const ROOM_COLORS = ["#4f46e5", "#0d9488", "#15803d", "#b45309", "#7c3aed", "#be123c", "#0369a1", "#65a30d"];
+const SVGNS = "http://www.w3.org/2000/svg";
+function renderRoomDonut() {
+  const svg = document.getElementById("room-donut");
+  const legend = document.getElementById("room-donut-legend");
+  const empty = document.getElementById("room-donut-empty");
+  const wrap = document.getElementById("room-donut-wrap");
+  if (!svg || !legend) return;
+  // keep keyboard focus on the spotlight control across the re-render, so
+  // Enter/Space can toggle it back off without re-tabbing (segments + legend
+  // rows are rebuilt below, which would otherwise drop focus to <body>)
+  let fLabel = null;
+  try {
+    const ae = document.activeElement;
+    if (ae && ae !== document.body && (ae.closest("#room-donut") || ae.closest("#room-donut-legend"))) {
+      fLabel = ae.getAttribute("aria-label");
+    }
+  } catch (e) {}
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  while (legend.firstChild) legend.removeChild(legend.firstChild);
+  const rooms = [];
+  for (const r of allRooms()) {
+    const c = state.boxes.filter(b => b.room === r).length;
+    if (c) rooms.push({ room: r, count: c });
+  }
+  const total = rooms.reduce((a, x) => a + x.count, 0);
+  const has = rooms.length > 0;
+  wrap.hidden = !has;
+  empty.hidden = has;
+  if (!has) return;
+  svg.setAttribute("aria-label", "Boxes by room: " + rooms.map(x => x.room + " " + x.count).join(", "));
+  const R = 44, C = 2 * Math.PI * R;
+  const selRoom = Object.keys(roomPills).find(r => roomPills[r].getAttribute("aria-pressed") === "true") || null;
+  const bg = document.createElementNS(SVGNS, "circle");
+  bg.setAttribute("cx", 60); bg.setAttribute("cy", 60); bg.setAttribute("r", R);
+  bg.setAttribute("fill", "none"); bg.setAttribute("style", "stroke:var(--border)"); bg.setAttribute("stroke-width", 20);
+  svg.appendChild(bg);
+  let off = 0;
+  rooms.forEach((x, i) => {
+    const color = ROOM_COLORS[i % ROOM_COLORS.length];
+    const len = x.count / total * C;
+    const dash = len.toFixed(2) + " " + (C - len).toFixed(2);
+    const seg = document.createElementNS(SVGNS, "circle");
+    seg.setAttribute("cx", 60); seg.setAttribute("cy", 60); seg.setAttribute("r", R);
+    seg.setAttribute("fill", "none"); seg.setAttribute("stroke", color);
+    seg.setAttribute("stroke-width", 20);
+    seg.setAttribute("stroke-dasharray", dash);
+    seg.setAttribute("stroke-dashoffset", (-off).toFixed(2));
+    seg.setAttribute("transform", "rotate(-90 60 60)");
+    seg.setAttribute("class", "vseg");
+    seg.setAttribute("tabindex", "0");
+    seg.setAttribute("role", "button");
+    seg.setAttribute("aria-pressed", selRoom === x.room ? "true" : "false");
+    seg.setAttribute("aria-label", x.room + ": " + x.count + (x.count === 1 ? " box" : " boxes") + ". Activate to spotlight.");
+    if (selRoom && selRoom !== x.room) seg.setAttribute("opacity", "0.25");
+    if (selRoom === x.room) seg.setAttribute("style", "filter:drop-shadow(0 0 5px " + color + ")");
+    const go = () => { const p = roomPills[x.room]; if (p) p.click(); };
+    seg.addEventListener("click", go);
+    seg.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
+    svg.appendChild(seg);
+    /* fat invisible hit ring so thin slices stay easy to tap */
+    const h = document.createElementNS(SVGNS, "circle");
+    h.setAttribute("cx", 60); h.setAttribute("cy", 60); h.setAttribute("r", R);
+    h.setAttribute("fill", "none"); h.setAttribute("stroke", "rgba(0,0,0,0)");
+    h.setAttribute("stroke-width", 38);
+    h.setAttribute("stroke-dasharray", dash);
+    h.setAttribute("stroke-dashoffset", (-off).toFixed(2));
+    h.setAttribute("transform", "rotate(-90 60 60)");
+    h.setAttribute("pointer-events", "stroke");
+    h.setAttribute("aria-hidden", "true");
+    h.addEventListener("click", go);
+    svg.appendChild(h);
+    off += len;
+    const row = el("div", "leg-row");
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-pressed", selRoom === x.room ? "true" : "false");
+    row.setAttribute("aria-label", x.room + ": " + x.count + (x.count === 1 ? " box" : " boxes") + ". Activate to spotlight.");
+    if (selRoom === x.room) row.classList.add("leg-sel");
+    row.addEventListener("click", go);
+    row.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
+    const sw = el("span", "sw"); sw.style.background = color;
+    const nm = el("span"); txt(nm, x.room);
+    const am = el("span", "amt"); txt(am, String(x.count));
+    row.appendChild(sw); row.appendChild(nm); row.appendChild(am);
+    legend.appendChild(row);
+  });
+  const sel = rooms.find(x => x.room === selRoom);
+  const te = document.createElementNS(SVGNS, "text");
+  te.setAttribute("x", 60); te.setAttribute("y", 59);
+  te.setAttribute("text-anchor", "middle");
+  te.setAttribute("font-size", "17"); te.setAttribute("font-weight", "800");
+  te.setAttribute("style", "fill:var(--text);pointer-events:none");
+  te.textContent = String(sel ? sel.count : total);
+  svg.appendChild(te);
+  const cap = document.createElementNS(SVGNS, "text");
+  cap.setAttribute("x", 60); cap.setAttribute("y", 76);
+  cap.setAttribute("text-anchor", "middle");
+  cap.setAttribute("font-size", "9"); cap.setAttribute("style", "fill:var(--text-muted);pointer-events:none");
+  cap.textContent = sel ? sel.room : "boxes";
+  svg.appendChild(cap);
+  if (fLabel) {
+    const els = document.querySelectorAll('#room-donut [aria-label], #room-donut-legend [aria-label]');
+    for (let i = 0; i < els.length; i++) {
+      if (els[i].getAttribute("aria-label") === fLabel) { els[i].focus(); break; }
+    }
+  }
 }
 
 // ---------- Search ----------
@@ -1020,7 +1154,19 @@ function renderBoxes() {
     return;
   }
   const sorted = state.boxes.slice().sort((a, b) => a.number - b.number);
-  for (const b of sorted) renderBoxCard(grid, b);
+  let list = sorted;
+  if (boxFilter === "packed") list = sorted.filter(b => b.packed);
+  else if (boxFilter === "open") list = sorted.filter(b => !b.packed);
+  else if (boxFilter === "unpacked") list = sorted.filter(b => b.packed && b.items.length && b.items.every(i => i.unpacked));
+  if (boxFilter) {
+    const fname = boxFilter === "packed" ? "Packed" : boxFilter === "open" ? "Open" : "Fully unpacked";
+    txt(note, "Filter: " + fname.toLowerCase() + " boxes — click the " + fname + " stat again to clear. ");
+  }
+  if (!list.length) {
+    txt(note, "No boxes match this filter.");
+    return;
+  }
+  for (const b of list) renderBoxCard(grid, b);
 }
 function renderBoxCard(grid, box) {
   const card = el("article", "card box-card");
@@ -1435,6 +1581,22 @@ renderAll();
   });
   paintSample();
 })();
+/* Esc clears chart/stat spotlights (click again / Esc restores default view) */
+document.addEventListener("keydown", function (e) {
+  if (e.key !== "Escape") return;
+  var hit = false;
+  var seg = document.querySelector('#room-donut circle.vseg[aria-pressed="true"]');
+  if (seg) { seg.click(); hit = true; }
+  var leg = document.querySelector('#room-donut-legend .leg-row.leg-sel');
+  if (leg) { leg.click(); hit = true; }
+  var ur = document.querySelector('#room-unpack .ru-row.sel');
+  if (ur) { ur.click(); hit = true; }
+  var pill = document.querySelector('.room-pill[aria-pressed="true"]');
+  if (pill) { pill.click(); hit = true; }
+  var st = document.querySelector('#stat-grid .stat[aria-pressed="true"]');
+  if (st) { boxFilter = null; renderAll(); hit = true; }
+  if (hit) Sound.click();
+});
 </script>
 </body>
 </html>

@@ -18,6 +18,7 @@
     document.documentElement.setAttribute('data-theme', 'light');
   }
 })();
+
 </script>
 <style>
 :root {
@@ -29,6 +30,9 @@
   --accent-rgb: 13, 110, 102;
   --accent: rgb(var(--accent-rgb));
   --accent-ink: #ffffff;
+  --accent-soft: rgba(13,110,102,.12);
+  --line: #e3e2ee;
+  --ink: #191924;
   --grad-1: #6366f1;
   --grad-2: #8b5cf6;
   --grad-ink: #ffffff;
@@ -50,6 +54,9 @@
   --accent-rgb: 45, 212, 191;
   --accent: rgb(var(--accent-rgb));
   --accent-ink: #062a27;
+  --accent-soft: rgba(45,212,191,.14);
+  --line: #2d2d3e;
+  --ink: #f1f1f7;
   --gold: #fbbf24;
   --gold-bg: #33260a;
   --danger: #f87171;
@@ -89,39 +96,14 @@ header.top {
 .logo svg { width: 30px; height: 30px; }
 header.top h1 { margin: 0; font-size: 1.55rem; letter-spacing: -0.01em; }
 header.top p { margin: 3px 0 0; color: rgba(255,255,255,.88); font-size: 0.92rem; }
-#theme-toggle {
-  flex: none; display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  background: rgba(255,255,255,.16); color: #fff;
-  border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px;
-  box-shadow: none;
-}
-#theme-toggle:hover { background: rgba(255,255,255,.26); filter: none; }
-#theme-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-#theme-toggle svg { width: 17px; height: 17px; }
-[data-theme="dark"] #theme-toggle .ic-moon { display: none; }
-[data-theme="light"] #theme-toggle .ic-sun { display: none; }
-/* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
-.sample-toggle {
-  flex: none; display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  background: rgba(255,255,255,.16); color: #fff;
-  border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px;
-  box-shadow: none; cursor: pointer;
-}
-.sample-toggle svg { width: 18px; height: 18px; flex: none; }
-.sample-toggle:hover { background: rgba(255,255,255,.26); filter: none; }
-.sample-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-.sample-toggle[aria-pressed="true"] { background: var(--accent, #4f46e5); border-color: var(--accent, #4f46e5); color: #fff; }
-#sound-toggle {
-  flex: none; display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  background: rgba(255,255,255,.16); color: #fff; font-size: 1.05rem; line-height: 1;
-  border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px; box-shadow: none;
-  cursor: pointer;
-}
-#sound-toggle:hover { background: rgba(255,255,255,.26); filter: none; }
-#sound-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* ---------- Header cluster: live HenTrack reference spec (2026-09-21) ---------- */
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card);border:1px solid var(--line);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn svg{width:26px;height:26px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+.round-btn:hover{border-color:var(--accent)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
 
 /* ---------- buttons ---------- */
 button, select, input { font: inherit; color: var(--fg); }
@@ -209,6 +191,9 @@ button.overlap-item { width: 100%; font: inherit; color: inherit; text-align: le
 button.overlap-item:hover { border-color: var(--grad-1); }
 button.overlap-item:focus-visible { outline: 2px solid var(--grad-1); outline-offset: 2px; }
 button.overlap-item[aria-expanded="true"] { border-color: var(--grad-1); box-shadow: 0 0 0 1px var(--grad-1); }
+tr.zs-mrow { cursor: pointer; }
+tr.zs-mrow:hover { background: rgba(var(--accent-rgb), .07); }
+tr.zs-mrow:focus-visible { outline: 2px solid var(--grad-1); outline-offset: -2px; }
 .overlap-detail { margin: 8px 0 0; padding: 8px 14px; font-size: 0.85rem; color: var(--muted); border-left: 3px solid var(--grad-1); }
 .overlap-detail strong { color: var(--fg); }
 .overlap-seg.hl { box-shadow: inset 0 0 0 2px var(--grad-1); }
@@ -244,6 +229,36 @@ button.overlap-item[aria-expanded="true"] { border-color: var(--grad-1); box-sha
 }
 #members-list td .actions, #members-list td { white-space: nowrap; }
 #members-list td button { margin: 2px 4px 2px 0; }
+
+/* ---------- Team at a glance visuals (sweep 2026-09-21) ---------- */
+.zs-charts{display:grid;gap:18px;margin-top:4px}
+@media (min-width:640px){.zs-charts{grid-template-columns:1fr 1fr}}
+.zs-chart h3{margin:0 0 8px;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.zs-chart h3 .dot{width:10px;height:10px;border-radius:3px;flex:none;
+  background:linear-gradient(135deg,var(--grad-1),var(--grad-2))}
+.zs-chart svg{width:100%;height:auto;display:block}
+.zs-donut-bg{fill:none;stroke:var(--border);stroke-width:22}
+.zs-donut-seg{fill:none;stroke-width:22;cursor:pointer}
+.zs-donut-seg:focus{outline:none;filter:drop-shadow(0 0 3px var(--grad-1))}
+.zs-donut-seg.sel{stroke-width:26}
+.zs-donut-c{fill:var(--fg);font-size:20px;font-weight:800;text-anchor:middle;pointer-events:none}
+.zs-donut-l{fill:var(--muted);font-size:10px;text-anchor:middle;pointer-events:none}
+.zs-legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:.85rem;color:var(--muted)}
+.zs-legend button{background:none;border:none;padding:4px 6px;font:inherit;color:var(--muted);
+  display:inline-flex;align-items:center;gap:6px;cursor:pointer;border-radius:6px;min-height:44px}
+.zs-legend button:focus-visible{outline:2px solid var(--grad-1);outline-offset:2px}
+.zs-legend button[aria-pressed="true"]{color:var(--fg);box-shadow:inset 0 0 0 2px var(--grad-1)}
+.zs-legend i{width:11px;height:11px;border-radius:3px;display:inline-block;flex:none}
+.zs-detail{margin-top:8px;font-size:.85rem;color:var(--muted);min-height:1.4em}
+.zs-detail strong{color:var(--fg)}
+.av-row{display:flex;align-items:flex-end;gap:3px;height:118px;margin-top:10px}
+.av-bar{flex:1 1 0;min-width:0;min-height:0;border:none;border-radius:3px 3px 0 0;
+  background:rgba(var(--accent-rgb),.55);cursor:pointer;padding:0}
+.av-bar:hover{background:rgba(var(--accent-rgb),.85)}
+.av-bar:focus{outline:none;filter:drop-shadow(0 0 3px var(--grad-1))}
+.av-bar.sel{box-shadow:inset 0 0 0 2px var(--gold)}
+.av-labels{display:flex;gap:3px;margin-top:4px}
+.av-labels span{flex:1 1 0;min-width:0;text-align:center;font-size:.66rem;color:var(--muted)}
 
 /* ---------- golden chips & pills ---------- */
 .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
@@ -312,7 +327,7 @@ footer.site a { color: var(--muted); }
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; display: inline-block; transform: translateY(-0.03em); }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -334,9 +349,9 @@ footer.site a { color: var(--muted); }
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button type="button" id="theme-toggle" aria-label="Switch to dark mode"><span class="ic-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 019.4 4 8.4 8.4 0 1020 14.6z"/></svg></span><span class="ic-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.8M12 18.7v2.8M2.5 12h2.8M18.7 12h2.8M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/></svg></span></button>
-      <button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
+      <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button type="button" id="theme-toggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
   </header>
 
@@ -402,6 +417,11 @@ footer.site a { color: var(--muted); }
       </div>
     </section>
 
+    <section class="card" aria-labelledby="viz-h">
+      <h2 id="viz-h"><span class="hicon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>Team at a glance</h2>
+      <div class="zs-charts" id="viz-charts"></div>
+    </section>
+
     <section class="card" aria-labelledby="plan-h">
       <h2 id="plan-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10.2h18M8 3v4.2M16 3v4.2"/></svg></span>Meeting planner</h2>
       <form id="plan-form">
@@ -436,7 +456,7 @@ footer.site a { color: var(--muted); }
   </main>
 
   <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer class="site">
     <a href="https://glenerds.gumroad.com">by Glenerds</a>
@@ -505,10 +525,14 @@ function currentTheme() {
   return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 }
 function paintThemeButton() {
-  var label = currentTheme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  var dark = currentTheme() === 'dark';
+  var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
   themeBtn.setAttribute('aria-label', label);
   themeBtn.title = label;
-  themeBtn.setAttribute('aria-pressed', currentTheme() === 'dark' ? 'true' : 'false');
+  themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+  /* Icon shows the mode you GET: moon in light mode, sun in dark mode (reference spec 2026-09-21). */
+  themeBtn.textContent = dark ? '\u2600\uFE0F' : '\uD83C\uDF19';
+  if (typeof paintSoundBtn === 'function' && paintSoundBtn) paintSoundBtn();
 }
 themeBtn.addEventListener('click', function () {
   var next = currentTheme() === 'dark' ? 'light' : 'dark';
@@ -518,6 +542,7 @@ themeBtn.addEventListener('click', function () {
   Sound.toggleTheme();
   renderOverlap();
   renderTimeline();
+  renderViz();
 });
 paintThemeButton();
 
@@ -563,6 +588,7 @@ var Sound = (function () {
     toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
   };
 })();
+var paintSoundBtn = null; /* repaints the sound button (used after theme changes) */
 function bindSoundToggle() {
   var btn = document.getElementById('sound-toggle');
   if (!btn) return;
@@ -572,7 +598,9 @@ function bindSoundToggle() {
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
     btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
+    /* Sound stays white in all states (reference spec 2026-09-21); CSS handles styling. */
   }
+  paintSoundBtn = paint;
   btn.addEventListener('click', function () { Sound.toggle(); paint(); Sound.click(); });
   paint();
 }
@@ -757,6 +785,19 @@ function renderMembers() {
   var tbody = el('tbody');
   state.members.forEach(function (m, i) {
     var tr = el('tr');
+    tr.classList.add('zs-mrow');
+    tr.setAttribute('tabindex', '0');
+    tr.setAttribute('role', 'button');
+    tr.setAttribute('aria-label', m.name + ' (' + m.tz + ', ' + pad2(m.start) + ':00\u2013' +
+      pad2(m.end) + ':00). Activate to spotlight in the day timeline.');
+    tr.addEventListener('click', function (ev) {
+      if (ev.target.closest('button')) return;
+      spotMemberFromTable(i);
+    });
+    tr.addEventListener('keydown', function (ev) {
+      if (ev.target.closest('button')) return;
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); spotMemberFromTable(i); }
+    });
     var th = el('th', m.name);
     th.setAttribute('scope', 'row');
     tr.appendChild(th);
@@ -1234,10 +1275,242 @@ document.getElementById('btn-clear').addEventListener('click', function () {
 });
 
 /* ---------------- init ---------------- */
+/* ---------------- Team-at-a-glance visuals (sweep 2026-09-21) ----------------
+   Two gallery-style visuals on top of the existing timelines:
+   1. Donut — team spread by region (click a segment to spotlight it and see who
+      is in it; click again to release back to the total).
+   2. Working-members-by-hour bars — 24 clickable bars in viewer time (click a
+      bar to see exactly who is free that hour).
+   Keyboard (Enter/Space) works everywhere; SVG focus uses drop-shadow, never
+   a rectangular outline. */
+var SVGNS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs, text) {
+  var n = document.createElementNS(SVGNS, tag);
+  if (attrs) for (var k in attrs) n.setAttribute(k, attrs[k]);
+  if (text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+/* Team-table row -> timeline spotlight: clicking a member's table row
+   toggles the same spotlight as their timeline strip (scrolls to it).
+   Buttons inside the row (Edit/Delete) are excluded. */
+function spotMemberFromTable(i) {
+  if (!timelineRows) return;
+  var row = timelineRows.children[i];
+  if (!row) return;
+  var strip = row.querySelector('.tl-strip');
+  if (!strip) return;
+  if (strip.getAttribute('aria-pressed') !== 'true') Sound.select(); else Sound.click();
+  strip.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+  row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+function memberRegion(tz) {
+  if (typeof tz !== 'string') return 'Other';
+  if (tz === 'UTC') return 'Other';
+  var head = tz.split('/')[0];
+  if (head === 'America') return 'Americas';
+  if (head === 'Europe' || head === 'Africa') return 'Europe & Africa';
+  if (head === 'Asia' || head === 'Australia' || head === 'Pacific') return 'Asia-Pacific';
+  return 'Other';
+}
+function regionIndex(r) {
+  return r === 'Americas' ? 0 : (r === 'Europe & Africa' ? 1 : (r === 'Asia-Pacific' ? 2 : 3));
+}
+function chartH3(text) {
+  var h = el('h3');
+  h.appendChild(el('span', null, 'dot'));
+  h.appendChild(document.createTextNode(text));
+  return h;
+}
+function regionDonut() {
+  var wrap = el('div', null, 'zs-chart');
+  wrap.appendChild(chartH3('Team spread by region'));
+  var n = state.members.length;
+  if (!n) {
+    wrap.appendChild(el('p', 'Add team members to see the regional spread.', 'status'));
+    return wrap;
+  }
+  var order = [
+    { label: 'Americas', color: '#6366f1' },
+    { label: 'Europe & Africa', color: '#0d9488' },
+    { label: 'Asia-Pacific', color: '#d97706' },
+    { label: 'Other', color: '#9aa4b2' }
+  ];
+  var counts = [0, 0, 0, 0];
+  state.members.forEach(function (m) { counts[regionIndex(memberRegion(m.tz))]++; });
+  var R = 54, CIRC = 2 * Math.PI * R;
+  var svg = svgEl('svg', {
+    viewBox: '0 0 140 140', role: 'img',
+    'aria-label': 'Donut chart of team members by region. ' +
+      order.map(function (o, i) { return o.label + ': ' + counts[i]; }).join(', ') + '.'
+  });
+  svg.appendChild(svgEl('circle', { cx: 70, cy: 70, r: R, class: 'zs-donut-bg' }));
+  var g = svgEl('g', { transform: 'rotate(-90 70 70)' });
+  var cNum = svgEl('text', { x: 70, y: 68, class: 'zs-donut-c' }, String(n));
+  var cLbl = svgEl('text', { x: 70, y: 84, class: 'zs-donut-l' }, 'members');
+  var drawn = [null, null, null, null];
+  var acc = 0;
+  order.forEach(function (o, i) {
+    if (counts[i] <= 0) return;
+    var len = counts[i] / n * CIRC;
+    var seg = svgEl('circle', {
+      cx: 70, cy: 70, r: R, class: 'zs-donut-seg',
+      'stroke-dasharray': len.toFixed(3) + ' ' + CIRC.toFixed(3),
+      'stroke-dashoffset': (-acc).toFixed(3),
+      tabindex: '0', role: 'button', 'aria-pressed': 'false',
+      'aria-label': o.label + ': ' + counts[i] + ' of ' + n + ' members. Activate to spotlight.'
+    });
+    seg.style.stroke = o.color;
+    seg.appendChild(svgEl('title', null, o.label + ': ' + counts[i]));
+    g.appendChild(seg);
+    drawn[i] = seg;
+    acc += len;
+  });
+  svg.appendChild(g);
+  svg.appendChild(cNum);
+  svg.appendChild(cLbl);
+  wrap.appendChild(svg);
+  var detail = el('div', null, 'zs-detail');
+  detail.setAttribute('aria-live', 'polite');
+  wrap.appendChild(detail);
+  var leg = el('div', null, 'zs-legend');
+  function clearSel() {
+    for (var i = 0; i < 4; i++) {
+      if (drawn[i]) { drawn[i].classList.remove('sel'); drawn[i].setAttribute('aria-pressed', 'false'); drawn[i].style.opacity = ''; }
+    }
+    var btns = leg.querySelectorAll('button');
+    for (var b = 0; b < btns.length; b++) btns[b].setAttribute('aria-pressed', 'false');
+    detail.textContent = '';
+    cNum.textContent = String(n);
+    cLbl.textContent = 'members';
+  }
+  function selectRegion(idx) {
+    var was = drawn[idx] && drawn[idx].classList.contains('sel');
+    clearSel();
+    if (!was && drawn[idx]) {
+      drawn[idx].classList.add('sel');
+      drawn[idx].setAttribute('aria-pressed', 'true');
+      for (var j = 0; j < 4; j++) {
+        if (drawn[j] && j !== idx) drawn[j].style.opacity = '0.35';
+      }
+      cNum.textContent = String(counts[idx]);
+      cLbl.textContent = order[idx].label.toLowerCase();
+      var lb = leg.querySelector('button[data-seg="' + idx + '"]');
+      if (lb) lb.setAttribute('aria-pressed', 'true');
+      var names = [];
+      state.members.forEach(function (m) {
+        if (regionIndex(memberRegion(m.tz)) === idx) names.push(m.name);
+      });
+      detail.appendChild(el('strong', order[idx].label + ': ' + counts[idx] +
+        ' member' + (counts[idx] === 1 ? '' : 's')));
+      detail.appendChild(document.createTextNode(' \u2014 ' + names.join(', ') + '.'));
+      Sound.select();
+    } else {
+      Sound.click();
+    }
+  }
+  order.forEach(function (o, i) {
+    if (!drawn[i]) return;
+    (function (ii) {
+      function act() { selectRegion(ii); }
+      drawn[ii].addEventListener('click', act);
+      drawn[ii].addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); }
+      });
+      var b = el('button', null, null);
+      b.type = 'button';
+      b.setAttribute('data-seg', String(ii));
+      b.setAttribute('aria-pressed', 'false');
+      b.setAttribute('aria-label', 'Spotlight ' + o.label + ': ' + counts[ii] + ' members');
+      var dot = el('i');
+      dot.style.background = o.color;
+      b.appendChild(dot);
+      b.appendChild(document.createTextNode(o.label + ' \u00b7 ' + counts[ii]));
+      b.addEventListener('click', act);
+      leg.appendChild(b);
+    })(i);
+  });
+  wrap.appendChild(leg);
+  return wrap;
+}
+function fmtHourShort(h) {
+  var ap = h < 12 ? 'a' : 'p';
+  var h12 = h % 12;
+  if (h12 === 0) h12 = 12;
+  return h12 + ap;
+}
+function availChart() {
+  var wrap = el('div', null, 'zs-chart');
+  wrap.appendChild(chartH3('Working members by hour'));
+  var n = state.members.length;
+  if (!n) {
+    wrap.appendChild(el('p', 'Add team members to see hourly availability.', 'status'));
+    return wrap;
+  }
+  wrap.appendChild(el('p', 'Hours shown in ' + state.viewerTz + '. Click a bar to see who is free.', 'status'));
+  var today = viewerToday();
+  var counts = hourCounts(today);
+  var row = el('div', null, 'av-row');
+  row.setAttribute('role', 'group');
+  row.setAttribute('aria-label', 'Bar chart: members working each hour. Best hour: ' + counts.indexOf(Math.max.apply(null, counts)) + ':00 with ' + Math.max.apply(null, counts) + ' free.');
+  var detail = el('div', null, 'zs-detail');
+  detail.setAttribute('aria-live', 'polite');
+  function selectBar(btn, hh) {
+    var was = btn.classList.contains('sel');
+    var bars = row.querySelectorAll('.av-bar.sel');
+    for (var i = 0; i < bars.length; i++) {
+      bars[i].classList.remove('sel');
+      bars[i].setAttribute('aria-pressed', 'false');
+    }
+    detail.textContent = '';
+    if (!was) {
+      btn.classList.add('sel');
+      btn.setAttribute('aria-pressed', 'true');
+      var names = [];
+      state.members.forEach(function (m) { if (workingAt(m, hh, today)) names.push(m.name); });
+      detail.appendChild(el('strong', fmtHour(hh) + ': ' + counts[hh] + ' of ' + n + ' free'));
+      detail.appendChild(document.createTextNode(' \u2014 ' + (names.length ? names.join(', ') : 'no one') + '.'));
+      Sound.select();
+    } else {
+      Sound.click();
+    }
+  }
+  for (var hh = 0; hh < 24; hh++) {
+    (function (h2) {
+      var b = el('button', null, 'av-bar');
+      b.type = 'button';
+      b.style.height = Math.max(4, Math.round(counts[h2] / n * 112) + 4) + 'px';
+      b.setAttribute('aria-pressed', 'false');
+      b.setAttribute('aria-label', fmtHour(h2) + ': ' + counts[h2] + ' of ' + n +
+        ' free. Activate to see who.');
+      b.title = fmtHour(h2) + ': ' + counts[h2] + ' of ' + n + ' free';
+      b.addEventListener('click', function () { selectBar(b, h2); });
+      row.appendChild(b);
+    })(hh);
+  }
+  wrap.appendChild(row);
+  var labels = el('div', null, 'av-labels');
+  for (var l = 0; l < 24; l++) {
+    var s = el('span', (l % 3 === 0) ? fmtHourShort(l) : '');
+    s.setAttribute('aria-hidden', 'true');
+    labels.appendChild(s);
+  }
+  wrap.appendChild(labels);
+  wrap.appendChild(detail);
+  return wrap;
+}
+var vizCharts = document.getElementById('viz-charts');
+function renderViz() {
+  if (!vizCharts) return;
+  clear(vizCharts);
+  vizCharts.appendChild(regionDonut());
+  vizCharts.appendChild(availChart());
+}
+
 function renderAll() {
   renderMembers();
   renderOverlap();
   renderTimeline();
+  renderViz();
   if (planGenerated) renderPlan();
 }
 fillZoneSelect(viewerSel, state.viewerTz);
@@ -1250,19 +1523,65 @@ renderAll();
 (function () {
   var btn = document.getElementById('sample-toggle');
   if (!btn) return;
-  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {};
+  var sampleOn = false, snap = null, snapFields = null, snapEditing = -1,
+      snapPlan = false, snapStatus = null, snapLS = null;
   function paintSample() {
     var lbl = sampleOn ? 'Clear sample data' : 'Try sample data';
     btn.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
     btn.setAttribute('aria-label', lbl);
     btn.title = lbl;
   }
+  /* Typed-but-uncommitted form state: every id-bearing input/select/textarea. */
+  function domFieldState() {
+    var out = [];
+    var els = document.querySelectorAll('input, select, textarea');
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i];
+      if (!e.id) continue;
+      out.push({
+        id: e.id, v: e.value, c: !!e.checked,
+        s: (e.tagName === 'SELECT' ? e.selectedIndex : -1), d: !!e.disabled
+      });
+    }
+    return out;
+  }
+  function applyDomFieldState(list) {
+    if (!list) return;
+    list.forEach(function (f) {
+      var e = document.getElementById(f.id);
+      if (!e) return;
+      e.value = f.v;
+      if ('checked' in e) e.checked = f.c;
+      if (e.tagName === 'SELECT' && f.s >= 0 && e.options.length > f.s) e.selectedIndex = f.s;
+      e.disabled = f.d;
+    });
+  }
+  function lsSnapshot() {
+    var o = {};
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        o[k] = localStorage.getItem(k);
+      }
+    } catch (e) {}
+    return o;
+  }
+  function lsRestore(o) {
+    try {
+      var cur = [];
+      for (var i = 0; i < localStorage.length; i++) cur.push(localStorage.key(i));
+      cur.forEach(function (k) { if (!(k in o)) localStorage.removeItem(k); });
+      Object.keys(o).forEach(function (k) { localStorage.setItem(k, o[k]); });
+    } catch (e) {}
+  }
   function snapshot() {
     try { snap = JSON.parse(JSON.stringify(state)); } catch (e) { snap = null; }
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
-    } catch (e) { snapLS = LS_MISSING; }
+    snapFields = domFieldState();
+    snapEditing = editingIndex;
+    snapPlan = planGenerated;
+    var st = document.getElementById('data-status');
+    snapStatus = st ? { t: st.textContent, c: st.className } : null;
+    snapLS = lsSnapshot();
   }
   function applySample() {
     /* realistic 3-person team across time zones; keeps the user's viewer time zone */
@@ -1279,14 +1598,20 @@ renderAll();
   }
   function restore() {
     state = snap || { viewerTz: defaultViewerZone(), members: [] };
-    try {
-      if (snapLS === LS_MISSING) localStorage.removeItem(STORAGE_KEY);
-      else localStorage.setItem(STORAGE_KEY, snapLS);
-    } catch (e) {}
-    snap = null; snapLS = null;
+    editingIndex = snapEditing;
+    planGenerated = snapPlan;
+    lsRestore(snapLS || {});
     fillZoneSelect(viewerSel, state.viewerTz);
     fillZoneSelect(tzInput, state.viewerTz);
     renderAll();
+    /* re-enter any in-progress member edit, then restore all
+       typed-but-uncommitted field values */
+    if (editingIndex >= 0) startEdit(editingIndex);
+    applyDomFieldState(snapFields);
+    var st = document.getElementById('data-status');
+    if (st && snapStatus) { st.textContent = snapStatus.t; st.className = snapStatus.c; }
+    snap = null; snapFields = null; snapEditing = -1;
+    snapPlan = false; snapStatus = null; snapLS = null;
   }
   btn.addEventListener('click', function () {
     if (!sampleOn) {
@@ -1306,6 +1631,21 @@ renderAll();
 })();
 
 })();
+
+/* Esc restores any active spotlight (reference spec 2026-09-21) */
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape' && e.key !== 'Esc') return;
+  var sels = document.querySelectorAll('.zs-donut-seg.sel,.av-bar.sel,.tl-strip[aria-pressed="true"]');
+  for (var i = 0; i < sels.length; i++) {
+    /* SVG elements have no .click() — dispatch a real click event instead.
+       Legend buttons are excluded on purpose: their paired segment's
+       clearSel() already resets them, and clicking both would re-toggle. */
+    sels[i].dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true}));
+  }
+  /* overlap window cards also close on Esc */
+  var opens = document.querySelectorAll('button.overlap-item[aria-expanded="true"]');
+  for (var j = 0; j < opens.length; j++) opens[j].click();
+});
 </script>
 </body>
 </html>

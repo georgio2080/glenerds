@@ -171,50 +171,21 @@
 .g-tagline { color: var(--g-muted); font-size: 0.92rem; font-weight: 400; margin: 6px 0 14px; max-width: 56ch; }
 
 /* Theme toggle + sound toggle: icon-only 44px circular buttons */
-.g-theme-toggle {
-  flex: 0 0 auto;
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  background: var(--g-surface);
-  border: 1px solid var(--g-border);
-  color: var(--g-text-soft);
-  border-radius: 999px;
-  cursor: pointer;
-  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
-}
-.g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
-.g-theme-toggle:active { transform: scale(0.97); }
-#sound-toggle {
-  flex: 0 0 auto;
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  background: var(--g-surface);
-  border: 1px solid var(--g-border);
-  color: var(--g-text-soft);
-  border-radius: 999px;
-  font-size: 1.05rem; line-height: 1;
-  cursor: pointer;
-  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
-}
-#sound-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
-#sound-toggle:active { transform: scale(0.97); }
-#sound-toggle:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-/* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
-.sample-toggle {
-  flex: 0 0 auto;
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  background: var(--g-surface);
-  border: 1px solid var(--g-border);
-  color: var(--g-text-soft);
-  border-radius: 999px;
-  cursor: pointer;
-  transition: border-color var(--g-ease), color var(--g-ease), background var(--g-ease);
-}
-.sample-toggle svg { width: 18px; height: 18px; flex: none; }
-.sample-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
-.sample-toggle:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-.sample-toggle[aria-pressed="true"] { background: var(--g-accent); border-color: var(--g-accent); color: #fff; }
+/* Header cluster reference (2026-09-21): exact HenTrack bytes mapped to this app's
+   vars — --g-surface (card), --g-border (line), --g-text (ink), --g-accent, --g-accent-soft. */
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--g-surface);border:1px solid var(--g-border);color:var(--g-text-soft);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn svg{width:26px;height:26px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1;color:var(--g-text)}
+.round-btn:hover{border-color:var(--g-accent)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--g-accent);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--g-accent);border-color:var(--g-accent);background:var(--g-accent-soft)}
+.g-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;row-gap:6px;justify-content:flex-end}
+/* More Apps pill: white text in BOTH modes (dark-mode --g-accent-ink would go dark-on-dark) */
+.g-header-actions .g-store-btn,
+.g-header-actions .g-store-btn:hover,
+.g-header-actions .g-store-btn:active,
+.g-header-actions .g-store-btn:focus-visible{color:#fff}
 
 /* ---------- 5. TABS (segmented control) ---------- */
 .g-tabs {
@@ -517,7 +488,7 @@
 
 /* ---------- 16. FOCUS (accessibility) ---------- */
 .g-btn:focus-visible,
-.g-theme-toggle:focus-visible,
+.round-btn:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--g-accent);
   outline-offset: 2px;
@@ -626,6 +597,33 @@ a:focus-visible {
 .weekchart .wcd.sel .wctrack{outline:2px solid var(--g-accent)}
 .wc-detail{margin-top:10px; font-size:.85rem; color:var(--g-muted)}
 .wc-detail strong{color:var(--g-text)}
+/* ---------- 21. INSIGHTS: progress rings + stacked columns (2026-09-21) ---------- */
+#statsStrip .stat{cursor:pointer}
+#statsStrip .stat:hover{border-color:var(--g-accent)}
+#statsStrip .stat:focus{outline:none;filter:drop-shadow(0 0 3px var(--g-accent))}
+#statsStrip .stat.sel{border-color:var(--g-accent)}
+.insights-rings{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.ring{cursor:pointer;border:0;border-radius:12px;padding:8px 10px;background:transparent;font-family:var(--g-font);color:var(--g-text);display:flex;flex-direction:column;align-items:center;gap:4px}
+.ring:hover{background:var(--g-surface-2)}
+.ring:focus{outline:none;filter:drop-shadow(0 0 4px var(--g-accent))}
+.ring.sel{filter:drop-shadow(0 0 4px var(--g-accent));background:var(--g-surface-2)}
+.ring svg{display:block}
+.ring .rname{font-size:.72rem;color:var(--g-muted);max-width:88px;text-align:center;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ring-detail{margin-top:6px;font-size:.85rem;color:var(--g-muted);min-height:1.4em}
+.ring-detail strong{color:var(--g-text)}
+.wcols{display:flex;gap:8px;margin-top:10px}
+.wcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;border-radius:8px;padding:3px}
+.wcol-track{width:100%;max-width:52px;height:88px;border-radius:6px;background:var(--g-surface-2);border:1px solid var(--g-border);display:flex;flex-direction:column-reverse;overflow:hidden}
+.wcol-track div{width:100%}
+.wcol-lbl{font-size:.68rem;color:var(--g-muted);text-align:center;line-height:1.3}
+.wcol-lbl.today{color:var(--g-text);font-weight:800}
+.wcol[role="button"]{cursor:pointer}
+.wcol[role="button"]:hover .wcol-track{outline:2px solid var(--g-accent)}
+.wcol[role="button"]:focus{outline:none;filter:drop-shadow(0 0 4px var(--g-accent))}
+.wcol.sel .wcol-track{outline:2px solid var(--g-accent)}
+.wcol-detail{margin-top:8px;font-size:.85rem;color:var(--g-muted)}
+.wcol-detail strong{color:var(--g-text)}
+.insight-sub{font-size:.8rem;color:var(--g-muted);margin:2px 0 0}
 .legend{display:flex;gap:6px;align-items:center;font-size:.75rem;color:var(--g-muted);margin-top:8px;flex-wrap:wrap}
 .modal-back{position:fixed;inset:0;background:rgba(2,6,12,.5);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
 .modal{background:var(--g-surface);border:1px solid var(--g-border);border-radius:var(--g-radius-lg);padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--g-shadow-lg)}
@@ -681,7 +679,7 @@ a:focus-visible {
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -926,11 +924,9 @@ document.documentElement.setAttribute('data-theme',t);})();
     </div>
     <div class="g-header-actions">
   <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-<button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-<button class="g-theme-toggle" id="themeBtn" aria-label="Toggle dark mode">
-      <svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon" id="themeUse"/></svg>
-    </button>
-    <button id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
+<button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+<button type="button" id="themeBtn" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+<button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
 </div>
   </header>
   <h2 class="g-tagline">Free daily habit tracker with streaks. Works fully offline — your habits never leave your device.</h2>
@@ -943,6 +939,17 @@ document.documentElement.setAttribute('data-theme',t);})();
 
   <div class="stats" id="statsStrip" aria-live="polite"></div>
   <div class="weekchart" id="weekChart" aria-label="Activity over the last 7 days"></div>
+
+  <div class="g-card" id="insightsCard">
+    <p class="g-title">Insights</p>
+    <p class="insight-sub">Completion rings per habit and check-in mix by week — tap either for details.</p>
+    <div class="insights-rings" id="ringRow" aria-label="Per-habit completion rings"></div>
+    <div class="ring-detail" id="ringDetail" aria-live="polite"></div>
+    <hr class="g-divider">
+    <p class="g-title" style="font-size:1.02rem">Check-in mix — trailing 6 weeks</p>
+    <div class="wcols" id="weekCols" aria-label="Stacked weekly check-in columns"></div>
+    <div class="wcol-detail" id="weekDetail" aria-live="polite"></div>
+  </div>
   <p class="streak-note"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-flame"/></svg><span><b>How streaks work:</b> done or partial days extend your streak · rest days pause it without breaking · a missed day resets it.</span></p>
 
   <div id="habitList"></div>
@@ -964,7 +971,7 @@ document.documentElement.setAttribute('data-theme',t);})();
   </div>
 
   <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 
 <footer class="g-footer">
@@ -1161,9 +1168,9 @@ function completionRate(h){
 /* ============ theme ============ */
 function applyTheme(t){
   document.documentElement.setAttribute("data-theme", t);
-  document.getElementById("themeUse").setAttribute("href", t === "dark" ? "#g-i-sun" : "#g-i-moon");
   const btn = document.getElementById("themeBtn");
   const label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
+  btn.textContent = t === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19";
   btn.setAttribute("aria-label", label);
   btn.title = label;
   btn.setAttribute("aria-pressed", t === "dark" ? "true" : "false");
@@ -1225,6 +1232,7 @@ function bindSoundToggle(){
     btn.setAttribute("aria-pressed", on ? "true" : "false");
     btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
     btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+    /* Sound button stays white (var(--g-surface)) in all states per the 2026-09-21 header reference. */
   }
   btn.addEventListener("click", () => { Sound.toggle(); paint(); Sound.click(); });
   paint();
@@ -1245,6 +1253,15 @@ function openModal(html){
   document.getElementById("mback").addEventListener("click", e => { if(e.target.id === "mback") closeModal(); });
 }
 document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
+/* Esc clears chart spotlights (click again / Esc restores default view) */
+document.addEventListener("keydown", e => {
+  if(e.key !== "Escape") return;
+  if(document.getElementById("modalRoot").firstChild) return; /* modal owns Esc */
+  let hit = false;
+  document.querySelectorAll("#weekChart .wcd.sel, #ringRow .ring.sel, #weekCols .wcol.sel").forEach(el => { el.click(); hit = true; });
+  document.querySelectorAll("#statsStrip .stat.sel").forEach(el => { el.classList.remove("sel"); hit = true; });
+  if(hit) Sound.click();
+});
 
 /* ============ rendering ============ */
 function renderStats(){
@@ -1259,12 +1276,12 @@ function renderStats(){
   });
   const dueToday = state.habits.filter(h => isScheduled(h, new Date())).length;
   el.innerHTML =
-    statHtml(checkins, "done today") +
-    statHtml(state.habits.length, "habits") +
-    statHtml(I_FLAME_FLASH + longest, "longest streak") +
-    statHtml(dueToday, "due today");
+    statHtml(checkins, "done today", "done", checkins + " of " + dueToday + " due logged today. Activate to jump to the next open habit.") +
+    statHtml(state.habits.length, "habits", "habits", state.habits.length + " habits tracked. Activate to jump to the list.") +
+    statHtml(I_FLAME_FLASH + longest, "longest streak", "streak", "Longest best streak is " + longest + ". Activate to open that habit's details.") +
+    statHtml(dueToday, "due today", "due", dueToday + " habits due today. Activate to jump to the first open one.");
 }
-function statHtml(n, l){ return '<div class="stat"><div class="n">' + n + '</div><div class="l">' + esc(l) + "</div></div>"; }
+function statHtml(n, l, kind, aria){ return '<div class="stat" data-stat="' + kind + '" tabindex="0" role="button" aria-pressed="false" aria-label="' + esc(aria) + '"><div class="n">' + n + '</div><div class="l">' + esc(l) + "</div></div>"; }
 
 function renderList(){
   const list = document.getElementById("habitList");
@@ -1698,6 +1715,7 @@ function renderWeekChart(){
     col.className = "wcd";
     col.setAttribute("tabindex", "0");
     col.setAttribute("role", "button");
+    col.setAttribute("data-day", day.key);
     col.setAttribute("aria-pressed", "false");
     col.setAttribute("aria-label", lbl + ". Activate to see per-habit detail.");
     const track = document.createElement("div");
@@ -1740,8 +1758,236 @@ function renderWeekChart(){
   el.appendChild(head); el.appendChild(body); el.appendChild(detail);
 }
 
+/* ============ insights: progress rings + stacked weekly columns ============
+   Gallery vocabulary: "Progress rings — small multiples for several goals"
+   and "Stacked columns — totals and composition at once". Both interactive:
+   click/Enter/Space spotlights one item and swaps the detail line; clicking
+   again restores the aggregate view. */
+let selRingHid = null, selWeekIdx = -1;
+const NS_SVG = "http://www.w3.org/2000/svg";
+
+function ringSvg(h, pct){
+  const R = 30, C = 2 * Math.PI * R, off = C * (1 - pct / 100);
+  const svg = document.createElementNS(NS_SVG, "svg");
+  svg.setAttribute("width", "72"); svg.setAttribute("height", "72");
+  svg.setAttribute("viewBox", "0 0 72 72"); svg.setAttribute("aria-hidden", "true");
+  const track = document.createElementNS(NS_SVG, "circle");
+  track.setAttribute("cx", "36"); track.setAttribute("cy", "36"); track.setAttribute("r", String(R));
+  track.setAttribute("fill", "none"); track.setAttribute("stroke-width", "9");
+  track.style.stroke = "var(--g-surface-2)"; track.style.filter = "none";
+  const arc = document.createElementNS(NS_SVG, "circle");
+  arc.setAttribute("cx", "36"); arc.setAttribute("cy", "36"); arc.setAttribute("r", String(R));
+  arc.setAttribute("fill", "none"); arc.setAttribute("stroke-width", "9");
+  arc.setAttribute("stroke-linecap", "round");
+  arc.setAttribute("stroke", h.color);
+  arc.setAttribute("stroke-dasharray", C.toFixed(1));
+  arc.setAttribute("stroke-dashoffset", off.toFixed(1));
+  arc.setAttribute("transform", "rotate(-90 36 36)");
+  const t = document.createElementNS(NS_SVG, "text");
+  t.setAttribute("x", "36"); t.setAttribute("y", "36");
+  t.setAttribute("text-anchor", "middle"); t.setAttribute("dominant-baseline", "central");
+  t.setAttribute("font-size", "15"); t.setAttribute("font-weight", "800");
+  t.style.fill = "var(--g-text)";
+  t.textContent = pct + "%";
+  svg.appendChild(track); svg.appendChild(arc); svg.appendChild(t);
+  return svg;
+}
+
+function renderInsights(){
+  const row = document.getElementById("ringRow");
+  const rdet = document.getElementById("ringDetail");
+  const cols = document.getElementById("weekCols");
+  const wdet = document.getElementById("weekDetail");
+  if(!row || !cols) return;
+  row.innerHTML = ""; cols.innerHTML = "";
+  if(state.habits.length === 0){
+    rdet.textContent = "Add a habit to see completion rings here.";
+    wdet.textContent = "";
+    return;
+  }
+  /* ---- progress rings: one per habit ---- */
+  let aggSched = 0, aggDone = 0;
+  state.habits.forEach(h => {
+    const cr = completionRate(h);
+    aggSched += cr.scheduled; aggDone += cr.completed;
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "ring" + (selRingHid === h.id ? " sel" : "");
+    b.setAttribute("aria-pressed", selRingHid === h.id ? "true" : "false");
+    b.setAttribute("aria-label", h.name + ": " + cr.pct + "% completion. Activate to spotlight.");
+    b.appendChild(ringSvg(h, cr.pct));
+    const nm = document.createElement("span"); nm.className = "rname"; nm.textContent = h.name;
+    b.appendChild(nm);
+    b.addEventListener("click", () => {
+      selRingHid = (selRingHid === h.id) ? null : h.id;
+      renderInsights();
+      Sound.click();
+    });
+    row.appendChild(b);
+  });
+  const aggPct = aggSched > 0 ? Math.round(aggDone / aggSched * 100) : 0;
+  const selH = selRingHid ? state.habits.find(x => x.id === selRingHid) : null;
+  if(selH){
+    const st = computeStreaks(selH), cr = completionRate(selH);
+    rdet.innerHTML = "";
+    const s = document.createElement("strong"); s.textContent = selH.name + ": ";
+    rdet.appendChild(s);
+    rdet.appendChild(document.createTextNode(cr.pct + "% completion · current streak " +
+      st.current + " · best " + st.best + " · " + cr.completed + "/" + cr.scheduled + " days. Tap again to restore."));
+  }else{
+    rdet.innerHTML = "";
+    const s = document.createElement("strong"); s.textContent = aggPct + "%";
+    rdet.appendChild(s);
+    rdet.appendChild(document.createTextNode(" overall completion across " + state.habits.length +
+      (state.habits.length === 1 ? " habit" : " habits") + " — tap a ring for one habit."));
+  }
+  /* ---- stacked columns: trailing 6 weeks of check-in mix ---- */
+  const weeks = [];
+  const end = new Date(); end.setHours(0, 0, 0, 0);
+  for(let w = 0; w < 6; w++){
+    const wEnd = addDays(end, -7 * w), wStart = addDays(wEnd, -6);
+    weeks.push({ start: wStart, end: wEnd, idx: w });
+  }
+  const tallies = weeks.map(wk => weekCounts(wk.start, wk.end));
+  let maxSched = 0;
+  tallies.forEach(t => { if(t.sched > maxSched) maxSched = t.sched; });
+  const segs = [
+    ["done", "var(--g-good)", "done"],
+    ["part", "var(--g-good)", "partial"],
+    ["rest", "var(--g-muted)", "rest days"],
+    ["miss", "var(--g-bad)", "missed"]
+  ];
+  weeks.forEach((wk, i) => {
+    const t = tallies[i];
+    const col = document.createElement("div");
+    col.className = "wcol" + (selWeekIdx === i ? " sel" : "");
+    col.setAttribute("role", "button");
+    col.setAttribute("tabindex", "0");
+    col.setAttribute("aria-pressed", selWeekIdx === i ? "true" : "false");
+    const lbl = wk.start.toLocaleDateString(undefined, { month: "numeric", day: "numeric" });
+    col.setAttribute("aria-label", "Week of " + fmtDay(localKey(wk.start)) + ": " +
+      t.done + " done, " + t.part + " partial, " + t.rest + " rest, " + t.miss + " missed. Activate to break down.");
+    const track = document.createElement("div"); track.className = "wcol-track";
+    segs.forEach(sg => {
+      const d = document.createElement("div");
+      const n = t[sg[0]];
+      d.style.height = maxSched > 0 ? (n / maxSched * 100).toFixed(1) + "%" : "0";
+      d.style.background = sg[1];
+      if(sg[0] === "part") d.style.opacity = "0.35";
+      if(sg[0] === "miss") d.style.opacity = "0.55";
+      d.title = sg[2] + ": " + n;
+      track.appendChild(d);
+    });
+    const lab = document.createElement("div");
+    lab.className = "wcol-lbl" + (i === 0 ? " today" : "");
+    lab.textContent = i === 0 ? "this wk" : lbl;
+    col.appendChild(track); col.appendChild(lab);
+    function act(){
+      selWeekIdx = (selWeekIdx === i) ? -1 : i;
+      renderInsights();
+      Sound.click();
+    }
+    col.addEventListener("click", act);
+    col.addEventListener("keydown", e => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); act(); }
+    });
+    cols.appendChild(col);
+  });
+  if(selWeekIdx >= 0 && tallies[selWeekIdx]){
+    const wk = weeks[selWeekIdx], t = tallies[selWeekIdx];
+    wdet.innerHTML = "";
+    const s = document.createElement("strong");
+    s.textContent = "Week of " + fmtDay(localKey(wk.start)) + ": ";
+    wdet.appendChild(s);
+    const lines = Object.keys(t.per).map(hid => {
+      const p = t.per[hid];
+      return p.name + " — " + p.done + " done, " + p.part + " partial, " + p.rest + " rest, " + p.miss + " missed";
+    });
+    wdet.appendChild(document.createTextNode(lines.join("; ") + ". Tap again to restore."));
+  }else{
+    wdet.textContent = "Tap a week column to break it down by habit.";
+  }
+}
+
+function weekCounts(wStart, wEnd){
+  const tk = todayKey();
+  const out = { done: 0, part: 0, rest: 0, miss: 0, sched: 0, per: {} };
+  state.habits.forEach(h => {
+    const created = parseKey(h.created);
+    const p = { name: h.name, done: 0, part: 0, rest: 0, miss: 0 };
+    let d = new Date(wStart);
+    while(d <= wEnd){
+      if(isScheduled(h, d) && d >= created){
+        const key = localKey(d);
+        if(key === tk && !entryStatus(h.id, key)){ d = addDays(d, 1); continue; } // open day: not a miss yet
+        out.sched++;
+        const s = entryStatus(h.id, key);
+        if(s === "done"){ out.done++; p.done++; }
+        else if(s === "partial"){ out.part++; p.part++; }
+        else if(s === "skip"){ out.rest++; p.rest++; }
+        else { out.miss++; p.miss++; }
+      }
+      d = addDays(d, 1);
+    }
+    out.per[h.id] = p;
+  });
+  return out;
+}
+
+/* ============ clickable stat tiles ============
+   The four stat tiles are real affordances now: each jumps to (or expands)
+   the thing it summarizes. Enter/Space + touch work, same as the week chart. */
+function statDestination(kind){
+  const tk = todayKey(), now = new Date();
+  const due = state.habits.filter(h => isScheduled(h, now));
+  if(kind === "done"){
+    const open = due.find(h => { const s = entryStatus(h.id, tk); return s !== "done" && s !== "partial"; });
+    return { target: open ? open.id : null, msg: open ? null : "Everything due is logged for today." };
+  }
+  if(kind === "due"){
+    const open = due.find(h => { const s = entryStatus(h.id, tk); return s !== "done" && s !== "partial"; });
+    return { target: open ? open.id : (due.length ? due[0].id : null), msg: due.length ? null : "Nothing scheduled today." };
+  }
+  if(kind === "streak"){
+    let best = null, bn = -1;
+    state.habits.forEach(h => { const st = computeStreaks(h); if(st.best > bn){ bn = st.best; best = h; } });
+    return { target: best ? best.id : null, expand: true, msg: best ? null : "Add a habit to start a streak." };
+  }
+  return { target: state.habits.length ? state.habits[0].id : null, msg: state.habits.length ? null : "No habits yet — create one." };
+}
+function bindStatTiles(){
+  const strip = document.getElementById("statsStrip");
+  if(!strip || strip._statBound) return;
+  strip._statBound = true;
+  function act(el){
+    const kind = el.getAttribute("data-stat");
+    if(!kind) return;
+    const d = statDestination(kind);
+    strip.querySelectorAll(".stat.sel").forEach(x => x.classList.remove("sel"));
+    el.classList.add("sel");
+    if(d.target){
+      const card = document.querySelector('[data-card="' + d.target + '"]');
+      if(d.expand){
+        const box = document.getElementById("detail-" + d.target);
+        if(box && box.classList.contains("hidden")) renderDetail(d.target);
+      }
+      if(card){ card.scrollIntoView({ behavior: "smooth", block: "center" }); }
+    }
+    if(d.msg) toast(d.msg);
+    Sound.click();
+  }
+  strip.addEventListener("click", e => {
+    const el = e.target.closest(".stat[data-stat]");
+    if(el) act(el);
+  });
+  strip.addEventListener("keydown", e => {
+    if((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("stat")){
+      e.preventDefault(); act(e.target);
+    }
+  });
+}
+
 /* ============ init ============ */
-function renderAll(){ renderStats(); renderWeekChart(); renderList(); }
+function renderAll(){ renderStats(); renderWeekChart(); renderInsights(); renderList(); bindStatTiles(); }
 
 document.getElementById("themeBtn").addEventListener("click", () => {
   applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
@@ -1770,7 +2016,46 @@ document.getElementById("impFile").addEventListener("change", e => {
 (function(){
   var btn = document.getElementById('sample-toggle');
   if(!btn) return;
-  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {};
+  var sampleOn = false, snap = null, snapLS = null, snapUI = null, LS_MISSING = {};
+  function paintSample(){
+    var lbl = sampleOn ? 'Clear sample data' : 'Try sample data';
+    btn.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+    btn.setAttribute('aria-label', lbl);
+    btn.title = lbl;
+  }
+  function snapshotUI(){
+    var ui = { ioHidden: true, impMsg: '', detailOpen: [], weekSel: null, ring: selRingHid, week: selWeekIdx };
+    try{
+      var io = document.getElementById('ioCard');
+      if(io) ui.ioHidden = io.classList.contains('hidden');
+      var im = document.getElementById('impMsg');
+      if(im) ui.impMsg = im.innerHTML;
+      document.querySelectorAll('#habitList .detail:not(.hidden)').forEach(function(box){
+        var id = box.id.replace(/^detail-/, '');
+        if(id) ui.detailOpen.push(id);
+      });
+      var wc = document.querySelector('#weekChart .wcd.sel');
+      if(wc) ui.weekSel = wc.getAttribute('data-day');
+    }catch(e){}
+    return ui;
+  }
+  function restoreUI(ui){
+    if(!ui) return;
+    try{
+      var io = document.getElementById('ioCard');
+      if(io) io.classList.toggle('hidden', ui.ioHidden);
+      var im = document.getElementById('impMsg');
+      if(im) im.innerHTML = ui.impMsg;
+      (ui.detailOpen || []).forEach(function(hid){
+        var box = document.getElementById('detail-' + hid);
+        if(box && box.classList.contains('hidden')) renderDetail(hid);
+      });
+      if(ui.weekSel){
+        var col = document.querySelector('#weekChart .wcd[data-day="' + ui.weekSel + '"]');
+        if(col) col.click(); /* re-selects and plays the select blip — harmless */
+      }
+    }catch(e){}
+  }
   function paintSample(){
     var lbl = sampleOn ? 'Clear sample data' : 'Try sample data';
     btn.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
@@ -1809,12 +2094,16 @@ document.getElementById("impFile").addEventListener("change", e => {
       if(snapLS === LS_MISSING) localStorage.removeItem(LS_KEY);
       else localStorage.setItem(LS_KEY, snapLS);
     }catch(e){}
+    if(snapUI){ selRingHid = snapUI.ring; selWeekIdx = (snapUI.week == null ? -1 : snapUI.week); }
     snap = null; snapLS = null;
     renderAll();
+    restoreUI(snapUI);
+    snapUI = null;
   }
   btn.addEventListener('click', function(){
     if(!sampleOn){
       snapshot();
+      snapUI = snapshotUI();
       window.__gSampleOn = true;
       sampleOn = true;
       applySample();

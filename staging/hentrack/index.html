@@ -64,6 +64,9 @@ input[type="checkbox"]{width:auto}
 .stat .k{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
 .stat .v{font-size:22px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
 .stat .v small{font-size:13px;font-weight:600;color:var(--muted)}
+.stat{cursor:pointer}
+.stat:focus{outline:none;filter:drop-shadow(0 0 5px rgba(91,140,62,.9))}
+.stat.spot{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);
   padding:8px 6px;border-bottom:1px solid var(--line)}
@@ -80,7 +83,6 @@ tr:last-child td{border-bottom:0}
 .xbtn{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;line-height:1}
 .xbtn:hover{color:var(--bad);background:var(--accent-soft)}
 .empty{color:var(--muted);text-align:center;padding:22px 10px;font-size:14px}
-canvas.chart{width:100%;height:170px;display:block}
 footer.attrib{text-align:center;color:var(--muted);font-size:13px;margin:26px 0 8px}
 footer.attrib a{color:var(--accent);font-weight:700;text-decoration:none}
 details.how{margin:0 0 14px}
@@ -98,7 +100,7 @@ details.how summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--ac
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: var(--g-accent-ink, #ffffff);
+  color: #ffffff;
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -112,20 +114,45 @@ details.how summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--ac
 /* Glenerds standard header cluster: More Apps + sample flask + theme + sound */
 .g-header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
 a.g-store-btn, header .g-store-btn { color: #ffffff; }
-.round-btn {
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer; background: var(--card); border: 1px solid var(--line);
-  color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none; font-size: 1.1rem;
-}
-.round-btn svg { width: 18px; height: 18px; flex: none; }
-.round-btn:hover { border-color: var(--accent); }
-.round-btn:focus { outline: none; }
-.round-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.round-btn.sample-toggle[aria-pressed="true"] {
-  color: var(--accent); border-color: var(--accent);
-  background: var(--accent-soft);
-}
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card);border:1px solid var(--line);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn svg{width:26px;height:26px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+.round-btn:hover{border-color:var(--accent)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+/* bare icon buttons: Glen's icon set, no circle borders */
+.icon-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border:0;background:none;box-shadow:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.icon-btn img{height:30px;width:auto;flex:none;display:block}
+.icon-btn:hover img{filter:brightness(1.15)}
+.icon-btn:focus{outline:none}
+.icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.icon-btn.sample-toggle[aria-pressed="true"] img{filter:drop-shadow(0 0 4px var(--accent))}
+/* interactive chart segments: keyboard focus = drop-shadow, never a rectangular outline */
+svg.chart{width:100%;height:170px;display:block}
+.chart-seg{cursor:pointer}
+.chart-seg:focus{outline:none;filter:drop-shadow(0 0 6px rgba(91,140,62,.95))}
+.chart-seg.spot{stroke:#23281f;stroke-width:2}
+[data-theme="dark"] .chart-seg.spot{stroke:#ecead9}
+.chart-detail{font-size:13px;color:var(--muted);margin:6px 0 0;min-height:1.4em}
+.viz-note{font-size:12.5px;color:var(--muted);margin:4px 0 0}
+.exp-items{display:block;margin-top:6px;max-width:300px}
+.exp-item{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-top:1px dashed var(--line);font-size:.86em}
+.exp-item b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.egg-items{display:block;margin-top:6px;max-width:340px}
+.egg-item{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-top:1px dashed var(--line);font-size:.86em}
+.egg-bad{color:var(--bad);font-weight:700}
+.exp-more{display:block;font-size:.78em;opacity:.7;margin-top:2px}
+.hm-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:320px}
+.hm-day{aspect-ratio:1;border-radius:6px;min-width:0;cursor:pointer;border:1px solid var(--line)}
+.hm-day:focus{outline:none;filter:drop-shadow(0 0 5px rgba(91,140,62,.95))}
+.hm-day.spot{outline:2px solid var(--ink);outline-offset:1px}
+.hm-lbl{font-size:10.5px;color:var(--muted);text-align:center}
+.hm-legend{display:flex;align-items:center;gap:4px;margin-top:8px;font-size:11.5px;color:var(--muted)}
+.hm-sw{width:14px;height:14px;border-radius:4px;border:1px solid var(--line)}
+.donut-flex{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#expDonut{width:132px;height:132px;flex:none}
+.donut-side{min-width:0;flex:1 1 160px}
 @media (max-width: 640px) {
   header.top { flex-wrap: wrap; }
   .g-header-actions { margin-left: 0; gap: 6px; }
@@ -144,7 +171,8 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -163,9 +191,9 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
-      <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+      <button id="sampleToggle" class="icon-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><img src="icons/flask.png" alt="" aria-hidden="true"></button>
+      <button id="themeToggle" class="icon-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><img src="icons/moon.png" alt="" aria-hidden="true"></button>
+      <button id="soundToggle" class="icon-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)"><img src="icons/speaker.png" alt="" aria-hidden="true"></button>
     </div>
   </header>
   <p class="tagline">Daily egg counts, feed costs, flock records &amp; egg sales for backyard chicken keepers. 100% offline — your data never leaves this device.</p>
@@ -181,10 +209,20 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
 
   <section id="tab-dash">
     <div class="stat-grid" id="statGrid"></div>
+    <p class="chart-detail" id="statDetail" aria-live="polite"></p>
+    <p class="viz-note">Tap a stat for its breakdown — tap again or press Esc to restore.</p>
     <div class="card">
-      <h2>Eggs per day — last 14 days</h2>
-      <p class="sub">Tap Egg Log to record today's count.</p>
-      <canvas class="chart" id="eggChart" width="800" height="170"></canvas>
+      <h2>Egg trend — last 14 days</h2>
+      <p class="sub">Tap Egg Log to record today's count. Tap a point for that day's eggs, costs &amp; sales.</p>
+      <svg class="chart" id="eggChart" viewBox="0 0 800 170" role="group" aria-label="Eggs collected per day, last 14 days"></svg>
+      <p class="chart-detail" id="eggChartDetail" aria-live="polite"></p>
+    </div>
+    <div class="card">
+      <h2>Laying activity — last 5 weeks</h2>
+      <p class="sub">Darker squares = more eggs that day. Tap a day for its count.</p>
+      <div class="hm-grid" id="heatGrid" role="group" aria-label="Egg laying activity by day"></div>
+      <div class="hm-legend"><span>Less</span><span class="hm-sw" data-lvl="0"></span><span class="hm-sw" data-lvl="1"></span><span class="hm-sw" data-lvl="2"></span><span class="hm-sw" data-lvl="3"></span><span class="hm-sw" data-lvl="4"></span><span>More</span></div>
+      <p class="chart-detail" id="heatDetail" aria-live="polite"></p>
     </div>
     <div class="card">
       <h2>How cost per dozen works</h2>
@@ -260,6 +298,14 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
     <div class="card">
       <h2>Expenses</h2>
       <p class="sub" id="expTotal"></p>
+      <div class="donut-flex" id="expDonutWrap" hidden>
+        <svg id="expDonut" viewBox="0 0 140 140" role="group" aria-label="Expenses by category"></svg>
+        <div class="donut-side">
+          <p style="font-weight:800;margin:0 0 2px;font-size:.95rem" id="expDonutTitle">By category</p>
+          <p class="viz-note" id="expDonutNote"></p>
+          <p class="viz-note">Tap a slice for a category total — tap again to restore.</p>
+        </div>
+      </div>
       <div id="expList"></div>
     </div>
   </section>
@@ -304,7 +350,7 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
   </section>
 
   <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer class="attrib">
     Free offline tool <a href="https://glenerds.gumroad.com">by Glenerds</a> — no signup, no tracking, your data never leaves this device.
@@ -338,7 +384,7 @@ load();
 function applyTheme(t){
   state.theme=t;document.documentElement.setAttribute("data-theme",t);save();
   var dark=(t==="dark"),btn=$("themeToggle"),l=dark?"Switch to light mode":"Switch to dark mode";
-  btn.innerHTML=dark?"☀️":"🌙";
+  btn.querySelector("img").src=dark?"icons/sun.png":"icons/moon.png";
   btn.setAttribute("aria-pressed",dark?"true":"false");
   btn.setAttribute("aria-label",l);btn.title=l;
 }
@@ -347,7 +393,7 @@ function applyTheme(t){
   if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
   applyTheme(t);
 })();
-$("themeToggle").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");drawChart();Sound.toggleTheme();Sound.click();});
+$("themeToggle").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");drawChart();drawHeat();Sound.toggleTheme();Sound.click();});
 
 /* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
 function paintSample(){
@@ -425,7 +471,7 @@ var Sound=(function(){
 (function(){
   var btn=$("soundToggle");if(!btn)return;
   function paint(){var on=Sound.isOn();
-    btn.innerHTML=on?"&#128266;":"&#128263;";
+    btn.querySelector("img").src=on?"icons/speaker.png":"icons/speaker-muted.png";
     btn.setAttribute("aria-pressed",on?"true":"false");
     btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
     btn.title="Toggle sounds ("+(on?"on":"off")+")";}
@@ -460,36 +506,237 @@ function renderDash(){
   var totExp=state.expenses.reduce(function(a,e){return a+num(e.cost);},0);
   var totRev=state.sales.reduce(function(a,s){return a+num(s.dozens)*num(s.pricePerDozen);},0);
   var html="";
-  html+='<div class="stat"><div class="k">Laying hens</div><div class="v">'+hens+'</div></div>';
-  html+='<div class="stat"><div class="k">Eggs · 30 days</div><div class="v">'+eggs30+'</div></div>';
-  html+='<div class="stat"><div class="k">Lay rate</div><div class="v">'+layRate.toFixed(0)+'<small>%</small></div></div>';
-  html+='<div class="stat"><div class="k">Cost / dozen · 30d</div><div class="v">'+(dozens30>0?money(cpd):"—")+'</div></div>';
-  html+='<div class="stat"><div class="k">Spent · 30 days</div><div class="v">'+money(exp30)+'</div></div>';
-  html+='<div class="stat"><div class="k">Egg revenue · 30d</div><div class="v">'+money(rev30)+'</div></div>';
-  html+='<div class="stat"><div class="k">All-time spent</div><div class="v">'+money(totExp)+'</div></div>';
-  html+='<div class="stat"><div class="k">All-time profit</div><div class="v">'+money(totRev-totExp)+'</div></div>';
+  function statBox(key,label,val,aria){return '<div class="stat" data-stat="'+key+'" tabindex="0" role="button" aria-label="'+aria+'"><div class="k">'+label+'</div><div class="v">'+val+'</div></div>';}
+  html+=statBox("hens","Laying hens",hens,"Laying hens: "+hens+". Activate for flock detail.");
+  html+=statBox("eggs","Eggs · 30 days",eggs30,"Eggs in the last 30 days: "+eggs30+". Activate for the daily breakdown.");
+  html+=statBox("layrate","Lay rate",layRate.toFixed(0)+"<small>%</small>","Lay rate: "+layRate.toFixed(0)+" percent. Activate to see how it is calculated.");
+  html+=statBox("cpd","Cost / dozen · 30d",(dozens30>0?money(cpd):"—"),"Cost per dozen over the last 30 days. Activate to see the calculation.");
+  html+=statBox("exp30","Spent · 30 days",money(exp30),"Spent in the last 30 days: "+money(exp30)+". Activate for the category breakdown.");
+  html+=statBox("rev30","Egg revenue · 30d",money(rev30),"Egg revenue in the last 30 days: "+money(rev30)+". Activate for the sales breakdown.");
+  html+=statBox("totexp","All-time spent",money(totExp),"All-time spent: "+money(totExp)+". Activate for the category breakdown.");
+  html+=statBox("profit","All-time profit",money(totRev-totExp),"All-time profit: "+money(totRev-totExp)+". Activate to see the math.");
   $("statGrid").innerHTML=html;
+  wireStatClicks();
   drawChart();
+  drawHeat();
 }
+/* ---------- interactive SVG visuals (offline, no libraries) ---------- */
+var NS="http://www.w3.org/2000/svg";
+var PAL=["#5b8c3e","#0e7490","#b7791f","#9333ea","#dc2626","#0d9488","#db2777"];
+function svgEl(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+function polar(cx,cy,r,deg){var a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+function donutPath(cx,cy,r,ir,a0,a1){
+  var large=(a1-a0)>180?1:0;
+  var p0=polar(cx,cy,r,a0),p1=polar(cx,cy,r,a1),q1=polar(cx,cy,ir,a1),q0=polar(cx,cy,ir,a0);
+  return "M"+p0[0].toFixed(2)+","+p0[1].toFixed(2)+" A"+r+","+r+" 0 "+large+",1 "+p1[0].toFixed(2)+","+p1[1].toFixed(2)+
+    " L"+q1[0].toFixed(2)+","+q1[1].toFixed(2)+" A"+ir+","+ir+" 0 "+large+",0 "+q0[0].toFixed(2)+","+q0[1].toFixed(2)+" Z";
+}
+function pickToggle(el,fn){el.addEventListener("click",fn);el.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();fn();}});}
+function eggByDate(d){var c=0,b=0;state.eggLogs.forEach(function(l){if(l.date===d){c+=num(l.count);b+=num(l.broken);}});return {c:c,b:b};}
+/* underlying log rows behind a day's aggregate — shared by the line chart + heatmap */
+function eggLogItemsHTML(d){
+  var logs=state.eggLogs.filter(function(l){return l.date===d;});
+  if(!logs.length)return '';
+  return '<span class="egg-items">'+logs.map(function(l){
+    return '<span class="egg-item"><span><b>'+num(l.count)+' collected</b>'+
+      (num(l.broken)?' · <span class="egg-bad">'+num(l.broken)+' damaged</span>':'')+
+      (l.notes?' · '+esc(l.notes):'')+'</span></span>';
+  }).join('')+'</span>';
+}
+
+var eggSpot=-1, heatSpot=null, expSpot=-1;
+
+/* line chart: eggs per day, last 14 days — tap a point for detail */
 function drawChart(){
-  var cv=$("eggChart");if(!cv||$("tab-dash").hidden)return;
-  var ctx=cv.getContext("2d");
-  var W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
+  var svg=$("eggChart");if(!svg||$("tab-dash").hidden)return;
+  svg.innerHTML="";
+  var W=800,H=170,padL=36,padB=26,padT=12;
   var dark=document.documentElement.getAttribute("data-theme")==="dark";
-  var grid=dark?"#2e342a":"#e3ddc9", bar=dark?"#8fbf6a":"#5b8c3e", txt=dark?"#a3a88f":"#6b705c";
+  var grid=dark?"#2e342a":"#e3ddc9", line=dark?"#8fbf6a":"#5b8c3e", txt=dark?"#a3a88f":"#6b705c";
   var data=[];
-  for(var i=13;i>=0;i--){var d=daysAgo(i);var c=0;state.eggLogs.forEach(function(l){if(l.date===d)c+=num(l.count);});data.push({d:d,c:c});}
+  for(var i=13;i>=0;i--){var d=daysAgo(i),e=eggByDate(d);data.push({d:d,c:e.c,b:e.b});}
   var max=0;data.forEach(function(x){if(x.c>max)max=x.c;});if(max<4)max=4;
-  ctx.strokeStyle=grid;ctx.fillStyle=txt;ctx.font="10px sans-serif";ctx.lineWidth=1;
-  for(var g=0;g<=4;g++){var y=8+(H-30)*(g/4);ctx.beginPath();ctx.moveTo(30,y);ctx.lineTo(W-6,y);ctx.stroke();
-    ctx.fillText(Math.round(max*(1-g/4)),4,y+3);}
-  var bw=(W-40)/14;
+  var X=function(i){return padL+i*(W-padL-14)/13;}, Y=function(c){return padT+(H-padT-padB)*(1-c/max);};
+  for(var g=0;g<=4;g++){var y=padT+(H-padT-padB)*(g/4);
+    svg.appendChild(svgEl("line",{x1:padL,y1:y,x2:W-10,y2:y,stroke:grid,"stroke-width":1}));
+    var t=svgEl("text",{x:6,y:y+4,fill:txt,"font-size":11});t.textContent=Math.round(max*(1-g/4));svg.appendChild(t);}
+  var pts=data.map(function(x,i){return X(i).toFixed(1)+","+Y(x.c).toFixed(1);}).join(" ");
+  var area=svgEl("polyline",{points:padL+","+(H-padB)+" "+pts+" "+(W-10)+","+(H-padB),fill:line,opacity:0.14,stroke:"none"});
+  svg.appendChild(area);
+  svg.appendChild(svgEl("polyline",{points:pts,fill:"none",stroke:line,"stroke-width":2.5,"stroke-linejoin":"round","stroke-linecap":"round"}));
+  var dots=[];
   data.forEach(function(x,i){
-    var h=(H-34)*(x.c/max), x0=32+i*bw+2, y0=H-22-h;
-    ctx.fillStyle=bar;ctx.fillRect(x0,y0,bw-4,h);
-    if(i%2===0){ctx.fillStyle=txt;var dt=parseDate(x.d);ctx.fillText((dt.getMonth()+1)+"/"+dt.getDate(),x0-2,H-8);}
+    var dt=parseDate(x.d),lab=(dt.getMonth()+1)+"/"+dt.getDate();
+    var cEl=svgEl("circle",{cx:X(i),cy:Y(x.c),r:eggSpot===i?9:6,fill:line,stroke:eggSpot===i?(dark?"#ecead9":"#23281f"):"none","stroke-width":2,
+      class:"chart-seg",tabindex:"0",role:"button","aria-label":lab+": "+x.c+" eggs"+(x.b?", "+x.b+" damaged":"")});
+    pickToggle(cEl,function(){
+      eggSpot=(eggSpot===i?-1:i);
+      dots.forEach(function(d2,j){d2.setAttribute("r",eggSpot===j?9:6);
+        d2.setAttribute("stroke",eggSpot===j?(dark?"#ecead9":"#23281f"):"none");
+        d2.setAttribute("opacity",eggSpot<0?"1":(eggSpot===j?"1":"0.35"));
+        d2.classList.toggle("spot",eggSpot===j);});
+      $("eggChartDetail").innerHTML=eggSpot<0?"":"<strong>"+fmtDate(data[eggSpot].d)+"</strong> — "+data[eggSpot].c+" eggs"+(data[eggSpot].b?" ("+data[eggSpot].b+" damaged)":"")+eggLogItemsHTML(data[eggSpot].d)+dayMoneyHTML(data[eggSpot].d);
+      Sound.select();
+    });
+    if(eggSpot===i)cEl.classList.add("spot");
+    svg.appendChild(cEl);dots.push(cEl);
+    if(i%2===0){var dl=svgEl("text",{x:X(i),y:H-8,"text-anchor":"middle",fill:txt,"font-size":11});dl.textContent=lab;svg.appendChild(dl);}
   });
 }
+
+/* calendar heatmap: egg activity, last 5 weeks — tap a day for its count */
+var HM_DAYS=["Su","Mo","Tu","We","Th","Fr","Sa"];
+var HM_LIGHT=["#eef0e6","#d9e6c6","#b3d19a","#84b56e","#5b8c3e"];
+var HM_DARK=["#232a1f","#31402a","#476336","#5b8c3e","#8fbf6a"];
+function drawHeat(){
+  var grid=$("heatGrid");if(!grid||$("tab-dash").hidden)return;
+  var dark=document.documentElement.getAttribute("data-theme")==="dark";
+  var pal=dark?HM_DARK:HM_LIGHT;
+  document.querySelectorAll(".hm-sw").forEach(function(s){s.style.background=pal[+s.getAttribute("data-lvl")];});
+  grid.innerHTML="";
+  HM_DAYS.forEach(function(d){var s=document.createElement("span");s.className="hm-lbl";s.textContent=d;grid.appendChild(s);});
+  var cells=[];
+  for(var i=34;i>=0;i--){var d=daysAgo(i),e=eggByDate(d);cells.push({d:d,c:e.c,b:e.b});}
+  var max=0;cells.forEach(function(x){if(x.c>max)max=x.c;});
+  var startPad=parseDate(cells[0].d).getDay();
+  for(var p=0;p<startPad;p++){var sp=document.createElement("span");sp.setAttribute("aria-hidden","true");grid.appendChild(sp);}
+  cells.forEach(function(x){
+    var b=document.createElement("button");
+    b.type="button";
+    var lvl=max>0?Math.min(4,Math.round(x.c/max*4)):0;
+    b.className="hm-day"+(heatSpot===x.d?" spot":"");
+    b.style.background=pal[lvl];
+    b.setAttribute("aria-label",fmtDate(x.d)+": "+x.c+" eggs"+(x.b?", "+x.b+" damaged":""));
+    b.title=fmtDate(x.d)+": "+x.c+" eggs";
+    b.addEventListener("click",function(){
+      heatSpot=(heatSpot===x.d?null:x.d);
+      grid.querySelectorAll(".hm-day").forEach(function(z){z.classList.remove("spot");
+        z.style.opacity=heatSpot?(z===b?"1":"0.45"):"";});
+      if(heatSpot){b.classList.add("spot");$("heatDetail").innerHTML="<strong>"+fmtDate(x.d)+"</strong> — "+x.c+" eggs"+(x.b?" ("+x.b+" damaged)":"")+eggLogItemsHTML(x.d)+dayMoneyHTML(x.d);}
+      else{$("heatDetail").innerHTML="";}
+      Sound.select();
+    });
+    grid.appendChild(b);
+  });
+}
+
+/* donut: expenses by category — tap a slice for its total */
+function drawExpDonut(){
+  var svg=$("expDonut"),wrap=$("expDonutWrap");svg.innerHTML="";
+  var byCat={},tot=0,n=0;
+  state.expenses.forEach(function(e){byCat[e.cat||"Other"]= (byCat[e.cat||"Other"]||0)+num(e.cost);});
+  Object.keys(byCat).forEach(function(k){tot+=byCat[k];n++;});
+  if(!tot){wrap.hidden=true;expSpot=-1;return;}
+  wrap.hidden=false;
+  var cats=Object.keys(byCat).sort(function(a,b){return byCat[b]-byCat[a];});
+  var cx=70,cy=70,r=60,ir=38,a0=0,segs=[];
+  var defT="By category",defN="All-time "+money(tot)+" across "+n+" categor"+(n===1?"y":"ies");
+  var tT=$("expDonutTitle"),tN=$("expDonutNote");
+  function paintExpDetail(){
+    if(expSpot<0){tT.textContent=defT;tN.textContent=defN;return;}
+    var cat=cats[expSpot];
+    var all=state.expenses.filter(function(e){return (e.cat||"Other")===cat;})
+      .sort(function(a,b){return b.date<a.date?-1:1;});
+    tT.textContent=cat;
+    var h=money(byCat[cat])+" — "+Math.round(byCat[cat]/tot*100)+"% of spending";
+    var items=all.slice(0,6);
+    if(items.length){
+      h+='<span class="exp-items">'+items.map(function(e){
+        return '<span class="exp-item"><span>'+esc(fmtDate(e.date))+' · '+esc(e.item||'Expense')+'</span><b>'+money(num(e.cost))+'</b></span>';
+      }).join('')+'</span>';
+      if(all.length>6)h+='<span class="exp-more">+'+(all.length-6)+' more in the log below</span>';
+    }
+    tN.innerHTML=h;
+  }
+  cats.forEach(function(k,i){
+    var a1=a0+byCat[k]/tot*360;
+    var p=svgEl("path",{d:donutPath(cx,cy,r,ir,a0,Math.max(a0+0.5,a1)),fill:PAL[i%PAL.length],
+      class:"chart-seg"+(expSpot===i?" spot":""),tabindex:"0",role:"button",
+      "aria-label":k+": "+money(byCat[k])});
+    (function(idx,cat){
+      pickToggle(p,function(){
+        expSpot=(expSpot===idx?-1:idx);
+        segs.forEach(function(s,j){s.classList.toggle("spot",expSpot===j);
+          if(expSpot<0)s.removeAttribute("opacity");else s.setAttribute("opacity",expSpot===j?"1":"0.28");});
+        paintExpDetail();
+        Sound.select();
+      });
+    })(i,k);
+    svg.appendChild(p);segs.push(p);a0=a1;
+  });
+  paintExpDetail();
+}
+
+/* tap detail for a day: costs + sales alongside the egg count */
+function dayMoneyHTML(d){
+  var ex=0,items=[];
+  state.expenses.forEach(function(e){if(e.date===d){ex+=num(e.cost);items.push(e);}});
+  var dz=0,rev=0;
+  state.sales.forEach(function(s){if(s.date===d){dz+=num(s.dozens);rev+=num(s.dozens)*num(s.pricePerDozen);}});
+  var h="";
+  if(ex>0)h+='<span class="egg-items"><span class="egg-item"><span>Costs that day: <b>'+money(ex)+'</b> — '+items.slice(0,3).map(function(e){return esc(e.item||e.cat||"Expense");}).join(", ")+(items.length>3?" +"+(items.length-3)+" more":"")+'</span></span></span>';
+  if(dz>0)h+='<span class="egg-items"><span class="egg-item"><span>Sales that day: <b>'+dz.toFixed(1)+' dozen · '+money(rev)+'</b></span></span></span>';
+  return h;
+}
+/* stat box click-through: tap a stat for its breakdown, tap again or Esc to restore */
+var statSpot=null;
+function statDetailHTML(key){
+  var hens=activeHens(),eggs30=eggsIn(30),exp30=expIn(30),rev30=revIn(30);
+  var dozens30=eggs30/12,layRate=hens.length>0?(eggs30/(hens.length*30)*100):0;
+  var cpd=dozens30>0?(exp30/dozens30):0;
+  var totExp=state.expenses.reduce(function(a,e){return a+num(e.cost);},0);
+  var totRev=state.sales.reduce(function(a,s){return a+num(s.dozens)*num(s.pricePerDozen);},0);
+  function catList(days){
+    var by={},t=0;
+    state.expenses.forEach(function(e){if(days<0||inLastDays(e.date,days)){var k=e.cat||"Other";by[k]=(by[k]||0)+num(e.cost);t+=num(e.cost);}});
+    var ks=Object.keys(by).sort(function(a,b){return by[b]-by[a];});
+    if(!ks.length)return "No expenses logged in this period.";
+    return "<strong>"+money(t)+"</strong> by category — "+ks.map(function(k){return esc(k)+" "+money(by[k]);}).join(" · ");
+  }
+  if(key==="hens"){
+    var names=hens.slice(0,8).map(function(x){return esc(x.name);}).join(", ");
+    return "<strong>"+hens.length+" of "+state.hens.length+" hens laying</strong>"+(names?" — "+names+(hens.length>8?" +"+(hens.length-8)+" more":""):"")+". Lay rate only counts hens marked Laying.";
+  }
+  if(key==="eggs"){
+    var days=[];for(var i=6;i>=0;i--){var d=daysAgo(i),e=eggByDate(d),dt=parseDate(d);days.push((dt.getMonth()+1)+"/"+dt.getDate()+": <b>"+e.c+"</b>");}
+    return "<strong>"+eggs30+" eggs in 30 days</strong> — last 7 days: "+days.join(" · ");
+  }
+  if(key==="layrate")return "<strong>"+layRate.toFixed(1)+"%</strong> = "+eggs30+" eggs ÷ ("+hens.length+" hens × 30 days). Only hens marked Laying count.";
+  if(key==="cpd"){
+    if(dozens30<=0)return "Log egg counts and feed expenses to get a cost per dozen.";
+    return "<strong>"+money(cpd)+"/dozen</strong> = "+money(exp30)+" spent ÷ "+dozens30.toFixed(1)+" dozen logged in the last 30 days.";
+  }
+  if(key==="exp30")return catList(30);
+  if(key==="rev30"){
+    var dz=0,rev=0;state.sales.forEach(function(s){if(inLastDays(s.date,30)){dz+=num(s.dozens);rev+=num(s.dozens)*num(s.pricePerDozen);}});
+    if(dz<=0)return "No sales logged in the last 30 days.";
+    return "<strong>"+money(rev)+"</strong> = "+dz.toFixed(1)+" dozen sold at an average of "+money(rev/dz)+"/dozen.";
+  }
+  if(key==="totexp")return catList(-1)+" — tap a slice in the Feed &amp; Costs tab for per-item detail.";
+  if(key==="profit")return "<strong>"+money(totRev-totExp)+"</strong> = "+money(totRev)+" all-time revenue − "+money(totExp)+" all-time spent.";
+  return "";
+}
+function wireStatClicks(){
+  document.querySelectorAll("#statGrid .stat").forEach(function(el){
+    pickToggle(el,function(){
+      var key=el.getAttribute("data-stat");
+      statSpot=(statSpot===key?null:key);
+      document.querySelectorAll("#statGrid .stat").forEach(function(s2){s2.classList.toggle("spot",s2.getAttribute("data-stat")===statSpot);});
+      $("statDetail").innerHTML=statSpot?statDetailHTML(statSpot):"";
+      Sound.select();
+    });
+  });
+}
+/* Esc restores every spotlight on the dashboard */
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape")return;
+  var changed=false;
+  if(eggSpot>=0){eggSpot=-1;$("eggChartDetail").innerHTML="";drawChart();changed=true;}
+  if(heatSpot){heatSpot=null;$("heatDetail").innerHTML="";drawHeat();changed=true;}
+  if(expSpot>=0){expSpot=-1;drawExpDonut();changed=true;}
+  if(statSpot){statSpot=null;$("statDetail").innerHTML="";document.querySelectorAll("#statGrid .stat").forEach(function(s){s.classList.remove("spot");});changed=true;}
+  if(changed)Sound.select();
+});
 
 /* ---------- egg log ---------- */
 $("eggDate").value=todayStr();
@@ -556,6 +803,7 @@ function renderExp(){
   var tot=state.expenses.reduce(function(a,e){return a+num(e.cost);},0);
   var m30=expIn(30);
   $("expTotal").textContent="All-time: "+money(tot)+" · last 30 days: "+money(m30);
+  drawExpDonut();
   var rows=state.expenses.slice().sort(function(a,b){return b.date<a.date?-1:1;}).slice(0,40);
   if(!rows.length){$("expList").innerHTML='<div class="empty">No expenses yet.</div>';return;}
   var h='<table><thead><tr><th>Date</th><th>Item</th><th>Category</th><th class="num">Cost</th><th></th></tr></thead><tbody>';

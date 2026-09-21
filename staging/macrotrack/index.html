@@ -112,7 +112,7 @@ function gToggleTheme() {
 
   --g-accent:        #818cf8;
   --g-accent-hover:  #a5b4fc;
-  --g-accent-ink:    #0b0e14;
+  --g-accent-ink:    #ffffff;
   --g-accent-soft:   rgba(129, 140, 248, 0.14);
   --g-accent-ring:   rgba(129, 140, 248, 0.35);
 
@@ -199,7 +199,7 @@ function gToggleTheme() {
 /* "More Apps" button — permanent top-bar element on every app (Glen's pick 2026-09-21) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 /* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only */
-.g-round-btn {
+.round-btn {
   flex: 0 0 auto;
   width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
   display: inline-flex; align-items: center; justify-content: center;
@@ -210,14 +210,16 @@ function gToggleTheme() {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,.10);
   font-size: 1.1rem;
-  transition: border-color var(--g-ease), transform var(--g-ease);
 }
-.g-round-btn svg { width: 18px; height: 18px; flex: none; }
-.g-round-btn:hover { border-color: var(--g-accent); }
-.g-round-btn:active { transform: scale(0.97); }
-.g-round-btn:focus { outline: none; }
-.g-round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-.g-round-btn.sample-toggle[aria-pressed="true"] {
+.round-btn svg { width: 26px; height: 26px; flex: none; }
+/* Glen FINAL rev 4: all three icons fill their 44px button — flask 26px, theme+sound emoji 1.65rem */
+.round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
+.round-btn:hover { border-color: var(--g-accent); }
+.round-btn:focus { outline: none; }
+.round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+/* header spec 2026-09-21: sample ON = accent-soft tint + accent border/icon (NOT a solid
+   accent fill); sound button stays white in all states */
+.round-btn.sample-toggle[aria-pressed="true"] {
   color: var(--g-accent); border-color: var(--g-accent);
   background: var(--g-accent-soft);
 }
@@ -227,7 +229,7 @@ function gToggleTheme() {
 .g-store-btn {
   display: inline-flex; align-items: center; gap: 7px;
   background: var(--g-accent);
-  color: var(--g-accent-ink);
+  color: #fff; /* header spec + legibility rule: white text on accent in BOTH modes */
   border-radius: var(--g-radius-pill);
   padding: 8px 15px;
   font-family: var(--g-font);
@@ -236,7 +238,7 @@ function gToggleTheme() {
   box-shadow: var(--g-shadow-sm);
   transition: background var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
 }
-.g-store-btn:hover { background: var(--g-accent-hover); box-shadow: var(--g-shadow-md); color: var(--g-accent-ink); }
+.g-store-btn:hover { background: var(--g-accent-hover); box-shadow: var(--g-shadow-md); color: #fff; }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
 @media (max-width: 440px) {
@@ -593,7 +595,7 @@ function gToggleTheme() {
 }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: var(--g-accent); font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: var(--g-accent); font-weight: 700; font-size: 1.4em; line-height: 1; transform: translateY(-0.04em); }
 
 /* ---------- 15. LAYOUT HELPERS ---------- */
 .g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -718,6 +720,46 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
 .bignum .l { color: var(--g-muted); font-size: 0.82rem; margin-top: 4px; }
 .bignum.hero { border: 1.5px solid var(--g-accent); background: var(--g-accent-soft); }
 .bignum.hero .v { color: var(--g-accent); }
+.bignum[data-key] { cursor: pointer; }
+.bignum[data-key]:focus { outline: none; }
+.bignum[data-key]:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.bignum.spot { border-color: var(--g-accent); box-shadow: 0 0 0 2px var(--g-accent-ring); }
+/* Calorie ladder — horizontal bar comparison of BMR / TDEE / target */
+.ladder { display: grid; gap: 8px; margin: 4px 0 6px; }
+.ladder-row {
+  display: grid; grid-template-columns: 92px 1fr auto; gap: 10px; align-items: center;
+  padding: 8px 12px; border: 1px solid var(--g-border); border-radius: var(--g-radius-md);
+  background: var(--g-surface); cursor: pointer;
+}
+.ladder-row .lad-label { font-weight: 700; font-size: 0.85rem; }
+.ladder-row .lad-track { height: 14px; border-radius: 999px; background: var(--g-surface-2); overflow: hidden; }
+.ladder-row .lad-fill { height: 100%; border-radius: 999px; width: 0; transition: width 300ms ease; }
+.lad-fill-bmr { background: #0ea5e9; }
+.lad-fill-tdee { background: #4f46e5; }
+.lad-fill-target { background: #10b981; }
+.ladder-row .lad-val { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 70px; text-align: right; }
+.ladder.dim .ladder-row:not(.spot) { opacity: 0.45; }
+.ladder-row.spot { border-color: var(--g-accent); box-shadow: 0 0 0 2px var(--g-accent-ring); }
+.ladder-row:focus { outline: none; }
+.ladder-row:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.ladder-readout { font-size: 0.9rem; color: var(--g-text-soft); margin: 2px 0 8px; min-height: 1.25em; }
+/* ---- unified chart detail panel (spotlight breakdown) ---- */
+.chart-detail{margin:10px 0 6px;border:1px solid var(--g-border);border-radius:12px;padding:14px 16px;background:var(--g-surface)}
+.cd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.cd-title{font-weight:800;font-size:1.02rem;color:var(--g-text)}
+.cd-sub{color:var(--g-muted);font-size:.85rem;margin-top:2px}
+.cd-x{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--g-border);background:var(--g-surface);color:var(--g-text);font-size:1.25rem;line-height:1;cursor:pointer}
+.cd-rows{display:grid;gap:6px;max-height:260px;overflow:auto}
+.cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--g-surface-2)}
+.cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.88rem;color:var(--g-text)}
+.cd-meta{color:var(--g-muted);font-size:.8rem;white-space:nowrap}
+.cd-val{font-weight:700;font-size:.88rem;white-space:nowrap;color:var(--g-accent)}
+/* Goal gauge — semicircular gauge over the -30%..+20% slider range */
+.gauge-wrap { display: flex; gap: 14px; align-items: center; margin: 10px 0 4px; flex-wrap: wrap; }
+.gauge-svg { width: min(220px, 62vw); height: auto; flex: 0 0 auto; }
+.gauge-svg text { font-family: var(--g-font); }
+.gauge-num { font-size: 1.55rem; font-weight: 800; fill: var(--g-text); }
+.gauge-cap { color: var(--g-muted); font-size: 0.82rem; }
 /* Macro bars */
 .macro { margin: 12px 0; }
 .macro .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
@@ -937,9 +979,9 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button class="g-round-btn" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><svg class="g-icon" aria-hidden="true"><use href="#g-i-moon"/></svg></button>
-      <button class="g-round-btn" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+      <button class="round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button class="round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button class="round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
     </div>
   </header>
   <p class="g-tagline">Free TDEE &amp; macro calculator. Every formula shown, every step visible — your data never leaves this page.</p>
@@ -1025,6 +1067,18 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
         <label class="g-label" for="goal-slider">Fine-tune: <span id="goal-pct-label">−20%</span> <span class="g-hint" style="display:inline">calorie adjustment vs TDEE</span></label>
         <input type="range" id="goal-slider" min="-30" max="20" step="1" value="-20">
       </div>
+      <div class="gauge-wrap" aria-hidden="false">
+        <svg class="gauge-svg" viewBox="0 0 300 185" role="img" aria-labelledby="gg-t">
+          <title id="gg-t">Goal adjustment gauge, from 30 percent cut to 20 percent surplus</title>
+          <path d="M45 150 A105 105 0 0 1 255 150" fill="none" stroke="var(--g-border)" stroke-width="22" stroke-linecap="round"/>
+          <path id="gg-arc" d="" fill="none" stroke="#f59e0b" stroke-width="22" stroke-linecap="round"/>
+          <line id="gg-needle" x1="150" y1="150" x2="80" y2="150" stroke="var(--g-text)" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="150" cy="150" r="10" fill="var(--g-text)"/>
+          <text id="gg-num" x="150" y="110" text-anchor="middle" class="gauge-num">−20%</text>
+          <text x="150" y="142" text-anchor="middle" class="gauge-cap" style="letter-spacing:.08em">VS TDEE</text>
+        </svg>
+        <div class="gauge-cap" id="gg-cap">Steady cut</div>
+      </div>
 
       <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-calc"/></svg> Formula</p>
       <div class="g-field">
@@ -1057,10 +1111,25 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
         Katch-McArdle needs your body fat % to compute lean body mass — enter it on the left, or pick another formula.
       </div>
       <div class="bignums" aria-live="polite" aria-atomic="true">
-        <div class="bignum"><div class="v" id="o-bmr">–</div><div class="l">BMR (kcal/day)</div></div>
-        <div class="bignum"><div class="v" id="o-tdee">–</div><div class="l">TDEE (kcal/day)</div></div>
-        <div class="bignum hero"><div class="v" id="o-target">–</div><div class="l" id="o-target-label">Target (kcal/day)</div></div>
+        <div class="bignum" data-key="bmr" role="button" tabindex="0" aria-pressed="false" title="Spotlight BMR in the calorie ladder"><div class="v" id="o-bmr">–</div><div class="l">BMR (kcal/day)</div></div>
+        <div class="bignum" data-key="tdee" role="button" tabindex="0" aria-pressed="false" title="Spotlight TDEE in the calorie ladder"><div class="v" id="o-tdee">–</div><div class="l">TDEE (kcal/day)</div></div>
+        <div class="bignum hero" data-key="target" role="button" tabindex="0" aria-pressed="false" title="Spotlight target in the calorie ladder"><div class="v" id="o-target">–</div><div class="l" id="o-target-label">Target (kcal/day)</div></div>
       </div>
+
+      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Calorie ladder</p>
+      <p class="macro-hint">Tip: click a number or its bar to spotlight it.</p>
+      <div class="ladder" id="ladder">
+        <div class="ladder-row" data-key="bmr" role="button" tabindex="0" aria-pressed="false" title="Spotlight BMR">
+          <span class="lad-label">BMR</span><div class="lad-track"><div class="lad-fill lad-fill-bmr" id="lad-bmr"></div></div><span class="lad-val" id="lad-bmr-v">–</span>
+        </div>
+        <div class="ladder-row" data-key="tdee" role="button" tabindex="0" aria-pressed="false" title="Spotlight TDEE">
+          <span class="lad-label">TDEE</span><div class="lad-track"><div class="lad-fill lad-fill-tdee" id="lad-tdee"></div></div><span class="lad-val" id="lad-tdee-v">–</span>
+        </div>
+        <div class="ladder-row" data-key="target" role="button" tabindex="0" aria-pressed="false" title="Spotlight target">
+          <span class="lad-label">Target</span><div class="lad-track"><div class="lad-fill lad-fill-target" id="lad-target"></div></div><span class="lad-val" id="lad-target-v">–</span>
+        </div>
+      </div>
+      <div class="ladder-readout" id="ladder-readout" aria-live="polite"></div>
       <div id="pace" class="notice" hidden></div>
 
       <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Daily macros</p>
@@ -1092,6 +1161,8 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
         </div>
       </div>
 
+      <div class="chart-detail" id="chartDetail" aria-live="polite" hidden></div>
+
       <div class="actions">
         <button type="button" class="g-btn g-btn-primary" id="print-btn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg> Print / save results</button>
       </div>
@@ -1107,7 +1178,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
   <p class="disclaimer">Estimates only — formulas are population averages and can't account for medical conditions, medications, or individual variation. For weight loss, muscle gain, or any health concern, talk to a doctor or registered dietitian.</p>
 
   <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-    <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+    <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
   </a>
   <footer class="g-footer">
     MacroTrack — free offline TDEE &amp; macro calculator. No trackers, no ads, no account.
@@ -1162,10 +1233,11 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     var t = document.documentElement.getAttribute('data-theme') || 'light';
     var dark = t === 'dark';
     var l = dark ? 'Switch to light mode' : 'Switch to dark mode';
-    themeBtn.innerHTML = '<svg class="g-icon" aria-hidden="true"><use href="#' + (dark ? 'g-i-sun' : 'g-i-moon') + '"/></svg>';
+    themeBtn.textContent = dark ? '\u2600\uFE0F' : '\uD83C\uDF19'; /* header spec: emoji shows the mode you GET */
     themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
     themeBtn.setAttribute('aria-label', l);
     themeBtn.title = l;
+    themeBtn.setAttribute('data-mode', dark ? 'dark' : 'light');
   }
   themeBtn.addEventListener('click', function () { gToggleTheme(); paintTheme(); Sound.toggleTheme(); Sound.click(); });
   paintTheme();
@@ -1254,7 +1326,8 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       btn.innerHTML = on ? '&#128266;' : '&#128263;';
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
-      btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')'; }
+      btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
+      btn.setAttribute('data-sound', on ? 'on' : 'muted'); }
     btn.addEventListener('click', function () { Sound.toggle(); paint(); Sound.click(); });
     paint();
   })();
@@ -1372,6 +1445,25 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     $('goal-pct-label').textContent = (p > 0 ? '+' : '') + p + '%';
     var lbl = p < 0 ? 'Target (cut ' + p + '%)' : (p > 0 ? 'Target (bulk +' + p + '%)' : 'Target (maintain)');
     $('o-target-label').textContent = lbl + ' (kcal/day)';
+    paintGauge(p);
+  }
+  // Goal gauge: semicircular gauge over the -30%..+20% slider range
+  function paintGauge(p) {
+    var f = (p + 30) / 50;
+    if (f < 0) f = 0; if (f > 1) f = 1;
+    var th = (180 - f * 180) * Math.PI / 180;
+    var ax = 150 + 105 * Math.cos(th), ay = 150 - 105 * Math.sin(th);
+    var arc = $('gg-arc');
+    if (!arc) return;
+    arc.setAttribute('d', 'M45 150 A105 105 0 0 1 ' + ax.toFixed(1) + ' ' + ay.toFixed(1));
+    arc.setAttribute('stroke', p < 0 ? '#f59e0b' : (p > 0 ? '#0ea5e9' : '#10b981'));
+    var nd = $('gg-needle');
+    nd.setAttribute('x2', (150 + 78 * Math.cos(th)).toFixed(1));
+    nd.setAttribute('y2', (150 - 78 * Math.sin(th)).toFixed(1));
+    $('gg-num').textContent = (p > 0 ? '+' : '') + p + '%';
+    $('gg-cap').textContent = p <= -25 ? 'Deep cut — aggressive deficit' :
+      (p < 0 ? (p <= -10 ? 'Steady cut' : 'Gentle cut') :
+      (p === 0 ? 'Maintenance' : (p >= 15 ? 'Aggressive bulk' : 'Lean bulk')));
   }
 
   ['age', 'h-ft', 'h-in', 'h-cm', 'w-lb', 'w-kg', 'bf'].forEach(function (id) {
@@ -1504,12 +1596,14 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
   var macroNames = { p: 'protein', c: 'carbs', f: 'fat' };
   function setSelected(key) {
     pieSelected = (pieSelected === key) ? null : key;
+    chartSpotKind = pieSelected ? 'macro' : (ladderSel ? 'ladder' : null);
     Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (o) {
       var on = pieSelected === o.getAttribute('data-macro');
       o.classList.toggle('sel', on);
       o.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
     repaintPie();
+    renderChartDetail();
   }
   function wireToggle(el, key) {
     el.addEventListener('click', function () {
@@ -1530,6 +1624,137 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     wireToggle(el, t[1]);
   });
 
+  // ---- calorie ladder: horizontal bars comparing BMR / TDEE / target ----
+  var ladderSel = null; // 'bmr' | 'tdee' | 'target' | null
+  var chartSpotKind = null; // 'macro' | 'ladder' | null — which chart owns #chartDetail
+  var ladderVals = { bmr: NaN, tdee: NaN, target: NaN };
+  function paintLadder(bmr, tdee, target) {
+    ladderVals = { bmr: bmr, tdee: tdee, target: target };
+    var max = Math.max(bmr, tdee, target);
+    var ok = isFinite(max) && max > 0;
+    [['bmr', 'lad-bmr', 'lad-bmr-v'], ['tdee', 'lad-tdee', 'lad-tdee-v'], ['target', 'lad-target', 'lad-target-v']].forEach(function (t) {
+      var v = ladderVals[t[0]];
+      $(t[1]).style.width = (ok && isFinite(v)) ? (v / max * 100).toFixed(1) + '%' : '0%';
+      $(t[2]).textContent = (ok && isFinite(v)) ? fmt(v) : '–';
+    });
+    repaintLadder();
+  }
+  function repaintLadder() {
+    var on = !!ladderSel;
+    var ok = isFinite(ladderVals.bmr) && ladderVals.bmr > 0;
+    $('ladder').classList.toggle('dim', on);
+    Array.prototype.forEach.call(document.querySelectorAll('.ladder-row[data-key],.bignum[data-key]'), function (el) {
+      var s = on && el.getAttribute('data-key') === ladderSel;
+      el.classList.toggle('spot', s);
+      el.setAttribute('aria-pressed', s ? 'true' : 'false');
+    });
+    var ro = $('ladder-readout');
+    if (!on || !ok) { ro.textContent = ''; renderChartDetail(); return; }
+    var v = ladderVals[ladderSel];
+    if (ladderSel === 'bmr') ro.textContent = 'BMR ≈ ' + fmt(v) + ' kcal/day — energy burned at complete rest.';
+    else if (ladderSel === 'tdee') ro.textContent = 'TDEE ≈ ' + fmt(v) + ' kcal/day — BMR × ' + ACT_LABELS[String(S.activity)] + ' (×' + S.activity + ').';
+    else ro.textContent = 'Target ≈ ' + fmt(v) + ' kcal/day — TDEE ' + (S.goalPct >= 0 ? '+' : '') + S.goalPct + '% (' + (S.goalPct < 0 ? 'cut' : S.goalPct > 0 ? 'bulk' : 'maintain') + ').';
+    renderChartDetail();
+  }
+  /* Real breakdown behind the spotlighted chart value: component rows in #chartDetail.
+     A macro slice shows the kcal / grams / share behind its number; a ladder row shows
+     the inputs or formula steps behind BMR / TDEE / target. Activating again (or the
+     panel's close button) releases back to the totals. */
+  function renderChartDetail() {
+    var box = $('chartDetail'); if (!box) return;
+    var kind = chartSpotKind;
+    if (kind === 'macro' && !pieSelected) kind = ladderSel ? 'ladder' : null;
+    if (kind === 'ladder' && !ladderSel) kind = pieSelected ? 'macro' : null;
+    if (!kind) { box.hidden = true; box.innerHTML = ''; return; }
+    var title = '', sub = '', rows = [];
+    if (kind === 'macro') {
+      var t = pieState.target, okT = isFinite(t) && t > 0;
+      if (!okT) { box.hidden = true; box.innerHTML = ''; return; }
+      var fr = pieState[pieSelected] / 100;
+      var kcal = t * fr, g = pieSelected === 'f' ? kcal / 9 : kcal / 4;
+      var nm = macroNames[pieSelected];
+      title = nm.charAt(0).toUpperCase() + nm.slice(1) + ' — breakdown';
+      sub = fmt(kcal) + ' of ' + fmt(t) + ' target kcal/day';
+      rows = [
+        { name: 'Calories from ' + nm, meta: (fr * 100).toFixed(1) + '% of target', val: fmt(kcal) + ' kcal' },
+        { name: 'Grams', meta: pieSelected === 'f' ? '9 kcal per gram' : '4 kcal per gram', val: Math.round(g) + ' g' },
+        { name: 'Share of macro calories', meta: 'protein + carbs + fat', val: (fr * 100).toFixed(1) + '%' }
+      ];
+    } else {
+      var v = ladderVals[ladderSel], okL = isFinite(v) && v > 0;
+      if (!okL) { box.hidden = true; box.innerHTML = ''; return; }
+      if (ladderSel === 'bmr') {
+        title = 'BMR — inputs behind the number';
+        sub = fmt(v) + ' kcal/day at complete rest';
+        var fl = S.formula === 'hb' ? 'Harris–Benedict' : (S.formula === 'katch' ? 'Katch–McArdle' : 'Mifflin-St Jeor');
+        rows = [
+          { name: 'Weight', meta: 'your input', val: r2(S.weightKg) + ' kg' },
+          { name: 'Height', meta: 'your input', val: r2(S.heightCm) + ' cm' },
+          { name: 'Age', meta: 'your input', val: S.age + ' yrs' },
+          { name: 'Sex', meta: 'your input', val: S.sex === 'm' ? 'Male' : 'Female' }
+        ];
+        if (S.formula === 'katch') rows.push({ name: 'Body fat', meta: 'your input', val: S.bodyFat + '%' });
+        rows.push({ name: 'Formula', meta: 'BMR equation', val: fl });
+      } else if (ladderSel === 'tdee') {
+        title = 'TDEE — how it is built';
+        sub = fmt(v) + ' kcal/day total daily energy expenditure';
+        rows = [
+          { name: 'BMR', meta: 'at complete rest', val: fmt(ladderVals.bmr) + ' kcal' },
+          { name: 'Activity', meta: ACT_LABELS[String(S.activity)], val: '×' + S.activity },
+          { name: 'TDEE', meta: 'BMR × activity', val: fmt(v) + ' kcal' }
+        ];
+      } else {
+        title = 'Target — how it is built';
+        sub = fmt(v) + ' kcal/day target';
+        var gp = S.goalPct;
+        rows = [
+          { name: 'TDEE', meta: 'maintenance', val: fmt(ladderVals.tdee) + ' kcal' },
+          { name: 'Goal', meta: gp < 0 ? 'cut' : (gp > 0 ? 'bulk' : 'maintain'), val: (gp >= 0 ? '+' : '') + gp + '%' },
+          { name: 'Target', meta: 'TDEE ± goal', val: fmt(v) + ' kcal' }
+        ];
+      }
+    }
+    box.innerHTML = '<div class="cd-head"><div><div class="cd-title">' + esc(title) + '</div>' +
+      '<div class="cd-sub">' + esc(sub) + '</div></div>' +
+      '<button type="button" class="cd-x" id="chartDetailX" aria-label="Clear selection and show totals">×</button></div>' +
+      '<div class="cd-rows">' + rows.map(function (r) {
+        return '<div class="cd-row"><span class="cd-name">' + esc(r.name) + '</span>' +
+          '<span class="cd-meta">' + esc(r.meta) + '</span>' +
+          '<span class="cd-val">' + esc(r.val) + '</span></div>';
+      }).join('') + '</div>';
+    box.hidden = false;
+    var x = $('chartDetailX');
+    if (x) x.addEventListener('click', function () {
+      if (kind === 'macro' && pieSelected) setSelected(pieSelected);
+      else { ladderSel = null; chartSpotKind = pieSelected ? 'macro' : null; repaintLadder(); }
+    });
+  }
+  // clicking a bignum card or its ladder bar spotlights it (click again to release)
+  function wireLadder(el, key) {
+    function flip() {
+      ladderSel = (ladderSel === key) ? null : key;
+      chartSpotKind = ladderSel ? 'ladder' : (pieSelected ? 'macro' : null);
+      repaintLadder(); Sound.click();
+    }
+    el.addEventListener('click', flip);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.ladder-row[data-key],.bignum[data-key]'), function (el) {
+    wireLadder(el, el.getAttribute('data-key'));
+  });
+  /* Esc clears any chart spotlight (pie slice / macro bar / ladder row / bignum card) */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!pieSelected && !ladderSel) return;
+    pieSelected = null; ladderSel = null; chartSpotKind = null;
+    Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (o) {
+      o.classList.remove('sel'); o.setAttribute('aria-pressed', 'false');
+    });
+    repaintPie(); repaintLadder(); Sound.click();
+  });
+
   function compute() {
     var r = readInputs();
     var stepsEl = $('work-steps');
@@ -1546,6 +1771,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       $('km-notice').hidden = true;
       stepsEl.innerHTML = '<div class="notice">Fix the highlighted fields above to see your numbers.</div>';
       paintPie(0, 0, 0, null);
+      paintLadder(NaN, NaN, NaN);
       return;
     }
     var b;
@@ -1562,6 +1788,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
         $('pace').hidden = true;
         stepsEl.innerHTML = '<div class="notice">Katch-McArdle needs body fat % — enter it above or choose another formula.</div>';
         paintPie(0, 0, 0, null);
+        paintLadder(NaN, NaN, NaN);
         return;
       }
       b = bmrKatch(wKg, r.bodyFat);
@@ -1589,6 +1816,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     $('o-c-bar').style.width = mp.c + '%';
     $('o-f-bar').style.width = mp.f + '%';
     paintPie(mp.p, mp.c, mp.f, target);
+    paintLadder(bmr, tdee, target);
 
     // weekly pace estimate: ~7700 kcal per kg of body weight change
     var paceEl = $('pace');

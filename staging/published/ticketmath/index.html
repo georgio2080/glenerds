@@ -39,23 +39,15 @@ header.hero{background:linear-gradient(120deg,var(--hero-1),var(--hero-2));color
 .logo svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
 .tagline{margin:2px 0 0;color:rgba(255,255,255,.85);font-size:.92rem}
-.theme-pill{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
-.theme-pill:hover{background:rgba(255,255,255,.24)}
-.theme-pill:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.theme-pill svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-#sound-toggle{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;font-size:1.05rem;line-height:1;cursor:pointer}
-#sound-toggle:hover{background:rgba(255,255,255,.24)}
-#sound-toggle:focus-visible{outline:2px solid #fff;outline-offset:2px}
-/* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
-.sample-toggle{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
-.sample-toggle svg{width:18px;height:18px;flex:none}
-.sample-toggle:hover{background:rgba(255,255,255,.24)}
-.sample-toggle:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.sample-toggle[aria-pressed="true"]{background:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);color:#fff}
-.tmoon{display:inline}
-.tsun{display:none}
-html[data-theme="dark"] .tsun{display:inline}
-html[data-theme="dark"] .tmoon{display:none}
+/* ---------- spec header cluster (2026-09-21) ---------- */
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card,var(--surface,#fff));border:1px solid var(--line,var(--border,rgba(0,0,0,.16)));color:var(--ink,var(--text,var(--fg,#1f2937)));box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn svg{width:26px;height:26px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+.round-btn:hover{border-color:var(--accent,#4f46e5)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(79,70,229,.12))}
+.g-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;row-gap:6px;justify-content:flex-end}
 /* ---------- layout ---------- */
 main{max-width:760px;margin:0 auto;padding:0 16px 48px}
 h2{font-size:1.2rem;margin:30px 0 12px;display:flex;align-items:center;gap:10px}
@@ -106,6 +98,9 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 /* ---------- KPI stat cards ---------- */
 .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
 .kpi .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;box-shadow:var(--shadow)}
+.kpi .stat[role="button"]{cursor:pointer}
+.kpi .stat[role="button"]:focus{outline:none;filter:drop-shadow(0 0 3px rgba(79,70,229,.9))}
+.kpi .stat[role="button"].sel{box-shadow:inset 0 0 0 2px var(--accent,#4f46e5)}
 .kpi .stat-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .kchip{width:30px;height:30px;flex:0 0 auto;border-radius:9px;display:inline-flex;align-items:center;justify-content:center}
 .kchip svg{width:17px;height:17px;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;fill:none}
@@ -135,6 +130,30 @@ html[data-theme="dark"] .kchip.c5{background:#2b1f4d}html[data-theme="dark"] .kc
 .chart-wrap .tbar.sel{stroke:#111;stroke-width:2}
 .chart-detail{margin-top:8px;font-size:.85rem;color:var(--muted,#5b6472)}
 .chart-detail strong{color:var(--text,#1c2330)}
+/* chart SVG text legibility in both page modes */
+.chart-wrap svg text{fill:var(--fg,#171821);pointer-events:none}
+.chart-wrap svg .chart-sub{fill:var(--muted,#5b5e70)}
+.chart-wrap svg .seg{cursor:pointer}
+.chart-wrap svg .seg:focus{outline:none;filter:drop-shadow(0 0 4px rgba(79,70,229,.9))}
+.chart-wrap svg .seg.sel{stroke-width:40}
+.chart-wrap svg[role="button"]:focus{outline:none;filter:drop-shadow(0 0 4px rgba(79,70,229,.9))}
+/* donut legend */
+.donut-legend{display:grid;gap:6px;margin-top:10px}
+.donut-leg-row{display:flex;align-items:center;gap:8px;font-size:.9rem}
+.donut-leg-row[role="button"]{cursor:pointer;border-radius:8px;padding:2px 6px;margin:-2px -6px}
+.donut-leg-row[role="button"]:focus{outline:none;filter:drop-shadow(0 0 3px var(--accent,#4f46e5))}
+.donut-dot{width:12px;height:12px;border-radius:50%;flex:none}
+.donut-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* funnel */
+.funnel{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0}
+.funnel-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:140px;min-height:44px;padding:10px 14px;border:0;border-radius:10px;color:#fff;font-weight:700;font-size:16px;cursor:pointer;box-shadow:var(--shadow)}
+.funnel-row:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.funnel-row.sel{box-shadow:inset 0 0 0 3px rgba(255,255,255,.9),var(--shadow)}
+/* tier table rows act as chart spotlights */
+#tier-table tbody tr.trow{cursor:pointer}
+#tier-table tbody tr.trow:hover td{background:rgba(127,127,160,.12)}
+#tier-table tbody tr.trow:focus{outline:none}
+#tier-table tbody tr.trow:focus td{background:rgba(127,127,160,.18)}
 svg text{fill:var(--muted);font-size:12px}
 /* ---------- misc ---------- */
 .status{margin:12px 0;padding:10px 12px;border-radius:10px}
@@ -148,11 +167,11 @@ footer.site{max-width:760px;margin:0 auto;padding:24px 16px 40px;text-align:cent
 footer.site a{color:var(--muted)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
-.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: var(--g-accent-ink, #ffffff);
+  color: #fff;
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -160,7 +179,7 @@ footer.site a{color:var(--muted)}
   box-shadow: 0 1px 2px rgba(0,0,0,.12);
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .g-cta-strip {
@@ -177,7 +196,7 @@ footer.site a{color:var(--muted)}
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -199,9 +218,9 @@ footer.site a{color:var(--muted)}
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button id="sample-toggle" type="button" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-    <button id="theme-toggle" type="button" aria-pressed="false" class="theme-pill"><span class="tsun" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span class="tmoon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
-      <button id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">🔊</button>
+      <button id="sample-toggle" type="button" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+    <button id="theme-toggle" type="button" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button id="sound-toggle" type="button" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
   </div>
 </header>
@@ -260,12 +279,15 @@ footer.site a{color:var(--muted)}
         <h3><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span>Break-even</h3>
         <p id="be-main" class="be-main"></p>
         <p class="note" id="be-note"></p>
+        <div class="chart-wrap" id="gauge-wrap"></div>
       </div>
       <h3 style="font-size:1rem;margin:18px 0 4px">Sell-through scenario</h3>
       <dl class="kpi">
         <div class="stat"><div class="stat-top"><span class="kchip c5" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></span><dt>Projected revenue</dt></div><dd id="kpi-projrev">$0.00</dd></div>
         <div class="stat"><div class="stat-top"><span class="kchip c4" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><dt>Projected profit / loss</dt></div><dd id="kpi-profit">$0.00</dd></div>
       </dl>
+      <h3 style="font-size:1rem;margin:18px 0 4px">Capacity &rarr; sold funnel</h3>
+      <div class="chart-wrap" id="funnel-wrap"></div>
       <div class="table-scroll">
       <table id="tier-table">
         <caption class="sr">Per-tier revenue at current sell-through</caption>
@@ -287,6 +309,8 @@ footer.site a{color:var(--muted)}
         <tbody id="contrib-tbody"></tbody>
       </table>
       </div>
+      <h3 style="font-size:1rem;margin:18px 0 4px">Revenue share by tier (full allocation)</h3>
+      <div class="chart-wrap" id="donut-wrap"></div>
       <h3 style="font-size:1rem;margin:18px 0 4px">Revenue per tier (current sell-through)</h3>
       <div class="chart-wrap" id="chart-wrap"></div>
     </div>
@@ -308,7 +332,7 @@ footer.site a{color:var(--muted)}
 </main>
 
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer class="site">by <a href="https://glenerds.gumroad.com">Glenerds</a></footer>
 
@@ -626,6 +650,35 @@ function renderResults(){
   });
 
   renderChart();
+  renderDonut();
+  renderGauge();
+  renderFunnel();
+  wireTierRows();
+}
+
+/* tier-table rows act as chart spotlights: click/keyboard jumps to the tier's bar.
+   Re-run after every renderChart() since the bars are rebuilt (stale refs go dead). */
+function wireTierRows(){
+  var rows = $("tier-tbody").querySelectorAll("tr");
+  var bars = $("chart-wrap").querySelectorAll(".tbar");
+  rows.forEach(function(row, i){
+    if (!bars[i]) return;
+    row.classList.add("trow");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("role", "button");
+    row.setAttribute("aria-label", "Spotlight " +
+      (state.tiers[i] && state.tiers[i].name ? state.tiers[i].name : ("Tier " + (i+1))) +
+      " in the revenue chart");
+    (function(b){
+      function act(){
+        if (b.dispatchEvent) b.dispatchEvent(new Event("click", {bubbles: true}));
+      }
+      row.addEventListener("click", act);
+      row.addEventListener("keydown", function(ev){
+        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(bars[i]);
+  });
 }
 
 /* ---------- SVG bar chart (hand-rolled with DOM APIs only) ---------- */
@@ -700,6 +753,248 @@ function renderChart(){
   if (max === 0){
     svg.appendChild(svgEl("text", {x:padL + plotW/2, y:padT + plotH/2, "text-anchor":"middle"}, "No revenue yet — set prices and allocations"));
   }
+}
+
+/* ---------- donut: revenue share per tier (full allocation) ---------- */
+var DONUT_COLORS = ["#4f46e5", "#0ea5e9", "#10b981", "#f59e0b", "#ef4444", "#a855f7"];
+function renderDonut(){
+  var wrap = $("donut-wrap"); if(!wrap) return; clear(wrap);
+  var items = [];
+  state.tiers.forEach(function(t, i){
+    var rev = t.price * t.allocation;
+    if (rev > 0) items.push({name: t.name || ("Tier " + (i+1)), rev: rev,
+      color: DONUT_COLORS[i % DONUT_COLORS.length], tier: t});
+  });
+  var total = items.reduce(function(s, x){ return s + x.rev; }, 0);
+  var W = 320, H = 210, cx = 160, cy = 100, R = 72, SW = 36;
+  var svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, width: "100%", role: "img",
+    "aria-label": "Donut chart of revenue share by tier at full allocation"});
+  if (items.length === 0){
+    svg.appendChild(svgEl("text", {x: W/2, y: H/2, "text-anchor": "middle", class: "chart-sub"},
+      "No revenue yet — set prices and allocations"));
+    wrap.appendChild(svg); return;
+  }
+  var C = 2 * Math.PI * R, acc = 0;
+  svg.appendChild(svgEl("circle", {cx: cx, cy: cy, r: R, fill: "none",
+    stroke: "var(--border)", "stroke-width": SW, opacity: "0.4"}));
+  var detail = el("div", {class: "chart-detail"});
+  detail.setAttribute("aria-live", "polite");
+  var segEls = []; /* ring segments, for dim-the-rest spotlight */
+  items.forEach(function(it){
+    var frac = it.rev / total;
+    var seg = svgEl("circle", {
+      cx: cx, cy: cy, r: R, fill: "none", stroke: it.color, "stroke-width": SW,
+      "stroke-dasharray": (frac * C).toFixed(2) + " " + C.toFixed(2),
+      "stroke-dashoffset": (-acc * C).toFixed(2),
+      transform: "rotate(-90 " + cx + " " + cy + ")",
+      "class": "seg", tabindex: "0", role: "button", "aria-pressed": "false",
+      "aria-label": it.name + ": " + (Math.round(frac * 1000) / 10) +
+        "% of revenue (" + usd.format(it.rev) + "). Activate to spotlight."
+    });
+    acc += frac;
+    (function(sg, item, fr){
+      function act(){
+        var was = sg.classList.contains("sel");
+        var sels = wrap.querySelectorAll(".seg.sel");
+        for (var k = 0; k < sels.length; k++){
+          sels[k].classList.remove("sel");
+          sels[k].setAttribute("aria-pressed", "false");
+        }
+        if (!was){
+          sg.classList.add("sel");
+          sg.setAttribute("aria-pressed", "true");
+          /* spotlight: dim the rest of the ring */
+          for (var d = 0; d < segEls.length; d++){
+            if (segEls[d] === sg) segEls[d].removeAttribute("opacity");
+            else segEls[d].setAttribute("opacity", "0.3");
+          }
+          /* swap the center numbers to this segment's values */
+          if (centerMain) centerMain.textContent = usd.format(item.rev);
+          if (centerSub) centerSub.textContent = item.name.toUpperCase();
+          clear(detail);
+          detail.appendChild(el("strong", {}, item.name + ": "));
+          detail.appendChild(document.createTextNode(
+            usd.format(item.rev) + " of " + usd.format(total) +
+            " (" + (Math.round(fr * 1000) / 10) + "%) — " +
+            usd.format(item.tier.price) + " × " + item.tier.allocation + " tickets."));
+          Sound.select();
+        } else {
+          for (var u = 0; u < segEls.length; u++) segEls[u].removeAttribute("opacity");
+          if (centerMain) centerMain.textContent = usd.format(total);
+          if (centerSub) centerSub.textContent = "TOTAL REVENUE";
+          clear(detail); Sound.click();
+        }
+      }
+      sg.addEventListener("click", act);
+      sg.addEventListener("keydown", function(ev){
+        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(seg, it, frac);
+    svg.appendChild(seg);
+    segEls.push(seg);
+  });
+  var centerMain = svgEl("text", {x: cx, y: cy - 2, "text-anchor": "middle",
+    "font-size": "19", "font-weight": "800"}, usd.format(total));
+  var centerSub = svgEl("text", {x: cx, y: cy + 20, "text-anchor": "middle",
+    "font-size": "11", class: "chart-sub"}, "TOTAL REVENUE");
+  svg.appendChild(centerMain);
+  svg.appendChild(centerSub);
+  wrap.appendChild(svg);
+  var leg = el("div", {class: "donut-legend"});
+  items.forEach(function(it, idx){
+    var row = el("div", {class: "donut-leg-row"});
+    /* legend rows are tappable: they spotlight the matching ring segment */
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-label", it.name + ": " + (Math.round(it.rev / total * 1000) / 10) +
+      "% of revenue. Activate to spotlight.");
+    (function(i){
+      function legAct(){
+        var sg = segEls[i];
+        if (sg) sg.dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: true}));
+      }
+      row.addEventListener("click", legAct);
+      row.addEventListener("keydown", function(ev){
+        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); legAct(); }
+      });
+    })(idx);
+    var dot = el("span", {class: "donut-dot"});
+    dot.style.background = it.color;
+    row.appendChild(dot);
+    row.appendChild(el("span", {class: "donut-name"}, it.name));
+    row.appendChild(el("strong", {}, (Math.round(it.rev / total * 1000) / 10) + "%"));
+    leg.appendChild(row);
+  });
+  wrap.appendChild(leg);
+  wrap.appendChild(detail);
+}
+
+/* ---------- gauge: break-even progress vs allocation ---------- */
+function renderGauge(){
+  var wrap = $("gauge-wrap"); if(!wrap) return; clear(wrap);
+  var F = totalCosts(), A = totalAlloc(), R = fullRevenue();
+  var W = 300, H = 172, cx = 150, cy = 142, r = 104;
+  var svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, width: "100%", role: "img",
+    "aria-label": "Break-even gauge"});
+  function pt(pct){
+    var a = Math.PI * (1 - pct / 100);
+    return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+  }
+  var p0 = pt(0), p100 = pt(100);
+  svg.appendChild(svgEl("path", {
+    d: "M " + p0[0].toFixed(1) + " " + p0[1].toFixed(1) +
+       " A " + r + " " + r + " 0 0 1 " + p100[0].toFixed(1) + " " + p100[1].toFixed(1),
+    fill: "none", stroke: "var(--border)", "stroke-width": "20", "stroke-linecap": "round"}));
+  if (!(F > 0 && A > 0 && R > 0)){
+    var msg = F <= 0 ? "No fixed costs — break-even is immediate."
+                     : "Set prices and allocations to compute break-even.";
+    svg.appendChild(svgEl("text", {x: cx, y: cy - 44, "text-anchor": "middle",
+      "font-size": "13", class: "chart-sub"}, msg));
+    wrap.appendChild(svg); return;
+  }
+  var w = R / A, N = Math.ceil(F / w - 1e-9), pct = N / A * 100;
+  var pegged = pct > 100, show = Math.min(pct, 100);
+  var pe = pt(show);
+  svg.appendChild(svgEl("path", {
+    d: "M " + p0[0].toFixed(1) + " " + p0[1].toFixed(1) +
+       " A " + r + " " + r + " 0 " + (show > 50 ? 1 : 0) + " 1 " +
+       pe[0].toFixed(1) + " " + pe[1].toFixed(1),
+    fill: "none", stroke: pegged ? "#dc2626" : "#4f46e5",
+    "stroke-width": "20", "stroke-linecap": "round"}));
+  var na = Math.PI * (1 - show / 100);
+  var nx = cx + (r - 16) * Math.cos(na), ny = cy - (r - 16) * Math.sin(na);
+  svg.appendChild(svgEl("line", {x1: cx, y1: cy, x2: nx.toFixed(1), y2: ny.toFixed(1),
+    stroke: "var(--fg)", "stroke-width": "4", "stroke-linecap": "round"}));
+  svg.appendChild(svgEl("circle", {cx: cx, cy: cy, r: 8, fill: "var(--fg)"}));
+  var label = (Math.round(pct * 10) / 10) + "%";
+  var main = svgEl("text", {x: cx, y: cy - 36, "text-anchor": "middle",
+    "font-size": "24", "font-weight": "800"}, label);
+  svg.appendChild(main);
+  svg.appendChild(svgEl("text", {x: cx, y: cy - 16, "text-anchor": "middle",
+    "font-size": "11", class: "chart-sub"}, "OF ALLOCATION TO BREAK EVEN"));
+  wrap.appendChild(svg);
+  var detail = el("div", {class: "chart-detail"});
+  detail.setAttribute("aria-live", "polite");
+  wrap.appendChild(detail);
+  /* the gauge is a single value: click/keyboard toggles the readout between % and ticket count */
+  var modePct = true;
+  function act(){
+    modePct = !modePct;
+    main.textContent = modePct ? label : ("Sell " + N + " of " + A);
+    clear(detail);
+    detail.appendChild(el("strong", {}, "Break-even: "));
+    detail.appendChild(document.createTextNode(
+      "Sell " + N + " of " + A + " allocated tickets (" +
+      (Math.round(pct * 10) / 10) + "%) to cover " + usd.format(F) +
+      " in fixed costs." +
+      (pegged ? " Needs more tickets than allocated — raise prices or increase allocation." : "")));
+    Sound.select();
+  }
+  svg.setAttribute("tabindex", "0");
+  svg.setAttribute("role", "button");
+  svg.setAttribute("aria-pressed", "false");
+  svg.setAttribute("aria-label", "Break-even gauge: " + label +
+    " of allocation. Activate to toggle the ticket-count view.");
+  svg.addEventListener("click", act);
+  svg.addEventListener("keydown", function(ev){
+    if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+  });
+}
+
+/* ---------- funnel: capacity -> allocated -> projected sold ---------- */
+function renderFunnel(){
+  var wrap = $("funnel-wrap"); if(!wrap) return; clear(wrap);
+  var cap = state.event.capacity;
+  var alloc = totalAlloc();
+  var sold = Math.round(state.tiers.reduce(function(s, t){
+    return s + t.allocation * t.sellThrough / 100;
+  }, 0));
+  var stages = [
+    {label: "Venue capacity", val: cap, color: "#4f46e5"},
+    {label: "Allocated", val: alloc, color: "#7c3aed"},
+    {label: "Projected sold", val: sold, color: "#0ea5e9"}
+  ];
+  var max = Math.max(cap, alloc, sold, 1);
+  var fn = el("div", {class: "funnel"});
+  var detail = el("div", {class: "chart-detail"});
+  detail.setAttribute("aria-live", "polite");
+  stages.forEach(function(st, idx){
+    var w = Math.max(8, Math.round(st.val / max * 100));
+    var row = el("button", {class: "funnel-row", type: "button"});
+    row.style.width = w + "%";
+    row.style.background = st.color;
+    row.setAttribute("aria-pressed", "false");
+    row.setAttribute("aria-label", st.label + ": " + st.val + " tickets. Activate for details.");
+    row.appendChild(el("span", {}, st.label));
+    row.appendChild(el("strong", {}, String(st.val)));
+    (function(r, s, i){
+      function act(){
+        var was = r.classList.contains("sel");
+        var sels = fn.querySelectorAll(".funnel-row.sel");
+        for (var k = 0; k < sels.length; k++){
+          sels[k].classList.remove("sel");
+          sels[k].setAttribute("aria-pressed", "false");
+        }
+        if (!was){
+          r.classList.add("sel");
+          r.setAttribute("aria-pressed", "true");
+          clear(detail);
+          detail.appendChild(el("strong", {}, s.label + ": "));
+          var extra = i === 0 ? " total seats in the venue." : (function(){
+            var prev = stages[i - 1].val;
+            return prev > 0 ? " — " + (Math.round(s.val / prev * 1000) / 10) +
+              "% of " + stages[i - 1].label.toLowerCase() + "." : ".";
+          })();
+          detail.appendChild(document.createTextNode(s.val + " tickets" + extra));
+          Sound.select();
+        } else { clear(detail); Sound.click(); }
+      }
+      r.addEventListener("click", act);
+    })(row, st, idx);
+    fn.appendChild(row);
+  });
+  wrap.appendChild(fn);
+  wrap.appendChild(detail);
 }
 
 /* ---------- status ---------- */
@@ -812,18 +1107,22 @@ var Sound = (function(){
     toggleTheme: function(){ if(on) tone(440, 0.06, "triangle", 0.05); }
   };
 })();
+/* Sound button stays white in all states (reference spec 2026-09-21);
+   paint only swaps the icon + aria (no accent fills). */
+function paintSoundToggle(){
+  var btn = $("sound-toggle");
+  if(!btn) return;
+  var on = Sound.isOn();
+  btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
+  btn.setAttribute("aria-pressed", on ? "true" : "false");
+  btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
+  btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+}
 function bindSoundToggle(){
   var btn = $("sound-toggle");
   if(!btn) return;
-  function paint(){
-    var on = Sound.isOn();
-    btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
-    btn.setAttribute("aria-pressed", on ? "true" : "false");
-    btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
-    btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
-  }
-  btn.addEventListener("click", function(){ Sound.toggle(); paint(); Sound.click(); });
-  paint();
+  btn.addEventListener("click", function(){ Sound.toggle(); paintSoundToggle(); Sound.click(); });
+  paintSoundToggle();
 }
 
 /* ---------- theme ---------- */
@@ -835,19 +1134,97 @@ function applyTheme(t){
   btn.setAttribute("aria-label", label);
   btn.title = label;
   btn.setAttribute("aria-pressed", dark ? "true" : "false");
+  btn.textContent = dark ? "\u2600\uFE0F" : "\uD83C\uDF19";
   try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  if (typeof paintSoundToggle === "function") paintSoundToggle();
 }
 function initTheme(){
   var saved = null;
   try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
   if (saved === "dark" || saved === "light") applyTheme(saved);
   else applyTheme(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  renderChart(); /* re-pick accent color from CSS vars */
+  renderResults(); /* re-render visuals incl. tier-row wiring */
 }
 
 /* ---------- render all / init ---------- */
+/* KPI stat boxes: click for a breakdown; click again or Esc restores. */
+function wireKpiStats(){
+  var defs = [
+    {dd:"kpi-costs", label:"Total fixed costs", detail:function(){
+      var lines = state.costs.map(function(c){ return (c.name || "Unnamed") + " " + usd.format(c.amount); });
+      return state.costs.length + " cost line" + (state.costs.length === 1 ? "" : "s") + ": " +
+        (lines.length ? lines.join(" \u00B7 ") : "none yet") + " = " + usd.format(totalCosts()) + " total.";
+    }},
+    {dd:"kpi-alloc", label:"Total allocation", detail:function(){
+      var parts = state.tiers.map(function(t){ return (t.name || "Tier") + " \u00D7" + t.allocation; });
+      return state.tiers.length + " tier" + (state.tiers.length === 1 ? "" : "s") + ": " +
+        (parts.length ? parts.join(" \u00B7 ") : "none yet") + " = " + totalAlloc() + " tickets.";
+    }},
+    {dd:"kpi-rev", label:"Full-house revenue", detail:function(){
+      var revs = state.tiers.map(function(t){ return t.price * t.allocation; });
+      var R = revs.reduce(function(s, x){ return s + x; }, 0);
+      var parts = state.tiers.map(function(t, i){
+        var pc = R > 0 ? Math.round(revs[i] / R * 1000) / 10 : 0;
+        return (t.name || "Tier") + " " + usd.format(revs[i]) + " (" + pc + "%)";
+      });
+      return "At full allocation: " + (parts.length ? parts.join(" \u00B7 ") : "no tiers yet") + ".";
+    }},
+    {dd:"kpi-projrev", label:"Projected revenue", detail:function(){
+      var parts = state.tiers.map(function(t){
+        return (t.name || "Tier") + " " + usd.format(t.price * t.allocation * t.sellThrough / 100) + " @ " + t.sellThrough + "%";
+      });
+      return "Sell-through scenario: " + (parts.length ? parts.join(" \u00B7 ") : "no tiers yet") + ".";
+    }},
+    {dd:"kpi-profit", label:"Projected profit / loss", detail:function(){
+      var F = totalCosts(), PR = projRevenue(), p = PR - F;
+      var m = PR > 0 ? Math.round(p / PR * 1000) / 10 : 0;
+      return "Projected revenue " + usd.format(PR) + " \u2212 fixed costs " + usd.format(F) +
+        " = " + usd.format(p) + " (" + m + "% margin).";
+    }}
+  ];
+  defs.forEach(function(d){
+    var dd = $(d.dd); if (!dd) return;
+    var stat = dd.closest ? dd.closest(".stat") : dd.parentNode;
+    if (!stat || stat.__kpiWired) return;
+    stat.__kpiWired = true;
+    var dl = stat.parentNode;
+    var det = dl.__kpiDetail;
+    if (!det){
+      det = document.createElement("div");
+      det.className = "chart-detail";
+      det.setAttribute("aria-live", "polite");
+      dl.parentNode.insertBefore(det, dl.nextSibling);
+      dl.__kpiDetail = det;
+    }
+    stat.setAttribute("role", "button");
+    stat.setAttribute("tabindex", "0");
+    stat.setAttribute("aria-pressed", "false");
+    stat.setAttribute("aria-label", d.label + ". Activate for a breakdown.");
+    (function(st, dt, fn){
+      function act(){
+        var was = st.classList.contains("sel");
+        var sels = document.querySelectorAll(".kpi .stat.sel");
+        for (var k = 0; k < sels.length; k++){
+          sels[k].classList.remove("sel");
+          sels[k].setAttribute("aria-pressed", "false");
+        }
+        if (was){ dt.textContent = ""; Sound.click(); }
+        else {
+          st.classList.add("sel");
+          st.setAttribute("aria-pressed", "true");
+          dt.textContent = fn();
+          Sound.select();
+        }
+      }
+      st.addEventListener("click", act);
+      st.addEventListener("keydown", function(ev){
+        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(stat, det, d.detail);
+  });
+}
 function renderAll(){
-  renderEvent(); renderCosts(); renderTiers(); renderResults();
+  renderEvent(); renderCosts(); renderTiers(); renderResults(); wireKpiStats();
 }
 
 nameInput.addEventListener("input", function(){ state.event.name = asText(nameInput.value, 200); save(); });
@@ -880,7 +1257,7 @@ $("import-file").addEventListener("change", function(e){
 });
 $("theme-toggle").addEventListener("click", function(){
   applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
-  renderChart();
+  renderResults(); /* rebuild chart + tier-row wiring so spotlights keep working */
   Sound.toggleTheme();
 });
 
@@ -893,15 +1270,56 @@ bindSoundToggle();
 (function(){
   var btn = document.getElementById("sample-toggle");
   if(!btn) return;
-  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {};
+  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {}, snapDom = null;
   function paintSample(){
     var lbl = sampleOn ? "Clear sample data" : "Try sample data";
     btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
     btn.setAttribute("aria-label", lbl);
     btn.title = lbl;
   }
+  /* Snapshot ALL transient DOM state too: typed-but-uncommitted values, selects,
+     textareas, checked states, focused element, scroll, and validation/status UI. */
+  function snapshotDom(){
+    var d = {values:{}, checked:{}, focus:null, sx:0, sy:0, status:null};
+    try{
+      var els = document.querySelectorAll("input, textarea, select");
+      for (var i = 0; i < els.length; i++){
+        var e = els[i], k = e.id || ("noid-" + i);
+        if (e.type === "checkbox" || e.type === "radio") d.checked[k] = e.checked;
+        else if (e.type !== "file") d.values[k] = e.value;
+      }
+      var ae = document.activeElement;
+      if (ae && ae.id) d.focus = ae.id;
+      d.sx = window.scrollX || 0; d.sy = window.scrollY || 0;
+      var st = document.getElementById("status");
+      if (st) d.status = {hidden: st.hidden, cls: st.className, text: st.textContent};
+    }catch(e2){}
+    return d;
+  }
+  function restoreDom(d){
+    if (!d) return;
+    try{
+      var els = document.querySelectorAll("input, textarea, select");
+      for (var i = 0; i < els.length; i++){
+        var e = els[i], k = e.id || ("noid-" + i);
+        if (e.type === "checkbox" || e.type === "radio"){
+          if (d.checked[k] !== undefined) e.checked = d.checked[k];
+        } else if (e.type !== "file" && d.values[k] !== undefined) e.value = d.values[k];
+      }
+      if (d.status){
+        var st = document.getElementById("status");
+        if (st){ st.className = d.status.cls; st.textContent = d.status.text; st.hidden = d.status.hidden; }
+      }
+      if (d.focus){
+        var f = document.getElementById(d.focus);
+        if (f) f.focus({preventScroll: true});
+      }
+      window.scrollTo(d.sx, d.sy);
+    }catch(e2){}
+  }
   function snapshot(){
     try{ snap = JSON.parse(JSON.stringify(state)); }catch(e){ snap = null; }
+    try{ snapDom = snapshotDom(); }catch(e){ snapDom = null; }
     try{
       var raw = localStorage.getItem(LS_KEY);
       snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
@@ -930,10 +1348,11 @@ bindSoundToggle();
       if(snapLS === LS_MISSING) localStorage.removeItem(LS_KEY);
       else localStorage.setItem(LS_KEY, snapLS);
     }catch(e){}
-    snap = null; snapLS = null;
+    var d = snapDom;
+    snap = null; snapLS = null; snapDom = null;
     demoNotice = false;
     renderAll();
-    hideStatus();
+    restoreDom(d); /* last: re-applies the exact pre-sample transient UI (incl. validation status) */
   }
   btn.addEventListener("click", function(){
     if(!sampleOn){
@@ -951,6 +1370,15 @@ bindSoundToggle();
   });
   paintSample();
 })();
+/* Esc restores any active spotlight (clickability spec) */
+document.addEventListener("keydown", function(ev){
+  if (ev.key !== "Escape") return;
+  var sels = document.querySelectorAll(".tbar.sel, .seg.sel, .funnel-row.sel, .stat.sel");
+  for (var i = 0; i < sels.length; i++){
+    /* SVG elements have no .click() — dispatch a real click event instead */
+    sels[i].dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: true}));
+  }
+});
 </script>
 </body>
 </html>

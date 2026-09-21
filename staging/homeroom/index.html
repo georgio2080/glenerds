@@ -131,14 +131,66 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
   cursor: pointer; background: var(--card); border: 1px solid var(--line);
   color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none; font-size: 1.1rem;
 }
-.round-btn svg { width: 18px; height: 18px; flex: none; }
+.round-btn svg { width: 26px; height: 26px; flex: none; fill: none; stroke: currentColor;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+/* Glen FINAL rev 4: all three icons fill their 44px button — flask 26px, theme+sound emoji 1.65rem */
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
 .round-btn:hover { border-color: var(--accent); }
 .round-btn:focus { outline: none; }
 .round-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.round-btn.sample-toggle[aria-pressed="true"] {
-  color: var(--accent); border-color: var(--accent);
-  background: var(--accent-soft);
-}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+/* ---- Dashboard visuals: progress rings, grade bars, week columns (sweep 2026-09-21) ---- */
+.stat-link { cursor: pointer; transition: border-color .18s, transform .18s; }
+.stat-link:hover { border-color: var(--accent); }
+.stat-link:focus { outline: none; }
+.stat-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.stat-link:active { transform: scale(.97); }
+.viz-cap { font-size: .82rem; color: var(--muted); margin: 8px 0 0; }
+.ring-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 4px 0 6px; }
+.ring-item { display: flex; flex-direction: column; align-items: center; gap: 6px;
+  cursor: pointer; border-radius: 12px; padding: 4px 6px; }
+.ring-item .ring-name { font-size: .8rem; font-weight: 700; }
+.ring-item.spot .ring-name { color: var(--accent); }
+.ring-item:focus { outline: none; }
+.ring-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ring-item.spot .ring-svg { filter: drop-shadow(0 0 4px var(--accent)); }
+.ring-svg { width: 88px; height: 88px; }
+.ring-bg { fill: none; stroke: var(--line); stroke-width: 10; }
+.ring-fg { fill: none; stroke-width: 10; stroke-linecap: round; }
+.ring-txt { font-size: 17px; font-weight: 800; fill: var(--ink); }
+.tot-row.spot td { background: var(--accent-soft); font-weight: 700; }
+.grbar { cursor: pointer; border-radius: 10px; padding: 2px 4px; margin: 0 -4px; }
+.grbar:focus { outline: none; }
+.grbar:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.grbar.spot .bar-label, .grbar.spot .bar-val { color: var(--accent); font-weight: 800; }
+.bar-row { display: flex; align-items: center; gap: 10px; padding: 5px 2px; }
+.bar-label { flex: 0 0 92px; font-weight: 600; font-size: .85rem; }
+.bar-track { flex: 1; height: 10px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 999px; background: var(--accent); }
+.bar-val { flex: 0 0 108px; text-align: right; font-variant-numeric: tabular-nums; font-size: .85rem; color: var(--muted); }
+.dayhead.spot { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.wkcols { display: flex; gap: 8px; align-items: stretch; height: 132px; margin: 4px 0 6px; }
+.wkcol { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end;
+  align-items: center; cursor: pointer; border-radius: 8px; padding: 2px; }
+.wkcol:focus { outline: none; }
+.wkcol:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wkcol .seg { width: 70%; max-width: 34px; border-radius: 4px; }
+.wkcol .seg-done { background: var(--good); }
+.wkcol .seg-pend { background: var(--warn); }
+.wkcol .wk-x { font-size: .68rem; color: var(--muted); margin-top: 4px; font-weight: 700; }
+.wkcol.spot .wk-x { color: var(--accent); }
+.wkcol.spot .seg { filter: drop-shadow(0 0 3px var(--accent)); }
+/* ---- unified chart detail panel (spotlight breakdown) ---- */
+.chart-detail{margin:10px 0 6px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.cd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.cd-title{font-weight:800;font-size:1.02rem;color:var(--ink)}
+.cd-sub{color:var(--muted);font-size:.85rem;margin-top:2px}
+.cd-x{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:1.25rem;line-height:1;cursor:pointer}
+.cd-rows{display:grid;gap:6px;max-height:260px;overflow:auto}
+.cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--bg)}
+.cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.88rem;color:var(--ink)}
+.cd-meta{color:var(--muted);font-size:.8rem;white-space:nowrap}
+.cd-val{font-weight:700;font-size:.88rem;white-space:nowrap;color:var(--accent)}
 @media (max-width: 640px) {
   header.top { flex-wrap: wrap; }
   .g-header-actions { margin-left: 0; gap: 6px; }
@@ -157,7 +209,7 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; transform: translateY(-0.04em); }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -176,7 +228,7 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
       <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
       <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
     </div>
@@ -224,6 +276,9 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
         <span class="kbd-note" id="wkLabel"></span>
       </div>
       <div class="stu-tabs" id="wkStuTabs"></div>
+      <div class="wkcols" id="wkChart"></div>
+      <p class="viz-cap" id="wkChartCap"></p>
+      <div class="chart-detail" id="wkChartDetail" aria-live="polite" hidden></div>
       <div id="wkList"></div>
     </div>
   </section>
@@ -242,7 +297,10 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
     <div class="card">
       <h2>Year totals</h2>
       <p class="sub">Many states require 175–180 school days — track your progress here.</p>
+      <div class="ring-row" id="attRings"></div>
+      <p class="viz-cap" id="ringCap"></p>
       <div id="attTotals"></div>
+      <div class="chart-detail" id="ringChartDetail" aria-live="polite" hidden></div>
     </div>
   </section>
 
@@ -263,6 +321,9 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
     <div class="card">
       <h2>Gradebook</h2>
       <div class="stu-tabs" id="grStuTabs"></div>
+      <div id="grChart"></div>
+      <p class="viz-cap" id="grChartCap"></p>
+      <div class="chart-detail" id="grChartDetail" aria-live="polite" hidden></div>
       <div id="grList"></div>
     </div>
   </section>
@@ -322,7 +383,7 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
   </section>
 
   <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer class="attrib">
     Free offline tool <a href="https://glenerds.gumroad.com">by Glenerds</a> — no signup, no tracking, your data never leaves this device.
@@ -346,7 +407,10 @@ var KEY="homeroom-v1";
 var state={students:[],lessons:[],attendance:{},grades:[],books:[],theme:null};
 var sampleOn=false, sampleSnap=null;
 function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);for(var k in state){if(s[k]!==undefined)state[k]=s[k];}}}catch(e){}}
-function save(){if(sampleOn)return;try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function save(){/* Suppressed for the whole sample cycle: __gSampleOn is set true
+  before demo state is swapped in and back to false only after the user state
+  is restored, so user data can never be overwritten by sample-mode edits. */
+  if(window.__gSampleOn||sampleOn)return;try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
 load();
 
 function applyTheme(t){state.theme=t;document.documentElement.setAttribute("data-theme",t);save();
@@ -357,17 +421,50 @@ function applyTheme(t){state.theme=t;document.documentElement.setAttribute("data
 (function(){var t=state.theme;if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}applyTheme(t);})();
 $("themeToggle").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");Sound.toggleTheme();Sound.click();});
 
-/* ---------- sample data toggle (transient: snapshot user data + view cursors, never persisted) ---------- */
+/* ---------- sample data toggle (transient: snapshot user data + ALL transient UI, never persisted) ---------- */
 function paintSample(){
   var btn=$("sampleToggle"),l=sampleOn?"Clear sample data":"Try sample data";
   btn.setAttribute("aria-pressed",sampleOn?"true":"false");
   btn.setAttribute("aria-label",l);btn.title=l;
 }
+/* Snapshot every transient UI state: typed-but-uncommitted inputs, selects,
+   textareas, checked states, the active tab, view cursors, and validation notices. */
+function snapTransient(){
+  var s={vals:{},checks:{},cursors:{},activeTab:activeTab};
+  var els=document.querySelectorAll("input,select,textarea");
+  for(var i=0;i<els.length;i++){var el=els[i];
+    if(!el.id||el.type==="file")continue;
+    var key=el.id;
+    if(!key&&el.getAttribute("data-stu-subj"))key="subj|"+el.getAttribute("data-stu-subj");
+    if(!key)continue;
+    if(el.type==="checkbox"||el.type==="radio")s.checks[key]=el.checked;
+    else s.vals[key]=el.value;}
+  s.cursors={wkCursor:wkCursor,wkStudent:wkStudent,attCursor:attCursor,grStudent:grStudent,rdStudent:rdStudent};
+  return s;}
+function setSelectVal(el,val){
+  for(var o=0;o<el.options.length;o++)if(el.options[o].value===val){el.value=val;return;}
+}
+function restoreTransient(s){
+  if(!s)return;
+  var c=s.cursors||{};
+  if(c.wkCursor!==undefined)wkCursor=c.wkCursor;
+  if(c.wkStudent!==undefined)wkStudent=c.wkStudent;
+  if(c.attCursor!==undefined)attCursor=c.attCursor;
+  if(c.grStudent!==undefined)grStudent=c.grStudent;
+  if(c.rdStudent!==undefined)rdStudent=c.rdStudent;
+  for(var k in s.vals){var el=null;
+    if(k.indexOf("subj|")===0)el=document.querySelector('[data-stu-subj="'+k.slice(5)+'"]');
+    else el=$(k);
+    if(!el)continue;
+    if(el.tagName==="SELECT")setSelectVal(el,s.vals[k]);
+    else el.value=s.vals[k];}
+  for(var k2 in s.checks){var el2=$(k2);if(el2)el2.checked=s.checks[k2];}
+  showTab(s.activeTab||"dash");
+}
 function setSample(on){
   if(on&&!sampleOn){
-    sampleSnap=JSON.stringify({state:state,wkCursor:wkCursor,wkStudent:wkStudent,
-      attCursor:attCursor,grStudent:grStudent,rdStudent:rdStudent});
-    sampleOn=true;
+    sampleSnap=JSON.stringify({state:state,trans:snapTransient()});
+    window.__gSampleOn=true;sampleOn=true;
     var emma=uid(),liam=uid(),wk=weekStart(todayStr());
     state.students=[
       {id:emma,name:"Emma Everitt",grade:"Grade 4",subjects:["Math","Reading","Writing","Science","History"]},
@@ -396,12 +493,13 @@ function setSample(on){
     wkCursor=weekStart(todayStr());wkStudent=emma;attCursor=todayStr();grStudent=emma;rdStudent=liam;
     init();renderDataStats();
   }else if(!on&&sampleOn){
-    sampleOn=false;
+    var trans=null;
     try{var s=JSON.parse(sampleSnap);
-      if(s&&s.state){state=s.state;wkCursor=s.wkCursor;wkStudent=s.wkStudent;
-        attCursor=s.attCursor;grStudent=s.grStudent;rdStudent=s.rdStudent;}}catch(e){}
+      if(s&&s.state){state=s.state;trans=s.trans||null;}}catch(e){}
+    sampleOn=false;window.__gSampleOn=false;
     sampleSnap=null;
     init();renderDataStats();
+    restoreTransient(trans);
   }
   paintSample();
 }
@@ -437,7 +535,7 @@ var Sound=(function(){
 (function(){
   var btn=$("soundToggle");if(!btn)return;
   function paint(){var on=Sound.isOn();
-    btn.innerHTML=on?"&#128266;":"&#128263;";
+    btn.innerHTML=on?"🔊":"🔇";
     btn.setAttribute("aria-pressed",on?"true":"false");
     btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
     btn.title="Toggle sounds ("+(on?"on":"off")+")";}
@@ -445,14 +543,22 @@ var Sound=(function(){
   paint();
 })();
 
+var activeTab="dash";
+function showTab(t){
+  activeTab=t;
+  document.querySelectorAll(".tabs button").forEach(function(x){x.classList.toggle("active",x.dataset.tab===t);});
+  ["dash","lessons","attend","grades","reading","students","data"].forEach(function(k){$("tab-"+k).hidden=(k!==t);});
+  if(t==="dash")renderDash();
+  if(t==="lessons")renderWeek();
+  if(t==="attend")renderAttend();
+  if(t==="grades")renderGrades();
+  if(t==="reading")renderReading();
+  if(t==="students")renderStudents();
+  if(t==="data")renderDataStats();
+  Sound.click();
+}
 document.querySelectorAll(".tabs button").forEach(function(b){
-  b.addEventListener("click",function(){
-    document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("active");});
-    b.classList.add("active");
-    ["dash","lessons","attend","grades","reading","students","data"].forEach(function(t){$("tab-"+t).hidden=(t!==b.dataset.tab);});
-    renderDash();renderWeek();renderAttend();renderGrades();renderReading();renderStudents();renderDataStats();
-    Sound.click();
-  });
+  b.addEventListener("click",function(){showTab(b.dataset.tab);});
 });
 
 function stuName(id){var s=state.students.find(function(x){return x.id===id;});return s?s.name:"?";}
@@ -485,11 +591,20 @@ function renderDash(){
   var totalDays=Object.keys(state.attendance).filter(function(d){return Object.keys(state.attendance[d]).some(function(k){return state.attendance[d][k]==="p";});}).length;
   var totAssign=state.grades.length, totBooks=state.books.length;
   var html="";
-  html+='<div class="stat"><div class="k">Lessons today</div><div class="v">'+done+"/"+todays.length+'</div></div>';
-  html+='<div class="stat"><div class="k">Present today</div><div class="v">'+present+"/"+state.students.length+'</div></div>';
-  html+='<div class="stat"><div class="k">School days</div><div class="v">'+totalDays+'</div></div>';
-  html+='<div class="stat"><div class="k">Assignments</div><div class="v">'+totAssign+'</div></div>';
+  html+='<div class="stat stat-link" tabindex="0" role="button" data-goto="lessons" aria-label="Lessons today '+done+' of '+todays.length+'. Go to the Lessons tab."><div class="k">Lessons today</div><div class="v">'+done+"/"+todays.length+'</div></div>';
+  html+='<div class="stat stat-link" tabindex="0" role="button" data-goto="attend" aria-label="Present today '+present+' of '+state.students.length+'. Go to the Attendance tab."><div class="k">Present today</div><div class="v">'+present+"/"+state.students.length+'</div></div>';
+  html+='<div class="stat stat-link" tabindex="0" role="button" data-goto="attend" aria-label="School days '+totalDays+'. Go to the Attendance tab."><div class="k">School days</div><div class="v">'+totalDays+'</div></div>';
+  html+='<div class="stat stat-link" tabindex="0" role="button" data-goto="grades" aria-label="Assignments '+totAssign+'. Go to the Gradebook tab."><div class="k">Assignments</div><div class="v">'+totAssign+'</div></div>';
   $("statGrid").innerHTML=html;
+$("statGrid").addEventListener("click",function(e){
+  var el=e.target&&e.target.closest?e.target.closest(".stat-link"):null;
+  if(el)showTab(el.getAttribute("data-goto"));
+});
+$("statGrid").addEventListener("keydown",function(e){
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  var el=e.target&&e.target.closest?e.target.closest(".stat-link"):null;
+  if(el){e.preventDefault();showTab(el.getAttribute("data-goto"));}
+});
   $("todayLabel").textContent="— "+fmtLong(t);
   if(!state.students.length){$("todayList").innerHTML='<div class="empty">Add a student first, then plan lessons.</div>';return;}
   if(!todays.length){$("todayList").innerHTML='<div class="empty">Nothing planned for today. Add lessons under the Lessons tab.</div>';return;}
@@ -534,7 +649,8 @@ function renderWeek(){
   if(!wkStudent&&state.students.length)wkStudent=state.students[0].id;
   $("wkLabel").textContent=fmtDate(wkCursor)+" – "+fmtDate(addDays(wkCursor,6));
   var box=$("wkList");
-  if(!wkStudent){box.innerHTML='<div class="empty">Add a student first.</div>';return;}
+  if(!wkStudent){box.innerHTML='<div class="empty">Add a student first.</div>';
+    $("wkChart").innerHTML="";$("wkChartCap").textContent="";return;}
   var h="";
   for(var i=0;i<7;i++){
     var d=addDays(wkCursor,i);
@@ -548,7 +664,86 @@ function renderWeek(){
     });
   }
   box.innerHTML=h;
+  renderWkChart();
 }
+var wkChartSpot=null;
+function renderWkChart(){
+  var box=$("wkChart"),cap=$("wkChartCap");wkChartSpot=null;
+  hideChartDetail("wkChartDetail");
+  if(!wkStudent){box.innerHTML="";cap.textContent="";return;}
+  var days=[],maxT=1,plan=0,donen=0;
+  for(var i=0;i<7;i++){
+    var d=addDays(wkCursor,i);
+    var ls=state.lessons.filter(function(l){return l.date===d&&l.studentId===wkStudent;});
+    var dn=ls.filter(function(l){return l.done;}).length;
+    days.push({d:d,done:dn,pend:ls.length-dn});
+    if(ls.length>maxT)maxT=ls.length;plan+=ls.length;donen+=dn;}
+  if(!plan){box.innerHTML="";cap.textContent="No lessons planned this week.";return;}
+  var h="";
+  days.forEach(function(x){
+    var dh=parseDate(x.d),xl="MTWTFSS".charAt((dh.getDay()+6)%7);
+    var al=fmtLong(x.d)+": "+x.done+" of "+(x.done+x.pend)+" lessons done. Activate for details.";
+    var segs="";
+    if(x.pend>0)segs='<div class="seg seg-pend" style="height:'+(x.pend/maxT*88).toFixed(0)+'px" title="'+x.pend+' pending"></div>';
+    if(x.done>0)segs+='<div class="seg seg-done" style="height:'+(x.done/maxT*88).toFixed(0)+'px" title="'+x.done+' done"></div>';
+    h+='<div class="wkcol" tabindex="0" role="button" data-d="'+x.d+'" aria-label="'+esc(al)+'">'
+      +'<div style="display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:96px;width:100%">'+segs+'</div>'
+      +'<span class="wk-x">'+xl+'</span></div>';
+  });
+  box.innerHTML=h;
+  cap.textContent=plan+" lesson"+(plan===1?"":"s")+" planned this week · "+donen+" done — activate a column for the day's detail.";
+}
+function spotWkChart(col){
+  var d=col.getAttribute("data-d");
+  wkChartSpot=(wkChartSpot===d)?null:d;
+  $("wkChart").querySelectorAll(".wkcol").forEach(function(x){
+    var on=x.getAttribute("data-d")===wkChartSpot;
+    x.classList.toggle("spot",on);
+    x.style.opacity=(wkChartSpot&&!on)?".45":"1";});
+  if(wkChartSpot){
+    var v=col.getAttribute("aria-label").split(". Activate")[0];
+    $("wkChartCap").textContent=v+" — activate again to release.";
+    renderWkDetail();
+    Sound.select();
+  }else{
+    var plan=0,donen=0;
+    state.lessons.forEach(function(l){if(l.studentId===wkStudent){plan++;if(l.done)donen++;}});
+    $("wkChartCap").textContent=plan+" lesson"+(plan===1?"":"s")+" planned this week · "+donen+" done — activate a column for the day's detail.";
+    hideChartDetail("wkChartDetail");
+    Sound.click();
+  }
+}
+/* Real breakdown behind the spotlighted day column: every lesson behind the count. */
+function hideChartDetail(id){var b=$(id);if(b){b.hidden=true;b.innerHTML="";}}
+function renderWkDetail(){
+  var box=$("wkChartDetail");
+  if(!box||!wkChartSpot){hideChartDetail("wkChartDetail");return;}
+  var ls=state.lessons.filter(function(l){return l.date===wkChartSpot&&l.studentId===wkStudent;});
+  var dn=ls.filter(function(l){return l.done;}).length;
+  var html='<div class="cd-head"><div><div class="cd-title">'+esc(fmtLong(wkChartSpot))+' — '+esc(stuName(wkStudent))+'</div>'
+    +'<div class="cd-sub">'+dn+' of '+ls.length+' lesson'+(ls.length===1?"":"s")+' done</div></div>'
+    +'<button type="button" class="cd-x" id="wkChartDetailX" aria-label="Clear selection and show totals">×</button></div>';
+  if(ls.length){
+    html+='<div class="cd-rows">'+ls.map(function(l){
+      return '<div class="cd-row"><span class="cd-name">'+esc(l.title)+'</span>'
+        +'<span class="cd-meta">'+esc(l.subject||"")+'</span>'
+        +'<span class="cd-val">'+(l.done?"✓ done":"pending")+'</span></div>';}).join("")+'</div>';
+  }else html+='<p class="empty">No lessons this day.</p>';
+  box.innerHTML=html;box.hidden=false;
+  var x=$("wkChartDetailX");
+  if(x)x.addEventListener("click",function(){
+    var cur=null;
+    $("wkChart").querySelectorAll(".wkcol").forEach(function(el){
+      if(el.getAttribute("data-d")===wkChartSpot)cur=el;});
+    if(cur)spotWkChart(cur);});
+}
+$("wkChart").addEventListener("click",function(e){
+  var col=e.target&&e.target.closest?e.target.closest(".wkcol"):null;
+  if(col)spotWkChart(col);});
+$("wkChart").addEventListener("keydown",function(e){
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  var col=e.target&&e.target.closest?e.target.closest(".wkcol"):null;
+  if(col){e.preventDefault();spotWkChart(col);}});
 $("wkList").addEventListener("click",function(e){
   var t=e.target, doneId=t.getAttribute?t.getAttribute("data-wk-done"):null,
       delId=t.getAttribute?t.getAttribute("data-wk-del"):null;
@@ -573,15 +768,91 @@ function renderAttend(){
         +'</div>';
     }).join("");
   }
-  var h='<table><thead><tr><th>Student</th><th class="num">Present</th><th class="num">Absent</th><th class="num">Rate</th></tr></thead><tbody>';
-  state.students.forEach(function(s){
+  var rows=state.students.map(function(s){
     var p=0,a=0;
     Object.keys(state.attendance).forEach(function(d){var v=state.attendance[d][s.id];if(v==="p")p++;else if(v==="a")a++;});
     var rate=(p+a)>0?Math.round(p/(p+a)*100):0;
-    h+='<tr><td><b>'+esc(s.name)+'</b></td><td class="num">'+p+'</td><td class="num">'+a+'</td><td class="num">'+rate+'%</td></tr>';
+    return{id:s.id,name:s.name,p:p,a:a,rate:rate};});
+  renderAttRings(rows);
+  var h='<table><thead><tr><th>Student</th><th class="num">Present</th><th class="num">Absent</th><th class="num">Rate</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    h+='<tr class="tot-row" data-stu="'+r.id+'"><td><b>'+esc(r.name)+'</b></td><td class="num">'+r.p+'</td><td class="num">'+r.a+'</td><td class="num">'+r.rate+'%</td></tr>';
   });
   $("attTotals").innerHTML=state.students.length?h+'</tbody></table>':'<div class="empty">No students yet.</div>';
 }
+var attRingSpot=null;
+function ringColor(rate){return rate>=90?"var(--good)":rate>=75?"var(--warn)":"var(--bad)";}
+function renderAttRings(rows){
+  var box=$("attRings");attRingSpot=null;
+  hideChartDetail("ringChartDetail");
+  if(!rows.length){box.innerHTML="";$("ringCap").textContent="";return;}
+  box.innerHTML=rows.map(function(r){
+    var C=(2*Math.PI*40).toFixed(1),off=(C*(1-Math.min(100,Math.max(0,r.rate))/100)).toFixed(1);
+    var al=r.name+": "+r.rate+"% present ("+r.p+" present, "+r.a+" absent). Activate for the breakdown.";
+    return '<div class="ring-item" tabindex="0" role="button" data-stu="'+r.id+'" aria-label="'+esc(al)+'">'
+      +'<svg class="ring-svg" viewBox="0 0 100 100" aria-hidden="true">'
+      +'<circle class="ring-bg" cx="50" cy="50" r="40"/>'
+      +'<circle class="ring-fg" cx="50" cy="50" r="40" stroke="'+ringColor(r.rate)+'" stroke-dasharray="'+C+'" stroke-dashoffset="'+off+'" transform="rotate(-90 50 50)"/>'
+      +'<text class="ring-txt" x="50" y="56" text-anchor="middle">'+r.rate+'%</text></svg>'
+      +'<span class="ring-name">'+esc(r.name)+'</span></div>';
+  }).join("");
+  $("ringCap").textContent="Attendance rate per student — activate a ring for the breakdown.";
+}
+function paintRingCap(){
+  var cap=$("ringCap");
+  if(!attRingSpot){cap.textContent="Attendance rate per student — activate a ring for the breakdown.";return;}
+}
+function spotRing(item){
+  var id=item.getAttribute("data-stu");
+  attRingSpot=(attRingSpot===id)?null:id;
+  $("attRings").querySelectorAll(".ring-item").forEach(function(x){
+    x.classList.toggle("spot",x.getAttribute("data-stu")===attRingSpot);
+    x.style.opacity=(attRingSpot&&x.getAttribute("data-stu")!==attRingSpot)?".45":"1";});
+  $("attTotals").querySelectorAll(".tot-row").forEach(function(x){
+    x.classList.toggle("spot",x.getAttribute("data-stu")===attRingSpot);});
+  if(attRingSpot){
+    var v=item.getAttribute("aria-label").split(". Activate")[0];
+    $("ringCap").textContent=v+" — activate again to release.";
+    renderRingDetail();
+    Sound.select();
+  }else{paintRingCap();hideChartDetail("ringChartDetail");Sound.click();}
+}
+/* Real breakdown behind the spotlighted attendance ring: every marked day. */
+function renderRingDetail(){
+  var box=$("ringChartDetail");
+  if(!box||!attRingSpot){hideChartDetail("ringChartDetail");return;}
+  var s=state.students.find(function(x){return x.id===attRingSpot;});
+  var nm=s?s.name:"(removed student)";
+  var rows=[];
+  Object.keys(state.attendance).sort().forEach(function(d){
+    var v=(state.attendance[d]||{})[attRingSpot];
+    if(v==="p"||v==="a")rows.push({d:d,v:v});
+  });
+  var p=rows.filter(function(r){return r.v==="p";}).length,a=rows.length-p;
+  var html='<div class="cd-head"><div><div class="cd-title">'+esc(nm)+' — attendance detail</div>'
+    +'<div class="cd-sub">'+p+' present · '+a+' absent</div></div>'
+    +'<button type="button" class="cd-x" id="ringChartDetailX" aria-label="Clear selection and show totals">×</button></div>';
+  if(rows.length){
+    html+='<div class="cd-rows">'+rows.map(function(r){
+      return '<div class="cd-row"><span class="cd-name">'+esc(fmtLong(r.d))+'</span>'
+        +'<span class="cd-meta">'+esc(r.d)+'</span>'
+        +'<span class="cd-val">'+(r.v==="p"?"Present":"Absent")+'</span></div>';}).join("")+'</div>';
+  }else html+='<p class="empty">No attendance marks yet.</p>';
+  box.innerHTML=html;box.hidden=false;
+  var x=$("ringChartDetailX");
+  if(x)x.addEventListener("click",function(){
+    var cur=null;
+    $("attRings").querySelectorAll(".ring-item").forEach(function(el){
+      if(el.getAttribute("data-stu")===attRingSpot)cur=el;});
+    if(cur)spotRing(cur);});
+}
+$("attRings").addEventListener("click",function(e){
+  var item=e.target&&e.target.closest?e.target.closest(".ring-item"):null;
+  if(item)spotRing(item);});
+$("attRings").addEventListener("keydown",function(e){
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  var item=e.target&&e.target.closest?e.target.closest(".ring-item"):null;
+  if(item){e.preventDefault();spotRing(item);}});
 $("attGrid").addEventListener("click",function(e){
   var v=e.target.getAttribute&&e.target.getAttribute("data-att");
   if(!v)return;
@@ -620,7 +891,8 @@ function renderGrades(){
   refreshGradeTabs();
   if(!grStudent&&state.students.length)grStudent=state.students[0].id;
   var box=$("grList");
-  if(!grStudent){box.innerHTML='<div class="empty">Add a student first.</div>';return;}
+  if(!grStudent){box.innerHTML='<div class="empty">Add a student first.</div>';
+    $("grChart").innerHTML="";$("grChartCap").textContent="";return;}
   var rows=state.grades.filter(function(g){return g.studentId===grStudent;});
   var bySubj={};
   rows.forEach(function(g){(bySubj[g.subject||"General"]=bySubj[g.subject||"General"]||[]).push(g);});
@@ -629,7 +901,7 @@ function renderGrades(){
     var gs=bySubj[subj],ts=0,tm=0;
     gs.forEach(function(g){ts+=num(g.score);tm+=num(g.max);});
     var pct=tm>0?ts/tm*100:0;
-    h+='<div class="dayhead">'+esc(subj)+' <span class="pill good">'+pct.toFixed(1)+'% · '+letterGrade(pct)+'</span></div>';
+    h+='<div class="dayhead" data-subj="'+esc(subj)+'">'+esc(subj)+' <span class="pill good">'+pct.toFixed(1)+'% · '+letterGrade(pct)+'</span></div>';
     h+='<table><thead><tr><th>Assignment</th><th class="num">Score</th><th class="num">Grade</th><th></th></tr></thead><tbody>';
     gs.forEach(function(g){
       var p=num(g.max)>0?num(g.score)/num(g.max)*100:0;
@@ -638,7 +910,89 @@ function renderGrades(){
     h+='</tbody></table>';
   });
   box.innerHTML=h||'<div class="empty">No grades yet for '+esc(stuName(grStudent))+'.</div>';
+  renderGrChart(bySubj,rows);
 }
+var grBarSpot=null;
+function renderGrChart(bySubj,rows){
+  var box=$("grChart"),cap=$("grChartCap");grBarSpot=null;
+  hideChartDetail("grChartDetail");
+  var subs=Object.keys(bySubj).sort();
+  if(!subs.length){box.innerHTML="";cap.textContent="";return;}
+  var h="";
+  subs.forEach(function(subj){
+    var gs=bySubj[subj],ts=0,tm=0;
+    gs.forEach(function(g){ts+=num(g.score);tm+=num(g.max);});
+    var pct=tm>0?ts/tm*100:0;
+    var lbl=subj+": "+pct.toFixed(1)+"% ("+letterGrade(pct)+") across "+gs.length+" assignment"+(gs.length===1?"":"s")+". Activate to jump to this subject.";
+    h+='<div class="grbar" tabindex="0" role="button" data-subj="'+esc(subj)+'" aria-label="'+esc(lbl)+'">'
+      +'<div class="bar-row" style="pointer-events:none">'
+      +'<div class="bar-label">'+esc(subj)+'</div>'
+      +'<div class="bar-track"><div class="bar-fill" style="width:'+Math.min(100,Math.max(2,pct)).toFixed(1)+'%"></div></div>'
+      +'<div class="bar-val">'+pct.toFixed(1)+'% · '+letterGrade(pct)+'</div></div></div>';
+  });
+  box.innerHTML=h;
+  cap.textContent="Average per subject — activate a bar to jump to its assignments.";
+}
+function spotGrBar(bar){
+  var subj=bar.getAttribute("data-subj");
+  grBarSpot=(grBarSpot===subj)?null:subj;
+  $("grChart").querySelectorAll(".grbar").forEach(function(x){
+    var on=x.getAttribute("data-subj")===grBarSpot;
+    x.classList.toggle("spot",on);
+    x.style.opacity=(grBarSpot&&!on)?".45":"1";});
+  $("grList").querySelectorAll(".dayhead").forEach(function(x){
+    x.classList.toggle("spot",x.getAttribute("data-subj")===grBarSpot);});
+  if(grBarSpot){
+    var v=bar.getAttribute("aria-label").split(". Activate")[0];
+    $("grChartCap").textContent=v+" — activate again to release.";
+    $("grList").querySelectorAll(".dayhead").forEach(function(x){
+      if(x.getAttribute("data-subj")===grBarSpot)x.scrollIntoView({behavior:"smooth",block:"nearest"});});
+    renderGrDetail();
+    Sound.select();
+  }else{
+    $("grChartCap").textContent="Average per subject — activate a bar to jump to its assignments.";
+    hideChartDetail("grChartDetail");
+    Sound.click();
+  }
+}
+/* Real breakdown behind the spotlighted subject bar: every assignment behind the average. */
+function renderGrDetail(){
+  var box=$("grChartDetail");
+  if(!box||!grBarSpot){hideChartDetail("grChartDetail");return;}
+  var gs=state.grades.filter(function(g){return g.studentId===grStudent&&(g.subject||"General")===grBarSpot;});
+  var ts=0,tm=0;gs.forEach(function(g){ts+=num(g.score);tm+=num(g.max);});
+  var pct=tm>0?ts/tm*100:0;
+  var html='<div class="cd-head"><div><div class="cd-title">'+esc(grBarSpot)+' — assignments</div>'
+    +'<div class="cd-sub">'+gs.length+' assignment'+(gs.length===1?"":"s")+' · '+pct.toFixed(1)+'% '+letterGrade(pct)+'</div></div>'
+    +'<button type="button" class="cd-x" id="grChartDetailX" aria-label="Clear selection and show totals">×</button></div>';
+  if(gs.length){
+    html+='<div class="cd-rows">'+gs.map(function(g){
+      var p=num(g.max)>0?num(g.score)/num(g.max)*100:0;
+      return '<div class="cd-row"><span class="cd-name">'+esc(g.name)+'</span>'
+        +'<span class="cd-meta">'+num(g.score)+' / '+num(g.max)+'</span>'
+        +'<span class="cd-val">'+p.toFixed(0)+'% '+letterGrade(p)+'</span></div>';}).join("")+'</div>';
+  }else html+='<p class="empty">No assignments in this subject.</p>';
+  box.innerHTML=html;box.hidden=false;
+  var x=$("grChartDetailX");
+  if(x)x.addEventListener("click",function(){
+    var cur=null;
+    $("grChart").querySelectorAll(".grbar").forEach(function(el){
+      if(el.getAttribute("data-subj")===grBarSpot)cur=el;});
+    if(cur)spotGrBar(cur);});
+}
+$("grChart").addEventListener("click",function(e){
+  var bar=e.target&&e.target.closest?e.target.closest(".grbar"):null;
+  if(bar)spotGrBar(bar);});
+$("grChart").addEventListener("keydown",function(e){
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  var bar=e.target&&e.target.closest?e.target.closest(".grbar"):null;
+  if(bar){e.preventDefault();spotGrBar(bar);}});
+/* Esc releases all chart spotlights (clickability spec B, 2026-09-21) */
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape")return;
+  if(wkChartSpot){var c=document.querySelector("#wkChart .wkcol.spot");if(c)spotWkChart(c);}
+  if(attRingSpot){var r=document.querySelector("#attRings .ring-item.spot");if(r)spotRing(r);}
+  if(grBarSpot){var g=document.querySelector("#grChart .grbar.spot");if(g)spotGrBar(g);}});
 $("grList").addEventListener("click",function(e){
   var id=e.target.getAttribute&&e.target.getAttribute("data-gr-del");
   if(id&&confirm("Delete this grade?")){state.grades=state.grades.filter(function(g){return g.id!==id;});save();renderGrades();}

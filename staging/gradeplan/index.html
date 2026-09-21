@@ -380,6 +380,20 @@
 /* ---------- 9b. BAR CHARTS (pure CSS, zero requests) ---------- */
 .g-bars { margin: 14px 0 0; display: grid; gap: 8px; }
 .g-bar-row { display: grid; grid-template-columns: minmax(84px, 132px) 1fr minmax(52px, auto); gap: 10px; align-items: center; font-size: 0.88rem; }
+.g-bar-row[data-bi] { cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; }
+.g-bar-row[data-bi]:focus { outline: none; }
+.g-bar-row[data-bi]:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 1px; }
+.g-bar-row[data-bi].active { outline: 2px solid var(--g-accent); outline-offset: 1px; }
+.g-bar-row[data-bi].active .g-bar-name { font-weight: 800; }
+.g-bar-row[data-fx], .g-bar-row[data-overall] { cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; }
+.g-bar-row[data-fx]:focus, .g-bar-row[data-overall]:focus { outline: none; }
+.g-bar-row[data-fx]:focus-visible, .g-bar-row[data-overall]:focus-visible,
+.g-bar-row[data-fx][aria-expanded="true"], .g-bar-row[data-overall].active { outline: 2px solid var(--g-accent); outline-offset: 1px; }
+.g-bar-row[data-overall].active .g-bar-name { font-weight: 800; }
+/* what-if scenario breakdown under "Needed on final" */
+.g-wi { display: grid; gap: 4px; margin: 4px 0; padding: 8px 10px; border: 1px dashed var(--g-border); border-radius: 8px; background: var(--g-code-bg); }
+.g-wi-row { display: flex; justify-content: space-between; gap: 8px; font-size: 0.85rem; color: var(--g-text-soft); }
+.g-wi-row.ok { color: var(--g-good); font-weight: 700; }
 .g-bar-name { color: var(--g-text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .g-bar-track { height: 10px; border-radius: 6px; background: var(--g-code-bg); border: 1px solid var(--g-border); position: relative; }
 .g-bar-fill { display: block; height: 100%; border-radius: 6px; background: var(--g-accent); transition: width .25s var(--g-ease); }
@@ -583,7 +597,7 @@ a:focus-visible {
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: var(--g-accent-ink, #ffffff);
+  color: #ffffff;
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -603,14 +617,36 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
   cursor: pointer; background: var(--g-surface); border: 1px solid var(--g-border);
   color: var(--g-text); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none;
 }
-.round-btn svg { width: 18px; height: 18px; flex: none; }
+.round-btn svg { width: 26px; height: 26px; flex: none; }
 .round-btn:hover { border-color: var(--g-accent, #4f46e5); }
 .round-btn:focus { outline: none; }
 .round-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
-.round-btn.sample-toggle[aria-pressed="true"] {
-  color: var(--g-accent, #4f46e5); border-color: var(--g-accent, #4f46e5);
-  background: color-mix(in srgb, var(--g-accent, #4f46e5) 12%, transparent);
-}
+.round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
+/* header spec 2026-09-21: white round buttons; sample ON = accent-soft tint + accent
+   border/icon (NOT a solid accent fill); sound button stays white in all states */
+.round-btn.sample-toggle[aria-pressed="true"] { color: var(--g-accent, #4f46e5); border-color: var(--g-accent, #4f46e5); background: var(--g-accent-soft, #eef2ff); }
+/* interactive chart segments: keyboard focus = drop-shadow, never a rectangular outline */
+.g-seg { cursor: pointer; }
+.g-seg:focus { outline: none; filter: drop-shadow(0 0 5px rgba(79,70,229,.9)); }
+.g-seg.spot { stroke: #1f2937; stroke-width: 2; }
+[data-theme="dark"] .g-seg.spot { stroke: #ffffff; }
+.g-donut-wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+.g-donut { width: 132px; height: 132px; flex: none; }
+.g-donut-info { min-width: 0; flex: 1 1 180px; }
+.g-donut-title { font-weight: 800; font-size: 0.95rem; margin: 0 0 2px; }
+.g-donut-note { font-size: 0.86rem; color: var(--g-muted, #6b7280); margin: 0; }
+.g-donut-hint { font-size: 0.78rem; color: var(--g-muted, #6b7280); margin: 6px 0 0; }
+.g-donut-ct { font-size: 12px; font-weight: 700; }
+.g-donut-cv { font-size: 10px; }
+.g-gauge-wrap { margin: 6px 0 4px; max-width: 320px; }
+.g-big-number:focus { outline: none; } .g-big-number:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.g-gauge { cursor: pointer; } .g-gauge:focus { outline: none; } .g-gauge:focus-visible { filter: drop-shadow(0 0 6px var(--g-accent)); }
+.g-gauge { width: 100%; height: auto; display: block; }
+.g-gauge-needle { stroke: #1f2937; stroke-width: 3; stroke-linecap: round; }
+[data-theme="dark"] .g-gauge-needle { stroke: #f3f4f6; }
+.g-gauge-hub { fill: #1f2937; }
+[data-theme="dark"] .g-gauge-hub { fill: #f3f4f6; }
+.g-gauge-tick { font-size: 10px; }
 @media (max-width: 640px) {
   .g-header { flex-wrap: wrap; }
   .g-header-actions { margin-left: 0; gap: 6px; }
@@ -629,7 +665,8 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -873,10 +910,8 @@ document.documentElement.setAttribute('data-theme',t);})();
     </div>
     <div class="g-header-actions">
   <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-  <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-  <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
-    <svg class="g-icon g-icon-sm" aria-hidden="true"><use id="themeUse" href="#g-i-moon"/></svg>
-  </button>
+  <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+  <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">&#x1F319;</button>
   <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
 </div>
   </header>
@@ -901,6 +936,9 @@ document.documentElement.setAttribute('data-theme',t);})();
     <div class="g-result" id="f-res">
       <div class="g-big-number" id="f-big" aria-live="polite"></div>
       <div id="f-verdict"></div>
+      <div class="g-gauge-wrap" id="f-gauge-wrap" hidden>
+        <svg class="g-gauge" id="f-gauge" viewBox="0 0 200 112" role="img" aria-label="Needed score gauge"></svg>
+      </div>
       <div class="g-bars" id="f-bars" aria-hidden="true"></div>
       <div class="g-math" id="f-work"></div>
     </div>
@@ -917,6 +955,14 @@ document.documentElement.setAttribute('data-theme',t);})();
       <div class="g-big-number" id="c-big" aria-live="polite"></div>
       <p class="g-result-note" id="c-note"></p>
       <div class="g-bars" id="c-bars" aria-hidden="true"></div>
+      <div class="g-donut-wrap" id="c-donut-wrap" hidden>
+        <svg class="g-donut" id="c-donut" viewBox="0 0 140 140" role="group" aria-label="Weight share by category"></svg>
+        <div class="g-donut-info">
+          <p class="g-donut-title" id="c-donut-title">Weight share</p>
+          <p class="g-donut-note" id="c-donut-note"></p>
+          <p class="g-donut-hint">Tap a slice to inspect a category — tap again to restore.</p>
+        </div>
+      </div>
       <div class="g-math" id="c-work"></div>
     </div>
   </section>
@@ -933,6 +979,14 @@ document.documentElement.setAttribute('data-theme',t);})();
       <div class="g-big-number" id="g-big" aria-live="polite"></div>
       <p class="g-result-note" id="g-note"></p>
       <div class="g-bars" id="g-bars" aria-hidden="true"></div>
+      <div class="g-donut-wrap" id="g-donut-wrap" hidden>
+        <svg class="g-donut" id="g-donut" viewBox="0 0 140 140" role="group" aria-label="Quality points share by course"></svg>
+        <div class="g-donut-info">
+          <p class="g-donut-title" id="g-donut-title">Quality points share</p>
+          <p class="g-donut-note" id="g-donut-note"></p>
+          <p class="g-donut-hint">Tap a slice to inspect a course — tap again to restore.</p>
+        </div>
+      </div>
       <div class="g-math" id="g-work"></div>
     </div>
     <div class="g-table-wrap"><table class="g-table" aria-label="Grade point scale">
@@ -947,7 +1001,7 @@ document.documentElement.setAttribute('data-theme',t);})();
   </section>
 
   <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 
 <footer class="g-footer">
@@ -959,9 +1013,8 @@ document.documentElement.setAttribute('data-theme',t);})();
 
 "use strict";
 /* ---------- theme ---------- */
-const root=document.documentElement, themeBtn=document.getElementById('themeToggle'),
-      themeUse=document.getElementById('themeUse');
-function setTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('gradeplan-theme',t);}catch(e){}themeUse.setAttribute('href',t==='dark'?'#g-i-sun':'#g-i-moon');
+const root=document.documentElement, themeBtn=document.getElementById('themeToggle');
+function setTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('gradeplan-theme',t);}catch(e){}themeBtn.textContent=t==='dark'?'☀️':'🌙'; /* header spec: emoji icon shows the mode you GET */
 const dark=t==='dark',l=dark?'Switch to light mode':'Switch to dark mode';
 themeBtn.setAttribute('aria-pressed',dark?'true':'false');themeBtn.setAttribute('aria-label',l);themeBtn.title=l;}
 (function(){let t=root.getAttribute('data-theme');if(t!=='dark'&&t!=='light'){try{t=localStorage.getItem('gradeplan-theme');}catch(e){t=null;}}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}setTheme(t);})();
@@ -980,10 +1033,178 @@ function showErr(id,msg){const e=$(id);if(msg){e.textContent=msg;e.classList.add
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function barCls(p){return p>=90?'good':p>=70?'':p>=60?'warn':'bad';}
 
+/* ---------- interactive visuals (inline SVG, offline, no libraries) ---------- */
+const NS='http://www.w3.org/2000/svg';
+const DONUT_COLORS=['#4f46e5','#0ea5e9','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a8'];
+let cSpot=-1,gSpot=-1;
+let fWhatIf=false, gOverall=false; /* what-if expansion; overall-GPA aggregate spotlight */
+function polar(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+function donutPath(cx,cy,r,ir,a0,a1){
+  const large=(a1-a0)>180?1:0;
+  const [x0,y0]=polar(cx,cy,r,a0),[x1,y1]=polar(cx,cy,r,a1);
+  const [ix1,iy1]=polar(cx,cy,ir,a1),[ix0,iy0]=polar(cx,cy,ir,a0);
+  return 'M'+x0.toFixed(2)+','+y0.toFixed(2)+' A'+r+','+r+' 0 '+large+',1 '+x1.toFixed(2)+','+y1.toFixed(2)+
+    ' L'+ix1.toFixed(2)+','+iy1.toFixed(2)+' A'+ir+','+ir+' 0 '+large+',0 '+ix0.toFixed(2)+','+iy0.toFixed(2)+' Z';
+}
+function svgEl(tag,attrs){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+/* interactive donut: click/Enter/Space on a slice spotlights it and swaps the note;
+   a second tap restores the default note. data = [{n, v, detail}]. */
+function renderDonut(svg,wrap,data,prefix,title,defNote,setSpot,getSpot){
+  svg.innerHTML='';
+  const tot=data.reduce((a,b)=>a+Math.max(0,b.v),0);
+  if(!tot||!data.length){wrap.hidden=true;return;}
+  wrap.hidden=false;
+  const cx=70,cy=70,r=60,ir=38;let a0=0;
+  const segs=[];
+  const hTitle=$(prefix+'-donut-title'),hNote=$(prefix+'-donut-note');
+  data.forEach((d,i)=>{
+    const frac=Math.max(0,d.v)/tot,a1=a0+frac*360;
+    const p=svgEl('path',{d:donutPath(cx,cy,r,ir,a0,Math.max(a0+0.5,a1)),
+      fill:DONUT_COLORS[i%DONUT_COLORS.length],class:'g-seg',tabindex:'0',role:'button',
+      'aria-label':d.n+': '+d.detail});
+    if(getSpot()===i)p.classList.add('spot');
+    const toggleIdx=(idx)=>{setSpot(getSpot()===idx?-1:idx);
+      const cur=getSpot();
+      segs.forEach((s,j)=>{s.classList.toggle('spot',j===cur);
+        if(cur<0)s.removeAttribute('opacity');else s.setAttribute('opacity',j===cur?'1':'0.28');});
+      document.querySelectorAll('#'+prefix+'-bars .g-bar-row[data-bi]').forEach((r,j)=>{
+        r.classList.toggle('active',j===cur);r.setAttribute('aria-pressed',j===cur?'true':'false');});
+      tTitle.textContent=cur<0?title:data[cur].n;
+      tNote.textContent=cur<0?defNote:data[cur].detail;
+      hTitle.textContent=cur<0?title:data[cur].n;
+      hNote.textContent=cur<0?defNote:data[cur].detail;
+      Sound.select();};
+    const pick=()=>toggleIdx(i);
+    wrap._toggleDonut=toggleIdx;
+    p.addEventListener('click',pick);
+    p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});
+    svg.appendChild(p);segs.push(p);a0=a1;
+  });
+  const tTitle=svgEl('text',{x:cx,y:cy-2,'text-anchor':'middle',class:'g-donut-ct',fill:'currentColor'}),
+        tNote=svgEl('text',{x:cx,y:cy+16,'text-anchor':'middle',class:'g-donut-cv',fill:'currentColor'});
+  tTitle.textContent=getSpot()<0?title:data[getSpot()].n;
+  tNote.textContent=getSpot()<0?defNote:data[getSpot()].detail;
+  svg.appendChild(tTitle);svg.appendChild(tNote);
+  $(''+prefix+'-donut-title').textContent=getSpot()<0?title:data[getSpot()].n;
+  $(''+prefix+'-donut-note').textContent=getSpot()<0?defNote:data[getSpot()].detail;
+}
+/* result bars mirror the donut: click / Enter / Space on a bar toggles its slice */
+[['c-bars','c-donut-wrap'],['g-bars','g-donut-wrap']].forEach(function(pair){
+  var barsEl=$(pair[0]),wrapId=pair[1];
+  function barAct(t){var w=$(wrapId);if(!w)return;
+    var row=t&&t.closest?t.closest('.g-bar-row[data-bi],.g-bar-row[data-overall]'):null;
+    if(!row)return;
+    if(wrapId==='g-donut-wrap'&&row.hasAttribute('data-overall')){toggleOverall(w);return;}
+    if(gOverall&&wrapId==='g-donut-wrap')clearOverallVisuals(w); /* a slice/bar takes over */
+    if(w._toggleDonut)w._toggleDonut(+row.getAttribute('data-bi'));}
+  barsEl.addEventListener('click',function(e){barAct(e.target);});
+  barsEl.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();barAct(e.target);}});
+});
+/* "Needed on final" row: click / Enter / Space toggles the what-if scenario breakdown */
+function fWhatIfHTML(c,wf,d){
+  var rows=[60,70,80,90,100].map(function(s){
+    var g=(1-wf)*c+wf*s, ok=g>=d-1e-9;
+    return '<div class="g-wi-row'+(ok?' ok':'')+'"><span>Score '+s+'% on the final</span><span>→ <b>'+r2(g)+'%</b> course'+(ok?' ✓':'')+'</span></div>';
+  }).join('');
+  return '<div class="g-wi" role="region" aria-label="What-if scenarios: course grade by final-exam score">'+rows+'</div>';
+}
+function toggleWhatIf(){
+  fWhatIf=!fWhatIf; Sound.select(); calcFinal();
+  var fx=document.querySelector('#f-bars .g-bar-row[data-fx]');
+  if(fx)fx.focus({preventScroll:true});
+}
+$('f-bars').addEventListener('click',function(e){
+  var row=e.target&&e.target.closest?e.target.closest('.g-bar-row[data-fx]'):null;
+  if(row)toggleWhatIf();
+});
+$('f-bars').addEventListener('keydown',function(e){
+  if(e.key==='Enter'||e.key===' '){
+    var row=e.target&&e.target.closest?e.target.closest('.g-bar-row[data-fx]'):null;
+    if(row){e.preventDefault();toggleWhatIf();}
+  }
+});
+/* ---------- headline numbers + gauge are clickable (clickability audit) ---------- */
+function spotTopCategory(){
+  var bd=window._cBarData||[],w=$('c-donut-wrap');
+  if(!bd.length||w.hidden||!w._toggleDonut)return;
+  var bi=0,bm=-1;
+  bd.forEach(function(b,i){var v=b.w*b.s;if(v>bm){bm=v;bi=i;}});
+  Sound.select(); w._toggleDonut(bi);
+}
+[['c-big','Current grade — click to spotlight the category contributing the most weighted points',function(){spotTopCategory();}],
+ ['g-big','GPA — click to spotlight the overall total',function(){var w=$('g-donut-wrap');if(w.hidden||!w._toggleDonut)return;Sound.select();toggleOverall(w);}],
+ ['f-big','Needed score — click to expand the what-if scenario',function(){if(!$('f-res').classList.contains('show'))return;toggleWhatIf();}],
+ ['f-gauge','Needed score gauge — click to expand the what-if scenario',function(){if(!$('f-res').classList.contains('show'))return;toggleWhatIf();}]
+].forEach(function(cfg){
+  var el=$(cfg[0]); if(!el)return;
+  el.setAttribute('tabindex','0'); el.setAttribute('role','button'); el.setAttribute('aria-label',cfg[1]);
+  el.style.cursor='pointer';
+  el.addEventListener('click',cfg[2]);
+  el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();cfg[2]();}});
+});
+/* "Overall GPA" row: spotlights the aggregate — dims every course bar + donut slice,
+   swaps the donut readout to the totals. A slice/bar click takes over (capture guard). */
+function clearOverallVisuals(w){
+  gOverall=false;
+  document.querySelectorAll('#g-bars .g-bar-row[data-bi]').forEach(function(r){r.style.opacity='';});
+  var orow=document.querySelector('#g-bars .g-bar-row[data-overall]');
+  if(orow){orow.classList.remove('active');orow.setAttribute('aria-pressed','false');}
+  if(w)w.querySelectorAll('.g-seg').forEach(function(s){s.removeAttribute('opacity');s.classList.remove('spot');});
+}
+function toggleOverall(w){
+  gOverall=!gOverall;
+  var orow=document.querySelector('#g-bars .g-bar-row[data-overall]');
+  if(gOverall){
+    if(gSpot>=0&&w._toggleDonut)w._toggleDonut(gSpot);else Sound.select(); /* clear slice spotlight */
+    document.querySelectorAll('#g-bars .g-bar-row[data-bi]').forEach(function(r){
+      r.style.opacity='0.35';r.classList.remove('active');r.setAttribute('aria-pressed','false');});
+    w.querySelectorAll('.g-seg').forEach(function(s){s.classList.remove('spot');s.setAttribute('opacity','0.28');});
+    $('g-donut-title').textContent='Overall GPA';
+    $('g-donut-note').textContent=$('g-note').textContent;
+    var ct=w.querySelector('.g-donut-ct'),cv=w.querySelector('.g-donut-cv');
+    if(ct)ct.textContent='Overall GPA'; if(cv)cv.textContent=$('g-big').textContent;
+    if(orow){orow.classList.add('active');orow.setAttribute('aria-pressed','true');}
+  }else{
+    clearOverallVisuals(w);
+    if(w._toggleDonut)w._toggleDonut(-1);else Sound.select(); /* restore defaults */
+  }
+}
+['click','keydown'].forEach(function(t){
+  $('g-donut-wrap').addEventListener(t,function(e){
+    if(!gOverall)return;
+    var seg=e.target&&e.target.closest?e.target.closest('.g-seg'):null;
+    if(seg)clearOverallVisuals($('g-donut-wrap'));
+  },true);
+});
+/* semicircular gauge for the final-exam solver: 0-100 scale, color zones, needle */
+function gpol(cx,cy,r,f){const a=Math.PI*(1-f);return [cx+r*Math.cos(a),cy-r*Math.sin(a)];}
+function renderGauge(need){
+  const svg=$('f-gauge');svg.innerHTML='';
+  $('f-gauge-wrap').hidden=false;
+  const cx=100,cy=100,r=80;
+  const zones=[[0,0.6,'#10b981'],[0.6,0.85,'#f59e0b'],[0.85,1,'#ef4444']];
+  zones.forEach(z=>{
+    const [x0,y0]=gpol(cx,cy,r,z[0]),[x1,y1]=gpol(cx,cy,r,z[1]);
+    svg.appendChild(svgEl('path',{d:'M'+x0.toFixed(1)+','+y0.toFixed(1)+' A'+r+','+r+' 0 0,1 '+x1.toFixed(1)+','+y1.toFixed(1),
+      stroke:z[2],'stroke-width':14,fill:'none'}));
+  });
+  [0,0.25,0.5,0.75,1].forEach(f=>{
+    const [x,y]=gpol(cx,cy,r-14,f);
+    const lab=svgEl('text',{x:x.toFixed(1),y:(y+3).toFixed(1),'text-anchor':'middle',class:'g-gauge-tick',fill:'currentColor'});
+    lab.textContent=Math.round(f*100);svg.appendChild(lab);
+  });
+  const clamped=Math.max(0,Math.min(100,need)),f=clamped/100;
+  const [nx,ny]=gpol(cx,cy,r-16,f);
+  svg.appendChild(svgEl('line',{x1:cx,y1:cy,x2:nx.toFixed(1),y2:ny.toFixed(1),class:'g-gauge-needle'}));
+  svg.appendChild(svgEl('circle',{cx:cx,cy:cy,r:6,class:'g-gauge-hub'}));
+  svg.setAttribute('aria-label','Gauge: you need '+r2(clamped)+'% on the final (0 to 100 scale)');
+}
+
 /* ---------- FINAL SOLVER ---------- */
 const fCur=$('f-cur'),fGoal=$('f-goal'),fWt=$('f-wt');
 function calcFinal(){
   showErr('f-err','');
+  $('f-gauge-wrap').hidden=true;
   const c=num(fCur.value),d=num(fGoal.value),w=num(fWt.value);
   if(isNaN(c)||c<0||c>100)return showErr('f-err','Current grade must be between 0 and 100.'),$ ('f-res').classList.remove('show');
   if(isNaN(d)||d<0||d>100)return showErr('f-err','Desired grade must be between 0 and 100.'),$ ('f-res').classList.remove('show');
@@ -1004,9 +1225,11 @@ function calcFinal(){
   $('f-work').textContent='required = (desired − (1 − w) × current) ÷ w\nrequired = ('+d+' − (1 − '+r2(wf)+') × '+c+') ÷ '+r2(wf)+'\nrequired = ('+d+' − '+r2((1-wf)*c)+') ÷ '+r2(wf)+' = '+r2(need)+'%';
   const needPct=Math.max(0,Math.min(100,need));
   const mCls=need>100?'bad':need<0?'good':'';
-  $('f-bars').innerHTML='<div class="g-bar-row"><span class="g-bar-name">Needed on final</span>'+
+  $('f-bars').innerHTML='<div class="g-bar-row" data-fx="1" tabindex="0" role="button" aria-expanded="'+fWhatIf+'" aria-label="Needed on final — click to see what-if final-score scenarios"><span class="g-bar-name">Needed on final</span>'+
     '<span class="g-bar-track"><span class="g-bar-marker '+mCls+'" style="left:calc('+r2(needPct)+'% - 1px)"></span></span>'+
-    '<span class="g-bar-val">'+r2(need)+'%</span></div>';
+    '<span class="g-bar-val">'+r2(need)+'%</span></div>'+
+    (fWhatIf?fWhatIfHTML(c,wf,d):'');
+  renderGauge(need);
   $('f-res').classList.add('show');
   save();
 }
@@ -1028,6 +1251,7 @@ function cRow(name,wt,sc){
 }
 function calcCourse(){
   showErr('c-err','');
+  cSpot=-1;$('c-donut-wrap').hidden=true;
   const rows=[...cRows.querySelectorAll('.rowline')];
   let tw=0,ts=0,lines=[],ok=false,skipped=0;const barData=[];
   for(const r of rows){
@@ -1037,17 +1261,22 @@ function calcCourse(){
     if(isNaN(w)||isNaN(s)){if(ins[0].value.trim()!==''||ins[1].value!==''||ins[2].value!=='')skipped++;continue;}
     if(w<0||w>100)return showErr('c-err','Weights must be between 0 and 100.'),$ ('c-res').classList.remove('show');
     if(s<0||s>100)return showErr('c-err','Scores must be between 0 and 100.'),$ ('c-res').classList.remove('show');
-    ok=true;tw+=w;ts+=w*s;lines.push('  '+name+': '+w+'% × '+s+'% = '+r2(w*s));barData.push({n:name,s:s});
+    ok=true;tw+=w;ts+=w*s;lines.push('  '+name+': '+w+'% × '+s+'% = '+r2(w*s));barData.push({n:name,s:s,w:w});
   }
   if(!ok)return $('c-res').classList.remove('show');
   if(tw===0)return showErr('c-err','Total weight is 0 — add weights to your categories.'),$ ('c-res').classList.remove('show');
   const avg=ts/tw;
+  window._cBarData=barData; /* headline click spotlights the top contributor */
   $('c-big').textContent=r2(avg)+'%';
   $('c-note').textContent=(tw===100?'Weights total exactly 100%.':'Weights total '+r2(tw)+'% — scaled to 100% automatically.')+(skipped?' '+skipped+' incomplete categor'+(skipped===1?'y':'ies')+' not counted.':'');
   $('c-work').textContent='grade = Σ(weight × score) ÷ Σ(weight)\n'+lines.join('\n')+'\n= '+r2(ts)+' ÷ '+r2(tw)+' = '+r2(avg)+'%';
   let cbars='';
-  for(const b of barData){const pct=Math.max(0,Math.min(100,b.s));cbars+='<div class="g-bar-row"><span class="g-bar-name">'+esc(b.n)+'</span><span class="g-bar-track"><span class="g-bar-fill '+barCls(pct)+'" style="width:'+r2(pct)+'%"></span></span><span class="g-bar-val">'+r2(b.s)+'%</span></div>';}
+  for(const [bi,b] of barData.entries()){const pct=Math.max(0,Math.min(100,b.s));cbars+='<div class="g-bar-row" data-bi="'+bi+'" tabindex="0" role="button" aria-pressed="false" aria-label="'+esc(b.n)+' — click to spotlight its donut slice"><span class="g-bar-name">'+esc(b.n)+'</span><span class="g-bar-track"><span class="g-bar-fill '+barCls(pct)+'" style="width:'+r2(pct)+'%"></span></span><span class="g-bar-val">'+r2(b.s)+'%</span></div>';}
   $('c-bars').innerHTML=cbars;
+  renderDonut($('c-donut'),$('c-donut-wrap'),barData.map(b=>({n:b.n,v:b.w,
+    detail:b.n+': '+r2(b.w)+'% weight × '+r2(b.s)+'% score = '+r2(b.w*b.s)+' weighted points'})),
+    'c','Weight share','Each slice is a category\'s share of total weight. Click a slice for details.',
+    v=>cSpot=v,()=>cSpot);
   $('c-res').classList.add('show');
   save();
 }
@@ -1073,6 +1302,7 @@ function gRow(name,cr,gr,hon){
 }
 function calcGpa(){
   showErr('g-err','');
+  gSpot=-1;gOverall=false;$('g-donut-wrap').hidden=true;
   const rows=[...gRows.querySelectorAll('.rowline')];
   const weighted=gW.checked;
   let tc=0,tqp=0,lines=[],ok=false,skipped=0;const gBarData=[];
@@ -1087,7 +1317,7 @@ function calcGpa(){
     const pts=POINTS[gr]+(weighted&&hon&&gr!=='F'?1.0:0);
     ok=true;tc+=cr;tqp+=pts*cr;
     lines.push('  '+t+': '+gr+' → '+r2(POINTS[gr])+(weighted&&hon&&gr!=='F'?' +1.0 (H/AP)':'')+' × '+cr+' cr = '+r2(pts*cr)+' pts');
-    gBarData.push({t:t,pts:pts,gr:gr});
+    gBarData.push({t:t,pts:pts,gr:gr,qp:r2(pts*cr),cr:cr});
   }
   if(!ok)return $('g-res').classList.remove('show');
   const gpa=tqp/tc;
@@ -1096,10 +1326,14 @@ function calcGpa(){
   $('g-work').textContent='GPA = Σ(grade points × credits) ÷ Σ(credits)\n'+lines.join('\n')+'\n= '+r2(tqp)+' ÷ '+r2(tc)+' = '+r2(gpa);
   const maxScale=weighted?5:4;
   let gbars='';
-  for(const b of gBarData){const pct=Math.max(0,Math.min(100,b.pts/maxScale*100));gbars+='<div class="g-bar-row"><span class="g-bar-name">'+esc(b.t)+'</span><span class="g-bar-track"><span class="g-bar-fill '+barCls(pct)+'" style="width:'+r2(pct)+'%"></span></span><span class="g-bar-val">'+b.gr+'</span></div>';}
+  for(const [bi,b] of gBarData.entries()){const pct=Math.max(0,Math.min(100,b.pts/maxScale*100));gbars+='<div class="g-bar-row" data-bi="'+bi+'" tabindex="0" role="button" aria-pressed="false" aria-label="'+esc(b.t)+' — click to spotlight its donut slice"><span class="g-bar-name">'+esc(b.t)+'</span><span class="g-bar-track"><span class="g-bar-fill '+barCls(pct)+'" style="width:'+r2(pct)+'%"></span></span><span class="g-bar-val">'+b.gr+'</span></div>';}
   const gpaPct=Math.max(0,Math.min(100,gpa/maxScale*100));
-  gbars+='<div class="g-bar-row"><span class="g-bar-name"><b>Overall GPA</b></span><span class="g-bar-track"><span class="g-bar-fill '+barCls(gpaPct)+'" style="width:'+r2(gpaPct)+'%"></span></span><span class="g-bar-val">'+r2(gpa)+'</span></div>';
+  gbars+='<div class="g-bar-row" data-overall="1" tabindex="0" role="button" aria-pressed="false" aria-label="Overall GPA — click to spotlight the aggregate"><span class="g-bar-name"><b>Overall GPA</b></span><span class="g-bar-track"><span class="g-bar-fill '+barCls(gpaPct)+'" style="width:'+r2(gpaPct)+'%"></span></span><span class="g-bar-val">'+r2(gpa)+'</span></div>';
   $('g-bars').innerHTML=gbars;
+  renderDonut($('g-donut'),$('g-donut-wrap'),gBarData.map(b=>({n:b.t,v:b.qp,
+    detail:b.t+': '+b.gr+' ('+r2(b.pts)+' pts × '+r2(b.cr)+' cr = '+r2(b.qp)+' quality points)'})),
+    'g','Quality points share','Each course\'s slice is its share of total quality points. Click a slice for details.',
+    v=>gSpot=v,()=>gSpot);
   $('g-res').classList.add('show');
   save();
 }
@@ -1220,6 +1454,15 @@ var Sound=(function(){
   btn.addEventListener('click',()=>{Sound.toggle();paint();Sound.click();});
   paint();
 })();
+
+/* Esc clears any active spotlight / expansion (donut slices, overall-GPA aggregate, what-if breakdown) */
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  if(cSpot<0&&gSpot<0&&!fWhatIf&&!gOverall)return;
+  cSpot=-1;gSpot=-1;fWhatIf=false;
+  if(gOverall)toggleOverall($('g-donut-wrap')); /* flips to false + restores defaults */
+  calcFinal();calcCourse();calcGpa();
+});
 
 /* ---------- init ---------- */
 if(!cRows.children.length){cRows.appendChild(cRow('Homework',40,92));cRows.appendChild(cRow('Exams',60,78));}

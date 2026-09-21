@@ -113,49 +113,15 @@
   .logo-badge .ico { width: 1.7rem; height: 1.7rem; color: #fff; }
   header.top h1 { margin: 0; font-size: 1.55rem; letter-spacing: -0.02em; font-weight: 800; }
   header.top p { margin: .15rem 0 0; color: rgba(255,255,255,.85); font-size: .92rem; }
-  #themeToggle {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,.14);
-    border: 1px solid rgba(255,255,255,.35);
-    color: #fff; border-radius: 999px;
-    width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-    cursor: pointer; backdrop-filter: blur(4px);
-    transition: background .15s ease, transform .15s ease;
-    white-space: nowrap;
-  }
-  #themeToggle:hover { background: rgba(255,255,255,.24); transform: translateY(-1px); }
-  #themeToggle .toggle-icons { display: inline-flex; }
-  #themeToggle .icon-sun { display: none; }
-  [data-theme="dark"] #themeToggle .icon-sun { display: inline; }
-  [data-theme="dark"] #themeToggle .icon-moon { display: none; }
-  #themeToggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  /* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
-  .sample-toggle {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,.14);
-    border: 1px solid rgba(255,255,255,.35);
-    color: #fff; border-radius: 999px;
-    width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-    cursor: pointer; backdrop-filter: blur(4px);
-    transition: background .15s ease, transform .15s ease;
-    white-space: nowrap;
-  }
-  .sample-toggle svg { width: 18px; height: 18px; flex: none; }
-  .sample-toggle:hover { background: rgba(255,255,255,.24); transform: translateY(-1px); }
-  .sample-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  .sample-toggle[aria-pressed="true"] { background: var(--accent, #4f46e5); border-color: var(--accent, #4f46e5); color: #fff; }
-  #sound-toggle {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,.14);
-    border: 1px solid rgba(255,255,255,.35);
-    color: #fff; border-radius: 999px;
-    width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-    font-size: 1.05rem; line-height: 1;
-    cursor: pointer; backdrop-filter: blur(4px);
-    transition: background .15s ease, transform .15s ease;
-  }
-  #sound-toggle:hover { background: rgba(255,255,255,.24); transform: translateY(-1px); }
-  #sound-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  /* ---------- spec header cluster (2026-09-21) ---------- */
+  .round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card,var(--surface,#fff));border:1px solid var(--line,var(--border,rgba(0,0,0,.16)));color:var(--ink,var(--text,var(--fg,#1f2937)));box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+  .round-btn svg{width:26px;height:26px;flex:none}
+  .round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+  .round-btn:hover{border-color:var(--accent,#4f46e5)}
+  .round-btn:focus{outline:none}
+  .round-btn:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:2px}
+  .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(79,70,229,.12))}
+  .g-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;row-gap:6px;justify-content:flex-end}
   /* ---------- interactive category bars ---------- */
   .cat-row[role="button"] { cursor: pointer; border-radius: 10px; }
   .cat-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #4f46e5)); }
@@ -383,12 +349,36 @@
     #themeToggle { align-self: flex-end; }
     header.top h1 { font-size: 1.35rem; }
   }
+  /* ---------- charts: donut, renewal timeline, savings gauge ---------- */
+  .chart-wrap { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin: 8px 0 2px; }
+  .chart-wrap svg { display: block; max-width: 100%; height: auto; }
+  .donut-seg, .tl-mark { cursor: pointer; }
+  .donut-seg:focus-visible, .tl-mark:focus-visible, .gauge-tile:focus-visible { outline: none; filter: drop-shadow(0 0 4px var(--accent)); }
+  .donut-seg.sel circle { stroke-width: 34; }
+  .donut-top, .donut-sub, .donut-pct, .tl-name, .tl-day, .gauge-top, .gauge-sub { pointer-events: none; }
+  .donut-top { font-size: 1.25rem; font-weight: 800; fill: var(--text); }
+  .donut-sub { font-size: .9rem; fill: var(--muted); }
+  .donut-pct { font-size: .72rem; font-weight: 700; fill: #fff; pointer-events: none; }
+  .gauge-top { font-size: 1.05rem; font-weight: 800; fill: var(--good); }
+  .gauge-sub { font-size: .75rem; fill: var(--muted); }
+  .tl-name { font-size: .8rem; fill: var(--text); font-weight: 600; }
+  .tl-day { font-size: .72rem; fill: var(--muted); }
+  .tl-axis { stroke: var(--border); stroke-width: 2; }
+  .gauge-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .1rem; padding: .3rem .6rem; border-radius: 12px; cursor: pointer; }
+  .stat[role="button"] { cursor: pointer; }
+  .stat[role="button"]:focus-visible { outline: none; filter: drop-shadow(0 0 3px var(--accent)); }
+  .stat[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent); }
+  .stat-box[role="button"] { cursor: pointer; border-radius: 10px; }
+  .stat-box[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent)); }
+  .stat-box.sel { box-shadow: inset 0 0 0 2px var(--accent); }
+  .stat-detail { margin-top: .75rem; font-size: .88rem; color: var(--muted); min-height: 1.2em; }
+  .stat-detail strong { color: var(--text); }
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
-.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: var(--g-accent-ink, #ffffff);
+  color: #fff;
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -396,7 +386,7 @@
   box-shadow: 0 1px 2px rgba(0,0,0,.12);
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .g-cta-strip {
@@ -413,7 +403,8 @@
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -437,14 +428,9 @@
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button type="button" id="themeToggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
-      <span class="toggle-icons" aria-hidden="true">
-        <svg class="ico icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
-        <svg class="ico icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      </span>
-      </button>
-      <button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">🔊</button>
+      <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button type="button" id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
   </div>
 </header>
@@ -474,6 +460,7 @@
         <div><div class="label">Average per subscription</div><div class="value" id="statAvg">$0.00</div><div class="sub">per month</div></div>
       </div>
     </div>
+    <div id="statDetail" class="stat-detail" aria-live="polite"></div>
   </section>
 
   <section class="card" aria-labelledby="renewHeading">
@@ -591,7 +578,7 @@
 </dialog>
 
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer class="page">
   <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
@@ -818,6 +805,9 @@ function renderRenewals() {
   }
   if (overdue.length) addGroup(overdue, "Overdue");
   if (upcoming.length) addGroup(upcoming, "Coming up");
+  /* Timeline: renewals from 30 days ago to 30 days ahead (interactive markers). */
+  var tl = renderRenewalTimeline(overdue.concat(upcoming));
+  if (tl) body.appendChild(tl);
 }
 
 /* ---------- render: categories ---------- */
@@ -894,6 +884,9 @@ function renderCategories() {
     })(r, row);
     body.appendChild(row);
   });
+  /* Donut: share of monthly burn by category (interactive spotlight). */
+  var donut = renderCategoryDonut(rows);
+  if (donut) body.appendChild(donut);
 }
 
 /* ---------- render: savings ---------- */
@@ -913,7 +906,43 @@ function renderSavings() {
   aWrap.appendChild(el("div", "big", money.format(mSave * 12)));
   hero.appendChild(mWrap);
   hero.appendChild(aWrap);
+  /* Gauge: projected trim savings as a share of monthly burn (click toggles monthly/annual). */
+  hero.appendChild(renderSavingsGauge(mSave));
   body.appendChild(hero);
+  /* Hero big-number boxes: click for the cancel-list breakdown, click again or Esc to restore. */
+  var heroDetail = el("p", "stat-detail");
+  heroDetail.setAttribute("aria-live", "polite");
+  body.appendChild(heroDetail);
+  (function(){
+    var boxes = [[mWrap, "Projected monthly savings", 1], [aWrap, "Projected annual savings", 12]];
+    boxes.forEach(function(b){
+      var wrap = b[0], label = b[1], mult = b[2];
+      wrap.classList.add("stat-box");
+      wrap.setAttribute("role", "button");
+      wrap.setAttribute("tabindex", "0");
+      wrap.setAttribute("aria-pressed", "false");
+      wrap.setAttribute("aria-label", label + ". Activate for the cancel-list breakdown.");
+      function act(){
+        var was = wrap.classList.contains("sel");
+        var sels = body.querySelectorAll(".stat-box.sel");
+        for (var k = 0; k < sels.length; k++){ sels[k].classList.remove("sel"); sels[k].setAttribute("aria-pressed", "false"); }
+        if (was){ heroDetail.textContent = ""; Sound.click(); }
+        else {
+          wrap.classList.add("sel");
+          wrap.setAttribute("aria-pressed", "true");
+          var parts = trimmed.map(function(s){ return s.name + " " + money.format(monthlyOf(s) * mult) + (mult === 1 ? "/mo" : "/yr"); });
+          heroDetail.textContent = trimmed.length
+            ? ("Cancel list (" + trimmed.length + "): " + parts.join(" \u00B7 ") + " = " + money.format(mSave * mult) + (mult === 1 ? " per month" : " per year") + ".")
+            : "Nothing marked for trimming yet \u2014 no projected savings.";
+          Sound.select();
+        }
+      }
+      wrap.addEventListener("click", act);
+      wrap.addEventListener("keydown", function(ev){
+        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    });
+  })();
   if (!trimmed.length) {
     body.appendChild(el("p", "empty", "Nothing marked for trimming yet — your projected savings are $0.00."));
     return;
@@ -1025,6 +1054,336 @@ function renderAll() {
   renderCategories();
   renderSavings();
   renderTable();
+}
+
+/* ---------- charts: donut, renewal timeline, savings gauge ---------- */
+var CHART_COLORS = ["#4f46e5", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#06b6d4", "#ef4444", "#0ea5e9", "#84cc16", "#a855f7"];
+function chartColor(i) { return CHART_COLORS[i % CHART_COLORS.length]; }
+function svgNS(tag, attrs) {
+  var n = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  if (attrs) for (var k in attrs) {
+    if (Object.prototype.hasOwnProperty.call(attrs, k)) n.setAttribute(k, attrs[k]);
+  }
+  return n;
+}
+
+/* Donut: monthly burn by category. rows = [{cat, monthly}], sorted desc. */
+function renderCategoryDonut(rows) {
+  var total = 0, i;
+  for (i = 0; i < rows.length; i++) total += rows[i].monthly;
+  if (total <= 0 || !rows.length) return null;
+  var wrap = el("div");
+  wrap.appendChild(el("h3", null, "Share of monthly burn")).style.cssText =
+    "font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:1rem 0 .25rem;";
+  var inner = el("div", "chart-wrap");
+  var cx = 100, cy = 100, r = 74, sw = 30;
+  var svg = svgNS("svg", { viewBox: "0 0 200 200", width: "220", height: "220", role: "img",
+    "aria-label": "Donut chart of monthly spending by category" });
+  var detail = el("p", "stat-detail");
+  detail.setAttribute("aria-live", "polite");
+  detail.textContent = "Click a slice to spotlight a category.";
+  var topT = svgNS("text", { x: cx, y: cy - 4, "text-anchor": "middle", "class": "donut-top" });
+  topT.textContent = money.format(total);
+  var botT = svgNS("text", { x: cx, y: cy + 20, "text-anchor": "middle", "class": "donut-sub" });
+  botT.textContent = "per month";
+  var segEls = [];
+  function act(item) {
+    var was = item.g.classList.contains("sel");
+    for (var a = 0; a < segEls.length; a++) {
+      segEls[a].g.classList.remove("sel");
+      segEls[a].g.setAttribute("aria-pressed", "false");
+      segEls[a].c.setAttribute("opacity", "1");
+    }
+    if (!was) {
+      for (var b = 0; b < segEls.length; b++) {
+        if (segEls[b] !== item) segEls[b].c.setAttribute("opacity", "0.25");
+      }
+      item.g.classList.add("sel");
+      item.g.setAttribute("aria-pressed", "true");
+      topT.textContent = money.format(item.rr.monthly);
+      botT.textContent = item.rr.cat;
+      detail.textContent = "";
+      var st = document.createElement("strong");
+      st.textContent = item.rr.cat + ": ";
+      detail.appendChild(st);
+      detail.appendChild(document.createTextNode(
+        item.count + " subscription" + (item.count === 1 ? "" : "s") + " — " +
+        money.format(item.rr.monthly) + "/mo (" + money.format(item.rr.monthly * 12) + "/yr), " +
+        (item.frac * 100).toFixed(1) + "% of monthly burn."));
+      Sound.select();
+    } else {
+      topT.textContent = money.format(total);
+      botT.textContent = "per month";
+      detail.textContent = "Click a slice to spotlight a category.";
+      Sound.click();
+    }
+  }
+  var start = 0;
+  rows.forEach(function (rr, idx) {
+    var frac = total > 0 ? rr.monthly / total : 0;
+    var col = chartColor(idx);
+    var count = 0;
+    for (var k = 0; k < subs.length; k++) if (subs[k].category === rr.cat) count++;
+    var g = svgNS("g", { "class": "donut-seg", role: "button", tabindex: "0", "aria-pressed": "false",
+      "aria-label": rr.cat + ": " + money.format(rr.monthly) + " per month, " +
+        (frac * 100).toFixed(1) + " percent. Activate to spotlight." });
+    var c = svgNS("circle", { cx: cx, cy: cy, r: r, fill: "none", stroke: col, "stroke-width": sw,
+      pathLength: "100",
+      "stroke-dasharray": Math.max(0, frac * 100 - 1.5).toFixed(2) + " 100",
+      "stroke-dashoffset": (-start * 100).toFixed(2),
+      transform: "rotate(-90 " + cx + " " + cy + ")" });
+    g.appendChild(c);
+    /* percentage label at the slice centroid for slices big enough to read */
+    if (frac >= 0.08) {
+      var ang = (start + frac / 2) * Math.PI * 2 - Math.PI / 2;
+      var pl = svgNS("text", { x: (cx + r * Math.cos(ang)).toFixed(1),
+        y: (cy + r * Math.sin(ang)).toFixed(1), "text-anchor": "middle",
+        "dominant-baseline": "middle", "class": "donut-pct" });
+      pl.textContent = Math.round(frac * 100) + "%";
+      g.appendChild(pl);
+    }
+    svg.appendChild(g);
+    var item = { g: g, c: c, rr: rr, frac: frac, count: count };
+    segEls.push(item);
+    (function (it) {
+      g.addEventListener("click", function () { act(it); });
+      g.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(it); }
+      });
+    })(item);
+    start += frac;
+  });
+  svg.appendChild(topT);
+  svg.appendChild(botT);
+  inner.appendChild(svg);
+  wrap.appendChild(inner);
+  wrap.appendChild(detail);
+  return wrap;
+}
+
+/* Renewal timeline: vertical sequence of renewals from 30 days ago to 30 days
+   ahead, with a "today" divider. Click a row to spotlight a renewal. */
+function renderRenewalTimeline(items) {
+  var pts = items.filter(function (it) { return it.days >= -30 && it.days <= 30; });
+  if (!pts.length) return null;
+  pts.sort(function (a, b) { return a.days - b.days; });
+  var box = el("div");
+  box.appendChild(el("h3", null, "Renewal timeline")).style.cssText =
+    "font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:1rem 0 .25rem;";
+  var rowH = 54, topPad = 12, W = 360, X = 16;
+  var H = topPad * 2 + pts.length * rowH;
+  var svg = svgNS("svg", { viewBox: "0 0 " + W + " " + H, width: "360", height: String(H),
+    role: "img", "aria-label": "Vertical timeline of subscription renewals from 30 days ago to 30 days ahead" });
+  svg.setAttribute("style", "max-width:100%;height:auto;display:block;");
+  svg.appendChild(svgNS("line", { x1: X, y1: topPad - 6, x2: X, y2: H - topPad + 6, "class": "tl-axis" }));
+  /* "today" divider between overdue and upcoming rows */
+  var firstUp = -1;
+  for (var f = 0; f < pts.length; f++) { if (pts[f].days >= 0) { firstUp = f; break; } }
+  if (firstUp > 0) {
+    var dy = topPad + firstUp * rowH;
+    svg.appendChild(svgNS("line", { x1: X + 4, y1: dy, x2: W - 52, y2: dy,
+      stroke: "var(--muted)", "stroke-width": "1.5", "stroke-dasharray": "4 4", opacity: "0.7" }));
+    var tdt = svgNS("text", { x: W - 46, y: dy + 4, "class": "tl-day" });
+    tdt.textContent = "today";
+    svg.appendChild(tdt);
+  }
+  var detail = el("p", "stat-detail");
+  detail.setAttribute("aria-live", "polite");
+  detail.textContent = "Click a row to spotlight a renewal.";
+  var marks = [];
+  function act(item) {
+    var was = item.g.classList.contains("sel");
+    for (var i = 0; i < marks.length; i++) {
+      marks[i].g.classList.remove("sel");
+      marks[i].g.setAttribute("aria-pressed", "false");
+      marks[i].g.setAttribute("opacity", "1");
+    }
+    if (!was) {
+      for (var j = 0; j < marks.length; j++) {
+        if (marks[j] !== item) marks[j].g.setAttribute("opacity", "0.35");
+      }
+      item.g.classList.add("sel");
+      item.g.setAttribute("aria-pressed", "true");
+      var d = parseISODate(item.s.renewal);
+      detail.textContent = "";
+      var st = document.createElement("strong");
+      st.textContent = item.s.name + ": ";
+      detail.appendChild(st);
+      detail.appendChild(document.createTextNode(
+        "renews " + dateFmt.format(d) + " — " + money.format(item.s.cost) +
+        CYCLE_SHORT[item.s.cycle] + " (" + item.s.category + ")."));
+      Sound.select();
+    } else {
+      detail.textContent = "Click a row to spotlight a renewal.";
+      Sound.click();
+    }
+  }
+  pts.forEach(function (it, idx) {
+    var y = topPad + idx * rowH + rowH / 2;
+    var col = it.days < 0 ? "#ef4444" : (it.days === 0 ? "#f59e0b" : "#4f46e5");
+    var when = it.days < 0 ? (-it.days) + "d ago" : (it.days === 0 ? "today" : "in " + it.days + "d");
+    var g = svgNS("g", { "class": "tl-mark", role: "button", tabindex: "0", "aria-pressed": "false",
+      "aria-label": it.s.name + " renews " +
+        (it.days < 0 ? (-it.days) + " days ago" : (it.days === 0 ? "today" : "in " + it.days + " days")) +
+        ". Activate to spotlight." });
+    g.appendChild(svgNS("rect", { x: 0, y: topPad + idx * rowH, width: W, height: rowH, fill: "transparent" }));
+    g.appendChild(svgNS("circle", { cx: X, cy: y, r: 7, fill: col,
+      stroke: "var(--surface)", "stroke-width": "2.5" }));
+    var nm = svgNS("text", { x: X + 16, y: y - 3, "class": "tl-name" });
+    nm.textContent = it.s.name.length > 26 ? it.s.name.slice(0, 25) + "…" : it.s.name;
+    var d = parseISODate(it.s.renewal);
+    var sb = svgNS("text", { x: X + 16, y: y + 15, "class": "tl-day" });
+    sb.textContent = dateFmt.format(d) + " · " + money.format(it.s.cost) +
+      CYCLE_SHORT[it.s.cycle] + " · " + when;
+    g.appendChild(nm);
+    g.appendChild(sb);
+    svg.appendChild(g);
+    var item = { g: g, s: it.s, days: it.days };
+    marks.push(item);
+    (function (m) {
+      g.addEventListener("click", function () { act(m); });
+      g.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(m); }
+      });
+    })(item);
+  });
+  box.appendChild(svg);
+  box.appendChild(detail);
+  return box;
+}
+
+/* Savings gauge: projected trim savings as a share of monthly burn.
+   Click toggles the center number between monthly and annual. */
+function renderSavingsGauge(mSave) {
+  var monthly = 0;
+  for (var i = 0; i < subs.length; i++) monthly += monthlyOf(subs[i]);
+  var pct = monthly > 0 ? Math.min(100, (mSave / monthly) * 100) : 0;
+  var tile = el("div", "gauge-tile");
+  tile.setAttribute("role", "button");
+  tile.setAttribute("tabindex", "0");
+  tile.setAttribute("aria-pressed", "false");
+  tile.setAttribute("aria-label", "Projected savings gauge: " + pct.toFixed(1) +
+    " percent of monthly burn. Activate to switch between monthly and annual.");
+  var svg = svgNS("svg", { viewBox: "0 0 140 140", width: "140", height: "140", role: "img",
+    "aria-label": "Gauge showing projected savings as a share of monthly burn" });
+  svg.appendChild(svgNS("circle", { cx: 70, cy: 70, r: 56, fill: "none",
+    stroke: "var(--bar-track)", "stroke-width": "14" }));
+  svg.appendChild(svgNS("circle", { cx: 70, cy: 70, r: 56, fill: "none",
+    stroke: "var(--good)", "stroke-width": "14", pathLength: "100",
+    "stroke-dasharray": pct.toFixed(1) + " 100", transform: "rotate(-90 70 70)",
+    "stroke-linecap": "round" }));
+  var top = svgNS("text", { x: 70, y: 66, "text-anchor": "middle", "class": "gauge-top" });
+  var sub = svgNS("text", { x: 70, y: 90, "text-anchor": "middle", "class": "gauge-sub" });
+  var annual = false;
+  function paint() {
+    top.textContent = money.format(annual ? mSave * 12 : mSave);
+    sub.textContent = annual ? "per year" : "per month";
+  }
+  paint();
+  function act() {
+    annual = !annual;
+    tile.setAttribute("aria-pressed", annual ? "true" : "false");
+    paint();
+    Sound.click();
+  }
+  tile.addEventListener("click", act);
+  tile.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(); }
+  });
+  svg.appendChild(top);
+  svg.appendChild(sub);
+  tile.appendChild(svg);
+  tile.appendChild(el("div", "cap", "of monthly burn"));
+  return tile;
+}
+
+/* Dashboard stat cards: click a card for a breakdown, click again to restore. */
+function statBreakdown(key) {
+  if (!subs.length) return null;
+  var monthly = 0, cats = {}, top = null, topM = 0, lo = null, loM = 0, i;
+  for (i = 0; i < subs.length; i++) {
+    var m = monthlyOf(subs[i]);
+    monthly += m;
+    cats[subs[i].category] = (cats[subs[i].category] || 0) + m;
+    if (top === null || m > topM) { top = subs[i]; topM = m; }
+    if (lo === null || m < loM) { lo = subs[i]; loM = m; }
+  }
+  var catNames = Object.keys(cats), topCat = null, topCatM = 0;
+  for (var c in cats) {
+    if (Object.prototype.hasOwnProperty.call(cats, c) && cats[c] > topCatM) { topCatM = cats[c]; topCat = c; }
+  }
+  var n = subs.length;
+  switch (key) {
+    case "monthly":
+      return { lead: "Largest category: ",
+        text: topCat + " at " + money.format(topCatM) + "/mo — " + n + " subscription" +
+          (n === 1 ? "" : "s") + " across " + catNames.length + " categor" + (catNames.length === 1 ? "y" : "ies") + "." };
+    case "annual": {
+      var ts = 0;
+      for (i = 0; i < subs.length; i++) if (subs[i].trim) ts += monthlyOf(subs[i]);
+      return { lead: "12-month projection: ",
+        text: money.format(monthly * 12) + " a year. Marked-for-trim subscriptions would save " +
+          money.format(ts) + "/mo (" + money.format(ts * 12) + "/yr)." };
+    }
+    case "count": {
+      var names = subs.slice(0, 6).map(function (s) { return s.name; });
+      return { lead: "Active: ",
+        text: names.join(", ") + (n > 6 ? " — and " + (n - 6) + " more." : ".") };
+    }
+    case "top": {
+      var d = parseISODate(top.renewal);
+      return { lead: top.name + ": ",
+        text: money.format(top.cost) + CYCLE_SHORT[top.cycle] + " = " + money.format(topM) + "/mo" +
+          (d ? ", renews " + dateFmt.format(d) + "." : ", no renewal date set.") };
+    }
+    case "avg":
+      return { lead: "Range: ",
+        text: money.format(loM) + "/mo (" + lo.name + ") to " + money.format(topM) + "/mo (" + top.name + ")." };
+  }
+  return null;
+}
+function bindStatCards() {
+  var detail = document.getElementById("statDetail");
+  if (!detail) return;
+  var cards = document.querySelectorAll("#totals .stat");
+  var keys = ["monthly", "annual", "count", "top", "avg"];
+  for (var i = 0; i < cards.length && i < keys.length; i++) {
+    (function (card, key) {
+      var lab = card.querySelector(".label");
+      var lbl = lab ? lab.textContent.trim() : "Stat";
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-pressed", "false");
+      card.setAttribute("aria-label", lbl + ". Activate for a breakdown.");
+      function act() {
+        var was = card.classList.contains("sel");
+        for (var k = 0; k < cards.length; k++) {
+          cards[k].classList.remove("sel");
+          cards[k].setAttribute("aria-pressed", "false");
+        }
+        if (!was) {
+          card.classList.add("sel");
+          card.setAttribute("aria-pressed", "true");
+          var b = statBreakdown(key);
+          detail.textContent = "";
+          if (b) {
+            var st = document.createElement("strong");
+            st.textContent = b.lead;
+            detail.appendChild(st);
+            detail.appendChild(document.createTextNode(b.text));
+          }
+          Sound.select();
+        } else {
+          detail.textContent = "";
+          Sound.click();
+        }
+      }
+      card.addEventListener("click", act);
+      card.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(); }
+      });
+    })(cards[i], keys[i]);
+  }
 }
 
 /* ---------- dialog: add / edit ---------- */
@@ -1227,6 +1586,7 @@ function bindSoundToggle() {
 var themeToggle;
 function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
+  themeToggle.textContent = t === "dark" ? "☀️" : "🌙";
   themeToggle.setAttribute("aria-pressed", t === "dark" ? "true" : "false");
   var label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
   themeToggle.setAttribute("aria-label", label);
@@ -1259,6 +1619,7 @@ function init() {
   initTheme();
   loadData();
   renderAll();
+  bindStatCards();
   if (!storageOK) {
     dataMessage("Browser storage is unavailable in this context — your data will work during this session but will not be saved between visits.", true);
   }
@@ -1320,6 +1681,7 @@ else init();
   var btn = document.getElementById("sample-toggle");
   if(!btn) return;
   var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {};
+  var transSnap = null;
   function paintSample(){
     var lbl = sampleOn ? "Clear sample data" : "Try sample data";
     btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
@@ -1330,6 +1692,45 @@ else init();
     try{ snap = JSON.parse(JSON.stringify(subs)); }catch(e){ snap = []; }
     snapLS = storeGet(LS_DATA);
     if(snapLS === null || snapLS === undefined) snapLS = LS_MISSING;
+  }
+  /* Snapshot every transient control: typed-but-uncommitted dialog fields,
+     search/sort values, checked states, validation/status text, focus. */
+  function snapshotTransient(){
+    var ctrls = [];
+    var nodes = document.querySelectorAll("input, select, textarea");
+    for (var i = 0; i < nodes.length; i++){
+      var n = nodes[i];
+      if(!n.id) continue;
+      ctrls.push({ id: n.id, value: n.value, checked: !!n.checked,
+                   sel: (n.tagName === "SELECT" ? n.selectedIndex : -1) });
+    }
+    var t = { ctrls: ctrls, search: searchTerm, sort: sortKey, msgs: {}, focus: null };
+    ["formError", "dataMsg"].forEach(function (id) {
+      var m = document.getElementById(id);
+      if(m) t.msgs[id] = m.textContent;
+    });
+    try{ var a = document.activeElement; if(a && a.id) t.focus = a.id; }catch(e){}
+    return t;
+  }
+  function restoreTransient(t){
+    if(!t) return;
+    var ctrls = t.ctrls || [];
+    for (var i = 0; i < ctrls.length; i++){
+      var rec = ctrls[i], n = document.getElementById(rec.id);
+      if(!n) continue;
+      if(n.type === "checkbox" || n.type === "radio") n.checked = rec.checked;
+      else { n.value = rec.value; if(n.tagName === "SELECT" && rec.sel >= 0) n.selectedIndex = rec.sel; }
+    }
+    searchTerm = t.search;
+    sortKey = t.sort;
+    for (var id in t.msgs){
+      if(Object.prototype.hasOwnProperty.call(t.msgs, id)){
+        var m = document.getElementById(id);
+        if(m) m.textContent = t.msgs[id];
+      }
+    }
+    renderAll();
+    if(t.focus){ var f = document.getElementById(t.focus); if(f && f.focus){ try{ f.focus(); }catch(e){} } }
   }
   function isoPlus(n){
     var d = new Date(); d.setDate(d.getDate() + n);
@@ -1361,10 +1762,13 @@ else init();
     }
     snap = null; snapLS = null;
     renderAll();
+    restoreTransient(transSnap);
+    transSnap = null;
   }
   btn.addEventListener("click", function(){
     if(!sampleOn){
       snapshot();
+      transSnap = snapshotTransient();
       window.__gSampleOn = true;
       sampleOn = true;
       applySample();
@@ -1378,6 +1782,16 @@ else init();
   });
   paintSample();
 })();
+  /* Esc restores any active spotlight (clickability spec) */
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key !== "Escape") return;
+    var sels = document.querySelectorAll(".cat-row.sel, .stat.sel, .stat-box.sel, g.sel");
+    for (var i = 0; i < sels.length; i++) {
+      /* SVG <g> has no .click(); dispatch a bubbling click so its toggle handler runs */
+      if (sels[i].click) sels[i].click();
+      else sels[i].dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    }
+  });
 </script>
 </body>
 </html>

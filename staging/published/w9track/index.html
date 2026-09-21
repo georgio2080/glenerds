@@ -11,6 +11,7 @@
 :root{
   --bg:#f4f5fb; --panel:#ffffff; --text:#1c2330; --muted:#5b6472;
   --border:#dfe3ec; --accent:#6d5df6; --accent-text:#ffffff;
+  --card:#ffffff; --line:#dfe3ec; --accent-soft:rgba(109,93,246,.14);
   --grad:linear-gradient(135deg,#6366f1,#8b5cf6);
   --grad-soft:linear-gradient(135deg,rgba(99,102,241,.13),rgba(139,92,246,.13));
   --red:#c23333; --red-bg:#fdecec; --amber:#9a6200; --amber-bg:#fdf3dd;
@@ -20,6 +21,7 @@
 html[data-theme="dark"]{
   --bg:#0f1117; --panel:#181c26; --text:#e8ecf2; --muted:#9aa4b2;
   --border:#2b3240; --accent:#7c6cf8; --accent-text:#ffffff;
+  --card:#181c26; --line:#2b3240; --accent-soft:rgba(124,108,248,.18);
   --red:#ff7b72; --red-bg:#3a1f1e; --amber:#e3a008; --amber-bg:#3a2f14;
   --green:#56d364; --green-bg:#1a3524;
   --shadow:0 2px 12px rgba(0,0,0,.45);
@@ -28,6 +30,7 @@ html[data-theme="dark"]{
   html[data-theme="auto"]{
     --bg:#0f1117; --panel:#181c26; --text:#e8ecf2; --muted:#9aa4b2;
     --border:#2b3240; --accent:#7c6cf8; --accent-text:#ffffff;
+  --card:#181c26; --line:#2b3240; --accent-soft:rgba(124,108,248,.18);
     --red:#ff7b72; --red-bg:#3a1f1e; --amber:#e3a008; --amber-bg:#3a2f14;
     --green:#56d364; --green-bg:#1a3524;
     --shadow:0 2px 12px rgba(0,0,0,.45);
@@ -58,35 +61,14 @@ header.topbar{
 .tagline{font-size:.72rem; font-weight:500; opacity:.88}
 .topbar .controls{display:flex; gap:8px; align-items:center}
 #yearSelect{background:#fff; color:#1c2330; border:none; border-radius:10px; font-weight:700; padding:6px 8px}
-.theme-toggle{display:inline-flex; align-items:center; justify-content:center;
-  width:44px; height:44px; min-width:44px; min-height:44px; padding:0;
-  background:rgba(255,255,255,.15);
-  border:1px solid rgba(255,255,255,.45); color:#fff; border-radius:999px}
-.theme-toggle:hover{background:rgba(255,255,255,.26)}
-.theme-toggle:focus-visible{outline:2px solid #fff; outline-offset:2px}
-.theme-toggle svg{width:17px; height:17px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
-#sound-toggle{display:inline-flex; align-items:center; justify-content:center;
-  width:44px; height:44px; min-width:44px; min-height:44px; padding:0;
-  background:rgba(255,255,255,.15); color:#fff; font-size:1.05rem; line-height:1;
-  border:1px solid rgba(255,255,255,.45); border-radius:999px; cursor:pointer}
-#sound-toggle:hover{background:rgba(255,255,255,.26)}
-#sound-toggle:focus-visible{outline:2px solid #fff; outline-offset:2px}
-/* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
-.sample-toggle{display:inline-flex;align-items:center;justify-content:center;
-  width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
-  background:rgba(255,255,255,.15);color:#fff;
-  border:1px solid rgba(255,255,255,.45);border-radius:999px;cursor:pointer}
-.sample-toggle svg{width:18px;height:18px;flex:none}
-.sample-toggle:hover{background:rgba(255,255,255,.26)}
-.sample-toggle:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.sample-toggle[aria-pressed="true"]{background:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);color:#fff}
-.theme-toggle .ic-sun{display:none}
-html[data-theme="dark"] .theme-toggle .ic-sun{display:inline}
-html[data-theme="dark"] .theme-toggle .ic-moon{display:none}
-@media (prefers-color-scheme: dark){
-  html[data-theme="auto"] .theme-toggle .ic-sun{display:inline}
-  html[data-theme="auto"] .theme-toggle .ic-moon{display:none}
-}
+/* ---------- Header cluster: live HenTrack reference spec (2026-09-21) ---------- */
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card);border:1px solid var(--line);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn svg{width:26px;height:26px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+.round-btn:hover{border-color:var(--accent)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
 /* ---------- Section icon chips ---------- */
 .sec-ic{display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px;
   border-radius:9px; background:var(--grad); margin-right:9px; flex:none;
@@ -210,6 +192,28 @@ html[data-theme="dark"] .stat:nth-child(4)::before{background-color:#252a55; bac
 .contractor.flash{box-shadow:0 0 0 3px var(--accent)}
 .flag[role="button"]{cursor:pointer}
 .flag[role="button"]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+/* Clickable stat cards (sweep 2026-09-21): jump to the related section */
+.stat[role="button"]{cursor:pointer}
+.stat[role="button"]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+/* ---------- Funnel chart (W-9 collection) ---------- */
+.frow{display:flex;align-items:center;gap:10px;margin:7px 0;cursor:pointer;border-radius:10px;padding:4px 6px}
+.frow:hover{background:rgba(127,127,150,.08)}
+.frow:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.flab{width:118px;flex:none;font-size:.82rem;color:var(--muted);line-height:1.3}
+.fbar{height:32px;border-radius:8px;background:var(--grad);display:flex;align-items:center;
+  justify-content:flex-end;padding:0 10px;color:#fff;font-weight:700;font-size:.88rem;min-width:36px}
+.frow.sel .fbar{box-shadow:0 0 0 2px var(--text)}
+.frow.sel .flab{color:var(--text)}
+@media (max-width:420px){.flab{width:96px;font-size:.78rem}}
+/* ---------- Stacked monthly bars (payments by W-9 status) ---------- */
+.chart .stackseg{stroke:none}
+.chart .stackseg.sel{stroke:var(--text);stroke-width:1.5}
+.stack-legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:.85rem;color:var(--muted)}
+.stack-legend span{display:inline-flex;align-items:center;gap:6px}
+.stack-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.thresh-detail{margin-top:6px;font-size:.82rem;color:var(--muted)}
+.thresh-detail strong{color:var(--text)}
+.contractor.spot{box-shadow:0 0 0 2px var(--accent)}
 /* ---------- Threshold progress on contractor cards ---------- */
 .thresh{margin-top:10px}
 .thresh-track{position:relative; height:10px; border-radius:99px; background:var(--border)}
@@ -295,7 +299,7 @@ footer.site a{color:var(--accent)}
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -313,10 +317,10 @@ footer.site a{color:var(--accent)}
     <select id="yearSelect" style="width:auto;min-height:44px;margin:0" aria-label="Tax year"></select>
     <div class="g-header-actions">
     <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-    <button id="sample-toggle" type="button" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-    <button id="themeToggle" type="button" class="theme-toggle" aria-label="Toggle dark mode"><svg class='ic-moon' viewBox='0 0 24 24' aria-hidden='true'><path d='M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg><svg class='ic-sun' viewBox='0 0 24 24' aria-hidden='true'><circle cx='12' cy='12' r='4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><path d='M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19' stroke='black' stroke-width='2' stroke-linecap='round'/></svg><span id="themeLabel" hidden>Dark</span></button>
-    <button id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
-  </div>
+    <button id="sample-toggle" type="button" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+    <button id="themeToggle" type="button" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+    <button id="sound-toggle" type="button" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
+    </div>
   </div>
 </header>
 <main>
@@ -413,7 +417,7 @@ footer.site a{color:var(--accent)}
   </section>
 </main>
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer class="site">
   <p>W9Track — your data never leaves this device. Not tax advice; confirm with your accountant.</p>
@@ -652,6 +656,7 @@ var Sound = (function(){
     toggleTheme: function(){ if(on) tone(440, 0.06, "triangle", 0.05); }
   };
 })();
+var paintSoundBtn = null; /* repaints the sound button (used after theme changes) */
 function bindSoundToggle(){
   var btn = document.getElementById("sound-toggle");
   if(!btn) return;
@@ -661,7 +666,9 @@ function bindSoundToggle(){
     btn.setAttribute("aria-pressed", on ? "true" : "false");
     btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
     btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+    /* Sound stays white in all states (reference spec 2026-09-21); CSS handles styling. */
   }
+  paintSoundBtn = paint;
   btn.addEventListener("click", function(){ Sound.toggle(); paint(); Sound.click(); });
   paint();
 }
@@ -681,6 +688,9 @@ function applyTheme(){
   themeToggle.setAttribute("aria-label", label);
   themeToggle.title = label;
   themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
+  /* Icon shows the mode you GET: moon in light mode, sun in dark mode (reference spec 2026-09-21). */
+  themeToggle.textContent = dark ? "\u2600\uFE0F" : "\uD83C\uDF19";
+  if(typeof paintSoundBtn === "function" && paintSoundBtn) paintSoundBtn();
 }
 themeToggle.addEventListener("click", function(){
   var now = document.documentElement.getAttribute("data-theme");
@@ -726,15 +736,30 @@ function renderDashboard(){
   var statGrid = document.getElementById("statGrid");
   while(statGrid.firstChild) statGrid.removeChild(statGrid.firstChild);
   var stats = [
-    ["Contractors", String(contractors.length)],
-    ["W-9s on file", String(onFile)],
-    ["W-9s missing", String(contractors.filter(function(c){ return !c.w9 && c.entity !== "corp"; }).length)],
-    ["Total paid YTD", money(total)]
+    ["Contractors", String(contractors.length), "clHead", "contractor list"],
+    ["W-9s on file", String(onFile), "clHead", "contractor list"],
+    ["W-9s missing", String(contractors.filter(function(c){ return !c.w9 && c.entity !== "corp"; }).length), "flagList", "the flagged contractors"],
+    ["Total paid YTD", money(total), "vizHead", "year-at-a-glance charts"]
   ];
   stats.forEach(function(s){
     var d = el("div", null, "stat");
     d.appendChild(el("div", s[1], "num"));
     d.appendChild(el("div", s[0], "lbl"));
+    /* Sweep 2026-09-21: stat cards are clickable — they jump to the related section. */
+    d.setAttribute("role", "button");
+    d.setAttribute("tabindex", "0");
+    d.setAttribute("aria-label", s[0] + ": " + s[1] + ". Activate to jump to " + s[3] + ".");
+    (function(target){
+      function act(){
+        var t = document.getElementById(target);
+        if(t && t.scrollIntoView) t.scrollIntoView({behavior:"smooth", block:"center"});
+        Sound.select();
+      }
+      d.addEventListener("click", act);
+      d.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(s[2]);
     statGrid.appendChild(d);
   });
   renderCharts();
@@ -970,6 +995,14 @@ function donutChart(contractors){
   svg.appendChild(cLbl);
   wrap.appendChild(svg);
   var leg = el("div", null, "legend");
+  /* contractor names behind each donut status, for the spotlight breakdown */
+  function statusNames(idx){
+    return contractors.filter(function(c){
+      if(idx === 0) return !!c.w9;
+      if(idx === 1) return !c.w9 && c.entity !== "corp";
+      return c.entity === "corp" && !c.w9;
+    }).map(function(c){ return c.name; });
+  }
   function selectDonut(idx){
     var s = segs[idx];
     var was = drawn[idx] && drawn[idx].classList.contains("sel");
@@ -981,14 +1014,24 @@ function donutChart(contractors){
     if(!was && drawn[idx]){
       drawn[idx].classList.add("sel");
       drawn[idx].setAttribute("aria-pressed", "true");
+      /* spotlight: dim the rest of the ring */
+      drawn.forEach(function(dg, j){
+        if(dg){ if(j === idx) dg.removeAttribute("opacity"); else dg.setAttribute("opacity", "0.3"); }
+      });
       cNum.textContent = String(s.v);
       cLbl.textContent = s.label.toLowerCase();
+      var all = statusNames(idx);
+      var names = all.slice(0, 6);
+      showChartDetail(wrap, s.label + ": " + s.v + " of " + contractors.length,
+        (names.length ? " — " + names.join(", ") + (all.length > 6 ? " …" : "") : ""));
       var lb = leg.querySelector('button[data-seg="' + idx + '"]');
       if(lb) lb.setAttribute("aria-pressed", "true");
       Sound.select();
     } else {
+      drawn.forEach(function(dg){ if(dg) dg.removeAttribute("opacity"); });
       cNum.textContent = String(contractors.length);
       cLbl.textContent = "contractors";
+      showChartDetail(wrap, null);
       Sound.click();
     }
   }
@@ -1067,6 +1110,168 @@ function yoyChart(){
   return wrap;
 }
 
+/* W-9 collection funnel (sweep 2026-09-21): the compliance pipeline as a
+   funnel — each stage is a subset of the previous one. Click a stage to
+   spotlight it and see who is in it; click again to restore. Keyboard
+   (Enter/Space) works; SVG-free, so focus is a plain outline. */
+function funnelChart(contractors){
+  var wrap = el("div", null, "chart");
+  wrap.appendChild(chartTitle("W-9 collection funnel"));
+  var lim = limitsFor(currentYear);
+  var pop = contractors.filter(function(c){ return c.entity !== "corp" && ytd(c) > 0; });
+  var atRisk = pop.filter(function(c){ return ytd(c) >= lim.amber; });
+  var missing = atRisk.filter(function(c){ return !c.w9; });
+  var filing = missing.filter(function(c){ return ytd(c) >= lim.red; });
+  var stages = [
+    {label:"Contractors paid", list:pop, desc:"Non-exempt contractors with payments this year."},
+    {label:"\u2265 " + wholeDollars(lim.amber) + " at risk", list:atRisk, desc:"At or above the amber watch amount."},
+    {label:"W-9 missing", list:missing, desc:"No W-9 on file \u2014 collect now."},
+    {label:"Needs 1099", list:filing, desc:"At or above the filing threshold with no W-9."}
+  ];
+  if(!pop.length){
+    wrap.appendChild(el("p", "No payments yet \u2014 add a payment to see the funnel.", "empty"));
+    return wrap;
+  }
+  var max = pop.length;
+  stages.forEach(function(s){
+    var row = el("div", null, "frow");
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-pressed", "false");
+    row.setAttribute("aria-label", s.label + ": " + s.list.length + " of " + max + ". " + s.desc + " Activate to spotlight.");
+    var bar = el("div", null, "fbar");
+    bar.style.width = (max > 0 ? Math.max(12, s.list.length / max * 100) : 0).toFixed(1) + "%";
+    bar.appendChild(el("span", String(s.list.length)));
+    row.appendChild(el("span", s.label, "flab"));
+    row.appendChild(bar);
+    (function(st){
+      function act(){
+        var was = row.classList.contains("sel");
+        var sels = wrap.querySelectorAll(".frow.sel");
+        for(var i = 0; i < sels.length; i++){
+          sels[i].classList.remove("sel");
+          sels[i].setAttribute("aria-pressed", "false");
+        }
+        if(!was){
+          row.classList.add("sel");
+          row.setAttribute("aria-pressed", "true");
+          var names = st.list.map(function(c){ return c.name; }).slice(0, 6);
+          showChartDetail(wrap, st.label + ": " + st.list.length,
+            " \u2014 " + st.desc + (names.length ? " " + names.join(", ") + (st.list.length > 6 ? " \u2026" : "") : ""));
+          Sound.select();
+        } else {
+          showChartDetail(wrap, null);
+          Sound.click();
+        }
+      }
+      row.addEventListener("click", act);
+      row.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(s);
+    wrap.appendChild(row);
+  });
+  return wrap;
+}
+
+/* Monthly payments stacked by W-9 status (sweep 2026-09-21): shows how much of
+   each month's payments sits on contractors with W-9s on file, W-9s missing,
+   or 1099-exempt (corporations). Click a segment to spotlight it and swap the
+   detail line; click again to restore. Keyboard (Enter/Space) works; SVG focus
+   uses drop-shadow, never a box. */
+function stackedStatusChart(contractors, year){
+  var wrap = el("div", null, "chart");
+  wrap.appendChild(chartTitle("Payments by W-9 status \u00b7 " + year));
+  var cats = [
+    {key:"onFile", label:"W-9 on file", color:"var(--green)"},
+    {key:"missing", label:"W-9 missing", color:"var(--amber)"},
+    {key:"exempt", label:"1099-exempt", color:"var(--muted)"}
+  ];
+  var months = [];
+  for(var m = 0; m < 12; m++) months.push({onFile:0, missing:0, exempt:0});
+  contractors.forEach(function(c){
+    var st = (c.entity === "corp") ? "exempt" : (c.w9 ? "onFile" : "missing");
+    (c.payments || []).forEach(function(p){
+      if(!p || typeof p.date !== "string" || p.date.slice(0,4) !== year) return;
+      var mi = parseInt(p.date.slice(5,7), 10);
+      if(mi >= 1 && mi <= 12 && isFinite(p.amount) && p.amount > 0) months[mi-1][st] += p.amount;
+    });
+  });
+  var max = 0;
+  months.forEach(function(mo){ var t = mo.onFile + mo.missing + mo.exempt; if(t > max) max = t; });
+  if(max <= 0){
+    wrap.appendChild(el("p", "No payment data for " + year + " yet \u2014 add a payment to see it here.", "empty"));
+    return wrap;
+  }
+  var W = 360, H = 196, padB = 20, padT = 10;
+  var padL = Math.max(42, wholeDollars(max).length * 6 + 12);
+  var plotW = W - padL - 8, plotH = H - padT - padB;
+  var svg = svgEl("svg", {viewBox:"0 0 " + W + " " + H, role:"img",
+    "aria-label":"Stacked bar chart of payments by W-9 status for " + year + ". Highest month: " + money(max) + "."});
+  [0, 0.5, 1].forEach(function(f){
+    var v = max * f, y = padT + plotH - plotH * f;
+    svg.appendChild(svgEl("line", {x1:padL, y1:y, x2:W-8, y2:y, class:"grid"}));
+    svg.appendChild(svgEl("text", {x:padL-5, y:(y+3).toFixed(1), class:"ax", "text-anchor":"end"}, wholeDollars(v)));
+  });
+  var slot = plotW / 12, bw = Math.min(20, slot * 0.66);
+  months.forEach(function(mo, i){
+    var total = mo.onFile + mo.missing + mo.exempt;
+    var x = padL + slot * i + (slot - bw) / 2;
+    var yb = padT + plotH;
+    cats.forEach(function(cat){
+      var v = mo[cat.key];
+      if(v <= 0) return;
+      var h = plotH * v / max;
+      var y = yb - h;
+      var seg = svgEl("rect", {x:x.toFixed(1), y:y.toFixed(1), width:bw.toFixed(1),
+        height:Math.max(h, 2).toFixed(1), rx:2, class:"stackseg clickable",
+        tabindex:"0", role:"button", "aria-pressed":"false",
+        "aria-label":MONTH_SHORT[i] + ", " + cat.label + ": " + money(v) + ". Activate to spotlight."});
+      seg.style.fill = cat.color;
+      seg.appendChild(svgEl("title", null, MONTH_SHORT[i] + " \u00b7 " + cat.label + ": " + money(v)));
+      (function(sg, lbl, c, val, tot){
+        function act(){
+          var was = sg.classList.contains("sel");
+          var sels = wrap.querySelectorAll(".stackseg.sel");
+          for(var k = 0; k < sels.length; k++){
+            sels[k].classList.remove("sel");
+            sels[k].setAttribute("aria-pressed", "false");
+          }
+          if(!was){
+            sg.classList.add("sel");
+            sg.setAttribute("aria-pressed", "true");
+            showChartDetail(wrap, lbl + " \u00b7 " + c.label + ": ",
+              money(val) + " of " + money(tot) + " that month.");
+            Sound.select();
+          } else {
+            showChartDetail(wrap, null);
+            Sound.click();
+          }
+        }
+        sg.addEventListener("click", act);
+        sg.addEventListener("keydown", function(ev){
+          if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+        });
+      })(seg, MONTH_SHORT[i], cat, v, total);
+      svg.appendChild(seg);
+      yb = y;
+    });
+    svg.appendChild(svgEl("text", {x:(x + bw/2).toFixed(1), y:H-6, class:"ax", "text-anchor":"middle"}, MONTH_INIT[i]));
+  });
+  wrap.appendChild(svg);
+  var leg = el("div", null, "stack-legend");
+  cats.forEach(function(cat){
+    var sp = el("span");
+    var dot = el("i");
+    dot.style.background = cat.color;
+    sp.appendChild(dot);
+    sp.appendChild(document.createTextNode(cat.label));
+    leg.appendChild(sp);
+  });
+  wrap.appendChild(leg);
+  return wrap;
+}
+
 function renderCharts(){
   var box = document.getElementById("charts");
   while(box.firstChild) box.removeChild(box.firstChild);
@@ -1076,6 +1281,10 @@ function renderCharts(){
   two.appendChild(donutChart(contractors));
   two.appendChild(topChart(contractors));
   box.appendChild(two);
+  var two2 = el("div", null, "charts two");
+  two2.appendChild(funnelChart(contractors));
+  two2.appendChild(stackedStatusChart(contractors, currentYear));
+  box.appendChild(two2);
   box.appendChild(yoyChart());
 }
 
@@ -1138,8 +1347,11 @@ function renderContractors(){
       var clim = limitsFor(currentYear);
       var pct = clim.red > 0 ? Math.min(100, ct / clim.red * 100) : 0;
       var th = el("div", null, "thresh" + (ct >= clim.red ? " red" : ct >= clim.amber ? " amber" : ""));
-      th.setAttribute("role", "img");
-      th.setAttribute("aria-label", "Paid " + money(ct) + " of " + wholeDollars(clim.red) + " 1099 threshold");
+      th.setAttribute("role", "button");
+      th.setAttribute("tabindex", "0");
+      th.setAttribute("aria-pressed", "false");
+      th.setAttribute("aria-label", "Paid " + money(ct) + " of " + wholeDollars(clim.red) +
+        " 1099 threshold. Activate to see a payment breakdown.");
       var track = el("div", null, "thresh-track");
       var tfill = el("div", null, "thresh-fill");
       tfill.style.width = pct.toFixed(1) + "%";
@@ -1150,6 +1362,42 @@ function renderContractors(){
       track.appendChild(mark);
       th.appendChild(track);
       th.appendChild(el("div", money(ct) + " of " + wholeDollars(clim.red) + " threshold", "thresh-lbl"));
+      /* Sweep 2026-09-21: the threshold bar is a real control — click to
+         spotlight the card and swap in a payment breakdown; click again to restore. */
+      (function(bar, cc, lim, yr, cd){
+        var det = null;
+        function act(){
+          if(det){
+            det.remove(); det = null;
+            bar.setAttribute("aria-pressed", "false");
+            cd.classList.remove("spot");
+            Sound.click(); return;
+          }
+          bar.setAttribute("aria-pressed", "true");
+          cd.classList.add("spot");
+          var paid = ytd(cc, yr);
+          var pays = (cc.payments || []).filter(function(p){
+            return p && isFinite(p.amount) && p.amount > 0 &&
+              typeof p.date === "string" && p.date.slice(0,4) === yr;
+          });
+          var largest = pays.reduce(function(m,p){ return Math.max(m, p.amount); }, 0);
+          var rem = Math.max(0, lim.red - paid);
+          det = el("div", null, "thresh-detail");
+          det.setAttribute("aria-live", "polite");
+          det.appendChild(el("strong", money(paid) + " paid"));
+          det.appendChild(document.createTextNode(" of " + wholeDollars(lim.red) + " \u00b7 " +
+            pays.length + " payment" + (pays.length === 1 ? "" : "s") +
+            " \u00b7 largest " + money(largest) + " \u00b7 " +
+            (rem > 0 ? money(rem) + " until the 1099 threshold" :
+              "threshold reached \u2014 W-9 " + (cc.w9 ? "on file" : "still missing")) + "."));
+          bar.appendChild(det);
+          Sound.select();
+        }
+        bar.addEventListener("click", act);
+        bar.addEventListener("keydown", function(ev){
+          if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+        });
+      })(th, c, clim, currentYear, card);
       card.appendChild(th);
     }
     if(c.contact) card.appendChild(el("div", "Contact: " + c.contact, "cmeta"));
@@ -1608,20 +1856,69 @@ bindSoundToggle();
 (function(){
   var btn = document.getElementById("sample-toggle");
   if(!btn) return;
-  var sampleOn = false, snap = null, snapYear = null, snapLS = null, LS_MISSING = {};
+  var sampleOn = false, snap = null, snapYear = null, snapYears = null, snapPanels = null,
+      snapEdits = null, snapFields = null, snapMsg = null, snapLS = null;
   function paintSample(){
     var lbl = sampleOn ? "Clear sample data" : "Try sample data";
     btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
     btn.setAttribute("aria-label", lbl);
     btn.title = lbl;
   }
+  /* Typed-but-uncommitted form state: every id-bearing input/select/textarea. */
+  function domFieldState(){
+    var out = [];
+    var els = document.querySelectorAll("input, select, textarea");
+    for(var i = 0; i < els.length; i++){
+      var e = els[i];
+      if(!e.id) continue;
+      out.push({id:e.id, v:e.value, c:!!e.checked,
+        s:(e.tagName === "SELECT" ? e.selectedIndex : -1), d:!!e.disabled});
+    }
+    return out;
+  }
+  function applyDomFieldState(list){
+    if(!list) return;
+    list.forEach(function(f){
+      var e = document.getElementById(f.id);
+      if(!e) return;
+      e.value = f.v;
+      if("checked" in e) e.checked = f.c;
+      if(e.tagName === "SELECT" && f.s >= 0 && e.options.length > f.s) e.selectedIndex = f.s;
+      e.disabled = f.d;
+    });
+  }
+  function lsSnapshot(){
+    var o = {};
+    try{
+      for(var i = 0; i < localStorage.length; i++){
+        var k = localStorage.key(i);
+        o[k] = localStorage.getItem(k);
+      }
+    }catch(e){}
+    return o;
+  }
+  function lsRestore(o){
+    try{
+      var cur = [];
+      for(var i = 0; i < localStorage.length; i++) cur.push(localStorage.key(i));
+      cur.forEach(function(k){ if(!(k in o)) localStorage.removeItem(k); });
+      Object.keys(o).forEach(function(k){ localStorage.setItem(k, o[k]); });
+    }catch(e){}
+  }
   function snapshot(){
     try{ snap = JSON.parse(JSON.stringify(store)); }catch(e){ snap = null; }
     snapYear = currentYear;
-    try{
-      var raw = localStorage.getItem(STORE_KEY);
-      snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
-    }catch(e){ snapLS = LS_MISSING; }
+    snapYears = years.slice();
+    try{ snapPanels = JSON.parse(JSON.stringify(openPanels)); }catch(e){ snapPanels = {}; }
+    snapEdits = [];
+    var cards = document.querySelectorAll("#contractorList .contractor");
+    for(var i = 0; i < cards.length; i++){
+      if(cards[i].querySelector(".editform")) snapEdits.push(cards[i].id.replace(/^ccard-/, ""));
+    }
+    snapFields = domFieldState();
+    var m = document.getElementById("dataMsg");
+    snapMsg = m ? {t:m.textContent, c:m.className} : null;
+    snapLS = lsSnapshot();
   }
   function applySample(){
     /* same demo content as loadDemo(), minus the demo-button confirm and status/sound */
@@ -1647,14 +1944,27 @@ bindSoundToggle();
   }
   function restore(){
     if(snap) store = snap;
+    if(snapYears) years = snapYears;
     if(snapYear) currentYear = snapYear;
-    try{
-      if(snapLS === LS_MISSING) localStorage.removeItem(STORE_KEY);
-      else localStorage.setItem(STORE_KEY, snapLS);
-    }catch(e){}
-    snap = null; snapYear = null; snapLS = null;
+    openPanels = snapPanels || {};
+    lsRestore(snapLS || {});
     renderYearSelect();
     renderAll();
+    /* re-open any contractor edit forms that were open, then restore all
+       typed-but-uncommitted field values (edit forms included) */
+    (snapEdits || []).forEach(function(cid){
+      var card = document.getElementById("ccard-" + cid);
+      if(!card) return;
+      var arr = yearData(currentYear).contractors;
+      for(var i = 0; i < arr.length; i++){
+        if(arr[i].id === cid){ openEdit(card, arr[i]); break; }
+      }
+    });
+    applyDomFieldState(snapFields);
+    var m = document.getElementById("dataMsg");
+    if(m && snapMsg){ m.textContent = snapMsg.t; m.className = snapMsg.c; }
+    snap = null; snapYear = null; snapYears = null; snapPanels = null;
+    snapEdits = null; snapFields = null; snapMsg = null; snapLS = null;
   }
   btn.addEventListener("click", function(){
     if(!sampleOn){
@@ -1672,6 +1982,16 @@ bindSoundToggle();
   });
   paintSample();
 })();
+
+/* Esc restores any active chart spotlight (reference spec 2026-09-21) */
+document.addEventListener("keydown", function(e){
+  if(e.key !== "Escape" && e.key !== "Esc") return;
+  var sels = document.querySelectorAll(".bar.sel,.donut-seg.sel,.yoybar.sel,.stackseg.sel,.frow.sel");
+  for(var i = 0; i < sels.length; i++){
+    /* SVG elements have no .click() — dispatch a real click event instead */
+    sels[i].dispatchEvent(new MouseEvent("click", {bubbles:true, cancelable:true}));
+  }
+});
 </script>
 </body>
 </html>

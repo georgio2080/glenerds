@@ -95,7 +95,7 @@
 
   --g-accent:        #818cf8;   /* indigo-400 — readable on dark */
   --g-accent-hover:  #a5b4fc;   /* indigo-300 */
-  --g-accent-ink:    #0b0e14;
+  --g-accent-ink:    #ffffff;
   --g-accent-soft:   rgba(129, 140, 248, 0.14);
   --g-accent-ring:   rgba(129, 140, 248, 0.35);
 
@@ -558,7 +558,7 @@ a:focus-visible {
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 /* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only */
-.g-round-btn {
+.round-btn {
   flex: 0 0 auto;
   width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
   display: inline-flex; align-items: center; justify-content: center;
@@ -569,24 +569,75 @@ a:focus-visible {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,.10);
   font-size: 1.1rem;
-  transition: border-color var(--g-ease), transform var(--g-ease);
 }
-.g-round-btn svg { width: 18px; height: 18px; flex: none; }
-.g-round-btn:hover { border-color: var(--g-accent); }
-.g-round-btn:active { transform: scale(0.97); }
-.g-round-btn:focus { outline: none; }
-.g-round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-.g-round-btn.sample-toggle[aria-pressed="true"] {
+.round-btn svg { width: 26px; height: 26px; flex: none; }
+/* Glen FINAL rev 4: all three icons fill their 44px button — flask 26px, theme+sound emoji 1.65rem */
+.round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
+.round-btn:hover { border-color: var(--g-accent); }
+.round-btn:focus { outline: none; }
+.round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+/* header spec 2026-09-21: sample ON = accent-soft tint + accent border/icon (NOT a solid
+   accent fill); sound button stays white in all states */
+.round-btn.sample-toggle[aria-pressed="true"] {
   color: var(--g-accent); border-color: var(--g-accent);
   background: var(--g-accent-soft);
 }
+/* Cost visuals: breakdown donut, ingredient cost bars, food-cost gauge */
+.viz-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; margin: 14px 0 4px; }
+.cost-chart { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.cost-donut-box { position: relative; width: min(230px, 68vw); flex: 0 0 auto; }
+.cost-donut { display: block; width: 100%; height: auto; }
+.cc-seg { transition: transform 300ms ease, opacity 300ms ease; cursor: pointer; }
+.cc-seg:focus { outline: none; }
+.cc-seg:focus-visible { filter: drop-shadow(0 0 6px #4f46e5); }
+.cc-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; text-align: center; padding: 0 52px; }
+.cc-center .v { font-size: 1.45rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.cc-center .l { color: var(--g-muted); font-size: 0.78rem; margin-top: 2px; }
+.cc-legend { display: grid; gap: 8px; align-content: center; }
+.cc-chip { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--g-border); border-radius: 999px; background: var(--g-surface); cursor: pointer; font-size: 0.85rem; color: inherit; font-family: inherit; }
+.cc-chip .dot { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+.cc-chip .amt { font-weight: 700; font-variant-numeric: tabular-nums; }
+.cc-chip .pct { color: var(--g-muted); }
+.cc-chip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.cc-chip.spot { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,.22); }
+.gauge-wrap { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.gauge-svg { width: min(210px, 60vw); height: auto; flex: 0 0 auto; }
+.gauge-svg text { font-family: inherit; }
+.gauge-cap { color: var(--g-muted); font-size: 0.82rem; max-width: 220px; }
+.drivers { display: grid; gap: 6px; margin: 8px 0 4px; }
+.driver-row.dim { opacity: .45; }
+.driver-row.spot { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,.22); }
+/* ---- unified chart detail panel (spotlight breakdown) ---- */
+.chart-detail{margin:10px 0 6px;border:1px solid var(--g-border);border-radius:12px;padding:14px 16px;background:var(--g-surface)}
+.cd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.cd-title{font-weight:800;font-size:1.02rem}
+.cd-sub{color:var(--g-muted);font-size:.85rem;margin-top:2px}
+.cd-x{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--g-border);background:var(--g-surface);color:var(--g-text);font-size:1.25rem;line-height:1;cursor:pointer}
+.cd-rows{display:grid;gap:6px;max-height:260px;overflow:auto}
+.cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--g-surface-2,#f1f5f9)}
+.cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.88rem}
+.cd-meta{color:var(--g-muted);font-size:.8rem;white-space:nowrap}
+.cd-val{font-weight:700;font-size:.88rem;white-space:nowrap;color:#4f46e5}
+.cd-foot{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.driver-row { display: grid; grid-template-columns: minmax(90px, 190px) 1fr auto; gap: 10px; align-items: center; padding: 7px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; background: none; color: inherit; font-family: inherit; font-size: inherit; text-align: left; width: 100%; }
+.driver-row:hover { border-color: var(--g-border); }
+.driver-row .d-name { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.driver-row .d-track { height: 12px; border-radius: 999px; background: var(--g-surface-2, #f1f5f9); overflow: hidden; }
+.driver-row .d-fill { height: 100%; border-radius: 999px; background: #4f46e5; width: 0; transition: width 300ms ease; }
+.driver-row .d-val { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+.driver-row:focus { outline: none; }
+.driver-row:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.line-row.flash { outline: 2px solid #4f46e5; outline-offset: 2px; border-radius: 8px; }
+.kpi[role="button"] { cursor: pointer; }
+.kpi[role="button"]:focus { outline: none; }
+.kpi[role="button"]:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
 @media (max-width: 480px) {
   .g-header-actions { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 }
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: var(--g-accent-ink, #ffffff);
+  color: #ffffff; /* header spec + legibility rule: white text on accent in BOTH modes */
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -594,7 +645,7 @@ a:focus-visible {
   box-shadow: 0 1px 2px rgba(0,0,0,.12);
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .g-cta-strip {
@@ -611,7 +662,7 @@ a:focus-visible {
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; transform: translateY(-0.04em); }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -860,9 +911,9 @@ h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catc
   </div>
   <div class="g-header-actions">
   <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-<button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data" onclick="setSample(!sampleOn);Sound.click();"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-<button class="g-round-btn" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" onclick="gToggleTheme();paintTheme();Sound.toggleTheme();Sound.click();"><svg class="g-icon" aria-hidden="true"><use href="#g-i-moon"/></svg></button>
-<button class="g-round-btn" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)" onclick="toggleSound(this)">&#128266;</button>
+<button class="round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data" onclick="setSample(!sampleOn);Sound.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+<button class="round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" onclick="gToggleTheme();paintTheme();Sound.toggleTheme();Sound.click();">🌙</button>
+<button class="round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)" onclick="toggleSound(this)">&#128266;</button>
 </div>
 </header>
 <p class="g-tagline">Recipe cost calculator for home bakers — know exactly what each batch costs and price it with confidence.</p>
@@ -996,6 +1047,37 @@ h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catc
     <div class="g-card" id="summary-card">
       <p class="g-title">Cost &amp; pricing summary</p>
       <div class="g-result-grid" id="summary-grid"></div>
+      <div class="viz-row">
+        <div class="cost-chart">
+          <div class="cost-donut-box">
+            <svg class="cost-donut" viewBox="0 0 248 248" role="img" aria-labelledby="cc-t">
+              <title id="cc-t">Batch cost breakdown donut chart</title>
+              <circle cx="124" cy="124" r="95" fill="none" stroke="var(--g-surface-2, #f1f5f9)" stroke-width="34"/>
+              <path id="cc-ing" class="cc-seg" d="" fill="none" stroke="#4f46e5" stroke-width="34"/>
+              <path id="cc-lab" class="cc-seg" d="" fill="none" stroke="#10b981" stroke-width="34"/>
+              <path id="cc-pac" class="cc-seg" d="" fill="none" stroke="#f59e0b" stroke-width="34"/>
+              <path id="cc-ovh" class="cc-seg" d="" fill="none" stroke="#8b5cf6" stroke-width="34"/>
+            </svg>
+            <div class="cc-center"><div class="v" id="cc-total">–</div><div class="l" id="cc-sub">batch cost</div></div>
+          </div>
+          <div class="cc-legend" id="cc-legend"></div>
+        </div>
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 300 185" role="img" aria-labelledby="fc-t">
+            <title id="fc-t">Food cost percent gauge, target at or under 35 percent</title>
+            <path d="M45 150 A105 105 0 0 1 255 150" fill="none" stroke="var(--g-border, #e2e8f0)" stroke-width="22" stroke-linecap="round"/>
+            <path id="fc-arc" d="" fill="none" stroke="#10b981" stroke-width="22" stroke-linecap="round"/>
+            <line id="fc-needle" x1="150" y1="150" x2="45" y2="150" stroke="var(--g-text, #0f172a)" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="150" cy="150" r="10" fill="var(--g-text, #0f172a)"/>
+            <text id="fc-num" x="150" y="110" text-anchor="middle" style="fill:var(--g-text, #0f172a);font-size:30px;font-weight:800">–</text>
+            <text x="150" y="142" text-anchor="middle" style="fill:var(--g-muted, #64748b);font-size:12px;letter-spacing:.08em">FOOD COST %</text>
+          </svg>
+          <div class="gauge-cap" id="fc-cap">Healthy food cost is ≤ 35%.</div>
+        </div>
+      </div>
+      <p class="g-title" style="margin-top:1rem">Top ingredient costs</p>
+      <div class="drivers" id="drivers"></div>
+      <div class="chart-detail" id="chartDetail" aria-live="polite" hidden></div>
       <div class="g-math" id="summary-math" style="margin-top:1rem"></div>
       <div class="g-btn-row no-print" style="margin-top:1rem">
         <button class="g-btn g-btn-secondary" onclick="window.print()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-download"/></svg> Print / save PDF</button>
@@ -1014,7 +1096,7 @@ h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catc
 </section>
 
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">→</span>
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 
 <footer class="g-footer">
@@ -1211,6 +1293,7 @@ function paintSoundBtn(btn) {
   btn.setAttribute('aria-pressed', on ? 'true' : 'false');
   btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
   btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
+  btn.setAttribute('data-sound', on ? 'on' : 'muted');
 }
 function toggleSound(btn) {
   Sound.toggle();
@@ -1223,9 +1306,10 @@ function paintTheme() {
   var t = document.documentElement.getAttribute('data-theme') || 'light', dark = t === 'dark';
   var b = document.getElementById('themeToggle'); if (!b) return;
   var l = dark ? 'Switch to light mode' : 'Switch to dark mode';
-  b.innerHTML = '<svg class="g-icon" aria-hidden="true"><use href="#' + (dark ? 'g-i-sun' : 'g-i-moon') + '"/></svg>';
+  b.textContent = dark ? '\u2600\uFE0F' : '\uD83C\uDF19'; /* header spec: emoji shows the mode you GET */
   b.setAttribute('aria-pressed', dark ? 'true' : 'false');
   b.setAttribute('aria-label', l); b.title = l;
+  b.setAttribute('data-mode', dark ? 'dark' : 'light');
 }
 
 /* ---------- ingredient costing ---------- */
@@ -1492,13 +1576,307 @@ function recipeTotals(r) {
            profitBatch: (price - perUnit) * y, approx: approx, missing: missing,
            errGpc: errGpc, errGpe: errGpe, errConv: errConv };
 }
+/* ---------- cost visuals: breakdown donut, ingredient bars, food-cost gauge ---------- */
+var CC_R = 95, CC_CX = 124, CC_CY = 124;
+var ccSel = null; /* 'ing' | 'lab' | 'pac' | 'ovh' | null */
+var ccLast = null; /* last recipeTotals, for spotlight repaints */
+var chartSpotKind = null; /* 'cost' | 'driver' | null — which visual owns #chartDetail */
+var driverSpotIdx = null; /* recipe line index spotlighted via the driver bars, or null */
+var CC_PARTS = [
+  ['ing', 'Ingredients', '#4f46e5'],
+  ['lab', 'Labor', '#10b981'],
+  ['pac', 'Packaging', '#f59e0b'],
+  ['ovh', 'Overhead', '#8b5cf6']
+];
+function ccPolar(deg) {
+  var rad = deg * Math.PI / 180;
+  return [CC_CX + CC_R * Math.cos(rad), CC_CY + CC_R * Math.sin(rad)];
+}
+function ccSegPath(frac, startDeg, gapDeg) {
+  if (!(frac > 0)) return '';
+  var a0 = startDeg + gapDeg / 2, a1 = startDeg + frac * 360 - gapDeg / 2;
+  if (frac >= 0.9999) { /* full ring: two arcs */
+    var p1 = ccPolar(-90), p2 = ccPolar(90);
+    return 'M ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) +
+      ' A ' + CC_R + ' ' + CC_R + ' 0 1 1 ' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2) +
+      ' A ' + CC_R + ' ' + CC_R + ' 0 1 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
+  }
+  var s = ccPolar(a0), e = ccPolar(a1);
+  return 'M ' + s[0].toFixed(2) + ' ' + s[1].toFixed(2) +
+    ' A ' + CC_R + ' ' + CC_R + ' 0 ' + ((a1 - a0) > 180 ? 1 : 0) + ' 1 ' +
+    e[0].toFixed(2) + ' ' + e[1].toFixed(2);
+}
+function ccFlip(key) {
+  ccSel = (ccSel === key) ? null : key;
+  chartSpotKind = ccSel ? 'cost' : (driverSpotIdx !== null ? 'driver' : null);
+  if (ccLast) paintCostChart(ccLast);
+  renderChartDetail();
+  Sound.select();
+}
+/* Real breakdown behind the spotlighted cost slice or driver bar: every line behind
+   the number. Activating again (or the panel's close button) releases to totals. */
+function renderChartDetail() {
+  var box = document.getElementById('chartDetail');
+  if (!box) return;
+  var kind = chartSpotKind;
+  if (kind === 'cost' && !ccSel) kind = driverSpotIdx !== null ? 'driver' : null;
+  if (kind === 'driver' && driverSpotIdx === null) kind = ccSel ? 'cost' : null;
+  if (!kind) { box.hidden = true; box.innerHTML = ''; return; }
+  var t = ccLast, r = cur();
+  if (!t || !(t.total > 0) || !r) { box.hidden = true; box.innerHTML = ''; return; }
+  var title = '', sub = '', rows = [], foot = '';
+  if (kind === 'cost') {
+    var ci = CC_PARTS.filter(function (p) { return p[0] === ccSel; })[0];
+    var v = { ing: t.ingTotal, lab: t.labor, pac: t.pack, ovh: t.overhead }[ccSel];
+    title = ci[1] + ' — breakdown';
+    sub = fmtMoney(v) + ' · ' + (v / t.total * 100).toFixed(1) + '% of ' + fmtMoney(t.total) + ' batch';
+    if (ccSel === 'ing') {
+      rows = r.lines.map(function (ln) {
+        var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+        var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+        return { name: ing ? ing.name : '(missing ingredient)',
+          meta: num(ln.qty) + ' ' + (ln.unit || '') + ' · ' + (t.ingTotal > 0 ? (lc.cost / t.ingTotal * 100).toFixed(1) : '0') + '% of ingredients',
+          val: fmtMoney(lc.cost), cost: lc.cost };
+      }).filter(function (x) { return x.cost > 0; })
+        .sort(function (a, b) { return b.cost - a.cost; })
+        .map(function (x) { return { name: x.name, meta: x.meta, val: x.val }; });
+    } else if (ccSel === 'lab') {
+      rows = [{ name: num(r.laborHours) + ' hrs × ' + fmtMoney(num(r.laborRate)) + '/hr', meta: 'labor', val: fmtMoney(t.labor) }];
+      if (num(r.yieldQty) > 0) rows.push({ name: 'Per ' + String(r.yieldUnit || 'unit'), meta: 'labor share', val: fmtMoney(t.labor / num(r.yieldQty)) });
+    } else if (ccSel === 'pac') {
+      rows = [{ name: fmtMoney(num(r.packagingPerUnit)) + ' × ' + num(r.yieldQty) + ' ' + String(r.yieldUnit || 'units'), meta: 'packaging', val: fmtMoney(t.pack) }];
+    } else {
+      var sub2 = t.ingTotal + t.labor + t.pack;
+      rows = [{ name: num(r.overheadPct) + '% of ' + fmtMoney(sub2), meta: 'ingredients + labor + packaging', val: fmtMoney(t.overhead) }];
+    }
+  } else {
+    var ln = r.lines[driverSpotIdx];
+    var ing = ln ? state.ingredients.find(function (i) { return i.id === ln.ingId; }) : null;
+    if (!ln || !ing) { box.hidden = true; box.innerHTML = ''; return; }
+    var lc = lineCost(ing, num(ln.qty), ln.unit);
+    title = ing.name + ' — cost detail';
+    sub = fmtMoney(lc.cost) + ' · ' + (t.ingTotal > 0 ? (lc.cost / t.ingTotal * 100).toFixed(1) : '0') + '% of ingredient costs';
+    rows = [
+      { name: 'Quantity used', meta: 'recipe line', val: num(ln.qty) + ' ' + (ln.unit || '') },
+      { name: 'Line cost', meta: 'this recipe', val: fmtMoney(lc.cost) },
+      { name: 'Share of ingredients', meta: fmtMoney(t.ingTotal) + ' total', val: (t.ingTotal > 0 ? (lc.cost / t.ingTotal * 100).toFixed(1) : '0') + '%' }
+    ];
+    foot = '<div class="cd-foot"><button type="button" class="g-btn g-btn-secondary" id="chartDetailFind">Find in recipe →</button></div>';
+  }
+  var html = '<div class="cd-head"><div><div class="cd-title">' + esc(title) + '</div>' +
+    '<div class="cd-sub">' + esc(sub) + '</div></div>' +
+    '<button type="button" class="cd-x" id="chartDetailX" aria-label="Clear selection and show totals">×</button></div>';
+  if (rows.length) {
+    html += '<div class="cd-rows">' + rows.map(function (x) {
+      return '<div class="cd-row"><span class="cd-name">' + esc(x.name) + '</span>' +
+        '<span class="cd-meta">' + esc(x.meta) + '</span>' +
+        '<span class="cd-val">' + esc(x.val) + '</span></div>';
+    }).join('') + '</div>';
+  } else html += '<p class="empty">No lines behind this number.</p>';
+  box.innerHTML = html + foot; box.hidden = false;
+  var x = document.getElementById('chartDetailX');
+  if (x) x.addEventListener('click', function () {
+    if (kind === 'cost' && ccSel) ccFlip(ccSel);
+    else if (driverSpotIdx !== null) driverSpot(driverSpotIdx);
+  });
+  var fb = document.getElementById('chartDetailFind');
+  if (fb) fb.addEventListener('click', function () { driverFind(driverSpotIdx); });
+}
+function paintCostChart(t) {
+  var vals = { ing: t.ingTotal, lab: t.labor, pac: t.pack, ovh: t.overhead };
+  var total = t.total, ok = total > 0;
+  if (ccSel && !(vals[ccSel] > 0)) ccSel = null;
+  var off = -90, gapDeg = 360 * 0.012;
+  CC_PARTS.forEach(function (p) {
+    var el = document.getElementById('cc-' + p[0]);
+    if (!el) return;
+    var frac = ok ? vals[p[0]] / total : 0;
+    el.setAttribute('d', ccSegPath(frac, off, gapDeg));
+    var mid = off + frac * 180;
+    if (ccSel === p[0] && frac > 0) {
+      var rad = mid * Math.PI / 180;
+      el.style.transform = 'translate(' + (Math.cos(rad) * 10).toFixed(1) + 'px,' + (Math.sin(rad) * 10).toFixed(1) + 'px)';
+      el.style.opacity = '1';
+    } else {
+      el.style.transform = '';
+      el.style.opacity = ccSel ? '0.4' : '1';
+    }
+    off += frac * 360;
+  });
+  var leg = document.getElementById('cc-legend');
+  leg.innerHTML = '';
+  CC_PARTS.forEach(function (p) {
+    var v = vals[p[0]], pct = ok ? v / total * 100 : 0;
+    var chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'cc-chip' + (ccSel === p[0] ? ' spot' : '');
+    chip.setAttribute('aria-pressed', ccSel === p[0] ? 'true' : 'false');
+    chip.setAttribute('aria-label', p[1] + ' ' + fmtMoney(v) + ' — activate to spotlight');
+    chip.innerHTML = '<span class="dot" style="background:' + p[2] + '"></span>' +
+      '<span>' + esc(p[1]) + '</span> <span class="amt">' + fmtMoney(v) + '</span>' +
+      '<span class="pct">' + (ok ? pct.toFixed(1) + '%' : '') + '</span>';
+    (function (key, hasVal) {
+      chip.addEventListener('click', function () { if (hasVal) ccFlip(key); });
+    })(p[0], ok && v > 0);
+    leg.appendChild(chip);
+  });
+  var tot = document.getElementById('cc-total'), sub = document.getElementById('cc-sub');
+  if (ok && ccSel) {
+    var ci = CC_PARTS.filter(function (p) { return p[0] === ccSel; })[0];
+    tot.textContent = fmtMoney(vals[ccSel]);
+    sub.textContent = ci[1] + ' · ' + (vals[ccSel] / total * 100).toFixed(1) + '% of batch';
+  } else {
+    tot.textContent = ok ? fmtMoney(total) : '–';
+    sub.textContent = ok ? 'batch cost' : 'add ingredient lines';
+  }
+}
+function wireCostChart() {
+  CC_PARTS.forEach(function (p) {
+    var el = document.getElementById('cc-' + p[0]);
+    if (!el) return;
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', p[1] + ' slice — activate to spotlight');
+    (function (key) {
+      function go() {
+        if (!ccLast || !(ccLast.total > 0)) return;
+        var v = { ing: ccLast.ingTotal, lab: ccLast.labor, pac: ccLast.pack, ovh: ccLast.overhead }[key];
+        if (v > 0) ccFlip(key);
+      }
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+      });
+    })(p[0]);
+  });
+}
+/* top ingredient cost bars — click a bar to find that line in the recipe */
+function paintDrivers(r, t) {
+  var host = document.getElementById('drivers');
+  host.innerHTML = '';
+  if (!r || !r.lines.length) return;
+  var rows = [];
+  r.lines.forEach(function (ln, idx) {
+    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+    var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+    if (lc.cost > 0) rows.push({ idx: idx, name: ing ? ing.name : '(missing ingredient)', cost: lc.cost });
+  });
+  rows.sort(function (a, b) { return b.cost - a.cost; });
+  rows = rows.slice(0, 6);
+  if (!rows.length) return;
+  var max = rows[0].cost;
+  rows.forEach(function (dr) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'driver-row';
+    b.setAttribute('data-idx', dr.idx);
+    b.setAttribute('aria-label', dr.name + ' costs ' + fmtMoney(dr.cost) + ' — activate to spotlight');
+    b.innerHTML = '<span class="d-name">' + esc(dr.name) + '</span>' +
+      '<span class="d-track"><span class="d-fill" style="display:block;width:' + (dr.cost / max * 100).toFixed(1) + '%"></span></span>' +
+      '<span class="d-val">' + fmtMoney(dr.cost) + '</span>';
+    (function (idx) { b.addEventListener('click', function () { driverSpot(idx); }); })(dr.idx);
+    host.appendChild(b);
+  });
+  /* spotlight survives re-renders; stale index clears */
+  if (driverSpotIdx !== null && !(r.lines[driverSpotIdx])) {
+    driverSpotIdx = null; chartSpotKind = ccSel ? 'cost' : null;
+  }
+  paintDriverSpot();
+  renderChartDetail();
+}
+/* top ingredient bars use the unified spotlight: dim the rest, show the cost detail
+   (the find-in-recipe jump now lives on a button inside the detail panel) */
+function driverSpot(idx) {
+  driverSpotIdx = (driverSpotIdx === idx) ? null : idx;
+  chartSpotKind = driverSpotIdx !== null ? 'driver' : (ccSel ? 'cost' : null);
+  paintDriverSpot();
+  renderChartDetail();
+  if (driverSpotIdx !== null) Sound.select(); else Sound.click();
+}
+function paintDriverSpot() {
+  Array.prototype.forEach.call(document.querySelectorAll('#drivers .driver-row'), function (b) {
+    var on = driverSpotIdx !== null && parseInt(b.getAttribute('data-idx'), 10) === driverSpotIdx;
+    b.classList.toggle('spot', on);
+    b.classList.toggle('dim', driverSpotIdx !== null && !on);
+  });
+}
+/* Esc clears any chart spotlight (cost donut slice / chip / driver bar) */
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+  if (!ccSel && driverSpotIdx === null) return;
+  ccSel = null; driverSpotIdx = null; chartSpotKind = null;
+  if (ccLast) paintCostChart(ccLast);
+  paintDriverSpot(); renderChartDetail(); Sound.click();
+});
+function driverFind(idx) {
+  var rows = document.getElementById('lines').children;
+  Array.prototype.forEach.call(rows, function (x) { x.classList.remove('flash'); });
+  var row = rows[idx];
+  if (!row) return;
+  row.classList.add('flash');
+  try { row.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+  Sound.select();
+  setTimeout(function () { row.classList.remove('flash'); }, 1600);
+}
+/* food-cost gauge: needle over 0–60%, healthy at or under 35% */
+function paintFoodGauge(t, pct, ok) {
+  var arc = document.getElementById('fc-arc');
+  if (!arc) return;
+  var f = ok ? pct / 60 : 0;
+  if (f > 1) f = 1;
+  var th = (180 - f * 180) * Math.PI / 180;
+  arc.setAttribute('d', ok ? 'M45 150 A105 105 0 0 1 ' + (150 + 105 * Math.cos(th)).toFixed(1) + ' ' + (150 - 105 * Math.sin(th)).toFixed(1) : '');
+  arc.setAttribute('stroke', !ok ? '#94a3b8' : (pct <= 35 ? '#10b981' : (pct <= 45 ? '#f59e0b' : '#ef4444')));
+  var nd = document.getElementById('fc-needle');
+  nd.setAttribute('x2', (150 + 78 * Math.cos(th)).toFixed(1));
+  nd.setAttribute('y2', (150 - 78 * Math.sin(th)).toFixed(1));
+  document.getElementById('fc-num').textContent = ok ? pct.toFixed(1) + '%' : '–';
+  document.getElementById('fc-cap').textContent = !ok ? 'Set a yield and target margin to price this recipe.' :
+    (pct <= 35 ? 'Healthy — at or under the 35% target.' :
+    (pct <= 45 ? 'High — consider raising the price or trimming costs.' : 'Too high — this recipe loses margin fast.'));
+}
+/* KPI cards copy their value on click */
+function copyKpiText(txt, el) {
+  function flash() {
+    var v = el.querySelector('.v'); if (!v) return;
+    var orig = v.textContent;
+    v.textContent = 'Copied';
+    Sound.select();
+    setTimeout(function () { v.textContent = orig; }, 900);
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(flash, flash);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      ta.remove(); flash();
+    }
+  } catch (e) { flash(); }
+}
+function wireKpis() {
+  var grid = document.getElementById('summary-grid');
+  if (!grid) return;
+  function act(target) {
+    var k = target.closest ? target.closest('.kpi') : null;
+    if (!k) return;
+    var v = k.querySelector('.v');
+    if (v) copyKpiText(v.textContent.trim(), k);
+  }
+  grid.addEventListener('click', function (e) { act(e.target); });
+  grid.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(e.target); }
+  });
+}
 function renderSummary() {
   var r = cur(); if (!r) return;
   var t = recipeTotals(r);
   var y = num(r.yieldQty);
   var foodPct = (t.price > 0 && y > 0) ? (t.ingTotal / (t.price * y) * 100) : 0;
   function kpi(label, val, cls) {
-    return '<div class="kpi"><div class="k">' + label + '</div><div class="v' + (cls ? ' ' + cls : '') + '">' + val + '</div></div>';
+    var l = esc(label);
+    return '<div class="kpi" tabindex="0" role="button" title="Click to copy" aria-label="Copy ' + l + ': ' + esc(val) + '"><div class="k">' + l + '</div><div class="v' + (cls ? ' ' + cls : '') + '">' + val + '</div></div>';
   }
   /* singular-ish unit word for "Cost per cookie" style labels ("cookies" -> "cookie") */
   function perUnitWord() {
@@ -1508,11 +1886,15 @@ function renderSummary() {
   var priceCls = t.price > 0 ? 'good' : '';
   document.getElementById('summary-grid').innerHTML =
     kpi('Total batch cost', fmtMoney(t.total)) +
-    kpi('Cost per ' + esc(perUnitWord()), fmtMoney(t.perUnit)) +
+    kpi('Cost per ' + perUnitWord(), fmtMoney(t.perUnit)) +
     kpi('Suggested price', t.price > 0 ? fmtMoney(t.price) : '—', priceCls) +
-    kpi('Profit per ' + esc(perUnitWord()), t.price > 0 ? fmtMoney(t.profitUnit) : '—') +
+    kpi('Profit per ' + perUnitWord(), t.price > 0 ? fmtMoney(t.profitUnit) : '—') +
     kpi('Profit per batch', t.price > 0 ? fmtMoney(t.profitBatch) : '—') +
     kpi('Food cost %', t.price > 0 ? foodPct.toFixed(1) + '%' : '—', foodPct > 35 ? 'warn' : '');
+  ccLast = t;
+  paintCostChart(t);
+  paintDrivers(r, t);
+  paintFoodGauge(t, foodPct, t.price > 0 && y > 0);
   var math =
     'Ingredients ' + fmtMoney(t.ingTotal) + ' + labor ' + fmtMoney(t.labor) +
     ' + packaging ' + fmtMoney(t.pack) + ' + overhead ' + fmtMoney(t.overhead) +
@@ -1579,6 +1961,7 @@ document.addEventListener('DOMContentLoaded', function () {
   currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
   renderRecipe();
   paintTheme(); paintSample();
+  wireCostChart(); wireKpis();
   var sb = document.getElementById('soundToggle');
   if (sb) paintSoundBtn(sb);
 });
