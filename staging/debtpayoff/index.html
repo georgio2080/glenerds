@@ -1009,7 +1009,7 @@ function chartMonthFromX(clientX){
   var r=cv.getBoundingClientRect(), x=clientX-r.left, maxM=0;
   ["snowball","avalanche","custom"].forEach(function(s){ if(!res[s].never) maxM=Math.max(maxM,res[s].months); });
   if(maxM<=0) return null;
-  var padL=64,padR=12, W=cv.clientWidth||900, iw=W-padL-padR;
+  var padL=72,padR=12, W=cv.clientWidth||900, iw=W-padL-padR;
   return Math.max(0,Math.min(maxM,Math.round((x-padL)/iw*maxM)));
 }
 function toggleChartSpot(m){ window._chartSpot=(window._chartSpot===m)?null:m; Sound.select(); paintChartCap(); drawChart(); }
