@@ -1,20 +1,33 @@
-# HenTrack — Backyard Chicken Flock & Egg Tracker
+# W9Track — Contractor W-9 & 1099 Tracker
 
-Daily egg counts, feed costs, flock records & egg sales for backyard chicken keepers. 100% offline single-file web app.
+Tax season doesn't have to be a scramble. Track every contractor, know exactly
+whose W-9 you have, log payments through the year, and get flagged the moment
+someone crosses the $600 1099 threshold.
+
+## What's inside
+- `index.html` — the complete app. Single file, works offline.
+  Open it in any modern browser (double-click, or File → Open). No install,
+  no account, no internet needed.
+- `gallery/` — 8 screenshots showing the app in action.
 
 ## Features
-- **Dashboard** — laying-hen count, 30-day egg totals, lay rate %, cost per dozen (trailing 30 days), spend/revenue stats, 14-day egg bar chart
-- **Egg Log** — one entry per day (re-logging updates), damaged-egg count, notes (double yolks, first eggs…)
-- **Flock** — hen names, breeds, hatch dates, status (laying / pullet / molting / broody / retired / lost); lay rate only counts laying hens
-- **Feed & Costs** — categorized expenses (feed, bedding, supplements, vet, equipment, chicks), monthly/all-time totals
-- **Egg Sales** — dozens sold + price per dozen, revenue totals, all-time profit vs spend
-- Dark mode (toggle, system preference on first load, persisted), localStorage persistence, JSON export/import, print summary, mobile responsive, zero external requests
+- Tax-year organization (2025, 2026, 2027, + custom years)
+- Contractor records: name, business, contact, entity type, notes
+- W-9 tracking: on file yes/no + date received
+- Payment log per contractor with year-to-date totals
+- Automatic flags: red at $600+ without a W-9 ("Needs 1099 + collect W-9"),
+  amber at $400+ ("Approaching $600 threshold")
+- Corporations marked generally exempt from 1099 reporting
+- Plain-English $600 rule explainer (not tax advice — confirm with your accountant)
+- JSON backup export/import, demo data to explore
+- Dark mode (follows your system, remembers your choice)
+- Privacy by design: W9Track never stores SSN or EIN numbers — only whether
+  a W-9 is on file and the date received. Everything stays in your browser.
 
-## Files
-- `index.html` — the app (open directly, works from `file://`)
-- `gallery/` — screenshots (light/dark/mobile)
-- `gumroad-listing.md` — SEO-first listing draft
-- `hentrack-1.0.0.zip` — distributable bundle
+## Support
+Questions or issues: reply to your Gumroad receipt email.
 
-## QA
-Playwright/Chromium checks + Gemini API code review (2 rounds), zero console errors.
+---
+
+If you received this product for free, you may share the unmodified ZIP with
+others. © Glenerds — https://glenerds.gumroad.com
