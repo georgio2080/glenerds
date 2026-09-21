@@ -14,7 +14,16 @@
 <script>
 (function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
 </script>
-<link rel="stylesheet" href="../../style.css"><script type="application/ld+json">
+<link rel="stylesheet" href="../../style.css">
+<style>
+/* savings visual: progress bar + cumulative chart */
+.sv-vis{margin:14px 0 4px}
+.sv-barlabel{font-size:.88rem;font-weight:600;margin-bottom:6px}
+.sv-bar{height:14px;border-radius:999px;background:var(--border);overflow:hidden}
+.sv-barfill{height:100%;border-radius:999px;background:var(--accent)}
+.sv-chart{width:100%;height:auto;display:block;margin-top:12px;color:inherit}
+</style>
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -88,6 +97,7 @@ week into daily transfers. Offline, no account; your savings data never leaves y
 <label>Increase each week by: $<input type="number" id="sv-weekly" min="0.5" step="0.5" style="width:5rem" aria-label="Weekly increase"></label>
 <button id="sv-reset" class="plain">Reset</button>
 <p><strong id="sv-total"></strong><br><span id="sv-progress" class="small"></span></p>
+<div id="sv-vis" class="sv-vis" role="img" aria-label="Savings progress chart"></div>
 <table><thead><tr><th>Week</th><th>Save</th><th>Running total</th><th>Done</th></tr></thead>
 <tbody id="sv-rows"></tbody></table>
 <p class="small">Check a week when the money is actually saved. Everything is stored in your browser only.</p>
@@ -114,6 +124,37 @@ week into daily transfers. Offline, no account; your savings data never leaves y
     var saved=0;for(var j=1;j<=52;j++){if(data.done[j])saved+=s+(j-1)*w}
     document.getElementById('sv-total').textContent='Challenge total: $'+total.toFixed(2);
     document.getElementById('sv-progress').textContent='Saved so far: $'+saved.toFixed(2)+' ('+doneCount+'/52 weeks)';
+    /* cumulative savings chart + progress bar (visual representation) */
+    var svis=document.getElementById('sv-vis');
+    var spct=total>0?(saved/total*100):0;
+    var W=560,H=220,padL=52,padR=10,padT=10,padB=24;
+    var iw=W-padL-padR,ih=H-padT-padB;
+    function sX(i){return padL+(i-1)/51*iw;}
+    function sY(v){return padT+ih-(total>0?v/total:0)*ih;}
+    var g='';
+    [0,0.25,0.5,0.75,1].forEach(function(f){
+      var y=(padT+ih*(1-f)).toFixed(1);
+      g+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="currentColor" stroke-opacity="0.15"/>'
+        +'<text x="'+(padL-6)+'" y="'+(+y+4)+'" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.6">$'+(total*f).toFixed(0)+'</text>';
+    });
+    var area='M'+sX(1).toFixed(1)+','+sY(0).toFixed(1),line=area,dots='';
+    for(var ci=1;ci<=52;ci++){
+      var rt=0;for(var ck=1;ck<=ci;ck++)rt+=s+(ck-1)*w;
+      var px=sX(ci).toFixed(1),py=sY(rt).toFixed(1);
+      area+=' L'+px+','+py;line+=' L'+px+','+py;
+      if(data.done[ci])dots+='<circle cx="'+px+'" cy="'+py+'" r="3.4" fill="var(--accent)"/>';
+    }
+    area+=' L'+sX(52).toFixed(1)+','+sY(0).toFixed(1)+' Z';
+    svis.innerHTML='<div class="sv-barlabel">Saved $'+saved.toFixed(2)+' of $'+total.toFixed(2)+' ('+spct.toFixed(0)+'%)</div>'
+      +'<div class="sv-bar" role="progressbar" aria-valuenow="'+spct.toFixed(0)+'" aria-valuemin="0" aria-valuemax="100" aria-label="Savings progress">'
+      +'<div class="sv-barfill" style="width:'+spct.toFixed(1)+'%"></div></div>'
+      +'<svg class="sv-chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Cumulative savings: $'+saved.toFixed(2)+' saved of $'+total.toFixed(2)+' total, '+doneCount+' of 52 weeks done">'
+      +g+'<path d="'+area+'" fill="var(--accent)" fill-opacity="0.22"/>'
+      +'<path d="'+line+'" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>'
+      +dots
+      +'<text x="'+sX(1)+'" y="'+(H-8)+'" text-anchor="start" font-size="10" fill="currentColor" fill-opacity="0.6">Week 1</text>'
+      +'<text x="'+sX(52)+'" y="'+(H-8)+'" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.6">Week 52</text>'
+      +'</svg>';
     var boxes=document.querySelectorAll('#sv-rows input[type=checkbox]');
     boxes.forEach(function(b){b.onchange=function(){var wk=parseInt(b.getAttribute('data-w'),10);data.done[wk]=b.checked;save(data);render()}});
     save(data);
