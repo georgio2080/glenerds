@@ -584,18 +584,22 @@ function renderCatDonut(){
   var segs="",leg="",start=0;
   entries.forEach(function(c){
     var pct=t[c]/total*100,color=CAT_COLORS[c];
-    segs+='<circle cx="60" cy="60" r="45" fill="none" stroke="'+color+'" stroke-width="24"'
+    segs+='<circle cx="60" cy="60" r="48" fill="none" stroke="'+color+'" stroke-width="20"'
       +' pathLength="100" stroke-dasharray="'+pct.toFixed(2)+' '+(100-pct).toFixed(2)+'"'
       +' stroke-dashoffset="'+(-start).toFixed(2)+'"><title>'+esc(c)+": "+money(t[c])+'</title></circle>';
     start+=pct;
     leg+='<div class="legend-row"><span class="legend-swatch" style="background:'+color+'"></span>'
       +'<span class="legend-name">'+esc(c)+'</span>'
       +'<span class="legend-val">'+money(t[c])+'</span></div>';});
+  var totalLbl=money(total);
+  /* bounded center-label box: hole diameter is 76 units (r=48, sw=20); keep
+     labels inside a 64-unit box so no total can ever breach the ring */
+  var box=totalLbl.length>9?' textLength="64" lengthAdjust="spacingAndGlyphs"':'';
   $("catDonut").innerHTML='<svg class="donut" viewBox="0 0 120 120" role="img" aria-label="Value by category">'
     +'<g transform="rotate(-90 60 60)">'
-    +'<circle cx="60" cy="60" r="45" fill="none" stroke="var(--bar)" stroke-width="24"/>'
+    +'<circle cx="60" cy="60" r="48" fill="none" stroke="var(--bar)" stroke-width="20"/>'
     +segs+'</g>'
-    +'<text x="60" y="58" text-anchor="middle" textLength="62" lengthAdjust="spacingAndGlyphs" style="fill:var(--text);font-size:12px;font-weight:700">'+money(total)+'</text>'
+    +'<text x="60" y="58" text-anchor="middle"'+box+' style="fill:var(--text);font-size:12px;font-weight:700">'+totalLbl+'</text>'
     +'<text x="60" y="74" text-anchor="middle" style="fill:var(--muted);font-size:10px">total value</text></svg>';
   $("catLegend").innerHTML=leg;
 }
