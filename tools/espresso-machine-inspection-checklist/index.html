@@ -14,6 +14,18 @@
 <script>
 (function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
 </script><link rel="stylesheet" href="../../style.css">
+<style>
+/* inspection visual: per-category pass/flag/fail stacked bars */
+.es-vis{display:grid;gap:8px;margin:14px 0 4px}
+.es-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.es-name{font-weight:600}
+.es-count{font-variant-numeric:tabular-nums;font-size:.85rem;white-space:nowrap}
+.es-track{grid-column:1/-1;display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--border)}
+.es-seg-p{background:var(--accent)}
+.es-seg-f{background:#f59e0b}
+.es-seg-x{background:#c0392b}
+html[data-theme="dark"] .es-seg-x{background:#e57373}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -86,6 +98,7 @@ seller's location, offline, on your phone. Free, no account.</p>
 
 <div id="es-list"></div>
 <p><strong id="es-tally"></strong><br><span id="es-cost" class="small"></span></p>
+<div id="es-vis" class="es-vis" role="img" aria-label="Inspection status by category"></div>
 <label>Notes: <input type="text" id="es-notes" style="width:70%" placeholder="Seller claims, serial number, asking price..." aria-label="Inspection notes"></label><br>
 <button id="es-print">Print checklist</button>
 <button id="es-reset" class="plain">Reset</button>
@@ -156,6 +169,32 @@ seller's location, offline, on your phone. Free, no account.</p>
       'Checked '+done+'/'+ITEMS.length+' — '+flags+' flagged, '+fails+' failed';
     document.getElementById('es-cost').textContent=
       (flags+fails)>0?('Rough repair exposure: '+money(lo)+' – '+money(hi)+' (midpoints of flagged items)'):'No issues flagged yet.';
+    /* per-category pass/flag/fail stacked bars (visual representation) */
+    var evis=document.getElementById('es-vis');evis.innerHTML='';
+    var ecats={},eorder=[];
+    ITEMS.forEach(function(it,i){
+      var c=it[0];
+      if(!ecats[c]){ecats[c]={pass:0,flag:0,fail:0,tot:0};eorder.push(c);}
+      var st=data[i]||'';
+      if(st==='pass')ecats[c].pass++;else if(st==='flag')ecats[c].flag++;else if(st==='fail')ecats[c].fail++;
+      ecats[c].tot++;
+    });
+    var ebaria=[];
+    eorder.forEach(function(c){
+      var s=ecats[c],chk=s.pass+s.flag+s.fail;
+      ebaria.push(c+': '+chk+' of '+s.tot+' checked'+(s.flag?', '+s.flag+' flagged':'')+(s.fail?', '+s.fail+' failed':''));
+      var row=document.createElement('div');row.className='es-row';
+      var nm=document.createElement('div');nm.className='es-name';nm.textContent=c;
+      var ct=document.createElement('div');ct.className='es-count';ct.textContent=chk+'/'+s.tot+' checked';
+      var tr=document.createElement('div');tr.className='es-track';
+      [['es-seg-p',s.pass],['es-seg-f',s.flag],['es-seg-x',s.fail]].forEach(function(seg){
+        var d=document.createElement('div');d.className=seg[0];
+        d.style.width=(s.tot>0?(seg[1]/s.tot*100):0).toFixed(1)+'%';
+        tr.appendChild(d);
+      });
+      row.appendChild(nm);row.appendChild(ct);row.appendChild(tr);evis.appendChild(row);
+    });
+    evis.setAttribute('aria-label','Inspection status by category: '+ebaria.join('; '));
     document.getElementById('es-notes').value=data.notes||'';
   }
   document.getElementById('es-notes').addEventListener('input',function(e){data.notes=e.target.value;save(data);});
