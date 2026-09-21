@@ -14,7 +14,19 @@
 <script>
 (function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
 </script>
-<link rel="stylesheet" href="../../style.css"><script type="application/ld+json">
+<link rel="stylesheet" href="../../style.css">
+<style>
+/* net worth visual: assets vs debts bars (visual representation) */
+.nw-vis{display:grid;gap:8px;margin:14px 0 4px}
+.nw-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.nw-name{font-weight:600}
+.nw-val{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.nw-track{grid-column:1/-1;height:14px;border-radius:999px;background:var(--border);overflow:hidden}
+.nw-fill-a{height:100%;border-radius:999px;background:var(--accent)}
+.nw-fill-d{height:100%;border-radius:999px;background:#c0392b}
+html[data-theme="dark"] .nw-fill-d{background:#e57373}
+</style>
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -93,6 +105,7 @@ uploaded. Update it monthly and watch the number move.</p>
 <input type="number" id="nw-dvalue" placeholder="0.00" step="0.01" aria-label="Debt value">
 <button id="nw-add-debt">Add debt</button>
 <table><thead><tr><th>Debt</th><th>Balance</th><th></th></tr></thead><tbody id="nw-debts"></tbody></table>
+<div id="nw-vis" class="nw-vis" role="img" aria-label="Assets versus debts chart"></div>
 <p id="nw-result" style="font-size:1.15rem"></p>
 <button id="nw-export" class="plain">Export backup</button>
 <p class="small">Use round numbers or exact figures &mdash; whatever you are comfortable typing. It never leaves this device.</p>
@@ -125,6 +138,21 @@ uploaded. Update it monthly and watch the number move.</p>
     var aSum=rows(data.assets,'nw-assets');
     var dSum=rows(data.debts,'nw-debts');
     var nw=aSum-dSum;
+    /* assets-vs-debts bars (visual representation) */
+    var vis=document.getElementById('nw-vis');vis.innerHTML='';
+    vis.style.display=(aSum||dSum)?'':'none';
+    var mx=Math.max(aSum,dSum);
+    function nwBar(name,val,cls){
+      var row=document.createElement('div');row.className='nw-row';
+      var n=document.createElement('div');n.className='nw-name';n.textContent=name;
+      var v=document.createElement('div');v.className='nw-val';v.textContent=money(val);
+      var t=document.createElement('div');t.className='nw-track';
+      var f=document.createElement('div');f.className=cls;
+      f.style.width=(mx>0?(val/mx*100):0).toFixed(1)+'%';
+      t.appendChild(f);row.appendChild(n);row.appendChild(v);row.appendChild(t);vis.appendChild(row);
+    }
+    nwBar('Assets',aSum,'nw-fill-a');nwBar('Debts',dSum,'nw-fill-d');
+    vis.setAttribute('aria-label','Assets '+money(aSum)+', debts '+money(dSum)+', net worth '+money(nw));
     var el=document.getElementById('nw-result');
     el.innerHTML='Assets: '+money(aSum)+' &nbsp;|&nbsp; Debts: '+money(dSum)
       +'<br><strong>Net worth: '+money(nw)+'</strong>';
