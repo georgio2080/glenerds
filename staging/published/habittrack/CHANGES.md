@@ -1,5 +1,11 @@
 # HabitTrack — Changes
 
+## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
+- Standardized the header cluster: More Apps pill, icon-only dark-mode button (44x44px, moon/sun icon, aria-label + title, no text label), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
+- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `habittrack.sound`, wired into theme toggle, done/partial/rest taps, day-editor save, habit create/update/delete, detail toggle, and export/import.
+- Made the "Last 7 days" chart interactive: each day column is a keyboard-accessible button — activating it spotlights the day and shows a per-habit detail line (done/partial/rest day/missed per habit); activating again restores.
+- Heatmap cells now have a visible focus style (accent outline) matching their hover state, so keyboard users get the same affordance as mouse users.
+
 ## 2026-09-20 — Data-hardening + visual pass (verification round)
 - Fixed: malformed stored habits (weekdays as string, missing `created`, null entries)
   could throw on load and brick the habit list. Storage is now sanitized on load:

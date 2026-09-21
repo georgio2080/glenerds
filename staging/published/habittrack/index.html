@@ -170,22 +170,35 @@
 .g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
 .g-tagline { color: var(--g-muted); font-size: 0.92rem; font-weight: 400; margin: 6px 0 14px; max-width: 56ch; }
 
-/* Theme toggle */
+/* Theme toggle + sound toggle: icon-only 44px circular buttons */
 .g-theme-toggle {
   flex: 0 0 auto;
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
   background: var(--g-surface);
   border: 1px solid var(--g-border);
   color: var(--g-text-soft);
-  border-radius: var(--g-radius-pill);
-  padding: 8px 14px;
-  font-size: 0.88rem; font-weight: 600; font-family: var(--g-font);
+  border-radius: 999px;
   cursor: pointer;
   transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
-  white-space: nowrap;
 }
 .g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
 .g-theme-toggle:active { transform: scale(0.97); }
+#sound-toggle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  border-radius: 999px;
+  font-size: 1.05rem; line-height: 1;
+  cursor: pointer;
+  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
+}
+#sound-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
+#sound-toggle:active { transform: scale(0.97); }
+#sound-toggle:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
 
 /* ---------- 5. TABS (segmented control) ---------- */
 .g-tabs {
@@ -589,6 +602,14 @@ a:focus-visible {
 .cell.partial{opacity:.6}
 .cell.skip{background:transparent;border:1px dashed var(--g-muted)}
 .cell:hover{outline:2px solid var(--g-accent)}
+.cell:focus-visible{outline:2px solid var(--g-accent); outline-offset:1px}
+/* Week-chart day columns are interactive: click/Enter/Space spotlights the day */
+.weekchart .wcd{cursor:pointer; border-radius:8px; padding:2px}
+.weekchart .wcd:hover .wctrack{outline:2px solid var(--g-accent)}
+.weekchart .wcd:focus-visible{outline:2px solid var(--g-accent); outline-offset:2px}
+.weekchart .wcd.sel .wctrack{outline:2px solid var(--g-accent)}
+.wc-detail{margin-top:10px; font-size:.85rem; color:var(--g-muted)}
+.wc-detail strong{color:var(--g-text)}
 .legend{display:flex;gap:6px;align-items:center;font-size:.75rem;color:var(--g-muted);margin-top:8px;flex-wrap:wrap}
 .modal-back{position:fixed;inset:0;background:rgba(2,6,12,.5);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
 .modal{background:var(--g-surface);border:1px solid var(--g-border);border-radius:var(--g-radius-lg);padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--g-shadow-lg)}
@@ -890,8 +911,9 @@ document.documentElement.setAttribute('data-theme',t);})();
     <div class="g-header-actions">
   <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
 <button class="g-theme-toggle" id="themeBtn" aria-label="Toggle dark mode">
-      <svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon" id="themeUse"/></svg><span id="themeLabel">Dark</span>
+      <svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon" id="themeUse"/></svg>
     </button>
+    <button id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
 </div>
   </header>
   <h2 class="g-tagline">Free daily habit tracker with streaks. Works fully offline — your habits never leave your device.</h2>
@@ -1122,7 +1144,11 @@ function completionRate(h){
 function applyTheme(t){
   document.documentElement.setAttribute("data-theme", t);
   document.getElementById("themeUse").setAttribute("href", t === "dark" ? "#g-i-sun" : "#g-i-moon");
-  document.getElementById("themeLabel").textContent = t === "dark" ? "Light" : "Dark";
+  const btn = document.getElementById("themeBtn");
+  const label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
+  btn.setAttribute("aria-label", label);
+  btn.title = label;
+  btn.setAttribute("aria-pressed", t === "dark" ? "true" : "false");
   try{ localStorage.setItem(THEME_KEY, t); }catch(e){}
 }
 function initTheme(){
@@ -1132,6 +1158,58 @@ function initTheme(){
     t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
   }
   applyTheme(t);
+}
+/* ============ subtle sounds (Web Audio, no files, offline) ============ */
+const Sound = (() => {
+  const KEY = "habittrack.sound";
+  let on = true, ctx = null;
+  try{ if(localStorage.getItem(KEY) === "off") on = false; }catch(e){}
+  function ac(){
+    try{
+      if(!ctx){
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if(!AC) return null;
+        ctx = new AC();
+      }
+      if(ctx.state === "suspended") ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(freq, dur, type, vol, delay){
+    const c = ac(); if(!c) return;
+    try{
+      const t = c.currentTime + (delay || 0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type || "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.05);
+    }catch(e){}
+  }
+  return {
+    isOn: () => on,
+    toggle(){ on = !on; try{ localStorage.setItem(KEY, on ? "on" : "off"); }catch(e){} return on; },
+    click(){ if(on) tone(520, 0.06, "sine", 0.045); },
+    select(){ if(on){ tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
+    success(){ if(on){ tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
+    error(){ if(on) tone(170, 0.16, "sawtooth", 0.045); },
+    toggleTheme(){ if(on) tone(440, 0.06, "triangle", 0.05); }
+  };
+})();
+function bindSoundToggle(){
+  const btn = document.getElementById("sound-toggle");
+  if(!btn) return;
+  function paint(){
+    const on = Sound.isOn();
+    btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
+    btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+  }
+  btn.addEventListener("click", () => { Sound.toggle(); paint(); Sound.click(); });
+  paint();
 }
 /* ============ helpers ============ */
 function toast(msg){
@@ -1304,12 +1382,13 @@ function openDayEditor(hid, key){
       if(chosen === "skip") b.classList.add("skip-on");
     });
   });
-  document.getElementById("dayCancel").addEventListener("click", closeModal);
+  document.getElementById("dayCancel").addEventListener("click", () => { closeModal(); Sound.click(); });
   document.getElementById("daySave").addEventListener("click", () => {
     const n = document.getElementById("dayNote").value.trim().slice(0, 500);
     setEntry(hid, key, chosen, n);
     closeModal(); renderAll();
     toast("Saved");
+    Sound.success();
   });
 }
 
@@ -1351,15 +1430,15 @@ function openHabitEditor(existing){
     root.querySelectorAll("#hzIcons button").forEach(x => x.classList.remove("sel"));
     b.classList.add("sel"); icon = b.getAttribute("data-ic");
   }));
-  document.getElementById("hzCancel").addEventListener("click", closeModal);
+  document.getElementById("hzCancel").addEventListener("click", () => { closeModal(); Sound.click(); });
   document.getElementById("hzSave").addEventListener("click", () => {
     const name = document.getElementById("hzName").value.trim().slice(0, 60);
-    if(!name){ toast("Give the habit a name"); return; }
+    if(!name){ toast("Give the habit a name"); Sound.error(); return; }
     const type = root.querySelector('input[name="hztype"]:checked').value;
     let weekdays = [0,1,2,3,4,5,6];
     if(type === "weekly"){
       weekdays = Array.from(root.querySelectorAll("#hzDays input:checked")).map(x => Number(x.value));
-      if(weekdays.length === 0){ toast("Pick at least one day"); return; }
+      if(weekdays.length === 0){ toast("Pick at least one day"); Sound.error(); return; }
     }
     const allowPartial = document.getElementById("hzPartial").checked;
     if(existing){
@@ -1371,6 +1450,7 @@ function openHabitEditor(existing){
       toast("Habit created — good luck 🔥");
     }
     saveState(); closeModal(); renderAll();
+    Sound.success();
   });
 }
 
@@ -1391,27 +1471,29 @@ document.getElementById("habitList").addEventListener("click", e => {
     const tk = todayKey();
     const cur = entry(hid, tk);
     // tapping the active status again clears it (quick undo) — keep the note
-    if(cur && cur.status === act){ setEntry(hid, tk, null, cur.note || ""); }
-    else { const note = cur ? (cur.note || "") : ""; setEntry(hid, tk, act, note); }
+    if(cur && cur.status === act){ setEntry(hid, tk, null, cur.note || ""); Sound.click(); }
+    else { const note = cur ? (cur.note || "") : ""; setEntry(hid, tk, act, note); Sound.success(); }
     renderAll();
   }else if(act === "detail"){
     const box = document.getElementById("detail-" + hid);
     if(box.classList.contains("hidden")) renderDetail(hid);
     else box.classList.add("hidden");
+    Sound.click();
   }else if(act === "edit"){
-    openHabitEditor(h);
+    openHabitEditor(h); Sound.click();
   }else if(act === "del"){
     openModal(
       "<h2>Delete habit?</h2>" +
       '<p class="sub">“' + esc(h.name) + '” and all of its history will be removed from this device. This cannot be undone.</p>' +
       '<div class="g-btn-row"><button class="g-btn g-btn-danger" id="delYes">Delete</button><button class="g-btn g-btn-secondary" id="delNo">Keep it</button></div>'
     );
-    document.getElementById("delNo").addEventListener("click", closeModal);
+    document.getElementById("delNo").addEventListener("click", () => { closeModal(); Sound.click(); });
     document.getElementById("delYes").addEventListener("click", () => {
       state.habits = state.habits.filter(x => x.id !== hid);
       delete state.log[hid];
       saveState(); closeModal(); renderAll();
       toast("Habit deleted");
+      Sound.success();
     });
   }
 });
@@ -1500,9 +1582,10 @@ function importFile(file){
         d.habits.forEach(h => { keep[h.id] = true; });
         // full sanitize: repairs/drops bad dates, statuses, notes (same as loadState)
         const cleanLog = sanitizeLog(d.log, keep);
-        if(!window.confirm("Replace everything on this device with the backup (" + d.habits.length + " habits)?")) return;
+        if(!window.confirm("Replace everything on this device with the backup (" + d.habits.length + " habits)?")){ Sound.click(); return; }
         state = { habits: d.habits, log: cleanLog };
         saveState(); renderAll();
+        Sound.success();
         const skipParts = [];
         if(dropped) skipParts.push(dropped + " invalid");
         if(dupIds) skipParts.push(dupIds + " duplicate id");
@@ -1544,9 +1627,11 @@ function importFile(file){
         if(skipped) cskip.push(skipped + " unknown habit / bad date or status");
         if(ambiguous) cskip.push(ambiguous + " ambiguous duplicate-name");
         msg.innerHTML = '<p class="sub" style="color:var(--g-good)">✓ Merged ' + merged + " entries" + (cskip.length ? " (" + cskip.join("; ") + " skipped)" : "") + ".</p>";
+        Sound.success();
       }
     }catch(err){
       msg.innerHTML = '<p class="sub" style="color:var(--g-bad)">Import failed: ' + esc(err.message) + ". Nothing was changed.</p>";
+      Sound.error();
     }
   };
   reader.onerror = () => {
@@ -1558,30 +1643,83 @@ function importFile(file){
 function renderWeekChart(){
   const el = document.getElementById("weekChart");
   if(!el) return;
+  el.innerHTML = "";
   const now = new Date(), WD = ["S","M","T","W","T","F","S"];
-  let total = 0, bars = "";
+  let total = 0;
+  const head = document.createElement("div"); head.className = "wct";
+  const hb = document.createElement("b"); hb.textContent = "Last 7 days";
+  const hs = document.createElement("span");
+  head.appendChild(hb); head.appendChild(hs);
+  const body = document.createElement("div"); body.className = "wcb";
+  const days = [];
   for(let i=6;i>=0;i--){
     const d = new Date(now); d.setDate(d.getDate()-i);
     const key = localKey(d);
     let sched = 0, done = 0, part = 0;
+    const per = [];
     state.habits.forEach(h => {
       if(!isScheduled(h, d)) return;
       if(d < parseKey(h.created)) return; // don't show phantom misses before the habit existed
       sched++;
       const s = entryStatus(h.id, key);
+      per.push({ name: h.name, status: s });
       if(s === "done"){ done++; total++; }
       else if(s === "partial"){ part++; total++; }
     });
-    const dh = sched ? Math.round(done/sched*100) : 0;
-    const ph = sched ? Math.round(part/sched*100) : 0;
-    const title = key + ": " + done + " done, " + part + " partial of " + sched + " scheduled";
-    bars += '<div class="wcd"><div class="wctrack" title="' + esc(title) + '">'
-      + '<div class="wcdone" style="height:' + dh + '%"></div>'
-      + '<div class="wcpart" style="height:' + ph + '%"></div>'
-      + '</div><div class="wcl' + (i === 0 ? " today" : "") + '">' + WD[d.getDay()] + "<br>" + d.getDate() + "</div></div>";
+    days.push({ d, key, sched, done, part, per });
   }
-  el.innerHTML = '<div class="wct"><b>Last 7 days</b><span>' + total + " check-ins</span></div>"
-    + '<div class="wcb">' + bars + "</div>";
+  hs.textContent = total + " check-ins";
+  const detail = document.createElement("div");
+  detail.className = "wc-detail"; detail.setAttribute("aria-live", "polite");
+  let sel = null;
+  days.forEach((day, idx) => {
+    const dh = day.sched ? Math.round(day.done/day.sched*100) : 0;
+    const ph = day.sched ? Math.round(day.part/day.sched*100) : 0;
+    const lbl = fmtDay(day.key) + ": " + day.done + " done, " + day.part + " partial of " + day.sched + " scheduled";
+    const col = document.createElement("div");
+    col.className = "wcd";
+    col.setAttribute("tabindex", "0");
+    col.setAttribute("role", "button");
+    col.setAttribute("aria-pressed", "false");
+    col.setAttribute("aria-label", lbl + ". Activate to see per-habit detail.");
+    const track = document.createElement("div");
+    track.className = "wctrack"; track.title = lbl;
+    const doneBar = document.createElement("div");
+    doneBar.className = "wcdone"; doneBar.style.height = dh + "%";
+    const partBar = document.createElement("div");
+    partBar.className = "wcpart"; partBar.style.height = ph + "%";
+    track.appendChild(doneBar); track.appendChild(partBar);
+    const lab = document.createElement("div");
+    lab.className = "wcl" + (idx === days.length - 1 ? " today" : "");
+    lab.innerHTML = WD[day.d.getDay()] + "<br>" + day.d.getDate();
+    col.appendChild(track); col.appendChild(lab);
+    function act(){
+      if(sel === col){
+        col.classList.remove("sel"); col.setAttribute("aria-pressed", "false");
+        detail.textContent = ""; sel = null; Sound.click(); return;
+      }
+      if(sel){ sel.classList.remove("sel"); sel.setAttribute("aria-pressed", "false"); }
+      sel = col; col.classList.add("sel"); col.setAttribute("aria-pressed", "true");
+      detail.textContent = "";
+      const strong = document.createElement("strong");
+      strong.textContent = fmtDay(day.key) + ": ";
+      detail.appendChild(strong);
+      if(!day.per.length){
+        detail.appendChild(document.createTextNode("no habits scheduled."));
+      }else{
+        detail.appendChild(document.createTextNode(day.per.map(p =>
+          p.name + " — " + (p.status === "done" ? "done" : p.status === "partial" ? "partial" : p.status === "skip" ? "rest day" : "missed")
+        ).join("; ") + "."));
+      }
+      Sound.select();
+    }
+    col.addEventListener("click", act);
+    col.addEventListener("keydown", e => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); act(); }
+    });
+    body.appendChild(col);
+  });
+  el.appendChild(head); el.appendChild(body); el.appendChild(detail);
 }
 
 /* ============ init ============ */
@@ -1589,19 +1727,22 @@ function renderAll(){ renderStats(); renderWeekChart(); renderList(); }
 
 document.getElementById("themeBtn").addEventListener("click", () => {
   applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  Sound.toggleTheme();
 });
-document.getElementById("newHabitBtn").addEventListener("click", () => openHabitEditor(null));
+document.getElementById("newHabitBtn").addEventListener("click", () => { openHabitEditor(null); Sound.click(); });
 document.getElementById("exportBtn").addEventListener("click", () => {
   document.getElementById("ioCard").classList.remove("hidden");
   document.getElementById("impMsg").innerHTML = "";
   document.getElementById("ioCard").scrollIntoView({behavior:"smooth", block:"nearest"});
+  Sound.click();
 });
 document.getElementById("importBtn").addEventListener("click", () => {
   document.getElementById("ioCard").classList.remove("hidden");
   document.getElementById("impMsg").innerHTML = "";
+  Sound.click();
 });
-document.getElementById("expJson").addEventListener("click", exportJson);
-document.getElementById("expCsv").addEventListener("click", exportCsv);
+document.getElementById("expJson").addEventListener("click", () => { exportJson(); Sound.success(); });
+document.getElementById("expCsv").addEventListener("click", () => { exportCsv(); Sound.success(); });
 document.getElementById("impFile").addEventListener("change", e => {
   if(e.target.files && e.target.files[0]) importFile(e.target.files[0]);
   e.target.value = "";
@@ -1610,6 +1751,7 @@ document.getElementById("impFile").addEventListener("change", e => {
 loadState();
 initTheme();
 renderAll();
+bindSoundToggle();
 </script>
 </body>
 </html>
