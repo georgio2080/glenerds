@@ -224,7 +224,7 @@ function gToggleTheme() {
   flex-wrap: wrap;
   margin: 20px 0 6px;
 }
-.macro-pie-box { position: relative; width: min(230px, 62vw); flex: 0 0 auto; }
+.macro-pie-box { position: relative; width: min(300px, 80vw); flex: 0 0 auto; }
 .macro-pie { display: block; width: 100%; height: auto; }
 .macro-pie-track { stroke: var(--g-surface-2); }
 .pie-seg { transition: stroke-dasharray 300ms ease, stroke-dashoffset 300ms ease; }
@@ -247,18 +247,8 @@ function gToggleTheme() {
   max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .pie-center .l { font-size: 0.72rem; color: var(--g-muted); margin-top: 2px; }
-.pie-legend { display: flex; flex-direction: column; gap: 10px; min-width: 168px; }
-.pie-legend .row { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; }
-.pie-legend .dot { width: 12px; height: 12px; border-radius: 4px; flex: 0 0 auto; }
-.pie-legend .dot.d-protein { background: #2563eb; }
-.pie-legend .dot.d-carbs { background: #d97706; }
-.pie-legend .dot.d-fat { background: #9333ea; }
-[data-theme="dark"] .pie-legend .dot.d-protein { background: #7aa8ff; }
-[data-theme="dark"] .pie-legend .dot.d-carbs { background: #fbbf24; }
-[data-theme="dark"] .pie-legend .dot.d-fat { background: #c084fc; }
-.pie-legend .name { color: var(--g-text-soft); font-weight: 600; }
-.pie-legend .vals { margin-left: auto; color: var(--g-muted); font-variant-numeric: tabular-nums; }
-.pie-legend .vals b { color: var(--g-text); font-weight: 700; }
+.macro .mvals { font-variant-numeric: tabular-nums; color: var(--g-muted); font-size: 0.92rem; }
+.macro .mvals b { color: var(--g-text); font-weight: 800; font-size: 1.08rem; }
 
 /* ---------- 5. TABS (segmented control) ---------- */
 .g-tabs {
@@ -699,7 +689,6 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
 .macro { margin: 12px 0; }
 .macro .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .macro .name { font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
-.macro .grams { font-size: 1.25rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 .macro .bar { height: 10px; border-radius: 6px; background: var(--g-surface-2); border: 1px solid var(--g-border); margin-top: 8px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 6px; }
 .bar-protein { background: #2563eb; }
@@ -892,11 +881,6 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
     <circle cx="17.5" cy="14.8" r="1.1"/>
   </symbol>
-  <symbol id="g-i-cart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 4h2.2l2.3 11.2a1.6 1.6 0 001.6 1.3h8.6a1.6 1.6 0 001.6-1.3L21 8H6"/>
-    <circle cx="10" cy="20" r="1.4"/>
-    <circle cx="17.5" cy="20" r="1.4"/>
-  </symbol>
   <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
     <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
@@ -919,7 +903,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       <h1 class="g-brand-name">MacroTrack</h1>
     </div>
     <div class="g-header-actions">
-      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="More Apps — browse all Glenerds tools on Gumroad"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-cart"/></svg>More Apps</a>
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
       <button class="g-theme-toggle" id="theme-btn" type="button" aria-label="Toggle dark mode"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon"/></svg><span>Dark</span></button>
     </div>
   </header>
@@ -1046,15 +1030,15 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
 
       <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Daily macros</p>
       <div class="macro">
-        <div class="top"><span class="name macro-protein">Protein</span><span><span class="grams" id="o-p-g">–</span> <span class="pct" id="o-p-p"></span></span></div>
+        <div class="top"><span class="name macro-protein">Protein</span><span class="mvals"><b id="o-p-kcal">–</b> kcal · <span id="o-p-g">–</span> <span class="pct" id="o-p-p"></span></span></div>
         <div class="bar"><div id="o-p-bar" class="bar-fill bar-protein" style="width:0%"></div></div>
       </div>
       <div class="macro">
-        <div class="top"><span class="name macro-carbs">Carbs</span><span><span class="grams" id="o-c-g">–</span> <span class="pct" id="o-c-p"></span></span></div>
+        <div class="top"><span class="name macro-carbs">Carbs</span><span class="mvals"><b id="o-c-kcal">–</b> kcal · <span id="o-c-g">–</span> <span class="pct" id="o-c-p"></span></span></div>
         <div class="bar"><div id="o-c-bar" class="bar-fill bar-carbs" style="width:0%"></div></div>
       </div>
       <div class="macro">
-        <div class="top"><span class="name macro-fat">Fat</span><span><span class="grams" id="o-f-g">–</span> <span class="pct" id="o-f-p"></span></span></div>
+        <div class="top"><span class="name macro-fat">Fat</span><span class="mvals"><b id="o-f-kcal">–</b> kcal · <span id="o-f-g">–</span> <span class="pct" id="o-f-p"></span></span></div>
         <div class="bar"><div id="o-f-bar" class="bar-fill bar-fat" style="width:0%"></div></div>
       </div>
 
@@ -1071,11 +1055,6 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
             </g>
           </svg>
           <div class="pie-center"><div class="v" id="pie-total">–</div><div class="l">target kcal/day</div></div>
-        </div>
-        <div class="pie-legend">
-          <div class="row"><span class="dot d-protein"></span><span class="name">Protein</span><span class="vals"><b id="pie-p-kcal">–</b> kcal · <span id="pie-p-g">–</span></span></div>
-          <div class="row"><span class="dot d-carbs"></span><span class="name">Carbs</span><span class="vals"><b id="pie-c-kcal">–</b> kcal · <span id="pie-c-g">–</span></span></div>
-          <div class="row"><span class="dot d-fat"></span><span class="name">Fat</span><span class="vals"><b id="pie-f-kcal">–</b> kcal · <span id="pie-f-g">–</span></span></div>
         </div>
       </div>
 
@@ -1350,12 +1329,6 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     });
     var ok = isFinite(target) && target > 0;
     $('pie-total').textContent = ok ? fmt(target) : '–';
-    [['p', pp], ['c', cp], ['f', fp]].forEach(function (pair) {
-      var kcal = ok ? target * pair[1] / 100 : NaN;
-      var g = pair[0] === 'f' ? kcal / 9 : kcal / 4;
-      $('pie-' + pair[0] + '-kcal').textContent = ok ? fmt(kcal) : '–';
-      $('pie-' + pair[0] + '-g').textContent = ok ? fmt(g) + ' g' : '–';
-    });
   }
 
   function compute() {
@@ -1367,7 +1340,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     if (!r.ok || !isFinite(r.age) || !isFinite(wKg) || !isFinite(hCm)) {
       ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
       ['p', 'c', 'f'].forEach(function (m) {
-        $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
+        $('o-' + m + '-kcal').textContent = '–'; $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
         $('o-' + m + '-bar').style.width = '0%';
       });
       $('pace').hidden = true;
@@ -1384,7 +1357,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
         $('km-notice').hidden = false;
         ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
         ['p', 'c', 'f'].forEach(function (m) {
-          $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
+          $('o-' + m + '-kcal').textContent = '–'; $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
           $('o-' + m + '-bar').style.width = '0%';
         });
         $('pace').hidden = true;
@@ -1409,9 +1382,10 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     $('o-tdee').textContent = fmt(tdee);
     $('o-target').textContent = fmt(target);
     paintGoalLabel();
-    $('o-p-g').textContent = fmt(pG) + ' g'; $('o-p-p').textContent = '(' + mp.p + '%)';
-    $('o-c-g').textContent = fmt(cG) + ' g'; $('o-c-p').textContent = '(' + mp.c + '%)';
-    $('o-f-g').textContent = fmt(fG) + ' g'; $('o-f-p').textContent = '(' + mp.f + '%)';
+    var pK = target * mp.p / 100, cK = target * mp.c / 100, fK = target * mp.f / 100;
+    $('o-p-kcal').textContent = fmt(pK); $('o-p-g').textContent = fmt(pG) + ' g'; $('o-p-p').textContent = '(' + mp.p + '%)';
+    $('o-c-kcal').textContent = fmt(cK); $('o-c-g').textContent = fmt(cG) + ' g'; $('o-c-p').textContent = '(' + mp.c + '%)';
+    $('o-f-kcal').textContent = fmt(fK); $('o-f-g').textContent = fmt(fG) + ' g'; $('o-f-p').textContent = '(' + mp.f + '%)';
     $('o-p-bar').style.width = mp.p + '%';
     $('o-c-bar').style.width = mp.c + '%';
     $('o-f-bar').style.width = mp.f + '%';
