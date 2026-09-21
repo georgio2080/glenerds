@@ -1,5 +1,8 @@
 # ZoneSync — build log
 
+## 2026-09-21 — ZIP packaging correction
+- Rebuilt zonesync-bundle.zip with only the four required files (index.html, README.md, CHANGES.md, GUMROAD-LISTING.md) — the gallery directory was incorrectly included in the previous bundle.
+
 ## 2026-09-21 — top-bar standard + sounds + clickable visuals (sweep baseline)
 1. **Top-bar cluster (Glen's permanent standard):** right-side `.g-header-actions`
    wrapper with, left to right: More Apps pill, dark-mode icon button, sound

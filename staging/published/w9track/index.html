@@ -58,10 +58,19 @@ header.topbar{
 .tagline{font-size:.72rem; font-weight:500; opacity:.88}
 .topbar .controls{display:flex; gap:8px; align-items:center}
 #yearSelect{background:#fff; color:#1c2330; border:none; border-radius:10px; font-weight:700; padding:6px 8px}
-.theme-toggle{display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,.15);
-  border:1px solid rgba(255,255,255,.45); color:#fff; border-radius:999px; padding:8px 14px;
-  min-height:44px; font-weight:600}
+.theme-toggle{display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; min-width:44px; min-height:44px; padding:0;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.45); color:#fff; border-radius:999px}
+.theme-toggle:hover{background:rgba(255,255,255,.26)}
+.theme-toggle:focus-visible{outline:2px solid #fff; outline-offset:2px}
 .theme-toggle svg{width:17px; height:17px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+#sound-toggle{display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; min-width:44px; min-height:44px; padding:0;
+  background:rgba(255,255,255,.15); color:#fff; font-size:1.05rem; line-height:1;
+  border:1px solid rgba(255,255,255,.45); border-radius:999px; cursor:pointer}
+#sound-toggle:hover{background:rgba(255,255,255,.26)}
+#sound-toggle:focus-visible{outline:2px solid #fff; outline-offset:2px}
 .theme-toggle .ic-sun{display:none}
 html[data-theme="dark"] .theme-toggle .ic-sun{display:inline}
 html[data-theme="dark"] .theme-toggle .ic-moon{display:none}
@@ -163,8 +172,8 @@ html[data-theme="dark"] .stat:nth-child(4)::before{background-color:#252a55; bac
 .chart .yoybar{fill:url(#w9gradY)}
 .chart .donut-bg{fill:none; stroke:var(--border); stroke-width:22}
 .chart .donut-seg{fill:none; stroke-width:22}
-.chart .donut-c{fill:var(--text); font-size:20px; font-weight:800; text-anchor:middle}
-.chart .donut-l{fill:var(--muted); font-size:10px; text-anchor:middle}
+.chart .donut-c{fill:var(--text); font-size:20px; font-weight:800; text-anchor:middle; pointer-events:none}
+.chart .donut-l{fill:var(--muted); font-size:10px; text-anchor:middle; pointer-events:none}
 .legend{display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:8px; font-size:.85rem; color:var(--muted)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
 .legend i{width:11px; height:11px; border-radius:3px; display:inline-block}
@@ -175,6 +184,23 @@ html[data-theme="dark"] .stat:nth-child(4)::before{background-color:#252a55; bac
 .trow .tamt{font-weight:700; font-size:.92rem; font-variant-numeric:tabular-nums}
 .trow .tbar{grid-column:1 / -1; height:9px; border-radius:99px; background:var(--border); overflow:hidden}
 .trow .tbar i{display:block; height:100%; border-radius:99px; background:var(--grad)}
+/* ---------- Clickable charts (sweep baseline) ---------- */
+.chart .clickable{cursor:pointer}
+.chart svg .clickable:focus{outline:none; filter:drop-shadow(0 0 3px var(--accent))}
+.chart .bar.sel, .chart .yoybar.sel{stroke:var(--text); stroke-width:1.5}
+.chart .donut-seg.sel{stroke-width:26}
+.chart-detail{margin-top:8px; font-size:.85rem; color:var(--muted)}
+.chart-detail strong{color:var(--text)}
+.legend button{background:none; border:none; padding:4px 6px; font:inherit; color:var(--muted);
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer; border-radius:6px; min-height:44px}
+.legend button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.legend button[aria-pressed="true"]{color:var(--text); box-shadow:inset 0 0 0 2px var(--accent)}
+.trow[role="button"]{cursor:pointer; border-radius:6px}
+.trow[role="button"]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.trow[role="button"]:hover .tname{color:var(--accent)}
+.contractor.flash{box-shadow:0 0 0 3px var(--accent)}
+.flag[role="button"]{cursor:pointer}
+.flag[role="button"]:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 /* ---------- Threshold progress on contractor cards ---------- */
 .thresh{margin-top:10px}
 .thresh-track{position:relative; height:10px; border-radius:99px; background:var(--border)}
@@ -278,7 +304,8 @@ footer.site a{color:var(--accent)}
     <select id="yearSelect" style="width:auto;min-height:44px;margin:0" aria-label="Tax year"></select>
     <div class="g-header-actions">
     <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-    <button id="themeToggle" type="button" class="theme-toggle" aria-label="Toggle dark mode"><svg class='ic-moon' viewBox='0 0 24 24' aria-hidden='true'><path d='M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg><svg class='ic-sun' viewBox='0 0 24 24' aria-hidden='true'><circle cx='12' cy='12' r='4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><path d='M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19' stroke='black' stroke-width='2' stroke-linecap='round'/></svg><span id="themeLabel">Dark</span></button>
+    <button id="themeToggle" type="button" class="theme-toggle" aria-label="Toggle dark mode"><svg class='ic-moon' viewBox='0 0 24 24' aria-hidden='true'><path d='M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg><svg class='ic-sun' viewBox='0 0 24 24' aria-hidden='true'><circle cx='12' cy='12' r='4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><path d='M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19' stroke='black' stroke-width='2' stroke-linecap='round'/></svg><span id="themeLabel" hidden>Dark</span></button>
+    <button id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
   </div>
   </div>
 </header>
@@ -572,6 +599,63 @@ if(years.indexOf(currentYear)<0){ years.push(currentYear); years.sort(); }
 function persistYear(){ try{ localStorage.setItem(YEAR_KEY, currentYear); }catch(e){} }
 
 /* ================= Theme ================= */
+/* ================= Subtle sounds (Web Audio, no files, offline) ================= */
+var Sound = (function(){
+  var KEY = "w9track.sound", on = true, ctx = null;
+  try{ if(window.localStorage.getItem(KEY) === "off") on = false; }catch(e){}
+  function ac(){
+    try{
+      if(!ctx){
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if(!AC) return null;
+        ctx = new AC();
+      }
+      if(ctx.state === "suspended") ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(freq, dur, type, vol, delay){
+    var c = ac(); if(!c) return;
+    try{
+      var t = c.currentTime + (delay || 0);
+      var o = c.createOscillator(), g = c.createGain();
+      o.type = type || "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.05);
+    }catch(e){}
+  }
+  return {
+    isOn: function(){ return on; },
+    toggle: function(){
+      on = !on;
+      try{ window.localStorage.setItem(KEY, on ? "on" : "off"); }catch(e){}
+      return on;
+    },
+    click: function(){ if(on) tone(520, 0.06, "sine", 0.045); },
+    select: function(){ if(on){ tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
+    success: function(){ if(on){ tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
+    error: function(){ if(on) tone(170, 0.16, "sawtooth", 0.045); },
+    toggleTheme: function(){ if(on) tone(440, 0.06, "triangle", 0.05); }
+  };
+})();
+function bindSoundToggle(){
+  var btn = document.getElementById("sound-toggle");
+  if(!btn) return;
+  function paint(){
+    var on = Sound.isOn();
+    btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
+    btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+  }
+  btn.addEventListener("click", function(){ Sound.toggle(); paint(); Sound.click(); });
+  paint();
+}
+
+/* ================= Theme ================= */
 var themeToggle = document.getElementById("themeToggle");
 function currentTheme(){
   var t = localStorage.getItem(THEME_KEY);
@@ -582,7 +666,9 @@ function applyTheme(){
   var t = currentTheme();
   document.documentElement.setAttribute("data-theme", t);
   var dark = (t === "dark") || (t === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-  document.getElementById("themeLabel").textContent = dark ? "Light" : "Dark";
+  var label = dark ? "Switch to light mode" : "Switch to dark mode";
+  themeToggle.setAttribute("aria-label", label);
+  themeToggle.title = label;
   themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
 }
 themeToggle.addEventListener("click", function(){
@@ -590,6 +676,7 @@ themeToggle.addEventListener("click", function(){
   var dark = (now === "dark") || (now === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches);
   localStorage.setItem(THEME_KEY, dark ? "light" : "dark");
   applyTheme();
+  Sound.toggleTheme();
 });
 if(window.matchMedia){
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
@@ -607,15 +694,16 @@ function renderYearSelect(){
     yearSelect.appendChild(opt);
   });
 }
-yearSelect.addEventListener("change", function(){ currentYear = yearSelect.value; persistYear(); renderAll(); });
+yearSelect.addEventListener("change", function(){ currentYear = yearSelect.value; persistYear(); renderAll(); Sound.click(); });
 document.getElementById("addYearBtn").addEventListener("click", function(){
   var inp = document.getElementById("newYearInput");
   var y = inp.value.trim();
-  if(!validYear(y)){ setDataMsg("Enter a 4-digit year between 2000 and 2099.", true); return; }
+  if(!validYear(y)){ setDataMsg("Enter a 4-digit year between 2000 and 2099.", true); Sound.error(); return; }
   if(years.indexOf(y)<0){ years.push(y); years.sort(); }
   currentYear = y; persistYear(); inp.value = "";
   renderYearSelect(); renderAll();
   setDataMsg("Switched to tax year " + y + ".", false);
+  Sound.success();
 });
 
 /* ================= Dashboard ================= */
@@ -654,6 +742,14 @@ function renderDashboard(){
       var t = ytd(c);
       var red = t >= lim.red;
       var f = el("div", null, "flag " + (red ? "red" : "amber"));
+      f.setAttribute("role", "button");
+      f.setAttribute("tabindex", "0");
+      f.setAttribute("aria-label", "Flagged: " + c.name + ", " + money(t) + " year to date. " +
+        (red ? "Needs 1099." : "Approaching threshold.") + " Activate to jump to their contractor card.");
+      f.addEventListener("click", function(){ jumpToContractor(c.id); });
+      f.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); jumpToContractor(c.id); }
+      });
       var top = el("div");
       top.appendChild(el("span", c.name, "fname"));
       top.appendChild(document.createTextNode(" — "));
@@ -669,6 +765,42 @@ function renderDashboard(){
 }
 
 /* ================= Charts (Year at a glance) ================= */
+/* Sweep baseline: charts are interactive. Clicking a visual spotlights it and
+   swaps associated numbers/labels; clicking again restores. Keyboard
+   (Enter/Space) works everywhere; SVG focus uses drop-shadow, never a box. */
+function showChartDetail(wrap, strongText, restText){
+  var d = wrap.querySelector(".chart-detail");
+  if(!d){ d = el("div", null, "chart-detail"); d.setAttribute("aria-live", "polite"); wrap.appendChild(d); }
+  d.textContent = "";
+  if(strongText == null) return;
+  d.appendChild(el("strong", strongText));
+  d.appendChild(document.createTextNode(restText || ""));
+}
+function toggleBarSel(wrap, bar, strongText, restText){
+  var was = bar.classList.contains("sel");
+  var bars = wrap.querySelectorAll(".bar.sel, .yoybar.sel");
+  for(var i = 0; i < bars.length; i++){
+    bars[i].classList.remove("sel");
+    bars[i].setAttribute("aria-pressed", "false");
+  }
+  if(!was){
+    bar.classList.add("sel");
+    bar.setAttribute("aria-pressed", "true");
+    showChartDetail(wrap, strongText, restText);
+    Sound.select();
+  } else {
+    showChartDetail(wrap, null);
+    Sound.click();
+  }
+}
+function jumpToContractor(id){
+  var card = document.getElementById("ccard-" + id);
+  if(!card) return;
+  if(card.scrollIntoView) card.scrollIntoView({behavior:"smooth", block:"center"});
+  card.classList.add("flash");
+  setTimeout(function(){ card.classList.remove("flash"); }, 1600);
+  Sound.select();
+}
 var SVGNS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs, text){
   var n = document.createElementNS(SVGNS, tag);
@@ -729,8 +861,17 @@ function monthlyChart(contractors, year){
     var x = padL + slot * i + (slot - bw) / 2;
     var y = padT + plotH - h;
     var bar = svgEl("rect", {x:x.toFixed(1), y:y.toFixed(1), width:bw.toFixed(1),
-      height:Math.max(h, v > 0 ? 2 : 0).toFixed(1), rx:3, class:"bar"});
+      height:Math.max(h, 2).toFixed(1), rx:3, class:"bar clickable",
+      tabindex:"0", role:"button", "aria-pressed":"false",
+      "aria-label":MONTH_SHORT[i] + ": " + money(v) + " in payments. Activate to spotlight."});
     bar.appendChild(svgEl("title", null, MONTH_SHORT[i] + ": " + money(v)));
+    (function(b, lbl, val){
+      function act(){ toggleBarSel(wrap, b, lbl + ": ", money(val) + " in payments during " + year + "."); }
+      b.addEventListener("click", act);
+      b.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(bar, MONTH_SHORT[i], v);
     svg.appendChild(bar);
     svg.appendChild(svgEl("text", {x:(x + bw/2).toFixed(1), y:H-6, class:"ax", "text-anchor":"middle"}, MONTH_INIT[i]));
   });
@@ -741,7 +882,7 @@ function monthlyChart(contractors, year){
 function topChart(contractors){
   var wrap = el("div", null, "chart");
   wrap.appendChild(chartTitle("Top contractors"));
-  var ranked = contractors.map(function(c){ return {name:c.name, t:ytd(c)}; })
+  var ranked = contractors.map(function(c){ return {id:c.id, name:c.name, t:ytd(c)}; })
     .filter(function(r){ return r.t > 0; })
     .sort(function(a,b){ return b.t - a.t; }).slice(0, 6);
   if(!ranked.length){
@@ -751,6 +892,9 @@ function topChart(contractors){
   var max = ranked[0].t;
   ranked.forEach(function(r){
     var row = el("div", null, "trow");
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-label", r.name + ": " + money(r.t) + " year to date. Activate to jump to their contractor card.");
     row.appendChild(el("div", r.name, "tname"));
     row.appendChild(el("div", money(r.t), "tamt"));
     var bar = el("div", null, "tbar");
@@ -758,6 +902,13 @@ function topChart(contractors){
     f.style.width = (max > 0 ? (r.t / max * 100) : 0).toFixed(1) + "%";
     bar.appendChild(f);
     row.appendChild(bar);
+    (function(id){
+      function act(){ jumpToContractor(id); }
+      row.addEventListener("click", act);
+      row.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(r.id);
     wrap.appendChild(row);
   });
   return wrap;
@@ -784,31 +935,74 @@ function donutChart(contractors){
   ];
   var acc = 0;
   var g = svgEl("g", {transform:"rotate(-90 70 70)"});
+  var cNum = svgEl("text", {x:70, y:68, class:"donut-c"}, String(contractors.length));
+  var cLbl = svgEl("text", {x:70, y:84, class:"donut-l"}, "contractors");
+  var drawn = [];
   segs.forEach(function(s){
-    if(s.v <= 0) return;
+    if(s.v <= 0){ drawn.push(null); return; }
     var len = s.v / contractors.length * CIRC;
-    var seg = svgEl("circle", {cx:70, cy:70, r:R, class:"donut-seg",
+    var seg = svgEl("circle", {cx:70, cy:70, r:R, class:"donut-seg clickable",
       // toFixed(3): coarser rounding (e.g. toFixed(1)) leaves hairline gaps
       // between segments (Gemini API re-review 2026-09-20).
       "stroke-dasharray":len.toFixed(3) + " " + CIRC.toFixed(3),
-      "stroke-dashoffset":(-acc).toFixed(3)});
+      "stroke-dashoffset":(-acc).toFixed(3),
+      tabindex:"0", role:"button", "aria-pressed":"false",
+      "aria-label":s.label + ": " + s.v + " of " + contractors.length + " contractors. Activate to spotlight."});
     seg.style.stroke = s.color;
     seg.appendChild(svgEl("title", null, s.label + ": " + s.v));
     g.appendChild(seg);
+    drawn.push(seg);
     acc += len;
   });
   svg.appendChild(g);
-  svg.appendChild(svgEl("text", {x:70, y:68, class:"donut-c"}, String(contractors.length)));
-  svg.appendChild(svgEl("text", {x:70, y:84, class:"donut-l"}, "contractors"));
+  svg.appendChild(cNum);
+  svg.appendChild(cLbl);
   wrap.appendChild(svg);
   var leg = el("div", null, "legend");
-  segs.forEach(function(s){
-    var sp = el("span");
+  function selectDonut(idx){
+    var s = segs[idx];
+    var was = drawn[idx] && drawn[idx].classList.contains("sel");
+    drawn.forEach(function(dg){
+      if(dg){ dg.classList.remove("sel"); dg.setAttribute("aria-pressed", "false"); }
+    });
+    var btns = leg.querySelectorAll("button");
+    for(var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", "false");
+    if(!was && drawn[idx]){
+      drawn[idx].classList.add("sel");
+      drawn[idx].setAttribute("aria-pressed", "true");
+      cNum.textContent = String(s.v);
+      cLbl.textContent = s.label.toLowerCase();
+      var lb = leg.querySelector('button[data-seg="' + idx + '"]');
+      if(lb) lb.setAttribute("aria-pressed", "true");
+      Sound.select();
+    } else {
+      cNum.textContent = String(contractors.length);
+      cLbl.textContent = "contractors";
+      Sound.click();
+    }
+  }
+  segs.forEach(function(s, idx){
+    if(!drawn[idx]) return;
+    (function(i){
+      function act(){ selectDonut(i); }
+      drawn[i].addEventListener("click", act);
+      drawn[i].addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(idx);
+  });
+  segs.forEach(function(s, idx){
+    var b = el("button", null, null);
+    b.type = "button";
+    b.setAttribute("data-seg", String(idx));
+    b.setAttribute("aria-pressed", "false");
+    b.setAttribute("aria-label", "Spotlight " + s.label + ": " + s.v + " contractors");
     var dot = el("i");
     dot.style.background = s.color;
-    sp.appendChild(dot);
-    sp.appendChild(document.createTextNode(s.label + " · " + s.v));
-    leg.appendChild(sp);
+    b.appendChild(dot);
+    b.appendChild(document.createTextNode(s.label + " \u00B7 " + s.v));
+    (function(i){ b.addEventListener("click", function(){ selectDonut(i); }); })(idx);
+    leg.appendChild(b);
   });
   wrap.appendChild(leg);
   return wrap;
@@ -837,9 +1031,22 @@ function yoyChart(){
     var h = plotH * d.t / max;
     var x = slot * i + (slot - bw) / 2, y = padT + plotH - h;
     var bar = svgEl("rect", {x:x.toFixed(1), y:y.toFixed(1), width:bw.toFixed(1),
-      height:Math.max(h, d.t > 0 ? 2 : 0).toFixed(1), rx:3, class:"yoybar"});
+      height:Math.max(h, 2).toFixed(1), rx:3, class:"yoybar clickable",
+      tabindex:"0", role:"button",
+      "aria-label":"Tax year " + d.y + ": " + money(d.t) + " paid. Activate to switch to that year."});
     if(d.y === currentYear) bar.style.stroke = "var(--text)";
     bar.appendChild(svgEl("title", null, d.y + ": " + money(d.t)));
+    (function(yr){
+      function act(){
+        if(yr === currentYear){ Sound.click(); return; }
+        currentYear = yr; persistYear(); renderYearSelect(); renderAll();
+        Sound.select();
+      }
+      bar.addEventListener("click", act);
+      bar.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(d.y);
     svg.appendChild(bar);
     var lbl = svgEl("text", {x:(x + bw/2).toFixed(1), y:H-6, class:"ax", "text-anchor":"middle"}, d.y);
     if(d.y === currentYear) lbl.style.fontWeight = "700";
@@ -896,6 +1103,7 @@ function renderContractors(){
   }
   contractors.forEach(function(c){
     var card = el("div", null, "contractor");
+    card.id = "ccard-" + c.id;
     var head = el("div", null, "chead");
     var left = el("div");
     left.appendChild(el("div", c.name, "cname"));
@@ -946,6 +1154,7 @@ function renderContractors(){
         // Collect the received date explicitly through the edit flow — the
         // edit form requires a valid W-9 date before it can be saved.
         openEdit(card, c, { w9: true });
+        Sound.click();
         return;
       }
       if(window.confirm("Clear the W-9 on file for " + c.name + "?")){
@@ -953,7 +1162,8 @@ function renderContractors(){
         c.w9Date = "";
         syncProfile(c);
         saveStore(); renderAll();
-      }
+        Sound.success();
+      } else { Sound.click(); }
     });
     var payBtn = el("button", openPanels[c.id] ? "Hide payments" : "Payments", "small");
     payBtn.type = "button";
@@ -961,10 +1171,11 @@ function renderContractors(){
     payBtn.addEventListener("click", function(){
       openPanels[c.id] = !openPanels[c.id];
       renderAll();
+      Sound.click();
     });
     var editBtn = el("button", "Edit", "small");
     editBtn.type = "button";
-    editBtn.addEventListener("click", function(){ openEdit(card, c); });
+    editBtn.addEventListener("click", function(){ openEdit(card, c); Sound.click(); });
     var delBtn = el("button", "Delete", "small danger");
     delBtn.type = "button";
     delBtn.addEventListener("click", function(){
@@ -973,7 +1184,8 @@ function renderContractors(){
         arr.splice(arr.indexOf(c), 1);
         delete openPanels[c.id];
         saveStore(); renderAll();
-      }
+        Sound.success();
+      } else { Sound.click(); }
     });
     actions.appendChild(w9Btn); actions.appendChild(payBtn);
     actions.appendChild(editBtn); actions.appendChild(delBtn);
@@ -1039,25 +1251,26 @@ function openEdit(card, c, opts){
   var btnRow = el("div", null, "cactions");
   var save = el("button", "Save", "primary"); save.type = "submit";
   var cancel = el("button", "Cancel"); cancel.type = "button";
-  cancel.addEventListener("click", function(){ form.remove(); });
+  cancel.addEventListener("click", function(){ form.remove(); Sound.click(); });
   btnRow.appendChild(save); btnRow.appendChild(cancel);
   form.appendChild(btnRow);
   if(w9Preset && !c.w9Date) dInp.focus();
   form.addEventListener("submit", function(ev){
     ev.preventDefault();
     var name = form.querySelector("#eName" + c.id).value.trim();
-    if(!name){ window.alert("Name is required."); return; }
+    if(!name){ window.alert("Name is required."); Sound.error(); return; }
     c.name = name.slice(0,80);
     c.business = form.querySelector("#eBiz" + c.id).value.trim().slice(0,80);
     c.contact = form.querySelector("#eContact" + c.id).value.trim().slice(0,120);
     c.entity = eSel.value;
     c.w9 = (wSel.value === "1");
     var dval = dInp.value;
-    if(c.w9 && !validDate(dval)){ window.alert("Enter the date the W-9 was received (or set W-9 to No)."); return; }
+    if(c.w9 && !validDate(dval)){ window.alert("Enter the date the W-9 was received (or set W-9 to No)."); Sound.error(); return; }
     c.w9Date = c.w9 ? dval : "";
     c.notes = nTa.value.trim().slice(0,500);
     syncProfile(c);
     saveStore(); renderAll();
+    Sound.success();
   });
   card.appendChild(form);
 }
@@ -1090,7 +1303,8 @@ function paymentsPanel(c){
         if(window.confirm("Delete this payment?")){
           c.payments.splice(c.payments.indexOf(p), 1);
           saveStore(); renderAll();
-        }
+          Sound.success();
+        } else { Sound.click(); }
       });
       tdX.appendChild(del); r.appendChild(tdX);
       tbody.appendChild(r);
@@ -1129,9 +1343,9 @@ function paymentsPanel(c){
   form.addEventListener("submit", function(ev){
     ev.preventDefault();
     var dateStr = dInp.value;
-    if(!validDate(dateStr)){ window.alert("Enter a valid date."); return; }
+    if(!validDate(dateStr)){ window.alert("Enter a valid date."); Sound.error(); return; }
     var amt = Number(aInp.value);
-    if(!isFinite(amt) || amt <= 0){ window.alert("Enter an amount greater than $0."); return; }
+    if(!isFinite(amt) || amt <= 0){ window.alert("Enter an amount greater than $0."); Sound.error(); return; }
     var pay = {
       date: dateStr,
       amount: Math.round(amt * 100) / 100,
@@ -1156,10 +1370,12 @@ function paymentsPanel(c){
       currentYear = dateYear; persistYear();
       saveStore(); renderYearSelect(); renderAll();
       setDataMsg("Payment dated " + dateStr + " was recorded under tax year " + dateYear + " — 1099s are filed by payment date.", false, true);
+      Sound.success();
       return;
     }
     c.payments.push(pay);
     saveStore(); renderAll();
+    Sound.success();
   });
   wrap.appendChild(form);
   return wrap;
@@ -1169,9 +1385,9 @@ function paymentsPanel(c){
 document.getElementById("addContractorForm").addEventListener("submit", function(ev){
   ev.preventDefault();
   var yd = yearData(currentYear);
-  if(yd.contractors.length >= MAX_CONTRACTORS){ window.alert("Contractor limit reached for this year."); return; }
+  if(yd.contractors.length >= MAX_CONTRACTORS){ window.alert("Contractor limit reached for this year."); Sound.error(); return; }
   var name = document.getElementById("ncName").value.trim();
-  if(!name){ window.alert("Name is required."); return; }
+  if(!name){ window.alert("Name is required."); Sound.error(); return; }
   yd.contractors.push({
     id: uid(),
     name: name.slice(0,80),
@@ -1184,6 +1400,7 @@ document.getElementById("addContractorForm").addEventListener("submit", function
   });
   ev.target.reset();
   saveStore(); renderAll();
+  Sound.success();
 });
 
 /* ================= Data: export / import / demo / clear ================= */
@@ -1205,9 +1422,11 @@ document.getElementById("exportBtn").addEventListener("click", function(){
   document.body.appendChild(a); a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
   setDataMsg("Exported all tax years as JSON.", false);
+  Sound.success();
 });
 document.getElementById("importBtn").addEventListener("click", function(){
   document.getElementById("importFile").click();
+  Sound.click();
 });
 function samePayment(a, b){
   return a.date === b.date && a.amount === b.amount && a.memo === b.memo;
@@ -1308,13 +1527,14 @@ document.getElementById("importFile").addEventListener("change", function(ev){
         if(validYear(y) && years.indexOf(y) < 0){ years.push(y); }
       });
       years.sort();
-    }catch(e){ setDataMsg("Import failed: file is not valid W9Track JSON.", true); ev.target.value = ""; return; }
+    }catch(e){ setDataMsg("Import failed: file is not valid W9Track JSON.", true); Sound.error(); ev.target.value = ""; return; }
     saveStore(); renderYearSelect(); renderAll();
     setDataMsg("Imported " + ok + " contractor" + (ok === 1 ? "" : "s") +
       (merged ? ", added payments to " + merged + " existing contractor" + (merged === 1 ? "" : "s") + "." : ".") +
       (dupes ? " Skipped " + dupes + " duplicate" + (dupes === 1 ? "" : "s") + "." : "") +
       (moved ? " " + moved + " payment" + (moved === 1 ? " was" : "s were") + " moved to " + (moved === 1 ? "its" : "their") + " correct tax year by payment date." : "") +
       (skipped ? " " + skipped + " invalid record" + (skipped === 1 ? "" : "s") + " skipped." : ""), false);
+    Sound.success();
     ev.target.value = "";
   };
   reader.readAsText(file);
@@ -1344,7 +1564,8 @@ document.getElementById("demoBtn").addEventListener("click", function(){
   if(window.confirm("Load demo data into " + currentYear + "? This replaces the current year's contractors.")){
     loadDemo();
     setDataMsg("Demo data loaded for " + currentYear + ".", false);
-  }
+    Sound.success();
+  } else { Sound.click(); }
 });
 document.getElementById("clearBtn").addEventListener("click", function(){
   if(window.confirm("Delete ALL contractors and payments for ALL years? This cannot be undone.")){
@@ -1359,7 +1580,8 @@ document.getElementById("clearBtn").addEventListener("click", function(){
     persistYear();
     renderYearSelect(); renderAll();
     setDataMsg("All data cleared.", false);
-  }
+    Sound.success();
+  } else { Sound.click(); }
 });
 
 /* ================= Render all ================= */
@@ -1369,6 +1591,7 @@ function renderAll(){
 }
 renderYearSelect();
 renderAll();
+bindSoundToggle();
 </script>
 </body>
 </html>

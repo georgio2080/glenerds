@@ -1,3 +1,15 @@
+## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
+- Standardized the header cluster: More Apps pill, icon-only dark-mode button (44x44px, moon/sun icon, aria-label + title, no text label), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right, inside the existing .g-header-actions wrapper.
+- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `w9track.sound`, wired into theme toggle, year changes, contractor add/edit/delete, payment add/delete, W-9 mark/clear, payments panel, export/import/demo/clear, and add-year flows.
+- Made dashboard visuals clickable (click/Enter/Space, toggle-to-restore, SVG drop-shadow focus):
+  - Donut segments + legend buttons spotlight a W-9 status slice and swap the center number/label.
+  - Monthly bars spotlight a month and show a detail line with the amount.
+  - Top-contractor rows jump to and flash the contractor's card in the list.
+  - Year-over-year bars switch the tax year (and persist it).
+  - Red/amber flag rows jump to and flash the flagged contractor's card.
+- Contractor cards now carry stable ids (`ccard-<id>`) as jump targets; new `.flash` highlight and `.chart-detail` styles.
+- Fixed two clickability gaps found in headless testing: donut center labels no longer intercept pointer events over the ring, and zero-value bars now render at a 2px minimum height so every bar is visible and clickable.
+
 ## 2026-09-20 — Gemini API re-review of visual build + 2 cosmetic fixes
 - Re-review (full source, hand-verified findings): zero XSS (all user text via textContent/createElementNS), zero divide-by-zero/NaN paths, entity scrub correct, no behavior changes, no dark-mode/print breakage. All four previously-claimed findings were false positives (import cross-year routing exists, file-input cleared, scrub intent-correct, Math.max arrays tiny).
 - Fixed 2 genuine minors: (1) monthly-chart Y-axis gutter now scales from the longest label (wholeDollars(max)) so very large monthly totals can't clip the SVG's left edge — verified in harness ($1.23M -> padL 72, small data stays 42); (2) donut segments now use toFixed(3) precision so no hairline gaps (circumference gap 0.001 vs up to ~0.15 before).
