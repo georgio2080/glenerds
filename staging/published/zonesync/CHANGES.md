@@ -1,5 +1,23 @@
 # ZoneSync — build log
 
+## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
+1. **New "Team day timeline" card** between Overlap and Meeting planner: one row per
+   member showing their working hours as a 24-segment day strip in viewer time,
+   with the member's time zone + current local time in the row label. Teal =
+   working, gold ring = whole team free, gold top-bar = the current hour. Hour
+   scale + legend included; aria labels and tooltips on every strip. Re-renders
+   with the overlap data (theme toggle, member add/edit/delete, viewer-tz change)
+   via a shared `hourCounts()` helper (renderOverlap refactored onto it).
+2. **Meeting planner now shows "where the meeting lands in everyone's day"**:
+   per-member day strips for the chosen date (DST-aware via the plan date) with
+   the meeting hour ringed in gold, plus a Working/Meeting-time legend.
+3. All styling is theme-aware through the existing `--accent-rgb` / `--gold` CSS
+   vars (no JS color hacks); mobile collapses the name column. No innerHTML;
+   member names render via textContent. JS syntax-checked with node --check;
+   timeline math (24 segs/row, 8 work hours, now-marker, member-hour totals),
+   meet-marker placement, and XSS-neutral names verified headlessly in Node;
+   light + dark + planner screenshots inspected in headless Chromium.
+
 ## 2026-09-20 — overlap redesign + full AI re-verification (fix-without-asking)
 1. **Heatmap matrix removed.** The 24-column hover-dependent overlap heat map
    was confusing (Glen's call); replaced with (a) a ranked plain-language

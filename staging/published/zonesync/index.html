@@ -181,6 +181,31 @@ tbody tr:nth-child(even) { background: rgba(127,127,150,.06); }
 .overlap-seg.full { box-shadow: inset 0 0 0 2px var(--gold); }
 .overlap-scale { display: flex; margin-top: 4px; }
 .overlap-scale span { flex: 1 1 0; min-width: 0; font-size: 0.72rem; color: var(--muted); }
+
+/* ---------- team day timeline ---------- */
+.tl-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.tl-name { flex: 0 0 150px; min-width: 0; font-size: 0.85rem; font-weight: 600; overflow: hidden; }
+.tl-name > div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tl-name small { display: block; font-weight: 400; color: var(--muted); font-size: 0.72rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tl-strip { display: flex; gap: 2px; flex: 1 1 auto; min-width: 0; }
+.tl-seg { flex: 1 1 0; min-width: 0; height: 26px; border-radius: 4px; background: rgba(127,127,150,.12); }
+.tl-seg.work { background: rgba(var(--accent-rgb), .55); }
+.tl-seg.gold { box-shadow: inset 0 0 0 2px var(--gold); }
+.tl-seg.now { box-shadow: inset 0 3px 0 0 var(--gold); }
+.tl-seg.work.gold { box-shadow: inset 0 0 0 2px var(--gold); }
+.tl-seg.work.now { box-shadow: inset 0 0 0 2px var(--gold), inset 0 5px 0 0 var(--gold); }
+.tl-seg.meet { box-shadow: inset 0 0 0 2px var(--gold); }
+.tl-seg.work.meet { box-shadow: inset 0 0 0 2px var(--gold), inset 0 -5px 0 0 var(--gold); }
+.tl-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; font-size: 0.8rem; color: var(--muted); }
+.tl-legend .sw { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 6px; vertical-align: -2px; }
+.tl-legend .sw.work { background: rgba(var(--accent-rgb), .55); }
+.tl-legend .sw.gold { box-shadow: inset 0 0 0 2px var(--gold); background: rgba(127,127,150,.12); }
+.tl-legend .sw.now { box-shadow: inset 0 4px 0 0 var(--gold); background: rgba(127,127,150,.12); }
+.tl-legend .sw.meet { box-shadow: inset 0 0 0 2px var(--gold), inset 0 -4px 0 0 var(--gold); background: rgba(127,127,150,.12); }
+@media (max-width: 560px) {
+  .tl-name { flex-basis: 104px; font-size: 0.78rem; }
+  .tl-seg { height: 22px; }
+}
 #members-list td .actions, #members-list td { white-space: nowrap; }
 #members-list td button { margin: 2px 4px 2px 0; }
 
@@ -283,6 +308,18 @@ footer.site a { color: var(--muted); }
       <div class="overlap-strip-wrap" id="overlap-strip-wrap" hidden>
         <div class="overlap-strip" id="overlap-strip" role="img"></div>
         <div class="overlap-scale" id="overlap-scale" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="timeline-h">
+      <h2 id="timeline-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20v-6M9.3 20V8M14.6 20v-9M20 20V5"/></svg></span>Team day timeline</h2>
+      <p class="status" id="timeline-note" style="margin-top:0;"></p>
+      <div id="timeline-rows"></div>
+      <div class="tl-row" aria-hidden="true"><div class="tl-name"></div><div class="overlap-scale" id="timeline-scale" style="flex:1 1 auto;"></div></div>
+      <div class="tl-legend" aria-hidden="true">
+        <span><i class="sw work"></i>Working</span>
+        <span><i class="sw gold"></i>Everyone free</span>
+        <span><i class="sw now"></i>Right now</span>
       </div>
     </section>
 
@@ -394,6 +431,7 @@ themeBtn.addEventListener('click', function () {
   try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
   paintThemeButton();
   renderOverlap();
+  renderTimeline();
 });
 paintThemeButton();
 
@@ -609,6 +647,15 @@ function renderMembers() {
 function accentBase() {
   return currentTheme() === 'dark' ? '45, 212, 191' : '13, 110, 102';
 }
+/* Members working during each viewer-local hour of the given day. */
+function hourCounts(today) {
+  var counts = [];
+  for (var h = 0; h < 24; h++) counts.push(0);
+  state.members.forEach(function (m) {
+    for (var hh = 0; hh < 24; hh++) if (workingAt(m, hh, today)) counts[hh]++;
+  });
+  return counts;
+}
 function fmtHour(h) {
   h = ((h % 24) + 24) % 24;
   var ap = h < 12 ? 'AM' : 'PM';
@@ -626,11 +673,7 @@ function renderOverlap() {
     return;
   }
   var today = viewerToday();
-  var counts = [];
-  for (var h = 0; h < 24; h++) counts.push(0);
-  state.members.forEach(function (m) {
-    for (var hh = 0; hh < 24; hh++) if (workingAt(m, hh, today)) counts[hh]++;
-  });
+  var counts = hourCounts(today);
   overlapNote.textContent = 'All times are in ' + state.viewerTz + ', ranked by how many members are free.';
   var wins = [];
   var st = -1;
@@ -674,6 +717,62 @@ function renderOverlap() {
   }
   for (var h4 = 0; h4 < 24; h4 += 3) overlapScale.appendChild(el('span', fmtHour(h4)));
   overlapStrip.setAttribute('aria-label', '24-hour overlap strip. ' + (bestC > 0 ? 'Most members free at ' + fmtHour(bestH) + ' (' + bestC + ' of ' + n + ').' : 'No overlap today.'));
+}
+
+/* ---------------- team day timeline ---------------- */
+var timelineRows = document.getElementById('timeline-rows');
+var timelineNote = document.getElementById('timeline-note');
+var timelineScale = document.getElementById('timeline-scale');
+function fmtTime(h, min) {
+  h = ((h % 24) + 24) % 24;
+  var ap = h < 12 ? 'AM' : 'PM';
+  var h12 = h % 12; if (h12 === 0) h12 = 12;
+  return h12 + ':' + pad2(min) + ' ' + ap;
+}
+/* One member's 24h day in viewer time. markerH (>=0) rings the meeting hour,
+   nowH (>=0) flags the current hour. */
+function buildMemberStrip(m, day, counts, n, markerH, nowH) {
+  var row = el('div', null, 'tl-row');
+  var name = el('div', null, 'tl-name');
+  name.appendChild(el('div', m.name));
+  var lp = tzParts(new Date(), m.tz);
+  name.appendChild(el('small', m.tz + ' \u00B7 ' + fmtTime(lp.hour, lp.minute) + ' now'));
+  row.appendChild(name);
+  var strip = el('div', null, 'tl-strip');
+  for (var h = 0; h < 24; h++) {
+    var work = workingAt(m, h, day);
+    var cls = 'tl-seg' + (work ? ' work' : '') +
+      ((counts[h] === n && n > 1) ? ' gold' : '') +
+      (h === markerH ? ' meet' : '') + (h === nowH ? ' now' : '');
+    var seg = el('div', null, cls);
+    seg.title = m.name + ' \u2014 ' + fmtHour(h) + ' ' + state.viewerTz +
+      ': ' + (work ? 'working' : 'off') +
+      (counts[h] === n && n > 1 ? ' (everyone free)' : '');
+    strip.appendChild(seg);
+  }
+  strip.setAttribute('role', 'img');
+  strip.setAttribute('aria-label', m.name + ': working hours ' + m.start + ':00 to ' +
+    m.end + ':00 ' + m.tz + ', shown in ' + state.viewerTz + ' time.');
+  row.appendChild(strip);
+  return row;
+}
+function renderTimeline() {
+  clear(timelineRows);
+  clear(timelineScale);
+  var n = state.members.length;
+  if (!n) {
+    timelineNote.textContent = 'Add team members to see everyone\u2019s day at a glance.';
+    return;
+  }
+  var today = viewerToday();
+  timelineNote.textContent = 'Each row is one member\u2019s working hours, shown in ' +
+    state.viewerTz + '. Gold rings mark hours when the whole team is free.';
+  var counts = hourCounts(today);
+  var nowH = tzParts(new Date(), state.viewerTz).hour;
+  state.members.forEach(function (m) {
+    timelineRows.appendChild(buildMemberStrip(m, today, counts, n, -1, nowH));
+  });
+  for (var h4 = 0; h4 < 24; h4 += 3) timelineScale.appendChild(el('span', fmtHour(h4)));
 }
 
 /* ---------------- member form (add / edit) ---------------- */
@@ -790,6 +889,28 @@ function renderPlan() {
   });
   table.appendChild(tbody);
   planResults.appendChild(table);
+  /* Where the meeting lands in everyone's day: per-member strips for the plan
+     date (viewer time), with the meeting hour ringed in gold. */
+  var day = { y: +dm[1], m: +dm[2], d: +dm[3] };
+  var counts = hourCounts(day);
+  var n = state.members.length;
+  planResults.appendChild(el('p', 'Where the meeting lands in everyone\u2019s day (' +
+    fmtTime(+tm[1], +tm[2]) + ' ' + state.viewerTz + ', ' +
+    dm[1] + '-' + dm[2] + '-' + dm[3] + '):', 'status'));
+  var rows = el('div');
+  state.members.forEach(function (m) {
+    rows.appendChild(buildMemberStrip(m, day, counts, n, +tm[1], -1));
+  });
+  planResults.appendChild(rows);
+  var leg = el('div', null, 'tl-legend');
+  leg.setAttribute('aria-hidden', 'true');
+  var mk = function (cls, label) {
+    var s = el('span'); var i = el('i', null, 'sw ' + cls); s.appendChild(i);
+    s.appendChild(document.createTextNode(label)); return s;
+  };
+  leg.appendChild(mk('work', 'Working'));
+  leg.appendChild(mk('meet', 'Meeting time'));
+  planResults.appendChild(leg);
   planResults.appendChild(el('p', 'Generated for viewer time zone: ' + state.viewerTz + '.', 'status'));
   planGenerated = true;
 }
@@ -892,6 +1013,7 @@ document.getElementById('btn-clear').addEventListener('click', function () {
 function renderAll() {
   renderMembers();
   renderOverlap();
+  renderTimeline();
   if (planGenerated) renderPlan();
 }
 fillZoneSelect(viewerSel, state.viewerTz);
