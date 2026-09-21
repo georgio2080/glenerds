@@ -1,141 +1,931 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free Offline Micro-Tools &amp; Calculators | Glenerds</title>
-<meta name="description" content="Free offline micro-tools and calculators from Glenerds: habit tracker, 52-week savings challenge, net worth tracker, plus paid one-time toolkits. No account, no subscription.">
-<link rel="canonical" href="https://glenerds.github.io/glenerds/">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Glenerds">
-<meta property="og:title" content="Free Offline Micro-Tools &amp; Calculators | Glenerds">
-<meta property="og:description" content="Free offline micro-tools and calculators from Glenerds: habit tracker, 52-week savings challenge, net worth tracker, plus paid one-time toolkits. No account, no subscription.">
-<meta property="og:url" content="https://glenerds.github.io/glenerds/">
-<script>
-(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
-</script>
-<link rel="stylesheet" href="style.css">
-</head><body>
-<header class="site"><div class="wrap">
-<a class="brand" href="./index.html">Glenerds</a>
-<nav class="main">
-<a href="./index.html">Home</a>
-<a href="./index.html#free-tools">Free Tools</a>
-<a href="./index.html#products">Products</a>
-<a href="https://glenerds.gumroad.com">Store</a>
-<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">◐ Dark</button>
-</nav></div></header>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backyard Chicken Egg Tracker — Flock Records, Feed Costs &amp; Cost Per Dozen | HenTrack</title>
+<meta name="description" content="Track daily egg production, feed costs, flock health and egg sales for your backyard chickens. Offline, private, free forever.">
+<style>
+:root{
+  --bg:#f6f4ec; --card:#ffffff; --ink:#23281f; --muted:#6b705c;
+  --line:#e3ddc9; --accent:#5b8c3e; --accent-d:#48702f; --accent-soft:#eaf3df;
+  --warn:#b7791f; --bad:#b3402e; --good:#3e7d44;
+  --input-bg:#ffffff; --shadow:0 1px 3px rgba(35,40,31,.08);
+  --radius:14px;
+}
+[data-theme="dark"]{
+  --bg:#141712; --card:#1e231b; --ink:#ecead9; --muted:#a3a88f;
+  --line:#2e342a; --accent:#8fbf6a; --accent-d:#a5d37f; --accent-soft:#24301c;
+  --warn:#d9a441; --bad:#e0684f; --good:#7cc47f;
+  --input-bg:#262c22; --shadow:0 1px 3px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:860px;margin:0 auto;padding:16px 14px 90px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 4px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-d));
+  display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.brand h1{font-size:22px;margin:0;letter-spacing:-.3px}
+.tagline{color:var(--muted);font-size:13.5px;margin:2px 0 14px}
+.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:10px;padding:9px 14px;font-weight:600}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-d)}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--line)}
+.btn.small{padding:5px 10px;font-size:13px;border-radius:8px}
+.theme-btn{white-space:nowrap}
+.tabs{display:flex;gap:6px;overflow-x:auto;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:6px;margin:0 0 14px;box-shadow:var(--shadow)}
+.tabs button{flex:1;white-space:nowrap;border:0;background:transparent;color:var(--muted);font:inherit;
+  font-weight:600;padding:10px 8px;border-radius:9px;cursor:pointer;font-size:14px}
+.tabs button.active{background:var(--accent-soft);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px;margin:0 0 14px;box-shadow:var(--shadow)}
+.card h2{font-size:17px;margin:0 0 4px}
+.card .sub{color:var(--muted);font-size:13px;margin:0 0 12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:560px){.grid3{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+.field{margin:0 0 10px}
+.field label{display:block;font-size:13px;font-weight:600;margin:0 0 4px}
+.field .hint{font-weight:400;color:var(--muted);font-size:12px}
+input,select,textarea{font:inherit;width:100%;background:var(--input-bg);color:var(--ink);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+input[type="checkbox"]{width:auto}
+.rowline{display:flex;gap:8px;align-items:center}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 14px}
+@media(max-width:640px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px;box-shadow:var(--shadow)}
+.stat .k{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+.stat .v{font-size:22px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;font-weight:600;color:var(--muted)}
+.stat{cursor:pointer}
+.stat:focus{outline:none;filter:drop-shadow(0 0 5px rgba(91,140,62,.9))}
+.stat.spot{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);
+  padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent-d)}
+[data-theme="dark"] .pill{color:var(--accent)}
+.pill.warn{background:#f7ecd4;color:#8a5c14}
+[data-theme="dark"] .pill.warn{background:#3a2f16;color:var(--warn)}
+.pill.bad{background:#f9dcd4;color:#96331f}
+[data-theme="dark"] .pill.bad{background:#3d231c;color:var(--bad)}
+.xbtn{border:0;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;line-height:1}
+.xbtn:hover{color:var(--bad);background:var(--accent-soft)}
+.empty{color:var(--muted);text-align:center;padding:22px 10px;font-size:14px}
+footer.attrib{text-align:center;color:var(--muted);font-size:13px;margin:26px 0 8px}
+footer.attrib a{color:var(--accent);font-weight:700;text-decoration:none}
+details.how{margin:0 0 14px}
+details.how summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--accent-d)}
+[data-theme="dark"] details.how summary{color:var(--accent)}
+.kbd-note{font-size:13px;color:var(--muted)}
+@media print{
+  .tabs,.no-print,header.top .theme-btn,footer.attrib .np{display:none!important}
+  body{background:#fff;color:#000}
+  .card,.stat{box-shadow:none;break-inside:avoid}
+  .wrap{padding:0;max-width:100%}
+}
+/* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
+.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.g-store-btn {
+  display: inline-flex; align-items: center;
+  background: var(--g-accent, #4f46e5);
+  color: #ffffff;
+  border-radius: var(--g-radius-pill, 999px);
+  padding: 8px 15px;
+  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
+  text-decoration: none; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:active { transform: scale(0.97); }
+.g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+/* Glenerds standard header cluster: More Apps + sample flask + theme + sound */
+.g-header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
+a.g-store-btn, header .g-store-btn { color: #ffffff; }
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card);border:1px solid var(--line);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn svg{width:30px;height:30px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:2rem;line-height:1}
+.round-btn:hover{border-color:var(--accent)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+/* interactive chart segments: keyboard focus = drop-shadow, never a rectangular outline */
+svg.chart{width:100%;height:170px;display:block}
+.chart-seg{cursor:pointer}
+.chart-seg:focus{outline:none;filter:drop-shadow(0 0 6px rgba(91,140,62,.95))}
+.chart-seg.spot{stroke:#23281f;stroke-width:2}
+[data-theme="dark"] .chart-seg.spot{stroke:#ecead9}
+.chart-detail{font-size:13px;color:var(--muted);margin:6px 0 0;min-height:1.4em}
+.viz-note{font-size:12.5px;color:var(--muted);margin:4px 0 0}
+.exp-items{display:block;margin-top:6px;max-width:300px}
+.exp-item{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-top:1px dashed var(--line);font-size:.86em}
+.exp-item b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.egg-items{display:block;margin-top:6px;max-width:340px}
+.egg-item{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-top:1px dashed var(--line);font-size:.86em}
+.egg-bad{color:var(--bad);font-weight:700}
+.exp-more{display:block;font-size:.78em;opacity:.7;margin-top:2px}
+.hm-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:320px}
+.hm-day{aspect-ratio:1;border-radius:6px;min-width:0;cursor:pointer;border:1px solid var(--line)}
+.hm-day:focus{outline:none;filter:drop-shadow(0 0 5px rgba(91,140,62,.95))}
+.hm-day.spot{outline:2px solid var(--ink);outline-offset:1px}
+.hm-lbl{font-size:10.5px;color:var(--muted);text-align:center}
+.hm-legend{display:flex;align-items:center;gap:4px;margin-top:8px;font-size:11.5px;color:var(--muted)}
+.hm-sw{width:14px;height:14px;border-radius:4px;border:1px solid var(--line)}
+.hm-flex{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+.hm-side{flex:1 1 220px;min-width:200px}
+.hm-side h3{font-size:14px;margin:2px 0 2px}
+.hm-side .sub{margin:0 0 8px}
+.wd-row{display:flex;align-items:center;gap:8px;margin:4px 0;cursor:pointer;border-radius:4px}
+.wd-lbl{width:30px;font-size:11.5px;color:var(--muted)}
+.wd-track{flex:1;height:14px;background:var(--line);border-radius:4px;overflow:hidden}
+.wd-fill{display:block;height:100%;background:#5b8c3e;border-radius:4px}
+[data-theme="dark"] .wd-fill{background:#8fbf6a}
+.wd-val{width:34px;text-align:right;font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.wd-row:focus{outline:none}
+.wd-row:focus .wd-fill{filter:drop-shadow(0 0 4px rgba(91,140,62,.9))}
+.wd-row.spot .wd-track{outline:2px solid var(--ink);outline-offset:1px}
+.donut-flex{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#expDonut{width:132px;height:132px;flex:none}
+.donut-side{min-width:0;flex:1 1 160px}
+@media (max-width: 640px) {
+  header.top { flex-wrap: wrap; }
+  .g-header-actions { margin-left: 0; gap: 6px; }
+}
+.g-cta-strip {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 28px 0 0; padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(79,70,229,.08);
+  border: 1px solid rgba(79,70,229,.28);
+  color: inherit;
+  font-size: 0.95rem; font-weight: 600;
+  text-decoration: none;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
+.g-cta-strip:active { transform: scale(0.99); }
+.g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
+@media (max-width: 440px) {
+  .g-store-btn { padding: 8px 12px; }
+  .g-header-actions { gap: 6px; }
+}
+@media print {
+  .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
+}
+</style>
+</head>
+<body>
 <div class="wrap">
-<main>
-<div class="hero">
-<h1>Free Offline Micro-Tools &amp; Calculators</h1>
-<p class="lead">Glenerds builds tiny, single-purpose tools that run entirely in your browser.
-No accounts, no subscriptions, no uploads &mdash; your data never leaves your device.
-Start with a free tool below, or browse the paid toolkits when you need the full power version.</p>
-</div>
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">🐔</div>
+      <h1>HenTrack</h1>
+    </div>
+    <div class="g-header-actions">
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button class="round-btn theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+    </div>
+  </header>
+  <p class="tagline">Daily egg counts, feed costs, flock records &amp; egg sales for backyard chicken keepers. 100% offline — your data never leaves this device.</p>
 
-<section class="block" id="free-tools">
-<h2 class="sec">Free Tools &mdash; Use Them Right Now</h2>
-<div class="grid">
-<div class="card"><h3>Free Offline Habit Tracker</h3><p>Build daily streaks with a simple printable-style tracker that saves to your browser. No account, no app install.</p>
-<a class="btn" href="tools/habit-tracker/index.html">Open the free tool</a></div>
-<div class="card"><h3>Free 52-Week Savings Challenge Calculator</h3><p>See exactly how much a 52-week money challenge adds up to, customize the weekly amount, and track your progress week by week.</p>
-<a class="btn" href="tools/savings-challenge/index.html">Open the free tool</a></div>
-<div class="card"><h3>Free Net Worth Tracker</h3><p>List what you own and what you owe, watch your net worth change over time, all stored privately on your device.</p>
-<a class="btn" href="tools/net-worth-tracker/index.html">Open the free tool</a></div>
-<div class="card"><h3>Free Debt Payoff Strategy Planner</h3><p>Compare snowball vs avalanche vs custom payoff plans — total interest, payoff date, and schedule. Runs entirely offline, privately.</p>
-<a class="btn" href="tools/debt-payoff-planner/index.html">Open the free tool</a></div>
-<div class="card"><h3>Free Compound Interest Calculator</h3><p>Model investing growth with inflation, fees, and tax adjustments — simple or advanced mode.</p>
-<a class="btn" href="tools/compound-interest-calculator/index.html">Open the free tool</a></div>
-</div>
-<p class="small">More free tools: <a href="tools/moving-cost-calculator/index.html">moving cost calculator</a>
-&middot; <a href="tools/craft-pricing-calculator/index.html">craft pricing calculator</a>
-&middot; <a href="tools/contractor-bid-comparison/index.html">contractor bid comparison worksheet</a>
-&middot; <a href="tools/security-deposit-deduction-calculator/index.html">deposit deduction calculator</a>
-&middot; <a href="tools/hoa-special-assessment-calculator/index.html">HOA assessment calculator</a>
-&middot; <a href="tools/css-specificity-calculator/index.html">CSS specificity calculator</a>
-&middot; <a href="tools/index.html">all 14 free tools</a></p>
-</section>
+  <nav class="tabs no-print" role="tablist" aria-label="Sections">
+    <button role="tab" data-tab="dash" class="active">Dashboard</button>
+    <button role="tab" data-tab="eggs">Egg Log</button>
+    <button role="tab" data-tab="flock">Flock</button>
+    <button role="tab" data-tab="costs">Feed &amp; Costs</button>
+    <button role="tab" data-tab="sales">Egg Sales</button>
+    <button role="tab" data-tab="data">Backup</button>
+  </nav>
 
-<section class="block prose">
-<h2 class="sec">Why offline tools?</h2>
-<p>Most web apps make you create an account before you can do anything, then charge you every month
-for the privilege. Every Glenerds tool takes the opposite approach: it is a single file that runs
-in any modern browser, works with no internet connection, and stores everything in your browser's
-local storage. There is nothing to sign up for, nothing to sync, and nothing that can leak your
-financial or personal data &mdash; because the data never goes anywhere.</p>
-<p>The free tools on this page are fully working, not demos. The habit tracker, the 52-week savings
-challenge calculator, and the net worth tracker each do their job completely, for free, forever.
-They are also a good preview of how Glenerds builds software: fast, private, and focused on exactly
-one task. If you like the approach, the paid toolkits below apply the same philosophy to bigger
-jobs &mdash; vetting a moving company, inspecting a used boat, comparing contractor bids, or pricing
-handmade products &mdash; as a one-time purchase with no subscription attached.</p>
-<p>New to the idea of offline-first software? Pick any free tool above and try it. Everything happens
-on your device, so there is zero risk in experimenting: close the tab and nothing of yours was ever
-uploaded anywhere.</p>
-</section>
+  <section id="tab-dash">
+    <div class="stat-grid" id="statGrid"></div>
+    <p class="chart-detail" id="statDetail" aria-live="polite"></p>
+    <p class="viz-note">Tap a stat for its breakdown — tap again or press Esc to restore.</p>
+    <div class="card">
+      <h2>Egg trend — last 14 days</h2>
+      <p class="sub">Tap Egg Log to record today's count. Tap a point for that day's eggs, costs &amp; sales.</p>
+      <svg class="chart" id="eggChart" viewBox="0 0 800 170" role="group" aria-label="Eggs collected per day, last 14 days"></svg>
+      <p class="chart-detail" id="eggChartDetail" aria-live="polite"></p>
+    </div>
+    <div class="card">
+      <h2>Laying activity — last 5 weeks</h2>
+      <p class="sub">Darker squares = more eggs that day. Tap a day for its count.</p>
+      <div class="hm-flex">
+        <div>
+          <div class="hm-grid" id="heatGrid" role="group" aria-label="Egg laying activity by day"></div>
+          <div class="hm-legend"><span>Less</span><span class="hm-sw" data-lvl="0"></span><span class="hm-sw" data-lvl="1"></span><span class="hm-sw" data-lvl="2"></span><span class="hm-sw" data-lvl="3"></span><span class="hm-sw" data-lvl="4"></span><span>More</span></div>
+        </div>
+        <div class="hm-side">
+          <h3>By weekday</h3>
+          <p class="sub">Average eggs per weekday, last 5 weeks. Tap a bar for its numbers.</p>
+          <div id="weekdayBars" role="group" aria-label="Average eggs by weekday"></div>
+        </div>
+      </div>
+      <p class="chart-detail" id="heatDetail" aria-live="polite"></p>
+    </div>
+    <div class="card">
+      <h2>How cost per dozen works</h2>
+      <p class="sub" style="margin:0">HenTrack divides everything you log under Feed &amp; Costs by the dozens of eggs logged in the same period. Log feed bags, bedding, supplements and vet visits, keep up the daily egg counts, and the number gets more honest every week.</p>
+    </div>
+  </section>
 
-<section class="block" id="products">
-<h2 class="sec">Paid Toolkits &mdash; One-Time Purchase, Yours Forever</h2>
-<div class="grid">
-<div class="card"><h3>Online Fitness Coach Check-In Tracker</h3><p>Log client check-ins, compare weeks side by side, and draft feedback in one click.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/online-fitness-coach-check-in-tracker/index.html">Learn more</a></div>
-<div class="card"><h3>Used Commercial Espresso Machine Inspection Checklist</h3><p>Brand-specific checklists with a risk score and repair-cost estimate before you buy used.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/cremacheck/index.html">Learn more</a></div>
-<div class="card"><h3>Moving Company Scam Checker</h3><p>Score movers on 35 red-flag signals and compare up to 4 quotes side by side.</p>
-<span class="price">$9 one-time</span>
-<a class="btn" href="products/moving-company-quote-comparison-scam-checker/index.html">Learn more</a></div>
-<div class="card"><h3>Contractor Bid Comparison Tool for House Flippers</h3><p>Normalize up to 3 bids into one scope matrix and flag price gaps and scope holes.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/flipbid-reconciler/index.html">Learn more</a></div>
-<div class="card"><h3>HOA Financial Health & Reserve Study Analyzer</h3><p>Score HOA finances from resale-package figures and flag special-assessment risk.</p>
-<span class="price">$9 one-time</span>
-<a class="btn" href="products/hoa-resale-package-reserve-study-risk-analyzer/index.html">Learn more</a></div>
-<div class="card"><h3>Used Boat Pre-Purchase Inspection Checklist</h3><p>Boat-type-specific checklists with weighted risk scoring and repair estimates.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/hullcheck/index.html">Learn more</a></div>
-<div class="card"><h3>Security Deposit Deduction Statement Generator</h3><p>Itemize deposit deductions and print professional tenant statements for small landlords.</p>
-<span class="price">$14 one-time</span>
-<a class="btn" href="products/depositdocket/index.html">Learn more</a></div>
-<div class="card"><h3>Competition BBQ Expense & Payout Tracker</h3><p>Log every contest and see your true season P&amp;L, best and worst contests.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/pitprofit/index.html">Learn more</a></div>
-<div class="card"><h3>Handmade Pricing Calculator for Etsy &amp; Craft Sellers</h3><p>Turn supplies, labor, and fees into suggested prices for every sales channel.</p>
-<span class="price">$14 one-time</span>
-<a class="btn" href="products/handmade-pricing-calculator-etsy-craft-sellers/index.html">Learn more</a></div>
-<div class="card"><h3>CSS Element Inspector for Chrome</h3><p>Hover any element to inspect it, click to lock, copy CSS, selectors, and Tailwind classes.</p>
-<span class="price">$9 one-time</span>
-<a class="btn" href="products/css-element-inspector-chrome/index.html">Learn more</a></div>
+  <section id="tab-eggs" hidden>
+    <div class="card">
+      <h2>Log today's eggs</h2>
+      <p class="sub">One entry per day — logging again for the same date updates it.</p>
+      <div class="grid3">
+        <div class="field"><label for="eggDate">Date</label><input type="date" id="eggDate"></div>
+        <div class="field"><label for="eggCount">Eggs collected</label><input type="number" id="eggCount" min="0" step="1" value="0"></div>
+        <div class="field"><label for="eggBroken">Damaged <span class="hint">(soft shell / broken)</span></label><input type="number" id="eggBroken" min="0" step="1" value="0"></div>
+      </div>
+      <div class="field"><label for="eggNotes">Notes <span class="hint">(optional — double yolks, first egg, predator scare…)</span></label><input type="text" id="eggNotes" placeholder="e.g. 2 double yolks, Marigold's first egg"></div>
+      <button class="btn primary" id="eggAdd" type="button">Save egg count</button>
+    </div>
+    <div class="card">
+      <h2>Recent days</h2>
+      <div id="eggList"></div>
+    </div>
+  </section>
+
+  <section id="tab-flock" hidden>
+    <div class="card">
+      <h2>Add a hen</h2>
+      <div class="grid2">
+        <div class="field"><label for="henName">Name</label><input type="text" id="henName" placeholder="e.g. Marigold"></div>
+        <div class="field"><label for="henBreed">Breed <span class="hint">(optional)</span></label><input type="text" id="henBreed" placeholder="e.g. Rhode Island Red"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="henHatch">Hatch / acquired date <span class="hint">(optional)</span></label><input type="date" id="henHatch"></div>
+        <div class="field"><label for="henStatus">Status</label>
+          <select id="henStatus">
+            <option value="laying">Laying</option>
+            <option value="pullet">Pullet (not laying yet)</option>
+            <option value="molting">Molting</option>
+            <option value="broody">Broody</option>
+            <option value="retired">Retired</option>
+            <option value="lost">Lost / rehomed</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn primary" id="henAdd" type="button">Add hen</button>
+    </div>
+    <div class="card">
+      <h2>Your flock</h2>
+      <p class="sub">Change a hen's status any time — lay rate only counts hens marked Laying.</p>
+      <div id="flockList"></div>
+    </div>
+  </section>
+
+  <section id="tab-costs" hidden>
+    <div class="card">
+      <h2>Log feed &amp; supplies</h2>
+      <div class="grid2">
+        <div class="field"><label for="expDate">Date</label><input type="date" id="expDate"></div>
+        <div class="field"><label for="expCat">Category</label>
+          <select id="expCat">
+            <option>Feed</option><option>Bedding</option><option>Supplements / grit</option>
+            <option>Vet / meds</option><option>Equipment / coop</option><option>Chicks / birds</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="expItem">Item</label><input type="text" id="expItem" placeholder="e.g. 50 lb layer pellets"></div>
+        <div class="field"><label for="expCost">Cost ($)</label><input type="number" id="expCost" min="0" step="0.01" placeholder="0.00"></div>
+      </div>
+      <button class="btn primary" id="expAdd" type="button">Add expense</button>
+    </div>
+    <div class="card">
+      <h2>Expenses</h2>
+      <p class="sub" id="expTotal"></p>
+      <div class="donut-flex" id="expDonutWrap" hidden>
+        <svg id="expDonut" viewBox="0 0 140 140" role="group" aria-label="Expenses by category"></svg>
+        <div class="donut-side">
+          <p style="font-weight:800;margin:0 0 2px;font-size:.95rem" id="expDonutTitle">By category</p>
+          <p class="viz-note" id="expDonutNote"></p>
+          <p class="viz-note">Tap a slice for a category total — tap again to restore.</p>
+        </div>
+      </div>
+      <div id="expList"></div>
+    </div>
+  </section>
+
+  <section id="tab-sales" hidden>
+    <div class="card">
+      <h2>Log egg sales</h2>
+      <p class="sub">Sell to neighbors? Track dozens sold and watch the flock pay for itself.</p>
+      <div class="grid3">
+        <div class="field"><label for="saleDate">Date</label><input type="date" id="saleDate"></div>
+        <div class="field"><label for="saleDoz">Dozens sold</label><input type="number" id="saleDoz" min="0" step="0.5" placeholder="0"></div>
+        <div class="field"><label for="salePrice">Price per dozen ($)</label><input type="number" id="salePrice" min="0" step="0.01" placeholder="0.00"></div>
+      </div>
+      <button class="btn primary" id="saleAdd" type="button">Add sale</button>
+    </div>
+    <div class="card">
+      <h2>Sales history</h2>
+      <p class="sub" id="saleTotal"></p>
+      <div id="saleList"></div>
+    </div>
+  </section>
+
+  <section id="tab-data" hidden>
+    <div class="card">
+      <h2>Backup &amp; restore</h2>
+      <p class="sub">Your data lives only in this browser. Export a backup file before clearing browser data or switching devices.</p>
+      <div class="rowline no-print" style="flex-wrap:wrap">
+        <button class="btn" id="expJson" type="button">Export backup (JSON)</button>
+        <label class="btn" for="impJson" style="cursor:pointer">Import backup</label>
+        <input type="file" id="impJson" accept="application/json" hidden>
+        <button class="btn" id="printBtn" type="button">Print summary</button>
+      </div>
+      <p class="kbd-note no-print" id="dataStats" style="margin-top:12px"></p>
+      <div class="no-print" style="margin-top:14px">
+        <button class="btn danger small" id="wipeBtn" type="button">Delete all HenTrack data</button>
+      </div>
+    </div>
+    <details class="how">
+      <summary>What counts as a "laying" hen?</summary>
+      <p class="kbd-note">Only hens with status <b>Laying</b> count toward the lay-rate percentage (eggs per hen per day). Mark molting, broody or pullet hens with their real status and the rate stays honest.</p>
+    </details>
+  </section>
+
+  <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
+</a>
+<footer class="attrib">
+    Free offline tool <a href="https://glenerds.gumroad.com">by Glenerds</a> — no signup, no tracking, your data never leaves this device.
+  </footer>
 </div>
-<p class="small">Comparison guides: <a href="alternatives/craftybase-alternative/index.html">Craftybase alternative for makers</a>
-&middot; <a href="alternatives/moving-quote-websites-alternative/index.html">moving quote website alternative</a>
-&middot; <a href="alternatives/servicetitan-alternative/index.html">ServiceTitan alternative for flippers</a>
-&middot; <a href="alternatives/hoa-management-software-alternative/index.html">HOA software alternative for buyers</a>
-&middot; <a href="alternatives/trainerize-truecoach-alternative/index.html">Trainerize / TrueCoach alternative</a></p>
-<p class="small">Every paid toolkit is sold through Gumroad as a one-time purchase.
-No subscription, no account required to use the tool itself &mdash; download it and it runs offline in your browser.</p>
-</section>
-</main>
-</div>
-<footer class="site"><div class="wrap">
-<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
-inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
-<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
-<p class="small"><a href="./site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
-<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
-</div></footer>
 <script>
+"use strict";
+/* ---------- utils ---------- */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function todayStr(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function num(v){var n=parseFloat(v);return isFinite(n)?n:0;}
+function money(n){n=num(n);return (n<0?"-":"")+"$"+Math.abs(n).toFixed(2);}
+function parseDate(s){var p=String(s||"").split("-");return new Date(+p[0],(+p[1]||1)-1,+p[2]||1);}
+function fmtDate(s){var d=parseDate(s);return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});}
+function daysAgo(n){var d=new Date();d.setDate(d.getDate()-n);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function inLastDays(s,n){return s>=daysAgo(n-1)&&s<=todayStr();}
+
+/* ---------- state ---------- */
+var KEY="hentrack-v1";
+var state={hens:[],eggLogs:[],expenses:[],sales:[],theme:null};
+var sampleOn=false, sampleSnap=null;
+function load(){
+  try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);for(var k in state){if(s[k]!==undefined)state[k]=s[k];}}}catch(e){}
+}
+function save(){if(sampleOn)return;try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+load();
+
+/* ---------- theme ---------- */
+function applyTheme(t){
+  state.theme=t;document.documentElement.setAttribute("data-theme",t);save();
+  var dark=(t==="dark"),btn=$("themeToggle"),l=dark?"Switch to light mode":"Switch to dark mode";
+  btn.innerHTML=dark?'<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>':"🌙";
+  btn.setAttribute("aria-pressed",dark?"true":"false");
+  btn.setAttribute("aria-label",l);btn.title=l;
+}
+(function initTheme(){
+  var t=state.theme;
+  if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
+  applyTheme(t);
+})();
+$("themeToggle").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");drawChart();drawHeat();drawWeekday();Sound.toggleTheme();Sound.click();});
+
+/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
+function paintSample(){
+  var btn=$("sampleToggle"),l=sampleOn?"Clear sample data":"Try sample data";
+  btn.setAttribute("aria-pressed",sampleOn?"true":"false");
+  btn.setAttribute("aria-label",l);btn.title=l;
+}
+function setSample(on){
+  if(on&&!sampleOn){
+    sampleSnap=JSON.stringify(state);
+    sampleOn=true;
+    state.hens=[
+      {id:uid(),name:"Goldie",breed:"Rhode Island Red",hatch:"2024-03-15",status:"laying"},
+      {id:uid(),name:"Pepper",breed:"Barred Plymouth Rock",hatch:"2024-03-15",status:"laying"},
+      {id:uid(),name:"Daisy",breed:"Leghorn",hatch:"2024-05-02",status:"laying"},
+      {id:uid(),name:"Ruby",breed:"Australorp",hatch:"2023-06-10",status:"laying"},
+      {id:uid(),name:"Sunny",breed:"Easter Egger",hatch:"2024-05-02",status:"laying"},
+      {id:uid(),name:"Old Bess",breed:"Orpington",hatch:"2022-04-01",status:"retired"}
+    ];
+    state.eggLogs=[];
+    var counts=[5,4,6,5,3,5,6,4,5,5,6,4,5,3];
+    for(var i=13;i>=0;i--){state.eggLogs.push({id:uid(),date:daysAgo(i),count:counts[13-i],broken:(i%5===0?1:0),notes:""});}
+    state.expenses=[
+      {id:uid(),date:daysAgo(10),cat:"Feed",item:"50 lb layer feed",cost:24.99},
+      {id:uid(),date:daysAgo(6),cat:"Bedding",item:"Pine shavings bale",cost:8.49},
+      {id:uid(),date:daysAgo(2),cat:"Feed",item:"Scratch grains 25 lb",cost:14.99},
+      {id:uid(),date:daysAgo(1),cat:"Supplements / grit",item:"Grit + oyster shell",cost:11.29}
+    ];
+    state.sales=[
+      {id:uid(),date:daysAgo(9),dozens:6,pricePerDozen:4.50},
+      {id:uid(),date:daysAgo(5),dozens:8,pricePerDozen:4.50},
+      {id:uid(),date:daysAgo(1),dozens:7,pricePerDozen:5.00}
+    ];
+    renderAll();
+  }else if(!on&&sampleOn){
+    sampleOn=false;
+    try{var s=JSON.parse(sampleSnap);if(s&&typeof s==="object")state=s;}catch(e){}
+    sampleSnap=null;
+    /* repaint theme from the restored state (reverts any theme toggle made while sampling) */
+    applyTheme(state.theme||"light");
+    renderAll();
+  }
+  paintSample();
+}
+$("sampleToggle").addEventListener("click",function(){setSample(!sampleOn);Sound.click();});
+paintSample();
+
+/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
+var Sound=(function(){
+  var KEY="hentrack.sound",on=true,ctx=null;
+  try{if(window.localStorage.getItem(KEY)==="off")on=false;}catch(e){}
+  function ac(){try{
+    if(!ctx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;ctx=new AC();}
+    return ctx;}catch(e){return null;}}
+  function tone(freq,dur,type,vol,delay){
+    var c=ac();if(!c)return;
+    function play(){try{
+      var t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
+      o.type=type||"sine";o.frequency.value=freq;
+      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.05);}catch(e){}}
+    if(c.state==="suspended"){c.resume().then(play,play);}else{play();}
+  }
+  return{
+    isOn:function(){return on;},
+    toggle:function(){on=!on;try{window.localStorage.setItem(KEY,on?"on":"off");}catch(e){}return on;},
+    click:function(){if(on)tone(520,0.06,"sine",0.045);},
+    select:function(){if(on){tone(660,0.07,"sine",0.055);tone(880,0.09,"sine",0.045,0.06);}},
+    success:function(){if(on){tone(660,0.09,"sine",0.06);tone(990,0.12,"sine",0.05,0.08);}},
+    error:function(){if(on)tone(170,0.16,"sawtooth",0.045);},
+    toggleTheme:function(){if(on)tone(440,0.06,"triangle",0.05);}
+  };
+})();
 (function(){
-  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
-  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
-  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
-  function paint(){var t=cur();root.setAttribute('data-theme',t);
-    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
-  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  var btn=$("soundToggle");if(!btn)return;
+  function paint(){var on=Sound.isOn();
+    btn.innerHTML=on?"🔊":"🔇";
+    btn.setAttribute("aria-pressed",on?"true":"false");
+    btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
+    btn.title="Toggle sounds ("+(on?"on":"off")+")";}
+  btn.addEventListener("click",function(){Sound.toggle();paint();Sound.click();});
   paint();
 })();
+
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tabs button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll(".tabs button").forEach(function(x){x.classList.remove("active");});
+    b.classList.add("active");
+    ["dash","eggs","flock","costs","sales","data"].forEach(function(t){
+      $("tab-"+t).hidden=(t!==b.dataset.tab);
+    });
+    if(b.dataset.tab==="dash"){renderDash();}
+    if(b.dataset.tab==="data"){renderDataStats();}
+    Sound.click();
+  });
+});
+
+/* ---------- dashboard ---------- */
+function activeHens(){return state.hens.filter(function(h){return h.status==="laying";});}
+function eggsIn(days){var c=0;state.eggLogs.forEach(function(l){if(inLastDays(l.date,days))c+=num(l.count);});return c;}
+function expIn(days){var c=0;state.expenses.forEach(function(e){if(inLastDays(e.date,days))c+=num(e.cost);});return c;}
+function revIn(days){var c=0;state.sales.forEach(function(s){if(inLastDays(s.date,days))c+=num(s.dozens)*num(s.pricePerDozen);});return c;}
+function renderDash(){
+  var hens=activeHens().length, eggs30=eggsIn(30), exp30=expIn(30), rev30=revIn(30);
+  var layRate=hens>0?(eggs30/(hens*30)*100):0;
+  var dozens30=eggs30/12;
+  var cpd=dozens30>0?(exp30/dozens30):0;
+  var totExp=state.expenses.reduce(function(a,e){return a+num(e.cost);},0);
+  var totRev=state.sales.reduce(function(a,s){return a+num(s.dozens)*num(s.pricePerDozen);},0);
+  var html="";
+  function statBox(key,label,val,aria){return '<div class="stat" data-stat="'+key+'" tabindex="0" role="button" aria-label="'+aria+'"><div class="k">'+label+'</div><div class="v">'+val+'</div></div>';}
+  html+=statBox("hens","Laying hens",hens,"Laying hens: "+hens+". Activate for flock detail.");
+  html+=statBox("eggs","Eggs · 30 days",eggs30,"Eggs in the last 30 days: "+eggs30+". Activate for the daily breakdown.");
+  html+=statBox("layrate","Lay rate",layRate.toFixed(0)+"<small>%</small>","Lay rate: "+layRate.toFixed(0)+" percent. Activate to see how it is calculated.");
+  html+=statBox("cpd","Cost / dozen · 30d",(dozens30>0?money(cpd):"—"),"Cost per dozen over the last 30 days. Activate to see the calculation.");
+  html+=statBox("exp30","Spent · 30 days",money(exp30),"Spent in the last 30 days: "+money(exp30)+". Activate for the category breakdown.");
+  html+=statBox("rev30","Egg revenue · 30d",money(rev30),"Egg revenue in the last 30 days: "+money(rev30)+". Activate for the sales breakdown.");
+  html+=statBox("totexp","All-time spent",money(totExp),"All-time spent: "+money(totExp)+". Activate for the category breakdown.");
+  html+=statBox("profit","All-time profit",money(totRev-totExp),"All-time profit: "+money(totRev-totExp)+". Activate to see the math.");
+  $("statGrid").innerHTML=html;
+  wireStatClicks();
+  drawChart();
+  drawHeat();
+  drawWeekday();
+}
+/* ---------- interactive SVG visuals (offline, no libraries) ---------- */
+var NS="http://www.w3.org/2000/svg";
+var PAL=["#5b8c3e","#0e7490","#b7791f","#9333ea","#dc2626","#0d9488","#db2777"];
+function svgEl(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+function polar(cx,cy,r,deg){var a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+function donutPath(cx,cy,r,ir,a0,a1){
+  var large=(a1-a0)>180?1:0;
+  var p0=polar(cx,cy,r,a0),p1=polar(cx,cy,r,a1),q1=polar(cx,cy,ir,a1),q0=polar(cx,cy,ir,a0);
+  return "M"+p0[0].toFixed(2)+","+p0[1].toFixed(2)+" A"+r+","+r+" 0 "+large+",1 "+p1[0].toFixed(2)+","+p1[1].toFixed(2)+
+    " L"+q1[0].toFixed(2)+","+q1[1].toFixed(2)+" A"+ir+","+ir+" 0 "+large+",0 "+q0[0].toFixed(2)+","+q0[1].toFixed(2)+" Z";
+}
+function pickToggle(el,fn){el.addEventListener("click",fn);el.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();fn();}});}
+function eggByDate(d){var c=0,b=0;state.eggLogs.forEach(function(l){if(l.date===d){c+=num(l.count);b+=num(l.broken);}});return {c:c,b:b};}
+/* underlying log rows behind a day's aggregate — shared by the line chart + heatmap */
+function eggLogItemsHTML(d){
+  var logs=state.eggLogs.filter(function(l){return l.date===d;});
+  if(!logs.length)return '';
+  return '<span class="egg-items">'+logs.map(function(l){
+    return '<span class="egg-item"><span><b>'+num(l.count)+' collected</b>'+
+      (num(l.broken)?' · <span class="egg-bad">'+num(l.broken)+' damaged</span>':'')+
+      (l.notes?' · '+esc(l.notes):'')+'</span></span>';
+  }).join('')+'</span>';
+}
+
+var eggSpot=-1, heatSpot=null, expSpot=-1;
+
+/* line chart: eggs per day, last 14 days — tap a point for detail */
+function drawChart(){
+  var svg=$("eggChart");if(!svg||$("tab-dash").hidden)return;
+  svg.innerHTML="";
+  var W=800,H=170,padL=36,padB=26,padT=12;
+  var dark=document.documentElement.getAttribute("data-theme")==="dark";
+  var grid=dark?"#2e342a":"#e3ddc9", line=dark?"#8fbf6a":"#5b8c3e", txt=dark?"#a3a88f":"#6b705c";
+  var data=[];
+  for(var i=13;i>=0;i--){var d=daysAgo(i),e=eggByDate(d);data.push({d:d,c:e.c,b:e.b});}
+  var max=0;data.forEach(function(x){if(x.c>max)max=x.c;});if(max<4)max=4;
+  var X=function(i){return padL+i*(W-padL-14)/13;}, Y=function(c){return padT+(H-padT-padB)*(1-c/max);};
+  for(var g=0;g<=4;g++){var y=padT+(H-padT-padB)*(g/4);
+    svg.appendChild(svgEl("line",{x1:padL,y1:y,x2:W-10,y2:y,stroke:grid,"stroke-width":1}));
+    var t=svgEl("text",{x:6,y:y+4,fill:txt,"font-size":11});t.textContent=Math.round(max*(1-g/4));svg.appendChild(t);}
+  var pts=data.map(function(x,i){return X(i).toFixed(1)+","+Y(x.c).toFixed(1);}).join(" ");
+  var area=svgEl("polyline",{points:padL+","+(H-padB)+" "+pts+" "+(W-10)+","+(H-padB),fill:line,opacity:0.14,stroke:"none"});
+  svg.appendChild(area);
+  svg.appendChild(svgEl("polyline",{points:pts,fill:"none",stroke:line,"stroke-width":2.5,"stroke-linejoin":"round","stroke-linecap":"round"}));
+  var dots=[];
+  data.forEach(function(x,i){
+    var dt=parseDate(x.d),lab=(dt.getMonth()+1)+"/"+dt.getDate();
+    var cEl=svgEl("circle",{cx:X(i),cy:Y(x.c),r:eggSpot===i?9:6,fill:line,stroke:eggSpot===i?(dark?"#ecead9":"#23281f"):"none","stroke-width":2,
+      class:"chart-seg",tabindex:"0",role:"button","aria-label":lab+": "+x.c+" eggs"+(x.b?", "+x.b+" damaged":"")});
+    pickToggle(cEl,function(){
+      eggSpot=(eggSpot===i?-1:i);
+      dots.forEach(function(d2,j){d2.setAttribute("r",eggSpot===j?9:6);
+        d2.setAttribute("stroke",eggSpot===j?(dark?"#ecead9":"#23281f"):"none");
+        d2.setAttribute("opacity",eggSpot<0?"1":(eggSpot===j?"1":"0.35"));
+        d2.classList.toggle("spot",eggSpot===j);});
+      $("eggChartDetail").innerHTML=eggSpot<0?"":"<strong>"+fmtDate(data[eggSpot].d)+"</strong> — "+data[eggSpot].c+" eggs"+(data[eggSpot].b?" ("+data[eggSpot].b+" damaged)":"")+eggLogItemsHTML(data[eggSpot].d)+dayMoneyHTML(data[eggSpot].d);
+      Sound.select();
+    });
+    if(eggSpot===i)cEl.classList.add("spot");
+    svg.appendChild(cEl);dots.push(cEl);
+    if(i%2===0){var dl=svgEl("text",{x:X(i),y:H-8,"text-anchor":"middle",fill:txt,"font-size":11});dl.textContent=lab;svg.appendChild(dl);}
+  });
+}
+
+/* calendar heatmap: egg activity, last 5 weeks — tap a day for its count */
+var HM_DAYS=["Su","Mo","Tu","We","Th","Fr","Sa"];
+var HM_LIGHT=["#eef0e6","#d9e6c6","#b3d19a","#84b56e","#5b8c3e"];
+var HM_DARK=["#232a1f","#31402a","#476336","#5b8c3e","#8fbf6a"];
+function drawHeat(){
+  var grid=$("heatGrid");if(!grid||$("tab-dash").hidden)return;
+  var dark=document.documentElement.getAttribute("data-theme")==="dark";
+  var pal=dark?HM_DARK:HM_LIGHT;
+  document.querySelectorAll(".hm-sw").forEach(function(s){s.style.background=pal[+s.getAttribute("data-lvl")];});
+  grid.innerHTML="";
+  HM_DAYS.forEach(function(d){var s=document.createElement("span");s.className="hm-lbl";s.textContent=d;grid.appendChild(s);});
+  var cells=[];
+  for(var i=34;i>=0;i--){var d=daysAgo(i),e=eggByDate(d);cells.push({d:d,c:e.c,b:e.b});}
+  var max=0;cells.forEach(function(x){if(x.c>max)max=x.c;});
+  var startPad=parseDate(cells[0].d).getDay();
+  for(var p=0;p<startPad;p++){var sp=document.createElement("span");sp.setAttribute("aria-hidden","true");grid.appendChild(sp);}
+  cells.forEach(function(x){
+    var b=document.createElement("button");
+    b.type="button";
+    var lvl=max>0?Math.min(4,Math.round(x.c/max*4)):0;
+    b.className="hm-day"+(heatSpot===x.d?" spot":"");
+    b.style.background=pal[lvl];
+    b.setAttribute("aria-label",fmtDate(x.d)+": "+x.c+" eggs"+(x.b?", "+x.b+" damaged":""));
+    b.title=fmtDate(x.d)+": "+x.c+" eggs";
+    b.addEventListener("click",function(){
+      heatSpot=(heatSpot===x.d?null:x.d);
+      if(heatSpot&&wdSpot>=0){wdSpot=-1;drawWeekday();}
+      grid.querySelectorAll(".hm-day").forEach(function(z){z.classList.remove("spot");
+        z.style.opacity=heatSpot?(z===b?"1":"0.45"):"";});
+      if(heatSpot){b.classList.add("spot");$("heatDetail").innerHTML="<strong>"+fmtDate(x.d)+"</strong> — "+x.c+" eggs"+(x.b?" ("+x.b+" damaged)":"")+eggLogItemsHTML(x.d)+dayMoneyHTML(x.d);}
+      else{$("heatDetail").innerHTML="";}
+      Sound.select();
+    });
+    grid.appendChild(b);
+  });
+}
+
+/* eggs by weekday — fills the space beside the heatmap; tap a bar for its numbers */
+var wdSpot=-1;
+var WD_NAMES=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+function drawWeekday(){
+  var wrap=$("weekdayBars");if(!wrap||$("tab-dash").hidden)return;
+  var tot=[0,0,0,0,0,0,0],n=[0,0,0,0,0,0,0];
+  for(var i=34;i>=0;i--){var d=daysAgo(i),e=eggByDate(d),w=parseDate(d).getDay();tot[w]+=e.c;n[w]++;}
+  var max=0;tot.forEach(function(t,i){var a=n[i]?t/n[i]:0;if(a>max)max=a;});
+  wrap.innerHTML="";
+  WD_NAMES.forEach(function(name,w){
+    var avg=n[w]?tot[w]/n[w]:0;
+    var row=document.createElement("div");
+    row.className="wd-row"+(wdSpot===w?" spot":"");
+    row.tabIndex=0;row.setAttribute("role","button");
+    row.setAttribute("aria-label",name+": average "+avg.toFixed(1)+" eggs per day, "+tot[w]+" total over "+n[w]+" days");
+    row.innerHTML='<span class="wd-lbl">'+name+'</span><span class="wd-track"><span class="wd-fill" style="width:'+(max>0?Math.round(avg/max*100):0)+'%"></span></span><span class="wd-val">'+avg.toFixed(1)+'</span>';
+    pickToggle(row,function(){
+      wdSpot=(wdSpot===w?-1:w);
+      if(wdSpot>=0&&heatSpot){heatSpot=null;drawHeat();}
+      wrap.querySelectorAll(".wd-row").forEach(function(z,i){z.classList.toggle("spot",wdSpot===i);});
+      if(wdSpot>=0){
+        var t2=tot[w],n2=n[w],a2=n2?t2/n2:0,best=0;
+        tot.forEach(function(t3,i3){var a3=n[i3]?t3/n[i3]:0;if(a3>best)best=a3;});
+        $("heatDetail").innerHTML="<strong>"+name+"s</strong> — "+t2+" eggs over "+n2+" "+name+"s (avg <b>"+a2.toFixed(1)+"/day</b>)"+(t2>0&&a2>=best?" · best laying weekday":"");
+      }else{$("heatDetail").innerHTML="";}
+      Sound.select();
+    });
+    wrap.appendChild(row);
+  });
+}
+
+/* donut: expenses by category — tap a slice for its total */
+function drawExpDonut(){
+  var svg=$("expDonut"),wrap=$("expDonutWrap");svg.innerHTML="";
+  var byCat={},tot=0,n=0;
+  state.expenses.forEach(function(e){byCat[e.cat||"Other"]= (byCat[e.cat||"Other"]||0)+num(e.cost);});
+  Object.keys(byCat).forEach(function(k){tot+=byCat[k];n++;});
+  if(!tot){wrap.hidden=true;expSpot=-1;return;}
+  wrap.hidden=false;
+  var cats=Object.keys(byCat).sort(function(a,b){return byCat[b]-byCat[a];});
+  var cx=70,cy=70,r=60,ir=38,a0=0,segs=[];
+  var defT="By category",defN="All-time "+money(tot)+" across "+n+" categor"+(n===1?"y":"ies");
+  var tT=$("expDonutTitle"),tN=$("expDonutNote");
+  function paintExpDetail(){
+    if(expSpot<0){tT.textContent=defT;tN.textContent=defN;return;}
+    var cat=cats[expSpot];
+    var all=state.expenses.filter(function(e){return (e.cat||"Other")===cat;})
+      .sort(function(a,b){return b.date<a.date?-1:1;});
+    tT.textContent=cat;
+    var h=money(byCat[cat])+" — "+Math.round(byCat[cat]/tot*100)+"% of spending";
+    var items=all.slice(0,6);
+    if(items.length){
+      h+='<span class="exp-items">'+items.map(function(e){
+        return '<span class="exp-item"><span>'+esc(fmtDate(e.date))+' · '+esc(e.item||'Expense')+'</span><b>'+money(num(e.cost))+'</b></span>';
+      }).join('')+'</span>';
+      if(all.length>6)h+='<span class="exp-more">+'+(all.length-6)+' more in the log below</span>';
+    }
+    tN.innerHTML=h;
+  }
+  cats.forEach(function(k,i){
+    var a1=a0+byCat[k]/tot*360;
+    var p=svgEl("path",{d:donutPath(cx,cy,r,ir,a0,Math.max(a0+0.5,a1)),fill:PAL[i%PAL.length],
+      class:"chart-seg"+(expSpot===i?" spot":""),tabindex:"0",role:"button",
+      "aria-label":k+": "+money(byCat[k])});
+    (function(idx,cat){
+      pickToggle(p,function(){
+        expSpot=(expSpot===idx?-1:idx);
+        segs.forEach(function(s,j){s.classList.toggle("spot",expSpot===j);
+          if(expSpot<0)s.removeAttribute("opacity");else s.setAttribute("opacity",expSpot===j?"1":"0.28");});
+        paintExpDetail();
+        Sound.select();
+      });
+    })(i,k);
+    svg.appendChild(p);segs.push(p);a0=a1;
+  });
+  paintExpDetail();
+}
+
+/* tap detail for a day: costs + sales alongside the egg count */
+function dayMoneyHTML(d){
+  var ex=0,items=[];
+  state.expenses.forEach(function(e){if(e.date===d){ex+=num(e.cost);items.push(e);}});
+  var dz=0,rev=0;
+  state.sales.forEach(function(s){if(s.date===d){dz+=num(s.dozens);rev+=num(s.dozens)*num(s.pricePerDozen);}});
+  var h="";
+  if(ex>0)h+='<span class="egg-items"><span class="egg-item"><span>Costs that day: <b>'+money(ex)+'</b> — '+items.slice(0,3).map(function(e){return esc(e.item||e.cat||"Expense");}).join(", ")+(items.length>3?" +"+(items.length-3)+" more":"")+'</span></span></span>';
+  if(dz>0)h+='<span class="egg-items"><span class="egg-item"><span>Sales that day: <b>'+dz.toFixed(1)+' dozen · '+money(rev)+'</b></span></span></span>';
+  return h;
+}
+/* stat box click-through: tap a stat for its breakdown, tap again or Esc to restore */
+var statSpot=null;
+function statDetailHTML(key){
+  var hens=activeHens(),eggs30=eggsIn(30),exp30=expIn(30),rev30=revIn(30);
+  var dozens30=eggs30/12,layRate=hens.length>0?(eggs30/(hens.length*30)*100):0;
+  var cpd=dozens30>0?(exp30/dozens30):0;
+  var totExp=state.expenses.reduce(function(a,e){return a+num(e.cost);},0);
+  var totRev=state.sales.reduce(function(a,s){return a+num(s.dozens)*num(s.pricePerDozen);},0);
+  function catList(days){
+    var by={},t=0;
+    state.expenses.forEach(function(e){if(days<0||inLastDays(e.date,days)){var k=e.cat||"Other";by[k]=(by[k]||0)+num(e.cost);t+=num(e.cost);}});
+    var ks=Object.keys(by).sort(function(a,b){return by[b]-by[a];});
+    if(!ks.length)return "No expenses logged in this period.";
+    return "<strong>"+money(t)+"</strong> by category — "+ks.map(function(k){return esc(k)+" "+money(by[k]);}).join(" · ");
+  }
+  if(key==="hens"){
+    var names=hens.slice(0,8).map(function(x){return esc(x.name);}).join(", ");
+    return "<strong>"+hens.length+" of "+state.hens.length+" hens laying</strong>"+(names?" — "+names+(hens.length>8?" +"+(hens.length-8)+" more":""):"")+". Lay rate only counts hens marked Laying.";
+  }
+  if(key==="eggs"){
+    var days=[];for(var i=6;i>=0;i--){var d=daysAgo(i),e=eggByDate(d),dt=parseDate(d);days.push((dt.getMonth()+1)+"/"+dt.getDate()+": <b>"+e.c+"</b>");}
+    return "<strong>"+eggs30+" eggs in 30 days</strong> — last 7 days: "+days.join(" · ");
+  }
+  if(key==="layrate")return "<strong>"+layRate.toFixed(1)+"%</strong> = "+eggs30+" eggs ÷ ("+hens.length+" hens × 30 days). Only hens marked Laying count.";
+  if(key==="cpd"){
+    if(dozens30<=0)return "Log egg counts and feed expenses to get a cost per dozen.";
+    return "<strong>"+money(cpd)+"/dozen</strong> = "+money(exp30)+" spent ÷ "+dozens30.toFixed(1)+" dozen logged in the last 30 days.";
+  }
+  if(key==="exp30")return catList(30);
+  if(key==="rev30"){
+    var dz=0,rev=0;state.sales.forEach(function(s){if(inLastDays(s.date,30)){dz+=num(s.dozens);rev+=num(s.dozens)*num(s.pricePerDozen);}});
+    if(dz<=0)return "No sales logged in the last 30 days.";
+    return "<strong>"+money(rev)+"</strong> = "+dz.toFixed(1)+" dozen sold at an average of "+money(rev/dz)+"/dozen.";
+  }
+  if(key==="totexp")return catList(-1)+" — tap a slice in the Feed &amp; Costs tab for per-item detail.";
+  if(key==="profit")return "<strong>"+money(totRev-totExp)+"</strong> = "+money(totRev)+" all-time revenue − "+money(totExp)+" all-time spent.";
+  return "";
+}
+function wireStatClicks(){
+  document.querySelectorAll("#statGrid .stat").forEach(function(el){
+    pickToggle(el,function(){
+      var key=el.getAttribute("data-stat");
+      statSpot=(statSpot===key?null:key);
+      document.querySelectorAll("#statGrid .stat").forEach(function(s2){s2.classList.toggle("spot",s2.getAttribute("data-stat")===statSpot);});
+      $("statDetail").innerHTML=statSpot?statDetailHTML(statSpot):"";
+      Sound.select();
+    });
+  });
+}
+/* Esc restores every spotlight on the dashboard */
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape")return;
+  var changed=false;
+  if(eggSpot>=0){eggSpot=-1;$("eggChartDetail").innerHTML="";drawChart();changed=true;}
+  if(heatSpot){heatSpot=null;$("heatDetail").innerHTML="";drawHeat();changed=true;}
+  if(wdSpot>=0){wdSpot=-1;if(!heatSpot)$("heatDetail").innerHTML="";drawWeekday();changed=true;}
+  if(expSpot>=0){expSpot=-1;drawExpDonut();changed=true;}
+  if(statSpot){statSpot=null;$("statDetail").innerHTML="";document.querySelectorAll("#statGrid .stat").forEach(function(s){s.classList.remove("spot");});changed=true;}
+  if(changed)Sound.select();
+});
+
+/* ---------- egg log ---------- */
+$("eggDate").value=todayStr();
+$("eggAdd").addEventListener("click",function(){
+  var d=$("eggDate").value||todayStr();
+  var ex=state.eggLogs.find(function(l){return l.date===d;});
+  var rec={id:ex?ex.id:uid(),date:d,count:Math.max(0,Math.round(num($("eggCount").value))),
+    broken:Math.max(0,Math.round(num($("eggBroken").value))),notes:$("eggNotes").value.trim()};
+  if(ex){state.eggLogs[state.eggLogs.indexOf(ex)]=rec;}else{state.eggLogs.push(rec);}
+  save();$("eggNotes").value="";renderEggs();Sound.success();
+});
+function renderEggs(){
+  var rows=state.eggLogs.slice().sort(function(a,b){return b.date<a.date?-1:1;}).slice(0,30);
+  if(!rows.length){$("eggList").innerHTML='<div class="empty">No egg counts yet — log your first day above.</div>';return;}
+  var h='<table><thead><tr><th>Date</th><th class="num">Eggs</th><th class="num">Damaged</th><th>Notes</th><th></th></tr></thead><tbody>';
+  rows.forEach(function(l){
+    h+='<tr><td>'+esc(fmtDate(l.date))+'</td><td class="num"><b>'+num(l.count)+'</b></td><td class="num">'+num(l.broken)+'</td><td>'+esc(l.notes)+'</td><td class="num"><button class="xbtn no-print" data-del-egg="'+l.id+'" aria-label="Delete">×</button></td></tr>';
+  });
+  $("eggList").innerHTML=h+'</tbody></table>';
+}
+$("eggList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-del-egg");
+  if(id){state.eggLogs=state.eggLogs.filter(function(l){return l.id!==id;});save();renderEggs();}
+});
+
+/* ---------- flock ---------- */
+var STATUS_LABEL={laying:"Laying",pullet:"Pullet",molting:"Molting",broody:"Broody",retired:"Retired",lost:"Lost / rehomed"};
+var STATUS_CLASS={laying:"",pullet:"warn",molting:"warn",broody:"warn",retired:"",lost:"bad"};
+$("henAdd").addEventListener("click",function(){
+  var name=$("henName").value.trim();
+  if(!name){Sound.error();alert("Give the hen a name first.");return;}
+  state.hens.push({id:uid(),name:name,breed:$("henBreed").value.trim(),hatch:$("henHatch").value,status:$("henStatus").value});
+  save();$("henName").value="";$("henBreed").value="";$("henHatch").value="";renderFlock();Sound.success();
+});
+function renderFlock(){
+  if(!state.hens.length){$("flockList").innerHTML='<div class="empty">No hens yet — add your flock above.</div>';return;}
+  var h='<table><thead><tr><th>Hen</th><th>Breed</th><th>Status</th><th></th></tr></thead><tbody>';
+  state.hens.forEach(function(x){
+    h+='<tr><td><b>'+esc(x.name)+'</b>'+(x.hatch?'<br><span class="kbd-note">'+esc(fmtDate(x.hatch))+'</span>':"")+'</td><td>'+esc(x.breed||"—")+'</td>';
+    h+='<td><select data-hen-status="'+x.id+'" aria-label="Status for '+esc(x.name)+'">';
+    Object.keys(STATUS_LABEL).forEach(function(k){h+='<option value="'+k+'"'+(x.status===k?" selected":"")+'>'+STATUS_LABEL[k]+'</option>';});
+    h+='</select></td><td class="num"><button class="xbtn no-print" data-del-hen="'+x.id+'" aria-label="Remove">×</button></td></tr>';
+  });
+  $("flockList").innerHTML=h+'</tbody></table>';
+}
+$("flockList").addEventListener("change",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-hen-status");
+  if(id){var x=state.hens.find(function(z){return z.id===id;});if(x){x.status=e.target.value;save();}}
+});
+$("flockList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-del-hen");
+  if(id&&confirm("Remove this hen from the flock?")){state.hens=state.hens.filter(function(z){return z.id!==id;});save();renderFlock();}
+});
+
+/* ---------- expenses ---------- */
+$("expDate").value=todayStr();
+$("expAdd").addEventListener("click",function(){
+  var cost=num($("expCost").value);
+  if(cost<=0){Sound.error();alert("Enter the cost first.");return;}
+  state.expenses.push({id:uid(),date:$("expDate").value||todayStr(),cat:$("expCat").value,item:$("expItem").value.trim(),cost:cost});
+  save();$("expItem").value="";$("expCost").value="";renderExp();Sound.success();
+});
+function renderExp(){
+  var tot=state.expenses.reduce(function(a,e){return a+num(e.cost);},0);
+  var m30=expIn(30);
+  $("expTotal").textContent="All-time: "+money(tot)+" · last 30 days: "+money(m30);
+  drawExpDonut();
+  var rows=state.expenses.slice().sort(function(a,b){return b.date<a.date?-1:1;}).slice(0,40);
+  if(!rows.length){$("expList").innerHTML='<div class="empty">No expenses yet.</div>';return;}
+  var h='<table><thead><tr><th>Date</th><th>Item</th><th>Category</th><th class="num">Cost</th><th></th></tr></thead><tbody>';
+  rows.forEach(function(e){
+    h+='<tr><td>'+esc(fmtDate(e.date))+'</td><td>'+esc(e.item||"—")+'</td><td><span class="pill">'+esc(e.cat)+'</span></td><td class="num">'+money(e.cost)+'</td><td class="num"><button class="xbtn no-print" data-del-exp="'+e.id+'" aria-label="Delete">×</button></td></tr>';
+  });
+  $("expList").innerHTML=h+'</tbody></table>';
+}
+$("expList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-del-exp");
+  if(id){state.expenses=state.expenses.filter(function(x){return x.id!==id;});save();renderExp();}
+});
+
+/* ---------- sales ---------- */
+$("saleDate").value=todayStr();
+$("saleAdd").addEventListener("click",function(){
+  var dz=num($("saleDoz").value),pp=num($("salePrice").value);
+  if(dz<=0||pp<0){Sound.error();alert("Enter dozens sold and price per dozen.");return;}
+  state.sales.push({id:uid(),date:$("saleDate").value||todayStr(),dozens:dz,pricePerDozen:pp});
+  save();$("saleDoz").value="";$("salePrice").value="";renderSales();Sound.success();
+});
+function renderSales(){
+  var tot=state.sales.reduce(function(a,s){return a+num(s.dozens)*num(s.pricePerDozen);},0);
+  var dz=state.sales.reduce(function(a,s){return a+num(s.dozens);},0);
+  $("saleTotal").textContent="All-time: "+dz.toFixed(1)+" dozen · "+money(tot)+" revenue";
+  var rows=state.sales.slice().sort(function(a,b){return b.date<a.date?-1:1;}).slice(0,40);
+  if(!rows.length){$("saleList").innerHTML='<div class="empty">No sales logged yet.</div>';return;}
+  var h='<table><thead><tr><th>Date</th><th class="num">Dozens</th><th class="num">$/dozen</th><th class="num">Total</th><th></th></tr></thead><tbody>';
+  rows.forEach(function(s){
+    h+='<tr><td>'+esc(fmtDate(s.date))+'</td><td class="num">'+num(s.dozens).toFixed(1)+'</td><td class="num">'+money(s.pricePerDozen)+'</td><td class="num"><b>'+money(num(s.dozens)*num(s.pricePerDozen))+'</b></td><td class="num"><button class="xbtn no-print" data-del-sale="'+s.id+'" aria-label="Delete">×</button></td></tr>';
+  });
+  $("saleList").innerHTML=h+'</tbody></table>';
+}
+$("saleList").addEventListener("click",function(e){
+  var id=e.target.getAttribute&&e.target.getAttribute("data-del-sale");
+  if(id){state.sales=state.sales.filter(function(x){return x.id!==id;});save();renderSales();}
+});
+
+/* ---------- backup ---------- */
+function renderDataStats(){
+  $("dataStats").textContent=state.hens.length+" hens · "+state.eggLogs.length+" egg days · "+state.expenses.length+" expenses · "+state.sales.length+" sales logged.";
+}
+$("expJson").addEventListener("click",function(){
+  var blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="hentrack-backup-"+todayStr()+".json";document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+});
+$("impJson").addEventListener("change",function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var s=JSON.parse(r.result);
+      if(!s||typeof s!=="object"||!Array.isArray(s.hens))throw new Error("bad file");
+      ["eggLogs","expenses","sales"].forEach(function(k){if(!Array.isArray(s[k]))s[k]=[];});
+      state=s;save();renderAll();renderDataStats();Sound.success();alert("Backup imported.");
+    }catch(err){Sound.error();alert("That file doesn't look like a HenTrack backup.");}
+  };
+  r.readAsText(f);e.target.value="";
+});
+$("printBtn").addEventListener("click",function(){window.print();});
+$("wipeBtn").addEventListener("click",function(){
+  if(confirm("Delete ALL HenTrack data? This cannot be undone.")&&confirm("Really delete everything?")){
+    state={hens:[],eggLogs:[],expenses:[],sales:[],theme:state.theme};
+    save();renderAll();renderDataStats();
+  }
+});
+
+/* ---------- init ---------- */
+function renderAll(){renderDash();renderEggs();renderFlock();renderExp();renderSales();}
+renderAll();
+window.addEventListener("resize",function(){drawChart();});
 </script>
 </body>
 </html>
