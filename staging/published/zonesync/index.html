@@ -77,30 +77,32 @@ body {
 
 /* ---------- hero header ---------- */
 header.top {
-  position: sticky; top: 0; z-index: 50;
-  margin: 0 -16px; padding: 14px 18px;
+  position: static;
+  margin: 0; padding: 14px 18px 6px;
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  background: linear-gradient(120deg, var(--grad-1), var(--grad-2));
-  color: var(--grad-ink);
-  border-radius: 0 0 20px 20px;
-  box-shadow: 0 10px 28px rgba(99,102,241,.38);
+  background: none;
+  color: var(--fg);
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
 }
 .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .logo {
   width: 52px; height: 52px; flex: none; border-radius: 16px;
   display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,.18);
-  border: 1.5px solid rgba(255,255,255,.45);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+  background: var(--accent);
+  border: none;
+  box-shadow: none;
 }
 .logo svg { width: 30px; height: 30px; }
 header.top h1 { margin: 0; font-size: 1.55rem; letter-spacing: -0.01em; }
-header.top p { margin: 3px 0 0; color: rgba(255,255,255,.88); font-size: 0.92rem; }
+header.top p { margin: 3px 0 0; color: var(--muted); font-size: 0.92rem; }
 /* ---------- Header cluster: live HenTrack reference spec (2026-09-21) ---------- */
-.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card);border:1px solid var(--line);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card);border:1px solid var(--line);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem;transition:transform .08s ease,border-color .15s ease}
 .round-btn svg{width:26px;height:26px;flex:none}
 .round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
 .round-btn:hover{border-color:var(--accent)}
+.round-btn:active{transform:scale(.92);border-color:var(--accent)}
 .round-btn:focus{outline:none}
 .round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}

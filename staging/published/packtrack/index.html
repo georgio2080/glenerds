@@ -90,30 +90,32 @@ html[data-theme="dark"] body {
 
 /* ============ Header ============ */
 .app-header {
-  background: var(--grad);
-  color: #fff;
-  padding: 18px 20px;
+  background: none;
+  color: var(--text);
+  padding: 18px 20px 6px;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  position: sticky; top: 0; z-index: 10;
-  box-shadow: 0 4px 20px rgba(79,70,229,.35);
+  position: static;
+  box-shadow: none;
+  border: none;
 }
 .brand { display: flex; align-items: center; gap: 13px; }
 .logo-badge {
   width: 46px; height: 46px; border-radius: 14px; flex: none;
-  background: rgba(255,255,255,.18);
-  border: 1px solid rgba(255,255,255,.35);
+  background: var(--accent);
+  border: none;
   display: inline-flex; align-items: center; justify-content: center;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+  box-shadow: none;
 }
 .logo-badge svg { width: 26px; height: 26px; color: #fff; }
-.app-header h1 { font-size: 1.5rem; margin: 0; letter-spacing: -.02em; color: #fff; }
-.app-header .tagline { color: rgba(255,255,255,.85); font-size: .88rem; margin: 2px 0 0; }
+.app-header h1 { font-size: 1.5rem; margin: 0; letter-spacing: -.02em; color: var(--text); }
+.app-header .tagline { color: var(--text-muted); font-size: .88rem; margin: 2px 0 0; }
 /* Header cluster reference (2026-09-21): exact HenTrack bytes mapped to this app's
    vars — --bg-elev (card), --border (line), --text (ink), --accent, --accent-soft. */
-.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg-elev);border:1px solid var(--border);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg-elev);border:1px solid var(--border);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem;transition:transform .08s ease,border-color .15s ease}
 .round-btn svg{width:26px;height:26px;flex:none}
 .round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
 .round-btn:hover{border-color:var(--accent)}
+.round-btn:active{transform:scale(.92);border-color:var(--accent)}
 .round-btn:focus{outline:none}
 .round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}

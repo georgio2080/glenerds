@@ -84,18 +84,13 @@
 
   /* ---------- header ---------- */
   header.top {
-    background: var(--grad);
-    color: #fff;
-    padding: 1.4rem 1.5rem;
-    box-shadow: 0 4px 24px -8px rgba(79,70,229,.5);
-    position: relative;
-    overflow: hidden;
-  }
-  header.top::after {
-    content: "";
-    position: absolute; inset: 0;
-    background: radial-gradient(600px 200px at 85% 0%, rgba(255,255,255,.14), transparent 60%);
-    pointer-events: none;
+    background: none;
+    color: var(--text);
+    padding: 1.4rem 1.5rem .6rem;
+    box-shadow: none;
+    border: none;
+    position: static;
+    overflow: visible;
   }
   .top-inner {
     max-width: 1080px; margin: 0 auto;
@@ -105,19 +100,20 @@
   .brand { display: flex; align-items: center; gap: .9rem; }
   .logo-badge {
     width: 3rem; height: 3rem; border-radius: 1rem;
-    background: rgba(255,255,255,.16);
-    border: 1px solid rgba(255,255,255,.28);
+    background: var(--accent,#4f46e5);
+    border: none;
     display: inline-flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 14px rgba(0,0,0,.18);
+    box-shadow: none;
   }
   .logo-badge .ico { width: 1.7rem; height: 1.7rem; color: #fff; }
   header.top h1 { margin: 0; font-size: 1.55rem; letter-spacing: -0.02em; font-weight: 800; }
-  header.top p { margin: .15rem 0 0; color: rgba(255,255,255,.85); font-size: .92rem; }
+  header.top p { margin: .15rem 0 0; color: var(--muted); font-size: .92rem; }
   /* ---------- spec header cluster (2026-09-21) ---------- */
-  .round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card,var(--surface,#fff));border:1px solid var(--line,var(--border,rgba(0,0,0,.16)));color:var(--ink,var(--text,var(--fg,#1f2937)));box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem}
+  .round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card,var(--surface,#fff));border:1px solid var(--line,var(--border,rgba(0,0,0,.16)));color:var(--ink,var(--text,var(--fg,#1f2937)));box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem;transition:transform .08s ease,border-color .15s ease}
   .round-btn svg{width:26px;height:26px;flex:none}
   .round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
   .round-btn:hover{border-color:var(--accent,#4f46e5)}
+  .round-btn:active{transform:scale(.92);border-color:var(--accent,#4f46e5)}
   .round-btn:focus{outline:none}
   .round-btn:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:2px}
   .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(79,70,229,.12))}
