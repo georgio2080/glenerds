@@ -121,13 +121,6 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
 .round-btn:focus{outline:none}
 .round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
-/* bare icon buttons: Glen's icon set, no circle borders */
-.icon-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border:0;background:none;box-shadow:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
-.icon-btn img{height:30px;width:auto;flex:none;display:block}
-.icon-btn:hover img{filter:brightness(1.15)}
-.icon-btn:focus{outline:none}
-.icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
-.icon-btn.sample-toggle[aria-pressed="true"] img{filter:drop-shadow(0 0 4px var(--accent))}
 /* interactive chart segments: keyboard focus = drop-shadow, never a rectangular outline */
 svg.chart{width:100%;height:170px;display:block}
 .chart-seg{cursor:pointer}
@@ -191,9 +184,9 @@ svg.chart{width:100%;height:170px;display:block}
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button id="sampleToggle" class="icon-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><img src="icons/flask.png" alt="" aria-hidden="true"></button>
-      <button id="themeToggle" class="icon-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><img src="icons/moon.png" alt="" aria-hidden="true"></button>
-      <button id="soundToggle" class="icon-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)"><img src="icons/speaker.png" alt="" aria-hidden="true"></button>
+      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button class="round-btn theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
     </div>
   </header>
   <p class="tagline">Daily egg counts, feed costs, flock records &amp; egg sales for backyard chicken keepers. 100% offline — your data never leaves this device.</p>
@@ -384,7 +377,7 @@ load();
 function applyTheme(t){
   state.theme=t;document.documentElement.setAttribute("data-theme",t);save();
   var dark=(t==="dark"),btn=$("themeToggle"),l=dark?"Switch to light mode":"Switch to dark mode";
-  btn.querySelector("img").src=dark?"icons/sun.png":"icons/moon.png";
+  btn.innerHTML=dark?"☀️":"🌙";
   btn.setAttribute("aria-pressed",dark?"true":"false");
   btn.setAttribute("aria-label",l);btn.title=l;
 }
@@ -471,7 +464,7 @@ var Sound=(function(){
 (function(){
   var btn=$("soundToggle");if(!btn)return;
   function paint(){var on=Sound.isOn();
-    btn.querySelector("img").src=on?"icons/speaker.png":"icons/speaker-muted.png";
+    btn.innerHTML=on?"🔊":"🔇";
     btn.setAttribute("aria-pressed",on?"true":"false");
     btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
     btn.title="Toggle sounds ("+(on?"on":"off")+")";}
