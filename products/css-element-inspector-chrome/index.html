@@ -153,6 +153,16 @@ how its specificity score breaks down &mdash; the same (a, b, c) math the extens
 for detailed breakdowns, bar charts, and <code>:not()</code> / <code>:is()</code> / <code>:where()</code> handling.</p>
 </div>
 </section>
+<style>
+/* specificity visual: (a,b,c) weight bars */
+.dcs-bars{display:grid;gap:8px;margin:10px 0 4px}
+.dcs-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.dcs-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dcs-val{font-variant-numeric:tabular-nums;font-size:.85rem;white-space:nowrap}
+.dcs-track{grid-column:1/-1;height:12px;border-radius:999px;background:var(--border);overflow:hidden}
+.dcs-track>div{height:100%}
+.dcs-a{background:#dc2626}.dcs-b{background:#f59e0b}.dcs-c{background:#2563eb}
+</style>
 <script>
 (function(){
   function specOf(sel){
@@ -179,6 +189,14 @@ for detailed breakdowns, bar charts, and <code>:not()</code> / <code>:is()</code
       +'<tr><td>Classes, attributes, pseudo-classes</td><td>'+sp[1]+'</td></tr>'
       +'<tr><td>Elements, pseudo-elements</td><td>'+sp[2]+'</td></tr>'
       +'</tbody></table>'
+      /* visual representation: (a,b,c) weight bars */
+      +'<div class="dcs-bars" role="img" aria-label="Specificity weights: '+sp[0]+' IDs, '+sp[1]+' classes, '+sp[2]+' elements">'
+      +[['IDs (a)','dcs-a',sp[0]],['Classes / attributes / pseudo-classes (b)','dcs-b',sp[1]],['Elements / pseudo-elements (c)','dcs-c',sp[2]]].map(function(r){
+          var mx=Math.max(sp[0],sp[1],sp[2],1);
+          return '<div class="dcs-row"><div class="dcs-name">'+r[0]+'</div><div class="dcs-val">'+r[2]+'</div>'
+            +'<div class="dcs-track"><div class="'+r[1]+'" style="width:'+(r[2]/mx*100).toFixed(1)+'%"></div></div></div>';
+        }).join('')
+      +'</div>'
       +'<p class="small">Higher columns win: any ID beats any number of classes; any class beats any number of elements.</p>';
   }
   document.getElementById('dcs-go').onclick=calc;
