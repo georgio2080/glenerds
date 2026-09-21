@@ -574,6 +574,7 @@ a:focus-visible {
 /* Glen FINAL rev 4: all three icons fill their 44px button — flask 26px, theme+sound emoji 1.65rem */
 .round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
 .round-btn:hover { border-color: var(--g-accent); }
+.round-btn:active { transform: scale(.92); border-color: var(--g-accent); }
 .round-btn:focus { outline: none; }
 .round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
 /* header spec 2026-09-21: sample ON = accent-soft tint + accent border/icon (NOT a solid
@@ -663,6 +664,7 @@ a:focus-visible {
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
 .g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; transform: translateY(-0.04em); }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -1306,7 +1308,7 @@ function paintTheme() {
   var t = document.documentElement.getAttribute('data-theme') || 'light', dark = t === 'dark';
   var b = document.getElementById('themeToggle'); if (!b) return;
   var l = dark ? 'Switch to light mode' : 'Switch to dark mode';
-  b.textContent = dark ? '\u2600\uFE0F' : '\uD83C\uDF19'; /* header spec: emoji shows the mode you GET */
+  b.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19"; /* header spec: emoji shows the mode you GET */
   b.setAttribute('aria-pressed', dark ? 'true' : 'false');
   b.setAttribute('aria-label', l); b.title = l;
   b.setAttribute('data-mode', dark ? 'dark' : 'light');

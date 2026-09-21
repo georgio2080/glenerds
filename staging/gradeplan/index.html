@@ -619,6 +619,7 @@ a.g-store-btn, header .g-store-btn { color: #ffffff; }
 }
 .round-btn svg { width: 26px; height: 26px; flex: none; }
 .round-btn:hover { border-color: var(--g-accent, #4f46e5); }
+.round-btn:active { transform: scale(.92); border-color: var(--g-accent, #4f46e5); }
 .round-btn:focus { outline: none; }
 .round-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
@@ -1014,7 +1015,7 @@ document.documentElement.setAttribute('data-theme',t);})();
 "use strict";
 /* ---------- theme ---------- */
 const root=document.documentElement, themeBtn=document.getElementById('themeToggle');
-function setTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('gradeplan-theme',t);}catch(e){}themeBtn.textContent=t==='dark'?'☀️':'🌙'; /* header spec: emoji icon shows the mode you GET */
+function setTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('gradeplan-theme',t);}catch(e){}themeBtn.innerHTML=(t==='dark')?`<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>`:'🌙'; /* header spec: emoji icon shows the mode you GET */
 const dark=t==='dark',l=dark?'Switch to light mode':'Switch to dark mode';
 themeBtn.setAttribute('aria-pressed',dark?'true':'false');themeBtn.setAttribute('aria-label',l);themeBtn.title=l;}
 (function(){let t=root.getAttribute('data-theme');if(t!=='dark'&&t!=='light'){try{t=localStorage.getItem('gradeplan-theme');}catch(e){t=null;}}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}setTheme(t);})();

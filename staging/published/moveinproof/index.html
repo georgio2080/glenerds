@@ -316,6 +316,7 @@
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
 .g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
@@ -575,7 +576,7 @@ function applyTheme(t) {
   var label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
   btn.setAttribute("aria-label", label);
   btn.title = label;
-  btn.textContent = t === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19";
+  btn.innerHTML = (t === "dark") ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
   try { localStorage.setItem(LS_THEME, t); } catch (e) {}
 }
 function initTheme() {
