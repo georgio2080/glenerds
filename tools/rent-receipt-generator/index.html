@@ -43,10 +43,6 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Hel
 .logo-badge svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
 .hero .tagline{margin:2px 0 0;font-size:.85rem;opacity:.88}
-.theme-pill{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);
-  border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.85rem}
-.theme-pill:hover{background:rgba(255,255,255,.24)}
-.theme-pill svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
 [data-theme="light"] .icon-sun{display:none}
 [data-theme="dark"] .icon-moon{display:none}
 main{max-width:1024px;margin:0 auto;padding:20px 16px 60px}
@@ -122,6 +118,28 @@ footer>div{margin-bottom:6px}
   .receipt-paper{box-shadow:none;border:none;border-radius:0;margin:0;padding:10px;page-break-inside:avoid}
   .card{box-shadow:none;border:none}
 }
+
+/* Glenerds cross-promo: More Apps pill + header icon cluster (shared baseline) */
+.g-header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto}
+.g-store-btn{display:inline-flex;align-items:center;background:var(--g-accent,#4f46e5);
+  color:var(--g-accent-ink,#ffffff);border-radius:999px;padding:8px 15px;
+  font-size:.88rem;font-weight:700;line-height:1.2;text-decoration:none;white-space:nowrap;
+  box-shadow:0 1px 2px rgba(0,0,0,.12);transition:background .18s ease,transform .18s ease,box-shadow .18s ease}
+.g-store-btn:hover{background:var(--g-accent-hover,#4338ca);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.16)}
+.g-store-btn:active{transform:scale(.97)}
+.g-store-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.theme-btn,#sound-toggle,.sample-toggle{display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
+  border:1px solid rgba(255,255,255,.45);border-radius:999px;background:rgba(255,255,255,.14);
+  color:#fff;font-family:inherit;cursor:pointer;white-space:nowrap}
+.theme-btn:hover,#sound-toggle:hover,.sample-toggle:hover{background:rgba(255,255,255,.26)}
+.theme-btn:focus-visible,#sound-toggle:focus-visible,.sample-toggle:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.theme-btn svg,.sample-toggle svg{width:18px;height:18px;flex:none}
+#sound-toggle{font-size:1.05rem;line-height:1}
+.sample-toggle[aria-pressed="true"]{background:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);color:#fff}
+@media(max-width:640px){.hero-inner{flex-wrap:wrap;row-gap:10px}}
+@media(max-width:440px){.g-store-btn{padding:8px 12px}.g-header-actions{gap:6px}}
+@media print{.g-header-actions{display:none!important}}
 </style>
 </head>
 <body>
@@ -132,11 +150,12 @@ footer>div{margin-bottom:6px}
       <h1>Free Rent Receipt Generator</h1>
       <p class="tagline">Create and print professional rent receipts. Works offline &mdash; your data never leaves this device.</p>
     </div>
-    <button class="theme-pill" id="themeToggle" aria-label="Toggle dark mode">
-      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      <span>Theme</span>
-    </button>
+    <div class="g-header-actions">
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+      <button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button type="button" class="theme-btn" id="themeToggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#x1F50A;</button>
+    </div>
   </div>
 </header>
 
@@ -310,7 +329,7 @@ function bumpNext(){
 }
 
 /* ---------- preview ---------- */
-function updatePreview(){
+function paintPreview(){
   var d=formData();
   var amt=parseFloat(d.amount);
   $("pvNum").textContent=d.receiptNo||nextReceiptNo();
@@ -322,9 +341,10 @@ function updatePreview(){
   $("pvMethod").textContent=d.method||"—";
   $("pvMemo").textContent=d.memo||"—";
   $("pvAmount").textContent=(isFinite(amt)&&amt>0)?fmtMoney(amt):"—";
-  saveDraft();
+
 }
-function saveDraft(){store(K.draft,formData());}
+function updatePreview(){paintPreview();saveDraft();}
+function saveDraft(){if(window.__gSampleOn)return;store(K.draft,formData());}
 
 /* ---------- validation ---------- */
 function validate(d){
@@ -366,7 +386,8 @@ function showErrors(errs){
 }
 
 /* ---------- history ---------- */
-function getHistory(){var h=load(K.hist,[]);return Array.isArray(h)?h:[];}
+var histOverride=null; /* sample mode: demo receipts shown without persisting */
+function getHistory(){if(histOverride)return histOverride;var h=load(K.hist,[]);return Array.isArray(h)?h:[];}
 function setHistory(h){store(K.hist,h);}
 function renderHistory(){
   var list=$("historyList"),h=getHistory();
@@ -380,11 +401,11 @@ function renderHistory(){
       '<div class="meta">'+esc(r.tenant||"")+' · '+(isFinite(r.amount)?fmtMoney(r.amount):"")+' · '+(r.datePaid?esc(fmtDate(r.datePaid)):"")+'</div></div>';
     var rp=document.createElement("button");
     rp.type="button";rp.className="btn btn-secondary btn-sm";rp.textContent="Reprint";
-    rp.addEventListener("click",function(){setForm(r);window.print();});
+    rp.addEventListener("click",function(){setForm(r);Sound.select();window.print();});
     var del=document.createElement("button");
     del.type="button";del.className="btn btn-danger btn-sm";del.textContent="Delete";
     del.addEventListener("click",function(){
-      if(confirm("Delete receipt "+(r.receiptNo||"")+"? This can\u2019t be undone.")){
+      if(confirm("Delete receipt "+(r.receiptNo||"")+"? This can\u2019t be undone.")){Sound.click();
         setHistory(getHistory().filter(function(x){return x.id!==r.id;}));
         renderHistory();
       }
@@ -401,7 +422,7 @@ F.forEach(function(f){
 });
 $("saveBtn").addEventListener("click",function(){
   var d=formData(),errs=validate(d);
-  if(!showErrors(errs))return;
+  if(!showErrors(errs)){Sound.error();return;}
   var rec=Object.assign({},d,{amount:parseFloat(d.amount),id:"r"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36)});
   if(!rec.receiptNo)rec.receiptNo=nextReceiptNo();
   var h=getHistory();h.push(rec);setHistory(h);
@@ -418,26 +439,177 @@ $("saveBtn").addEventListener("click",function(){
   $("receiptNo").value=nextReceiptNo();
   renderHistory();updatePreview();
   $("formErr").textContent="";
+  Sound.success();
 });
 $("printBtn").addEventListener("click",function(){
-  updatePreview();
+  updatePreview();Sound.click();
   window.print();
 });
-$("clearFormBtn").addEventListener("click",function(){
+$("clearFormBtn").addEventListener("click",function(){Sound.click();
   F.forEach(function(f){$(f).value="";});
   $("method").value="Cash";
   $("receiptNo").value=nextReceiptNo();
   showErrors({});updatePreview();
 });
+function paintThemeBtn(){
+  var dark=document.documentElement.getAttribute("data-theme")==="dark";
+  var b=$("themeToggle");if(!b)return;
+  b.setAttribute("aria-pressed",dark?"true":"false");
+  var l=dark?"Switch to light mode":"Switch to dark mode";
+  b.setAttribute("aria-label",l);b.title=l;
+}
 $("themeToggle").addEventListener("click",function(){
   var cur=document.documentElement.getAttribute("data-theme")==="dark"?"dark":"light";
   var nxt=cur==="dark"?"light":"dark";
   document.documentElement.setAttribute("data-theme",nxt);
-  store(K.theme,nxt);
+  store(K.theme,nxt);paintThemeBtn();Sound.toggleTheme();
 });
+paintThemeBtn();
+
+
+/* ---------- subtle sounds (Web Audio, no files, offline) ---------- */
+var Sound = (function () {
+  var KEY = "rentreceipt.sound", on = true, ctx = null;
+  try { if (window.localStorage.getItem(KEY) === "off") on = false; } catch (e) {}
+  function ac() {
+    try {
+      if (!ctx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        ctx = new AC();
+      }
+      if (ctx.state === "suspended") ctx.resume();
+      return ctx;
+    } catch (e) { return null; }
+  }
+  function tone(freq, dur, type, vol, delay) {
+    var c = ac(); if (!c) return;
+    try {
+      var t = c.currentTime + (delay || 0);
+      var o = c.createOscillator(), g = c.createGain();
+      o.type = type || "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.05);
+    } catch (e) {}
+  }
+  return {
+    isOn: function () { return on; },
+    toggle: function () {
+      on = !on;
+      try { window.localStorage.setItem(KEY, on ? "on" : "off"); } catch (e) {}
+      return on;
+    },
+    click: function () { if (on) tone(520, 0.06, "sine", 0.045); },
+    select: function () { if (on) { tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
+    success: function () { if (on) { tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
+    error: function () { if (on) tone(170, 0.16, "sawtooth", 0.045); },
+    toggleTheme: function () { if (on) tone(440, 0.06, "triangle", 0.05); }
+  };
+})();
+function bindSoundToggle() {
+  var btn = document.getElementById("sound-toggle");
+  if (!btn) return;
+  function paint() {
+    var on = Sound.isOn();
+    btn.innerHTML = on ? "&#x1F50A;" : "&#x1F507;";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
+    btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+  }
+  btn.addEventListener("click", function () { Sound.toggle(); paint(); Sound.click(); });
+  paint();
+}
+
+/* ---------- sample-data toggle: snapshot user data, realistic demo, exact restore ---------- */
+(function () {
+  var btn = document.getElementById("sample-toggle");
+  if (!btn) return;
+  var sampleOn = false, snap = null;
+  function paintSample() {
+    var lbl = sampleOn ? "Clear sample data" : "Try sample data";
+    btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
+    btn.setAttribute("aria-label", lbl);
+    btn.title = lbl;
+  }
+  function errState() {
+    var o = {};
+    F.forEach(function (f) {
+      var box = document.querySelector('.field[data-f="' + f + '"]');
+      o[f] = box ? { t: (box.querySelector(".err") || {}).textContent || "",
+                     inv: box.classList.contains("invalid") } : { t: "", inv: false };
+    });
+    o._formErr = $("formErr").textContent;
+    return o;
+  }
+  function applyErrState(o) {
+    F.forEach(function (f) {
+      var box = document.querySelector('.field[data-f="' + f + '"]');
+      if (!box) return;
+      var slot = box.querySelector(".err");
+      if (slot) slot.textContent = o[f].t;
+      box.classList.toggle("invalid", o[f].inv);
+    });
+    $("formErr").textContent = o._formErr;
+  }
+  function snapshot() {
+    var form = {};
+    F.forEach(function (f) { form[f] = $(f).value; });
+    var raw = {};
+    [K.hist, K.draft, K.next].forEach(function (k) {
+      var v = null, missing = true;
+      try { v = localStorage.getItem(k); missing = (v === null); } catch (e) {}
+      raw[k] = { v: v, missing: missing };
+    });
+    snap = { form: form, raw: raw, errs: errState() };
+  }
+  function isoToday() {
+    var d = new Date();
+    return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  }
+  function applySample() {
+    window.__gSampleOn = true; /* sample data never persists */
+    var demo = { landlord: "Example Property Mgmt", tenant: "Demo Tenant", amount: "1500",
+      datePaid: isoToday(), method: "Check", receiptNo: "RR-0042", period: "September 2026",
+      address: "123 Example St, Apt 4B\nBloomington, IN 47408", memo: "September rent paid in full." };
+    F.forEach(function (f) { $(f).value = demo[f] || ""; });
+    paintPreview();
+    histOverride = getHistory().concat([
+      { id: "sdemo1", landlord: "Example Property Mgmt", tenant: "Demo Tenant", amount: 1500,
+        datePaid: demo.datePaid, method: "Check", receiptNo: "RR-0041", period: "August 2026",
+        address: "123 Example St", memo: "" },
+      { id: "sdemo2", landlord: "Example Property Mgmt", tenant: "Demo Tenant", amount: 1500,
+        datePaid: demo.datePaid, method: "Cash", receiptNo: "RR-0040", period: "July 2026",
+        address: "123 Example St", memo: "" }
+    ]);
+    renderHistory();
+    Sound.success();
+  }
+  function restore() {
+    window.__gSampleOn = false;
+    if (snap) {
+      F.forEach(function (f) { $(f).value = snap.form[f]; });
+      Object.keys(snap.raw).forEach(function (k) {
+        var r = snap.raw[k];
+        try { if (r.missing) localStorage.removeItem(k); else localStorage.setItem(k, r.v); } catch (e) {}
+      });
+      paintPreview(); histOverride = null; renderHistory(); applyErrState(snap.errs);
+      snap = null;
+    }
+  }
+  btn.addEventListener("click", function () {
+    if (!sampleOn) { snapshot(); sampleOn = true; applySample(); }
+    else { sampleOn = false; restore(); }
+    paintSample(); Sound.click();
+  });
+  paintSample();
+})();
 
 /* ---------- init ---------- */
 (function init(){
+  bindSoundToggle();
   var draft=load(K.draft,null);
   if(draft&&typeof draft==="object"){
     F.forEach(function(f){if(typeof draft[f]==="string")$(f).value=draft[f];});
