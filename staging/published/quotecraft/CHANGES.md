@@ -1,5 +1,12 @@
 # QuoteCraft — CHANGES.md
 
+## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
+- **New "Visuals" card in the quote editor**, right under Totals. Two first-class data visuals, both driven by the live quote and re-rendered on every edit:
+  - **Grand-total donut** (net revenue vs tax; discount shown as a "saved" legend row). Bounded center label per the chart standard: r=48 / 20-unit ring in a 120 viewBox (76-unit hole), 13px label with a hard 64-unit `textLength` cap applied conditionally for labels over 9 chars. Ring segments always partition the grand total exactly (dash lengths sum to the full circumference — verified in Node).
+  - **"Cost by line item" bars**: top 8 items by value, widths scaled to the max, value labels in their own right-hand column so they can never overlap or collide with the bars.
+- All user strings go through the app's `textContent`-based `el()` helper (no innerHTML); SVG theme colors applied via `style` (CSS vars don't work in presentation attributes). Dark mode inherits automatically.
+- JS syntax-checked with `node --check`; donut closure, 7-digit label cap, bar sort/widths, empty state, and XSS-neutral desc rendering all verified headlessly in Node.
+
 Build log for the single-file offline app at `index.html` (this directory).
 Built 2026-09-19 per `~/workspace/microtool-research/free-loop/app9-quotecraft-SPEC.md`.
 Everything written from scratch (IP clean-room); no external requests; works from file://.

@@ -200,6 +200,21 @@ tbody tr{transition:background .12s ease}
   -webkit-text-fill-color:transparent;color:transparent;
 }
 .footnote{font-size:.83rem;color:var(--muted);margin-top:12px}
+/* ---------- quote visuals ---------- */
+.viz-wrap{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+.donut-box{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:200px}
+#viz-donut{width:190px;height:190px}
+.viz-legend{display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.viz-legend .leg{display:flex;align-items:center;gap:8px}
+.viz-legend .sw{width:12px;height:12px;border-radius:4px;flex:0 0 auto}
+.viz-legend .amt{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:600;padding-left:14px}
+.bars-box{flex:1;min-width:240px}
+.bars-box h3{margin:0 0 10px;font-size:.95rem;color:var(--muted);font-weight:600}
+.vbar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.vbar-name{flex:0 0 34%;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.88rem}
+.vbar-track{flex:1;height:14px;border-radius:7px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden;min-width:40px}
+.vbar-fill{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.vbar-val{flex:0 0 auto;min-width:76px;text-align:right;font-size:.88rem;font-variant-numeric:tabular-nums;font-weight:600}
 .footnote strong{color:var(--ink)}
 
 /* ============ misc ============ */
@@ -402,6 +417,21 @@ footer.site a{color:var(--muted)}
         <strong>Tax-after-discount rule:</strong> tax applies only to taxable lines, after the discount.
         The discount is split between taxable and non-taxable lines in proportion to each side&rsquo;s share of the
         subtotal; tax = (taxable subtotal &minus; its share of the discount) &times; tax rate, rounded to the cent.</p>
+    </div>
+
+    <div class="card" id="visuals-card" aria-label="Quote visuals">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></span>Visuals</h2>
+      <div class="viz-wrap">
+        <div class="donut-box">
+          <svg id="viz-donut" viewBox="0 0 120 120" role="img" aria-label="Grand total composition chart"></svg>
+          <div class="viz-legend" id="viz-legend"></div>
+        </div>
+        <div class="bars-box">
+          <h3>Cost by line item</h3>
+          <div id="viz-bars"></div>
+        </div>
+      </div>
+      <p class="hint" id="viz-empty" hidden>Add line items above to see the visual breakdown.</p>
     </div>
 
     <div class="card">
@@ -889,6 +919,106 @@ function renderTotals(q){
   tb.appendChild(totalsRow("Taxable subtotal (after discount)", fmt(t.taxableAfterDiscount)));
   tb.appendChild(totalsRow("Tax", fmt(t.tax)));
   tb.appendChild(totalsRow("Grand total", fmt(t.total), true));
+  renderVisuals(q, t);
+}
+
+/* ---------- quote visuals: donut + line-item bars (all text via textContent) ---------- */
+var SVGNS = "http://www.w3.org/2000/svg";
+function renderVisuals(q, t){
+  var card = document.getElementById("visuals-card");
+  var empty = document.getElementById("viz-empty");
+  var wrap = card.querySelector(".viz-wrap");
+  var hasData = t && t.total > 0;
+  empty.hidden = hasData;
+  wrap.style.display = hasData ? "" : "none";
+  if(!hasData) return;
+
+  /* donut: net revenue vs discount vs tax (bounded center label per chart standard) */
+  var svg = document.getElementById("viz-donut");
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+  var R = 48, C = 2 * Math.PI * R;
+  /* grand total = net revenue + tax, so the ring partitions it exactly */
+  var net = t.subtotal - t.discount;
+  var segs = [
+    { label: "Net revenue", value: net,     color: "#4f46e5" },
+    { label: "Tax",         value: t.tax,   color: "#f59e0b" }
+  ];
+  var bg = document.createElementNS(SVGNS, "circle");
+  bg.setAttribute("cx", 60); bg.setAttribute("cy", 60); bg.setAttribute("r", R);
+  bg.setAttribute("fill", "none"); bg.setAttribute("style", "stroke:var(--surface-2)");
+  bg.setAttribute("stroke-width", 20);
+  svg.appendChild(bg);
+  var off = 0;
+  segs.forEach(function(s){
+    if(s.value <= 0 || t.total <= 0) return;
+    var len = s.value / t.total * C;
+    var c = document.createElementNS(SVGNS, "circle");
+    c.setAttribute("cx", 60); c.setAttribute("cy", 60); c.setAttribute("r", R);
+    c.setAttribute("fill", "none"); c.setAttribute("stroke", s.color);
+    c.setAttribute("stroke-width", 20);
+    c.setAttribute("stroke-dasharray", len.toFixed(2) + " " + (C - len).toFixed(2));
+    c.setAttribute("stroke-dashoffset", (-off).toFixed(2));
+    c.setAttribute("transform", "rotate(-90 60 60)");
+    c.setAttribute("stroke-linecap", "butt");
+    svg.appendChild(c);
+    off += len;
+  });
+  var label = fmt(t.total);
+  var te = document.createElementNS(SVGNS, "text");
+  te.setAttribute("x", 60); te.setAttribute("y", 58);
+  te.setAttribute("text-anchor", "middle");
+  te.setAttribute("font-size", "13"); te.setAttribute("font-weight", "700");
+  te.setAttribute("style", "fill:var(--ink)");
+  if(label.length > 9){ te.setAttribute("textLength", "64"); te.setAttribute("lengthAdjust", "spacingAndGlyphs"); }
+  te.textContent = label;
+  svg.appendChild(te);
+  var cap = document.createElementNS(SVGNS, "text");
+  cap.setAttribute("x", 60); cap.setAttribute("y", 74);
+  cap.setAttribute("text-anchor", "middle");
+  cap.setAttribute("font-size", "8.5"); cap.setAttribute("style", "fill:var(--muted)");
+  cap.textContent = "Grand total";
+  svg.appendChild(cap);
+
+  var legend = document.getElementById("viz-legend");
+  while(legend.firstChild) legend.removeChild(legend.firstChild);
+  segs.forEach(function(s){
+    if(s.value <= 0) return;
+    var row = el("div", {class:"leg"});
+    var sw = el("span", {class:"sw"}); sw.style.background = s.color;
+    row.appendChild(sw);
+    row.appendChild(el("span", null, s.label));
+    row.appendChild(el("span", {class:"amt"}, fmt(s.value)));
+    legend.appendChild(row);
+  });
+  if(t.discount > 0){
+    var srow = el("div", {class:"leg"});
+    var ssw = el("span", {class:"sw"}); ssw.style.background = "#10b981";
+    srow.appendChild(ssw);
+    srow.appendChild(el("span", null, "Discount saved"));
+    srow.appendChild(el("span", {class:"amt"}, fmt(t.discount)));
+    legend.appendChild(srow);
+  }
+
+  /* bars: line items by value (value sits in its own column — never overlaps the bar) */
+  var bars = document.getElementById("viz-bars");
+  while(bars.firstChild) bars.removeChild(bars.firstChild);
+  var items = (q.items || []).map(function(it){
+    return { desc: it.desc || "(no description)", cents: lineCents(it.qty, it.unitCents) };
+  }).filter(function(r){ return r.cents > 0; })
+    .sort(function(a, b){ return b.cents - a.cents; })
+    .slice(0, 8);
+  var max = items.length ? items[0].cents : 0;
+  items.forEach(function(r){
+    var row = el("div", {class:"vbar-row"});
+    row.appendChild(el("span", {class:"vbar-name", title: r.desc}, r.desc));
+    var track = el("span", {class:"vbar-track"});
+    var fill = el("span", {class:"vbar-fill"});
+    fill.style.width = (max > 0 ? (r.cents / max * 100) : 0).toFixed(1) + "%";
+    track.appendChild(fill);
+    row.appendChild(track);
+    row.appendChild(el("span", {class:"vbar-val"}, fmt(r.cents)));
+    bars.appendChild(row);
+  });
 }
 
 /* ---------- print view (customer document; NO Glenerds footer) ---------- */
