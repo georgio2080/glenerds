@@ -14,6 +14,21 @@
 <script>
 (function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
 </script><link rel="stylesheet" href="../../style.css">
+<style>
+/* deposit visual: refund-vs-deductions split + per-deduction bars */
+.sd-vis{display:grid;gap:8px;margin:14px 0 4px}
+.sd-split{display:flex;height:16px;border-radius:999px;overflow:hidden;background:var(--border)}
+.sd-seg-r{background:var(--accent)}
+.sd-seg-d{background:#c0392b}
+html[data-theme="dark"] .sd-seg-d{background:#e57373}
+.sd-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem}
+.sd-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.sd-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sd-val{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.sd-track{grid-column:1/-1;height:12px;border-radius:999px;background:var(--border);overflow:hidden}
+.sd-fill{height:100%;border-radius:999px;background:#c0392b}
+html[data-theme="dark"] .sd-fill{background:#e57373}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -90,6 +105,7 @@ it. Free, offline, no account.</p>
 <table><thead><tr><th>Deduction</th><th>Amount</th><th></th></tr></thead>
 <tbody id="sd-rows"></tbody></table>
 <p id="sd-out" style="font-size:1.15rem"></p>
+<div id="sd-vis" class="sd-vis" role="img" aria-label="Deposit breakdown chart"></div>
 <button id="sd-print">Print statement</button>
 <p class="small">A record-keeping tool, not legal advice &mdash; deposit rules and deadlines vary by state.</p>
 </div>
@@ -133,6 +149,33 @@ it. Free, offline, no account.</p>
     });
     var refund=Math.max(0,data.dep-tot);
     var extra=tot>data.dep?tot-data.dep:0;
+    /* deposit breakdown visual: refund-vs-deductions split + per-deduction bars */
+    var svis=document.getElementById('sd-vis');svis.innerHTML='';
+    svis.style.display=data.items.length?'':'none';
+    if(data.items.length){
+      var dep=Math.max(data.dep,0);
+      var split=document.createElement('div');split.className='sd-split';
+      var sr=document.createElement('div');sr.className='sd-seg-r';
+      var sd2=document.createElement('div');sd2.className='sd-seg-d';
+      if(dep>0){sr.style.width=(refund/dep*100).toFixed(1)+'%';sd2.style.width=(Math.min(tot,dep)/dep*100).toFixed(1)+'%';}
+      split.appendChild(sr);split.appendChild(sd2);svis.appendChild(split);
+      var leg=document.createElement('div');leg.className='sd-legend';
+      var lr=document.createElement('span');lr.textContent='● Refund '+money(refund);lr.style.color='var(--accent)';
+      var ld=document.createElement('span');ld.textContent='● Deductions '+money(tot);ld.style.color='#c0392b';
+      leg.appendChild(lr);leg.appendChild(ld);svis.appendChild(leg);
+      var sitems=data.items.slice().sort(function(a,b){return b.amt-a.amt;});
+      var smx=sitems.length?sitems[0].amt:0;
+      sitems.forEach(function(it){
+        var row=document.createElement('div');row.className='sd-row';
+        var nm=document.createElement('div');nm.className='sd-name';nm.textContent=it.desc||'(no description)';
+        var vl=document.createElement('div');vl.className='sd-val';vl.textContent=money(it.amt);
+        var tr=document.createElement('div');tr.className='sd-track';
+        var fl=document.createElement('div');fl.className='sd-fill';
+        fl.style.width=(smx>0?(it.amt/smx*100):0).toFixed(1)+'%';
+        tr.appendChild(fl);row.appendChild(nm);row.appendChild(vl);row.appendChild(tr);svis.appendChild(row);
+      });
+      svis.setAttribute('aria-label','Deposit '+money(dep)+', deductions '+money(tot)+', refund to tenant '+money(refund));
+    }
     document.getElementById('sd-out').innerHTML='<strong>Refund to tenant: '+money(refund)+'</strong>'
       +(extra>0?'<br><span class="small">Deductions exceed the deposit by '+money(extra)+'.</span>':'');
     document.getElementById('sd-dep').value=data.dep;
