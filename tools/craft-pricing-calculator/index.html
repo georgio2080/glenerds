@@ -14,6 +14,14 @@
 <script>
 (function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
 </script><link rel="stylesheet" href="../../style.css">
+<style>
+/* price visuals: stacked cost + price composition bars */
+.cp-stack{display:flex;height:18px;border-radius:999px;overflow:hidden;background:var(--border);margin:8px 0 4px}
+.cp-stack>div{height:100%}
+.cp-cmat{background:#0d9488}.cp-clab{background:#2563eb}.cp-coh{background:#7c3aed}
+.cp-pcost{background:#0d9488}.cp-pfee{background:#f59e0b}.cp-pprofit{background:#16a34a}
+.cp-legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.85rem;color:var(--muted);margin-bottom:10px}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -143,6 +151,22 @@ numbers never leave your browser.</p>
       var actualMargin=(cur-cost-cur*fee)/cur*100;
       var v=verdict(actualMargin);
       html+='<p><strong>Your current price of '+money(cur)+': '+v[0]+'</strong> ('+actualMargin.toFixed(1)+'% margin)<br><span class="small">'+v[1]+'</span></p>';
+    }
+    /* visual representation: stacked composition bars */
+    if(cost>0){
+      var cw=function(x){return (cost>0?x/cost*100:0).toFixed(1)+'%';};
+      html+='<p style="margin-bottom:0"><strong>Where your true cost goes:</strong></p>'
+        +'<div class="cp-stack" role="img" aria-label="True cost: materials '+money(mat)+', labor '+money(labor)+', overhead '+money(oh)+'">'
+        +'<div class="cp-cmat" style="width:'+cw(mat)+'"></div><div class="cp-clab" style="width:'+cw(labor)+'"></div><div class="cp-coh" style="width:'+cw(oh)+'"></div></div>'
+        +'<div class="cp-legend"><span>\u25A0 Materials '+money(mat)+'</span><span>\u25A0 Labor '+money(labor)+'</span><span>\u25A0 Overhead '+money(oh)+'</span></div>';
+    }
+    if(price>0){
+      var pw=function(x){return (price>0?x/price*100:0).toFixed(1)+'%';};
+      var feeAmt=price*fee,profitAmt=price*margin;
+      html+='<p style="margin-bottom:0"><strong>Where each suggested-price dollar goes:</strong></p>'
+        +'<div class="cp-stack" role="img" aria-label="Suggested price: your cost '+money(cost)+', marketplace fees '+money(feeAmt)+', profit '+money(profitAmt)+'">'
+        +'<div class="cp-pcost" style="width:'+pw(cost)+'"></div><div class="cp-pfee" style="width:'+pw(feeAmt)+'"></div><div class="cp-pprofit" style="width:'+pw(profitAmt)+'"></div></div>'
+        +'<div class="cp-legend"><span>\u25A0 Your cost '+money(cost)+'</span><span>\u25A0 Marketplace fees '+money(feeAmt)+'</span><span>\u25A0 Your profit '+money(profitAmt)+'</span></div>';
     }
     document.getElementById('cp-out').innerHTML=html;save();
   }
