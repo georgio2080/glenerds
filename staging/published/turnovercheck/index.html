@@ -47,14 +47,30 @@ a{color:var(--accent)}
 .brand p{margin:2px 0 0; color:rgba(255,255,255,.85); font-size:.85rem}
 /* ---- theme toggle ---- */
 .theme-btn{
-  display:inline-flex; align-items:center; gap:8px;
-  min-height:var(--tap); padding:8px 16px;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; min-width:44px; min-height:44px; padding:0;
   border:1px solid rgba(255,255,255,.45); border-radius:999px; background:rgba(255,255,255,.14);
   color:#fff; font-size:.9rem; font-weight:600; cursor:pointer; white-space:nowrap;
   backdrop-filter:blur(4px);
 }
 .theme-btn:hover{background:rgba(255,255,255,.26)}
+.theme-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .theme-btn svg{width:18px; height:18px; flex:none}
+#sound-toggle{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; min-width:44px; min-height:44px; padding:0;
+  border:1px solid rgba(255,255,255,.45); border-radius:999px; background:rgba(255,255,255,.14);
+  color:#fff; font-size:1.05rem; line-height:1; cursor:pointer;
+  backdrop-filter:blur(4px);
+}
+#sound-toggle:hover{background:rgba(255,255,255,.26)}
+#sound-toggle:focus-visible{outline:2px solid #fff;outline-offset:2px}
+/* ---------- interactive per-room progress rows ---------- */
+.room-bar-row[role="button"]{cursor:pointer}
+.room-bar-row[role="button"]:focus{outline:none;filter:drop-shadow(0 0 3px var(--accent, #1f7a5c))}
+.room-bar-row[role="button"].sel{box-shadow:inset 0 0 0 2px var(--accent, #1f7a5c);border-radius:10px}
+.rb-detail{margin:8px 0 0;font-size:.85rem;color:var(--muted,#5b6472)}
+.rb-detail strong{color:var(--text,#1c2330)}
 html[data-theme="light"] .icon-sun{display:none}
 html[data-theme="dark"] .icon-moon{display:none}
 /* ---- layout ---- */
@@ -265,7 +281,8 @@ footer.site{margin-top:26px; padding:16px 0 30px; text-align:center; color:var(-
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-    <button type="button" class="theme-btn" id="theme-toggle" aria-pressed="false"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z'/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='12' cy='12' r='4'/><path d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/></svg><span id="themeLabel">Dark mode</span></button>
+    <button type="button" class="theme-btn" id="theme-toggle" aria-pressed="false"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z'/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx='12' cy='12' r='4'/><path d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/></svg></button>
+      <button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">🔊</button>
     </div>
   </div>
 </header>
@@ -296,7 +313,7 @@ footer.site{margin-top:26px; padding:16px 0 30px; text-align:center; color:var(-
 
       <div class="card" id="room-progress-card">
         <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M3 3v16a2 2 0 0 0 2 2h16'/><path d='M7 14v3M12 10v7M17 6v11'/></svg></span>Room progress</h2>
-        <div id="room-bars" class="room-bars" role="img" aria-label="Completion per room"></div>
+        <div id="room-bars" class="room-bars" role="group" aria-label="Completion per room — activate a row for details"></div>
       </div>
 
       <div id="rooms"></div>
@@ -621,7 +638,9 @@ function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   var btn = $('#theme-toggle');
   var dark = t === 'dark';
-  document.getElementById('themeLabel').textContent = dark ? 'Light mode' : 'Dark mode';
+  var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+  btn.setAttribute('aria-label', label);
+  btn.title = label;
   btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
   try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
 }
@@ -629,7 +648,65 @@ function initTheme() {
   applyTheme(getTheme());
   $('#theme-toggle').addEventListener('click', function () {
     applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    Sound.toggleTheme();
   });
+  bindSoundToggle();
+}
+
+/* ---------- subtle sounds (Web Audio, no files, offline) ---------- */
+var Sound = (function () {
+  var KEY = 'turnovercheck.sound', on = true, ctx = null;
+  try { if (window.localStorage.getItem(KEY) === 'off') on = false; } catch (e) {}
+  function ac() {
+    try {
+      if (!ctx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        ctx = new AC();
+      }
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    } catch (e) { return null; }
+  }
+  function tone(freq, dur, type, vol, delay) {
+    var c = ac(); if (!c) return;
+    try {
+      var t = c.currentTime + (delay || 0);
+      var o = c.createOscillator(), g = c.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.05);
+    } catch (e) {}
+  }
+  return {
+    isOn: function () { return on; },
+    toggle: function () {
+      on = !on;
+      try { window.localStorage.setItem(KEY, on ? 'on' : 'off'); } catch (e) {}
+      return on;
+    },
+    click: function () { if (on) tone(520, 0.06, 'sine', 0.045); },
+    select: function () { if (on) { tone(660, 0.07, 'sine', 0.055); tone(880, 0.09, 'sine', 0.045, 0.06); } },
+    success: function () { if (on) { tone(660, 0.09, 'sine', 0.06); tone(990, 0.12, 'sine', 0.05, 0.08); } },
+    error: function () { if (on) tone(170, 0.16, 'sawtooth', 0.045); },
+    toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
+  };
+})();
+function bindSoundToggle() {
+  var btn = $('#sound-toggle');
+  if (!btn) return;
+  function paint() {
+    var on = Sound.isOn();
+    btn.textContent = on ? '\uD83D\uDD0A' : '\uD83D\uDD07';
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
+    btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
+  }
+  btn.addEventListener('click', function () { Sound.toggle(); paint(); Sound.click(); });
+  paint();
 }
 
 /* ---------- tabs (keyboard operable) ---------- */
@@ -767,14 +844,26 @@ function renderChecklist() {
   $('#overall-fill').style.width = pct + '%';
   $('#overall-pct').textContent = pct + '%';
   /* per-room progress bars (visual representation) */
-  var host = $('#room-bars');
-  host.textContent = '';
+  var barsHost = $('#room-bars');
+  barsHost.textContent = '';
+  var detail = document.getElementById('room-bars-detail');
+  if (!detail) {
+    detail = el('div', 'rb-detail');
+    detail.id = 'room-bars-detail';
+    detail.setAttribute('aria-live', 'polite');
+    barsHost.parentNode.insertBefore(detail, barsHost.nextSibling);
+  }
+  detail.textContent = '';
   var aria = [];
   state.rooms.forEach(function (r) {
     var rc = roomCounts(r);
     var rp = rc.total === 0 ? 0 : Math.round(100 * rc.done / rc.total);
     aria.push(r.name + ': ' + rc.done + ' of ' + rc.total + ' (' + rp + '%)');
     var row = el('div', 'room-bar-row');
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('aria-pressed', 'false');
+    row.setAttribute('aria-label', r.name + ': ' + rc.done + ' of ' + rc.total + ' tasks done. Activate to spotlight.');
     row.appendChild(el('div', 'room-bar-name', r.name));
     row.appendChild(el('div', 'room-bar-val',
       rc.total === 0 ? 'no tasks' : rc.done + '/' + rc.total + ' · ' + rp + '%'));
@@ -788,9 +877,39 @@ function renderChecklist() {
     fill.style.width = rp + '%';
     track.appendChild(fill);
     row.appendChild(track);
-    host.appendChild(row);
+    (function (rr, rrrow, rrcc) {
+      function act() {
+        var was = rrrow.classList.contains('sel');
+        var sels = barsHost.querySelectorAll('.room-bar-row.sel');
+        for (var k = 0; k < sels.length; k++) {
+          sels[k].classList.remove('sel');
+          sels[k].setAttribute('aria-pressed', 'false');
+        }
+        if (!was) {
+          rrrow.classList.add('sel');
+          rrrow.setAttribute('aria-pressed', 'true');
+          var remaining = rr.tasks.filter(function (t) { return !t.done; }).map(function (t) { return t.text; });
+          detail.textContent = '';
+          var st = document.createElement('strong');
+          st.textContent = rr.name + ': ';
+          detail.appendChild(st);
+          detail.appendChild(document.createTextNode(
+            rrcc.done + ' of ' + rrcc.total + ' done' +
+            (remaining.length ? ' — ' + remaining.length + ' left: ' + remaining.join(', ') : ' — all done ✅') + '.'));
+          Sound.select();
+        } else {
+          detail.textContent = '';
+          Sound.click();
+        }
+      }
+      rrrow.addEventListener('click', act);
+      rrrow.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); }
+      });
+    })(r, row, rc);
+    barsHost.appendChild(row);
   });
-  host.setAttribute('aria-label', 'Completion per room: ' + aria.join(', '));
+  barsHost.setAttribute('aria-label', 'Completion per room: ' + aria.join(', '));
   var card = $('#room-progress-card');
   if (card) card.hidden = state.rooms.length === 0;
   $('#overall-bar').setAttribute('aria-valuenow', String(pct));
@@ -920,6 +1039,7 @@ function renderTask(room, task, idx) {
   cb.addEventListener('change', function () {
     task.done = cb.checked;
     checkCompletion(); save(); renderChecklist();
+    if (cb.checked) Sound.success(); else Sound.click();
   });
   lab.appendChild(cb);
   lab.appendChild(el('span', 'txt', task.text));
@@ -963,6 +1083,7 @@ function initChecklist() {
     state.startedAt = Date.now();
     state.completedAt = 0;
     save(); renderChecklist();
+    Sound.click();
   });
   $('#btn-restart').addEventListener('click', function () {
     var b = $('#btn-restart');
@@ -980,10 +1101,11 @@ function initChecklist() {
   function addRoom() {
     var inp = $('#new-room-name');
     var v = inp.value.trim().slice(0, MAX.roomName);
-    if (!v || state.rooms.length >= MAX.rooms) return;
+    if (!v || state.rooms.length >= MAX.rooms){ Sound.error(); return; }
     state.rooms.push({ id: uid(), name: v, tasks: [], timer: { elapsed: 0, running: false, since: 0 } });
     inp.value = '';
     save(); renderAll();
+    Sound.success();
   }
 }
 
@@ -1120,8 +1242,8 @@ function initLog() {
   });
   $('#btn-inc-save').addEventListener('click', function () {
     var item = $('#inc-item').value.trim().slice(0, MAX.item);
-    if (!item) { incMsg('Item / area is required.'); $('#inc-item').focus(); return; }
-    if (state.incidents.length >= MAX.incidents && !editingId) { incMsg('Incident log is full.'); return; }
+    if (!item) { incMsg('Item / area is required.'); Sound.error(); $('#inc-item').focus(); return; }
+    if (state.incidents.length >= MAX.incidents && !editingId) { incMsg('Incident log is full.'); Sound.error(); return; }
     var rec = {
       id: editingId || uid(),
       room: $('#inc-room').value,
@@ -1147,8 +1269,9 @@ function initLog() {
     }
     cancelEdit();
     save(); renderLog(); clearReport();
+    Sound.success();
   });
-  $('#btn-inc-cancel').addEventListener('click', cancelEdit);
+  $('#btn-inc-cancel').addEventListener('click', function () { cancelEdit(); Sound.click(); });
   $('#btn-report').addEventListener('click', function () {
     var txt = buildReport();
     var out = $('#report-out');
@@ -1241,10 +1364,12 @@ function initData() {
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800);
     dataMsg('Backup downloaded.');
+    Sound.success();
   });
 
   $('#btn-import').addEventListener('click', function () {
     var b = $('#btn-import');
+    Sound.click();
     armConfirm(b, 'Tap again to import', function () { $('#file-import').click(); });
   });
   $('#file-import').addEventListener('change', function () {
@@ -1255,16 +1380,18 @@ function initData() {
     rd.onload = function () {
       try {
         var clean = sanitizeImport(JSON.parse(rd.result));
-        if (!clean || clean.rooms.length === 0) { dataMsg('Import failed: no valid rooms found.'); return; }
+        if (!clean || clean.rooms.length === 0) { dataMsg('Import failed: no valid rooms found.'); Sound.error(); return; }
         state = clean;
         editingId = null;
         save(); renderAll(); clearReport();
         dataMsg('Import complete.');
+        Sound.success();
       } catch (e) {
         dataMsg('Import failed: not valid JSON.');
+        Sound.error();
       }
     };
-    rd.onerror = function () { dataMsg('Import failed: could not read file.'); };
+    rd.onerror = function () { dataMsg('Import failed: could not read file.'); Sound.error(); };
     rd.readAsText(f);
   });
 
@@ -1275,6 +1402,7 @@ function initData() {
       editingId = null;
       save(); renderAll(); clearReport();
       dataMsg('Demo data loaded.');
+      Sound.success();
     });
   });
 
@@ -1285,6 +1413,7 @@ function initData() {
       editingId = null;
       save(); renderAll(); clearReport();
       dataMsg('All data cleared.');
+      Sound.success();
     });
   });
 }

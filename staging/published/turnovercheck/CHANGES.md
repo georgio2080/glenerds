@@ -1,5 +1,11 @@
 # TurnoverCheck — Build Log (CHANGES.md)
 
+## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
+- Standardized the header cluster: `.g-header-actions` wrapper with More Apps pill first, icon-only dark-mode button (44x44px circular, moon/sun icon, dynamic aria-label/title — no more "Dark mode" text label), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
+- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `turnovercheck.sound`, wired into theme toggle, start/restart turnover, add room (validation error), task check/uncheck, timer, incident save/cancel (validation errors), export/import (success/failure), demo load, and clear.
+- Made the per-room completion bars interactive: each row is a keyboard-accessible button — activating it spotlights the row and shows how many tasks are done plus the names of the remaining tasks in a detail line; activating again restores.
+- Fixed a pre-existing bug where the room-bars render reused a hoisted `host` variable also used by the room-cards render (`barsHost` rename), so spotlight clearing now targets the right container.
+
 ## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
 - **New "Room progress" card** on the Checklist tab, between the overall
   progress card and the room list: per-room completion bars (name, done/total
