@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23059669'/%3E%3Ctext x='32' y='44' font-size='36' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3EQ%3C/text%3E%3C/svg%3E">
+<title>Free Contractor Estimate &amp; Quote Builder | QuoteCraft</title>
+<meta name="description" content="QuoteCraft: build itemized, professional service quotes on-site from your phone. Offline, private, exact-to-the-cent math.">
+<link rel="canonical" href="https://glenerds.github.io/glenerds/staging/quotecraft/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://glenerds.github.io/glenerds/staging/quotecraft/">
+<meta property="og:title" content="Free Contractor Estimate &amp; Quote Builder | QuoteCraft">
+<meta property="og:description" content="QuoteCraft: build itemized, professional service quotes on-site from your phone. Offline, private, exact-to-the-cent math.">
+<meta property="og:image" content="https://glenerds.github.io/glenerds/staging/quotecraft/gallery/cover-square-1200.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+/* ============ QuoteCraft facelift — design tokens ============ */
+:root{
+  --bg:#edf0f7; --surface:#ffffff; --surface-2:#f5f7fc; --ink:#181c28; --muted:#5d6579;
+  --line:#dde3ef; --accent:#4f46e5; --accent-2:#7c3aed; --accent-ink:#ffffff;
+  --danger:#d92d20; --ok:#12805c; --input-bg:#ffffff;
+  --radius:16px; --tap:44px;
+  --shadow:0 1px 2px rgba(24,28,40,.07),0 10px 28px -14px rgba(79,70,229,.22);
+  --shadow-lg:0 2px 4px rgba(24,28,40,.08),0 18px 44px -16px rgba(79,70,229,.30);
+  --grad:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+  --grad-soft:linear-gradient(135deg,rgba(79,70,229,.10),rgba(124,58,237,.10));
+  color-scheme:light;
+}
+html[data-theme="dark"]{
+  --bg:#0c1017; --surface:#151b28; --surface-2:#1a2233; --ink:#eef1f8; --muted:#9aa4ba;
+  --line:#2a3450; --accent:#8f81f7; --accent-2:#b39dff; --accent-ink:#14101f;
+  --danger:#f97066; --ok:#4ade80; --input-bg:#1a2233;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 12px 30px -14px rgba(0,0,0,.7);
+  --shadow-lg:0 2px 6px rgba(0,0,0,.5),0 20px 48px -16px rgba(0,0,0,.75);
+  --grad:linear-gradient(135deg,#6d5df6 0%,#9a6bff 100%);
+  --grad-soft:linear-gradient(135deg,rgba(109,93,246,.16),rgba(154,107,255,.16));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{
+  margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.5; -webkit-text-size-adjust:100%;
+  min-height:100vh;
+}
+/* decorative wash */
+body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(560px 300px at 12% -4%, rgba(79,70,229,.14), transparent 70%),
+    radial-gradient(520px 300px at 92% 6%, rgba(124,58,237,.12), transparent 70%);
+}
+html[data-theme="dark"] body::before{
+  background:
+    radial-gradient(560px 300px at 12% -4%, rgba(109,93,246,.20), transparent 70%),
+    radial-gradient(520px 300px at 92% 6%, rgba(154,107,255,.14), transparent 70%);
+}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px 40px}
+
+/* ============ header ============ */
+header.top{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;gap:12px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-icon{
+  width:52px;height:52px;border-radius:15px;background:var(--grad);color:#fff;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);
+}
+.brand-icon svg{width:28px;height:28px}
+.brand h1{font-size:1.45rem;margin:0;letter-spacing:-.01em}
+.brand .tagline{margin:1px 0 0;font-size:.85rem;color:var(--muted)}
+#theme-toggle{
+  display:inline-flex;align-items:center;gap:8px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  font-weight:600;font-size:.88rem;padding:10px 16px;min-height:44px;box-shadow:var(--shadow);
+}
+#theme-toggle::before{
+  content:"";width:18px;height:18px;flex:0 0 auto;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] #theme-toggle::before{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b39dff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E");
+}
+
+/* ============ buttons ============ */
+button{font:inherit;cursor:pointer;min-height:var(--tap);padding:10px 18px;border-radius:12px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-weight:600;transition:transform .08s ease,box-shadow .15s ease,filter .15s ease}
+button:hover{filter:brightness(.98);transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+button svg{width:18px;height:18px;flex:0 0 auto}
+button.primary{background:var(--grad);border:0;color:#fff;box-shadow:var(--shadow-lg)}
+html[data-theme="dark"] button.primary{color:#14101f}
+button.danger{color:var(--danger);border-color:var(--danger);background:transparent}
+button.ghost{background:var(--surface-2)}
+button.small{min-height:38px;padding:7px 14px;font-size:.88rem;border-radius:999px}
+button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+#btn-add-item::before{
+  content:"";width:18px;height:18px;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 8v8M8 12h8'/%3E%3C/svg%3E");
+}
+/* icons for JS-created table action buttons */
+#quotes-table button.small::before{
+  content:"";width:15px;height:15px;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14m-6-6 6 6-6 6'/%3E%3C/svg%3E");
+}
+#items-table button.small:not(.danger)::before{
+  content:"";width:15px;height:15px;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z'/%3E%3C/svg%3E");
+}
+#items-table button.small.danger::before{
+  content:"";width:15px;height:15px;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d92d20' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2'/%3E%3Cpath d='M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] #items-table button.small.danger::before{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f97066' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2'/%3E%3Cpath d='M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6'/%3E%3C/svg%3E");
+}
+
+/* ============ tabs ============ */
+nav.tabs{
+  display:flex;gap:4px;margin:4px 0 18px;padding:5px;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+}
+nav.tabs button{
+  flex:1 1 auto;border:0;background:transparent;min-height:44px;border-radius:11px;
+  color:var(--muted);font-weight:600;box-shadow:none;transform:none;
+}
+nav.tabs button svg{width:18px;height:18px}
+nav.tabs button[aria-selected="true"]{background:var(--grad);color:#fff;box-shadow:var(--shadow)}
+html[data-theme="dark"] nav.tabs button[aria-selected="true"]{color:#14101f}
+nav.tabs button:hover{transform:none;filter:none}
+
+/* ============ cards ============ */
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;margin-bottom:16px;box-shadow:var(--shadow);
+}
+.card h2{margin:0 0 12px;font-size:1.06rem;display:flex;align-items:center;gap:10px;letter-spacing:-.01em}
+.hicon{
+  width:32px;height:32px;border-radius:10px;background:var(--grad-soft);color:var(--accent);
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  border:1px solid var(--line);
+}
+.hicon svg{width:18px;height:18px}
+.hint{font-size:.85rem;color:var(--muted)}
+
+/* ============ forms ============ */
+.field{margin-bottom:14px}
+.field label{display:block;font-weight:600;margin-bottom:6px;font-size:.92rem}
+.field .hint{font-size:.82rem;color:var(--muted);margin-top:4px}
+input[type=text],input[type=tel],input[type=email],input[type=number],input[type=date],
+select,textarea{
+  width:100%;font:inherit;min-height:var(--tap);padding:11px 14px;border-radius:12px;
+  border:1.5px solid var(--line);background:var(--input-bg);color:var(--ink);
+  transition:border-color .15s ease,box-shadow .15s ease}
+input:focus,select:focus,textarea:focus{
+  outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.18)}
+textarea{resize:vertical;min-height:88px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent)}
+.checkrow{display:flex;align-items:center;gap:10px;min-height:var(--tap)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* ============ tables ============ */
+.table-scroll{overflow-x:auto;border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.95rem;position:relative}
+caption{text-align:left;font-weight:600;padding:6px 0}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+th{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr{transition:background .12s ease}
+#quotes-table tbody tr:hover,#items-table tbody tr:hover{background:var(--surface-2)}
+
+/* ============ status pills ============ */
+.status{
+  font-weight:700;padding:4px 12px 4px 10px;border-radius:999px;font-size:.8rem;
+  border:1px solid var(--line);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;
+  background:var(--surface-2);
+}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.status.Draft{color:var(--muted)} .status.Sent{color:var(--accent)}
+.status.Accepted{color:var(--ok)} .status.Declined{color:var(--danger)}
+
+/* ============ totals ============ */
+.totals{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;margin:16px 0;box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.totals::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--grad);
+}
+.totals h2{margin:0 0 8px;font-size:1.02rem;display:flex;align-items:center;gap:10px}
+.totals table{font-size:1rem}
+.totals td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.totals .grand td{
+  font-weight:800;font-size:1.3rem;border-top:2px solid var(--line);padding-top:12px;
+}
+.totals .grand td:last-child{
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+.footnote{font-size:.83rem;color:var(--muted);margin-top:12px}
+.footnote strong{color:var(--ink)}
+
+/* ============ misc ============ */
+.empty{color:var(--muted);padding:26px 0;text-align:center}
+.empty svg{width:40px;height:40px;opacity:.45;display:block;margin:0 auto 10px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.err{color:var(--danger);font-size:.9rem;margin-top:6px;min-height:1.2em;font-weight:600}
+.notice{
+  border:1px solid var(--line);border-left:4px solid var(--accent);padding:12px 14px;
+  border-radius:12px;margin-bottom:16px;background:var(--surface);box-shadow:var(--shadow);font-size:.92rem;
+}
+footer.site{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:.85rem}
+footer.site a{color:var(--muted)}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.section-head .hicon{width:36px;height:36px}
+#edit-quote-title{font-weight:800;font-size:1.1rem;letter-spacing:-.01em}
+
+/* ---------- screen-only / print-only plumbing ---------- */
+#print-view{display:none}
+@media print{
+  .screen-only{display:none !important}
+  #print-view{display:block !important}
+  body{background:#fff;color:#000}
+  #print-view{font-family:Georgia,"Times New Roman",serif;color:#000}
+  #print-view h1{font-size:1.5rem;margin:0 0 2px}
+  #print-view .qmeta{color:#333;font-size:.9rem}
+  #print-view .blocks{display:flex;justify-content:space-between;gap:24px;margin:18px 0;flex-wrap:wrap}
+  #print-view table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.95rem}
+  #print-view th,#print-view td{border:1px solid #000;padding:8px;text-align:left}
+  #print-view th.num,#print-view td.num{text-align:right}
+  #print-view .ptotals{margin-left:auto;width:60%;max-width:320px}
+  #print-view .ptotals td:last-child{text-align:right}
+  #print-view .grand td{font-weight:bold}
+  #print-view .terms{white-space:pre-wrap;margin-top:14px;font-size:.92rem}
+  #print-view .sig{margin-top:48px;display:flex;gap:32px}
+  #print-view .sig div{flex:1;border-top:1px solid #000;padding-top:6px;font-size:.85rem}
+}
+@media (max-width:560px){
+  .row3{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .brand h1{font-size:1.25rem}
+  #theme-toggle{font-size:0;gap:0;padding:10px 12px}
+  #theme-toggle::before{margin:0}
+  nav.tabs button{font-size:.85rem;padding:10px 8px}
+}
+</style>
+</head>
+<body>
+<div class="wrap screen-only">
+  <header class="top">
+    <div class="brand">
+      <span class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6"/></svg>
+      </span>
+      <div>
+        <h1>QuoteCraft</h1>
+        <p class="tagline">Professional service quotes, on-site</p>
+      </div>
+    </div>
+    <button id="theme-toggle" type="button" aria-pressed="false">Dark mode: off</button>
+  </header>
+
+  <div id="storage-notice" class="notice" hidden></div>
+
+  <nav class="tabs" aria-label="Sections">
+    <button type="button" id="tab-quotes" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>Quotes</button>
+    <button type="button" id="tab-business" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/><path d="M10 21v-3h4v3"/></svg>Business</button>
+    <button type="button" id="tab-data" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>Data</button>
+  </nav>
+
+  <!-- ============ QUOTES LIST ============ -->
+  <section id="view-list" aria-label="Quotes list">
+    <div class="actions" style="margin-bottom:14px">
+      <button type="button" id="btn-new-quote" class="primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>New quote</button>
+    </div>
+    <div class="card">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg></span>Quotes</h2>
+      <div class="table-scroll">
+      <table id="quotes-table">
+        <caption class="sr-only">Saved quotes</caption>
+        <thead><tr>
+          <th scope="col">Number</th><th scope="col">Date</th><th scope="col">Customer</th>
+          <th scope="col">Status</th><th scope="col" class="num">Total</th>
+          <th scope="col"><span class="sr-only">Actions</span></th>
+        </tr></thead>
+        <tbody id="quotes-tbody"></tbody>
+      </table>
+      </div>
+      <div id="quotes-empty" class="empty" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.7 4H7.3a2 2 0 0 0-1.8 1.1z"/></svg>No quotes yet. Tap “New quote” to build your first estimate.</div>
+    </div>
+  </section>
+
+  <!-- ============ QUOTE EDITOR ============ -->
+  <section id="view-edit" aria-label="Quote editor" hidden>
+    <div class="actions" style="margin-bottom:14px">
+      <button type="button" id="btn-back-list" class="ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7-7-7 7 7 7"/></svg>Back</button>
+      <span id="edit-quote-title"></span>
+    </div>
+
+    <div class="card">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></span>Customer</h2>
+      <div class="field">
+        <label for="f-cust-name">Customer name</label>
+        <input type="text" id="f-cust-name" maxlength="120" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="f-cust-contact">Address / phone (optional)</label>
+        <input type="text" id="f-cust-contact" maxlength="240" autocomplete="off">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="f-quote-date">Quote date</label>
+          <input type="date" id="f-quote-date">
+        </div>
+        <div class="field">
+          <label for="f-valid-until">Valid until</label>
+          <input type="date" id="f-valid-until">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-status">Status</label>
+        <select id="f-status">
+          <option>Draft</option><option>Sent</option><option>Accepted</option><option>Declined</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></span>Line items</h2>
+      <div class="table-scroll">
+      <table id="items-table">
+        <caption class="sr-only">Quote line items</caption>
+        <thead><tr>
+          <th scope="col">Description</th><th scope="col" class="num">Qty</th>
+          <th scope="col" class="num">Unit price</th><th scope="col">Taxable</th>
+          <th scope="col" class="num">Line total</th><th scope="col"><span class="sr-only">Actions</span></th>
+        </tr></thead>
+        <tbody id="items-tbody"></tbody>
+      </table>
+      </div>
+      <div id="items-empty" class="empty" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>No line items yet.</div>
+      <h3 style="font-size:.95rem;margin:14px 0 8px">Add item</h3>
+      <div class="field">
+        <label for="ni-desc">Description</label>
+        <input type="text" id="ni-desc" maxlength="200" autocomplete="off">
+      </div>
+      <div class="row3">
+        <div class="field">
+          <label for="ni-qty">Quantity</label>
+          <input type="number" id="ni-qty" min="0" step="any" inputmode="decimal" placeholder="1">
+        </div>
+        <div class="field">
+          <label for="ni-price">Unit price ($)</label>
+          <input type="number" id="ni-price" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+        </div>
+        <div class="field">
+          <label class="sr-only" for="ni-taxable">Taxable</label>
+          <div class="checkrow">
+            <input type="checkbox" id="ni-taxable" checked>
+            <label for="ni-taxable" style="font-weight:400">Taxable</label>
+          </div>
+        </div>
+      </div>
+      <div class="err" id="ni-err" role="alert"></div>
+      <div class="actions">
+        <button type="button" id="btn-add-item" class="primary">Add item</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 12.6 21.4a2 2 0 0 1-2.8 0L2 13.6V2h11.6l6.9 6.9a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.4"/></svg></span>Discount &amp; tax</h2>
+      <div class="row2">
+        <div class="field">
+          <label for="f-disc-type">Discount type</label>
+          <select id="f-disc-type">
+            <option value="none">None</option>
+            <option value="percent">Percent (%)</option>
+            <option value="flat">Flat ($)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-disc-value">Discount value</label>
+          <input type="number" id="f-disc-value" min="0" step="any" inputmode="decimal" value="0">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-tax-rate">Tax rate (%)</label>
+        <input type="number" id="f-tax-rate" min="0" max="100" step="any" inputmode="decimal" value="0">
+      </div>
+      <div class="err" id="dt-err" role="alert"></div>
+    </div>
+
+    <div class="totals" aria-live="polite" aria-label="Quote totals" id="totals-panel">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01"/></svg></span>Totals</h2>
+      <table>
+        <tbody id="totals-tbody"></tbody>
+      </table>
+      <p class="footnote">Exact-to-the-cent: every amount is computed in whole cents (integers) — no floating-point drift.
+        <strong>Tax-after-discount rule:</strong> tax applies only to taxable lines, after the discount.
+        The discount is split between taxable and non-taxable lines in proportion to each side&rsquo;s share of the
+        subtotal; tax = (taxable subtotal &minus; its share of the discount) &times; tax rate, rounded to the cent.</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span>Terms / notes</h2>
+      <div class="field">
+        <label for="f-terms">Terms or notes (prints on the quote)</label>
+        <textarea id="f-terms" maxlength="2000"></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="btn-print" class="primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg>Print quote</button>
+      <button type="button" id="btn-delete-quote" class="danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete quote</button>
+    </div>
+  </section>
+
+  <!-- ============ BUSINESS ============ -->
+  <section id="view-business" aria-label="Business profile" hidden>
+    <div class="card">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/><path d="M10 21v-3h4v3"/></svg></span>Business profile</h2>
+      <p class="hint" style="margin-top:-6px">This branding prints on every customer quote.</p>
+      <div class="field">
+        <label for="b-name">Business name</label>
+        <input type="text" id="b-name" maxlength="120" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="b-phone">Phone</label>
+        <input type="tel" id="b-phone" maxlength="40" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="b-email">Email</label>
+        <input type="email" id="b-email" maxlength="120" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="b-tagline">Tagline</label>
+        <input type="text" id="b-tagline" maxlength="200" autocomplete="off">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DATA ============ -->
+  <section id="view-data" aria-label="Data management" hidden>
+    <div class="card">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>Backup &amp; restore</h2>
+      <div class="actions">
+        <button type="button" id="btn-export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Export JSON</button>
+        <button type="button" id="btn-import"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3m0 0 4 4m-4-4L8 7"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Import JSON</button>
+        <input type="file" id="file-import" accept="application/json,.json" class="sr-only" aria-label="Choose JSON backup file">
+      </div>
+      <p class="footnote">Import replaces everything and is confirm-gated. Every record is sanitized; invalid records are skipped.</p>
+      <div class="err" id="data-status" role="status"></div>
+    </div>
+    <div class="card">
+      <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.4 5.4 1.9-5.4 1.9L12 17.6l-1.9-5.4L4.7 10.3l5.4-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg></span>Demo &amp; reset</h2>
+      <div class="actions">
+        <button type="button" id="btn-demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.4 5.4 1.9-5.4 1.9L12 17.6l-1.9-5.4L4.7 10.3l5.4-1.9z"/></svg>Load demo data</button>
+        <button type="button" id="btn-clear" class="danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Clear all data</button>
+      </div>
+      <p class="footnote">Demo adds a sample business profile plus two sample quotes (one with a percent discount and mixed taxable items). Clear removes everything and is confirm-gated.</p>
+    </div>
+  </section>
+
+  <footer class="site">by <a href="https://glenerds.gumroad.com" rel="noopener">Glenerds</a></footer>
+</div>
+
+<!-- ============ PRINT VIEW (customer document) ============ -->
+<div id="print-view" aria-hidden="true"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   QuoteCraft — single-file offline quote builder.
+   Everything is original code. Zero external requests.
+   Money: all amounts are integer cents. No float drift.
+   DOM built only via createElement / textContent / .value.
+   ============================================================ */
+(function(){
+"use strict";
+
+/* ---------- helpers ---------- */
+function el(tag, attrs, text){
+  var n = document.createElement(tag);
+  if(attrs) for(var k in attrs){
+    if(k === "class") n.className = attrs[k];
+    else if(k === "for") n.htmlFor = attrs[k];
+    else n.setAttribute(k, attrs[k]);
+  }
+  if(text !== undefined && text !== null) n.textContent = text;
+  return n;
+}
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,10);
+}
+var moneyFmt = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"});
+function fmt(cents){ return moneyFmt.format(cents/100); }
+/* dollars (string/number) -> integer cents; null if not a finite number */
+function toCents(v){
+  if(typeof v === "string"){ v = v.replace(/[$,\s]/g,""); }
+  var s = String(v);
+  var neg = false;
+  if(s.charAt(0) === "-"){ neg = true; s = s.slice(1); }
+  /* exact decimal parse: avoids binary-float artifacts like 10.005*100 = 1000.4999... */
+  if(!/^\d*(\.\d*)?$/.test(s) || s === "" || s === ".") return null;
+  var parts = s.split(".");
+  var dollars = parts[0] === "" ? 0 : parseInt(parts[0], 10);
+  if(!Number.isSafeInteger(dollars)) return null;
+  var mills = parseInt(((parts[1] || "") + "000").slice(0, 3), 10);
+  var totalMills = dollars * 1000 + mills;
+  if(!Number.isSafeInteger(totalMills)) return null;
+  var cents = Math.round(totalMills / 10); /* half-up on the thousandth */
+  return neg ? -cents : cents;
+}
+/* exact line total in cents: qty (decimal) x unitCents (integer).
+   Avoids IEEE 754 half-cent-down errors, e.g. 4.1 x 325c = 1332.4999... -> 1332
+   instead of the correct 1333. Falls back to float math at absurd magnitudes. */
+function lineCents(qty, unitCents){
+  var neg = qty < 0;
+  var s = String(Math.abs(qty));
+  var dot = s.indexOf(".");
+  var scale = 1, digits;
+  if(dot < 0){ digits = s; }
+  else{
+    var frac = s.slice(dot + 1);
+    if(frac.length > 9) frac = frac.slice(0, 9);
+    scale = Math.pow(10, frac.length);
+    digits = s.slice(0, dot) + frac;
+  }
+  var qi = Number(digits);
+  var prod = qi * unitCents;
+  if(Number.isSafeInteger(qi) && Number.isSafeInteger(prod)){
+    var c = Math.round(prod / scale);
+    return neg ? -c : c;
+  }
+  return Math.round(qty * unitCents);
+}
+function todayISO(){
+  var d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+/* strict ISO date check: rejects impossible months/days like 2026-13-99 (crafted imports) */
+function isDateISO(s){
+  if(typeof s !== "string" || !/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(s)) return false;
+  var p = s.split("-"), y = +p[0], m = +p[1], d = +p[2];
+  var dim = [31, (y%4===0 && y%100!==0) || y%400===0 ? 29 : 28, 31,30,31,30,31,31,30,31,30,31][m-1];
+  return d <= dim;
+}
+function qnum(n){ return "Q-"+String(n).padStart(4,"0"); }
+
+/* ---------- storage ---------- */
+var LS_KEY = "quotecraft.data.v1";
+var storageOK = true;
+function lsGet(){
+  try{ return window.localStorage.getItem(LS_KEY); }
+  catch(e){ storageOK = false; return null; }
+}
+function lsSet(v){
+  try{ window.localStorage.setItem(LS_KEY, v); }
+  catch(e){ storageOK = false; }
+}
+var memFallback = null;
+function showStorageNotice(){
+  var n = document.getElementById("storage-notice");
+  if(n){ n.hidden = false; n.textContent = "Browser storage is unavailable — your data will be kept only until this tab closes."; }
+}
+/* corrupt localStorage: tell the user instead of silently resetting */
+function showCorruptNotice(){
+  var n = document.getElementById("storage-notice");
+  if(n){ n.hidden = false; n.textContent = "Your saved data was damaged and couldn't be read, so QuoteCraft started with a clean slate. Re-import a backup to recover your quotes."; }
+}
+function save(){
+  var s = JSON.stringify(state);
+  if(storageOK){ lsSet(s); if(!storageOK){ memFallback = s; showStorageNotice(); } }
+  else { memFallback = s; showStorageNotice(); }
+}
+function loadRaw(){
+  var s = lsGet();
+  if(s === null || s === undefined){ s = memFallback; }
+  return s;
+}
+
+/* debounced persistence for keystroke-speed handlers (typing shouldn't
+   hammer localStorage on every keypress with a large quote database) */
+var saveT = null;
+function saveSoon(){
+  if(saveT) clearTimeout(saveT);
+  saveT = setTimeout(function(){ saveT = null; save(); }, 400);
+}
+
+/* ---------- state ---------- */
+var STATUSES = ["Draft","Sent","Accepted","Declined"];
+var state = { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNum:1, editedByUser:false };
+
+/* ---------- money math (integer cents) ---------- */
+function calcTotals(q){
+  var items = q.items || [];
+  var lines = items.map(function(it){
+    /* qty may be fractional; unit price is whole cents — exact decimal math */
+    var cents = lineCents(it.qty, it.unitCents);
+    return { taxable: it.taxable, cents: cents };
+  });
+  var subtotal = 0, taxableBase = 0;
+  lines.forEach(function(l){ subtotal += l.cents; if(l.taxable) taxableBase += l.cents; });
+  var discount = 0;
+  if(q.discountType === "percent"){
+    discount = Math.round(subtotal * q.discountValue / 100);
+  }else if(q.discountType === "flat"){
+    discount = toCents(q.discountValue) || 0;
+  }
+  if(discount > subtotal) discount = subtotal;
+  if(discount < 0) discount = 0;
+  /* tax-after-discount rule: discount is pro-rated across taxable vs
+     non-taxable lines in proportion to their share of the subtotal */
+  var taxableDiscount = 0;
+  if(subtotal > 0 && taxableBase > 0){
+    taxableDiscount = Math.round(discount * taxableBase / subtotal);
+  }
+  var taxableAfter = taxableBase - taxableDiscount;
+  var rate = Number(q.taxRate);
+  if(!Number.isFinite(rate) || rate < 0) rate = 0;
+  if(rate > 100) rate = 100;
+  var tax = Math.round(taxableAfter * rate / 100);
+  return {
+    subtotal: subtotal,
+    discount: discount,
+    taxableSubtotal: taxableBase,
+    taxableAfterDiscount: taxableAfter,
+    tax: tax,
+    total: subtotal - discount + tax
+  };
+}
+
+/* ---------- sanitization (import + demo) ---------- */
+var MAX = { text:120, contact:240, tagline:200, desc:200, terms:2000 };
+function cleanText(v, cap){
+  if(typeof v !== "string") return "";
+  return v.slice(0, cap);
+}
+function cleanQty(v){
+  var n = Number(v);
+  if(!Number.isFinite(n) || n <= 0) return null;
+  return Math.min(n, 1000000);
+}
+function cleanUnitCents(v, alreadyCents){
+  if(alreadyCents){
+    /* stored/exported format: integer cents already — validate, do NOT re-convert */
+    var n = Number(v);
+    if(!Number.isFinite(n) || n < 0) return null;
+    return Math.min(Math.round(n), 100000000);
+  }
+  var c = toCents(v);
+  if(c === null || c < 0) return null;
+  return Math.min(c, 100000000);
+}
+function cleanItem(raw){
+  if(!raw || typeof raw !== "object") return null;
+  var desc = cleanText(raw.desc, MAX.desc);
+  var qty = cleanQty(raw.qty);
+  var unitCents;
+  if(raw.unitCents !== undefined){
+    unitCents = cleanUnitCents(raw.unitCents, true);
+  }else{
+    unitCents = cleanUnitCents(raw.unitPrice, false);
+  }
+  if(!desc || qty === null || unitCents === null) return null;
+  return { id: typeof raw.id === "string" ? raw.id.slice(0,64) : uid(),
+           desc: desc, qty: qty, unitCents: unitCents,
+           taxable: raw.taxable !== false };
+}
+function cleanQuote(raw, usedNums, stats){
+  if(!raw || typeof raw !== "object") return null;
+  var items = [];
+  var seenIds = {};
+  if(Array.isArray(raw.items)){
+    for(var i=0;i<raw.items.length && items.length<500;i++){
+      var it = cleanItem(raw.items[i]);
+      if(!it){ if(stats) stats.dropped++; continue; }
+      /* duplicate imported ids would make edit/delete hit the wrong rows */
+      if(seenIds[it.id]) it.id = uid();
+      seenIds[it.id] = true;
+      items.push(it);
+    }
+    if(stats && raw.items.length > i) stats.dropped += raw.items.length - i;
+  }
+  var num = Number(raw.num);
+  if(!Number.isInteger(num) || num < 1 || num > 999999 || usedNums.has(num)) return null;
+  var status = STATUSES.indexOf(raw.status) >= 0 ? raw.status : "Draft";
+  var dt = typeof raw.discountType === "string" ? raw.discountType : "none";
+  if(dt !== "percent" && dt !== "flat") dt = "none";
+  var dv = Number(raw.discountValue);
+  if(!Number.isFinite(dv) || dv < 0) dv = 0;
+  if(dt === "percent") dv = Math.round(dv * 100) / 100;
+  var tr = Number(raw.taxRate);
+  if(!Number.isFinite(tr) || tr < 0) tr = 0;
+  if(tr > 100) tr = 100;
+  var date = isDateISO(raw.date) ? raw.date : todayISO();
+  var validUntil = isDateISO(raw.validUntil) ? raw.validUntil : "";
+  usedNums.add(num);
+  return {
+    id: typeof raw.id === "string" ? raw.id.slice(0,64) : uid(),
+    num: num,
+    date: date,
+    validUntil: validUntil,
+    customer: cleanText(raw.customer, MAX.text),
+    contact: cleanText(raw.contact, MAX.contact),
+    status: status,
+    items: items,
+    discountType: dt,
+    discountValue: dv,
+    taxRate: tr,
+    terms: cleanText(raw.terms, MAX.terms)
+  };
+}
+function sanitizeState(raw){
+  /* Returns {business, quotes, nextNum, skipped} or null if nothing usable. */
+  if(!raw || typeof raw !== "object") return null;
+  var skipped = 0;
+  var b = raw.business && typeof raw.business === "object" ? raw.business : {};
+  var business = {
+    name: cleanText(b.name, MAX.text),
+    phone: cleanText(b.phone, 40),
+    email: cleanText(b.email, MAX.text),
+    tagline: cleanText(b.tagline, MAX.tagline)
+  };
+  var used = new Set();
+  var seenQuoteIds = {};
+  var quotes = [];
+  if(Array.isArray(raw.quotes)){
+    for(var i=0;i<raw.quotes.length;i++){
+      var stats = { dropped: 0 };
+      var q = cleanQuote(raw.quotes[i], used, stats);
+      if(q){
+        /* duplicate imported quote ids would make open/edit/delete hit the wrong quote */
+        if(seenQuoteIds[q.id]) q.id = uid();
+        seenQuoteIds[q.id] = true;
+        quotes.push(q); skipped += stats.dropped;
+      } else skipped++;
+    }
+  }else{ skipped++; }
+  var nextNum = Number(raw.nextNum);
+  if(!Number.isInteger(nextNum) || nextNum < 1) nextNum = 1;
+  used.forEach(function(n){ if(n >= nextNum) nextNum = n+1; });
+  return { business: business, quotes: quotes, nextNum: nextNum, skipped: skipped };
+}
+
+/* ---------- load ---------- */
+var corruptNotice = false;
+function initState(){
+  var s = loadRaw();
+  if(s){
+    try{
+      var parsed = JSON.parse(s);
+      var clean = sanitizeState(parsed);
+      if(clean){ state = clean; return; }
+      /* stored string wasn't usable (wrong shape) */
+      corruptNotice = true;
+    }catch(e){ /* malformed JSON in storage */
+      corruptNotice = true;
+    }
+  }
+}
+
+/* ---------- rendering ---------- */
+var cur = { view:"list", quoteId:null };
+
+function showView(name){
+  cur.view = name;
+  var tabFor = { list:"tab-quotes", edit:"tab-quotes", business:"tab-business", data:"tab-data" };
+  ["list","edit","business","data"].forEach(function(v){
+    document.getElementById("view-"+v).hidden = (v !== name);
+  });
+  ["tab-quotes","tab-business","tab-data"].forEach(function(id){
+    document.getElementById(id).setAttribute("aria-selected", tabFor[name] === id ? "true" : "false");
+  });
+}
+function getQuote(id){
+  for(var i=0;i<state.quotes.length;i++) if(state.quotes[i].id===id) return state.quotes[i];
+  return null;
+}
+function openQuote(id){
+  cur.quoteId = id;
+  var q = getQuote(id);
+  if(!q){ showView("list"); return; }
+  document.getElementById("edit-quote-title").textContent = qnum(q.num);
+  document.getElementById("f-cust-name").value = q.customer;
+  document.getElementById("f-cust-contact").value = q.contact;
+  document.getElementById("f-quote-date").value = q.date;
+  document.getElementById("f-valid-until").value = q.validUntil;
+  document.getElementById("f-status").value = q.status;
+  document.getElementById("f-disc-type").value = q.discountType;
+  document.getElementById("f-disc-value").value = q.discountValue;
+  document.getElementById("f-tax-rate").value = q.taxRate;
+  document.getElementById("f-terms").value = q.terms;
+  /* reset the add-item form: drop any stale edit state left over from another quote */
+  document.getElementById("ni-desc").value = "";
+  document.getElementById("ni-qty").value = "";
+  document.getElementById("ni-price").value = "";
+  document.getElementById("ni-taxable").checked = true;
+  document.getElementById("ni-err").textContent = "";
+  var addBtn = document.getElementById("btn-add-item");
+  delete addBtn.dataset.editId;
+  addBtn.textContent = "Add item";
+  renderItems(q);
+  renderTotals(q);
+  showView("edit");
+}
+function statusBadge(st){
+  var s = el("span",{class:"status "+st}, st);
+  return s;
+}
+function renderList(){
+  var tb = document.getElementById("quotes-tbody");
+  while(tb.firstChild) tb.removeChild(tb.firstChild);
+  var qs = state.quotes.slice().sort(function(a,b){ return b.num - a.num; });
+  document.getElementById("quotes-empty").hidden = qs.length > 0;
+  qs.forEach(function(q){
+    var t = calcTotals(q);
+    var tr = el("tr");
+    var tdNum = el("td",null,qnum(q.num)); tdNum.style.fontWeight="600";
+    tr.appendChild(tdNum);
+    tr.appendChild(el("td",null,q.date));
+    tr.appendChild(el("td",null,q.customer || "—"));
+    var tdSt = el("td"); tdSt.appendChild(statusBadge(q.status)); tr.appendChild(tdSt);
+    tr.appendChild(el("td",{class:"num"},fmt(t.total)));
+    var tdA = el("td");
+    var bOpen = el("button",{type:"button",class:"small"},"Open");
+    bOpen.setAttribute("aria-label","Open quote "+qnum(q.num));
+    bOpen.addEventListener("click", function(){ openQuote(q.id); });
+    tdA.appendChild(bOpen);
+    tr.appendChild(tdA);
+    tb.appendChild(tr);
+  });
+}
+function renderItems(q){
+  var tb = document.getElementById("items-tbody");
+  while(tb.firstChild) tb.removeChild(tb.firstChild);
+  document.getElementById("items-empty").hidden = q.items.length > 0;
+  q.items.forEach(function(it){
+    var tr = el("tr");
+    tr.appendChild(el("td",null,it.desc));
+    tr.appendChild(el("td",{class:"num"},String(it.qty)));
+    tr.appendChild(el("td",{class:"num"},fmt(it.unitCents)));
+    tr.appendChild(el("td",null,it.taxable ? "Yes" : "No"));
+    tr.appendChild(el("td",{class:"num"},fmt(lineCents(it.qty,it.unitCents))));
+    var tdA = el("td");
+    var bE = el("button",{type:"button",class:"small"},"Edit");
+    bE.setAttribute("aria-label","Edit item "+it.desc);
+    bE.addEventListener("click", function(){
+      document.getElementById("ni-desc").value = it.desc;
+      document.getElementById("ni-qty").value = it.qty;
+      document.getElementById("ni-price").value = (it.unitCents/100).toFixed(2);
+      document.getElementById("ni-taxable").checked = it.taxable;
+      document.getElementById("btn-add-item").textContent = "Save item";
+      document.getElementById("btn-add-item").dataset.editId = it.id;
+      document.getElementById("ni-desc").focus();
+    });
+    var bD = el("button",{type:"button",class:"small danger"},"Delete");
+    bD.setAttribute("aria-label","Delete item "+it.desc);
+    bD.addEventListener("click", function(){
+      q.items = q.items.filter(function(x){ return x.id !== it.id; });
+      /* leaving a stale editId would make the next Save a silent no-op */
+      var addBtn = document.getElementById("btn-add-item");
+      delete addBtn.dataset.editId;
+      addBtn.textContent = "Add item";
+      save(); renderItems(q); renderTotals(q);
+    });
+    tdA.appendChild(bE); tdA.appendChild(document.createTextNode(" ")); tdA.appendChild(bD);
+    tr.appendChild(tdA);
+    tb.appendChild(tr);
+  });
+}
+function totalsRow(label, value, isGrand){
+  var tr = el("tr", isGrand ? {class:"grand"} : null);
+  tr.appendChild(el("td",null,label));
+  var td = el("td",null,value);
+  tr.appendChild(td);
+  return tr;
+}
+function renderTotals(q){
+  var t = calcTotals(q);
+  var tb = document.getElementById("totals-tbody");
+  while(tb.firstChild) tb.removeChild(tb.firstChild);
+  tb.appendChild(totalsRow("Subtotal", fmt(t.subtotal)));
+  tb.appendChild(totalsRow("Discount", "−"+fmt(t.discount)));
+  tb.appendChild(totalsRow("Taxable subtotal (before discount)", fmt(t.taxableSubtotal)));
+  tb.appendChild(totalsRow("Taxable subtotal (after discount)", fmt(t.taxableAfterDiscount)));
+  tb.appendChild(totalsRow("Tax", fmt(t.tax)));
+  tb.appendChild(totalsRow("Grand total", fmt(t.total), true));
+}
+
+/* ---------- print view (customer document; NO Glenerds footer) ---------- */
+function buildPrintView(q){
+  var pv = document.getElementById("print-view");
+  while(pv.firstChild) pv.removeChild(pv.firstChild);
+  var b = state.business;
+  pv.appendChild(el("h1",null,b.name || "Quote"));
+  if(b.tagline) pv.appendChild(el("div",{class:"qmeta"},b.tagline));
+  var contactLine = [b.phone, b.email].filter(Boolean).join("  •  ");
+  if(contactLine) pv.appendChild(el("div",{class:"qmeta"},contactLine));
+  var blocks = el("div",{class:"blocks"});
+  var cust = el("div");
+  cust.appendChild(el("div",null,"Bill to:"));
+  var cname = el("strong"); cname.textContent = q.customer || "(no name)"; cust.appendChild(cname);
+  if(q.contact) cust.appendChild(el("div",null,q.contact));
+  blocks.appendChild(cust);
+  var meta = el("div");
+  meta.appendChild(el("div",null,"Quote "+qnum(q.num)));
+  meta.appendChild(el("div",null,"Date: "+q.date));
+  if(q.validUntil) meta.appendChild(el("div",null,"Valid until: "+q.validUntil));
+  blocks.appendChild(meta);
+  pv.appendChild(blocks);
+  var table = el("table");
+  var thead = el("thead");
+  var hr = el("tr");
+  [["Description",""],["Qty","num"],["Unit price","num"],["Tax","num"],["Line total","num"]].forEach(function(c){
+    var th = el("th", c[1] ? {class:"num",scope:"col"} : {scope:"col"}, c[0]);
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr); table.appendChild(thead);
+  var tbody = el("tbody");
+  q.items.forEach(function(it){
+    var tr = el("tr");
+    tr.appendChild(el("td",null,it.desc));
+    tr.appendChild(el("td",{class:"num"},String(it.qty)));
+    tr.appendChild(el("td",{class:"num"},fmt(it.unitCents)));
+    tr.appendChild(el("td",{class:"num"}, it.taxable ? "Yes" : "—"));
+    tr.appendChild(el("td",{class:"num"},fmt(lineCents(it.qty,it.unitCents))));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  pv.appendChild(table);
+  var t = calcTotals(q);
+  var pt = el("table",{class:"ptotals"});
+  var ptb = el("tbody");
+  ptb.appendChild(totalsRow("Subtotal", fmt(t.subtotal)));
+  ptb.appendChild(totalsRow("Discount", "−"+fmt(t.discount)));
+  ptb.appendChild(totalsRow("Taxable subtotal (before discount)", fmt(t.taxableSubtotal)));
+  ptb.appendChild(totalsRow("Taxable subtotal (after discount)", fmt(t.taxableAfterDiscount)));
+  ptb.appendChild(totalsRow("Tax", fmt(t.tax)));
+  ptb.appendChild(totalsRow("Grand total", fmt(t.total), true));
+  pt.appendChild(ptb);
+  pv.appendChild(pt);
+  if(q.terms) pv.appendChild(el("div",{class:"terms"},q.terms));
+  var sig = el("div",{class:"sig"});
+  sig.appendChild(el("div",null,"Customer signature / date"));
+  sig.appendChild(el("div",null,"Authorized by / date"));
+  pv.appendChild(sig);
+}
+
+/* ---------- demo data ---------- */
+function loadDemo(){
+  state.business = { name:"Ridgeview Home Services", phone:"(812) 555-0147",
+    email:"quotes@ridgeview.example", tagline:"Honest work, fair prices — licensed & insured." };
+  state.quotes = [];
+  var q1 = {
+    id: uid(), num: 1, date: todayISO(), validUntil: "",
+    customer: "Maya Chen", contact: "42 Maple Ave, Bloomington, IN • (812) 555-0119",
+    status: "Sent",
+    items: [
+      { id: uid(), desc: "Replace kitchen faucet (labor)", qty: 2.5, unitCents: 7500, taxable: false },
+      { id: uid(), desc: "Moen faucet — customer supplied", qty: 1, unitCents: 0, taxable: false },
+      { id: uid(), desc: "Supply lines + shutoff valves", qty: 2, unitCents: 2499, taxable: true }
+    ],
+    discountType: "percent", discountValue: 10, taxRate: 7, terms: "Payment due on completion. 30-day labor warranty."
+  };
+  var q2 = {
+    id: uid(), num: 2, date: todayISO(), validUntil: "",
+    customer: "Dan Okafor", contact: "(812) 555-0162",
+    status: "Draft",
+    items: [
+      { id: uid(), desc: "Ceiling fan installation (labor)", qty: 1, unitCents: 12000, taxable: false }
+    ],
+    discountType: "none", discountValue: 0, taxRate: 0, terms: ""
+  };
+  state.quotes = [q1, q2];
+  state.nextNum = 3;
+  save();
+  renderAll();
+}
+
+/* ---------- import / export ---------- */
+function exportJSON(){
+  /* sanitize first: state may hold hand-edited localStorage or legacy data */
+  var clean = sanitizeState(state) || { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNum:1 };
+  var out = { business: clean.business, quotes: clean.quotes, nextNum: clean.nextNum };
+  var blob = new Blob([JSON.stringify(out,null,2)],{type:"application/json"});
+  var a = el("a",{href:URL.createObjectURL(blob),download:"quotecraft-backup-"+todayISO()+".json"});
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function importJSON(file){
+  var rd = new FileReader();
+  var statusEl = document.getElementById("data-status");
+  function say(msg){ if(statusEl) statusEl.textContent = msg; }
+  /* size guard: readAsText/JSON.parse on a giant file would hang the tab */
+  if(file && file.size > 5 * 1024 * 1024){
+    say("That file is too large to import (over 5 MB). Nothing was changed.");
+    return;
+  }
+  rd.onload = function(){
+    try{
+      var parsed = JSON.parse(String(rd.result));
+      var clean = sanitizeState(parsed);
+      if(!clean || (clean.quotes.length===0 && clean.skipped>0 && !clean.business.name)){
+        say("No valid QuoteCraft records found in that file. Nothing was changed.");
+        return;
+      }
+      if(!confirm("Replace ALL current data with this backup? ("+clean.quotes.length+" quotes, "+clean.skipped+" records skipped)")) return;
+      state = clean;
+      state.nextNum = Math.max(clean.nextNum, 1);
+      cur.quoteId = null;
+      save(); renderAll(); showView("list");
+      say("Import complete: "+clean.quotes.length+" quotes restored ("+clean.skipped+" skipped).");
+    }catch(e){ say("Could not read that file as JSON. Nothing was changed."); }
+  };
+  rd.readAsText(file);
+}
+
+/* ---------- theme ---------- */
+var THEME_KEY = "quotecraft.theme.v1";
+function setTheme(mode){
+  document.documentElement.setAttribute("data-theme", mode);
+  var btn = document.getElementById("theme-toggle");
+  btn.textContent = "Dark mode: " + (mode === "dark" ? "on" : "off");
+  btn.setAttribute("aria-pressed", mode === "dark" ? "true" : "false");
+  try{ window.localStorage.setItem(THEME_KEY, mode); }catch(e){}
+}
+function initTheme(){
+  var saved = null;
+  try{ saved = window.localStorage.getItem(THEME_KEY); }catch(e){}
+  if(saved === "dark" || saved === "light") setTheme(saved);
+  else setTheme(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}
+
+/* ---------- editor field binding ---------- */
+function bindEditor(){
+  var q = getQuote(cur.quoteId);
+  if(!q) return;
+  q.customer = cleanText(document.getElementById("f-cust-name").value, MAX.text);
+  q.contact = cleanText(document.getElementById("f-cust-contact").value, MAX.contact);
+  var dEl = document.getElementById("f-quote-date");
+  var d = dEl.value;
+  if(isDateISO(d)) q.date = d;
+  else dEl.value = q.date;
+  var vu = document.getElementById("f-valid-until").value;
+  q.validUntil = isDateISO(vu) ? vu : "";
+  var st = document.getElementById("f-status").value;
+  if(STATUSES.indexOf(st) >= 0) q.status = st;
+  var dt = document.getElementById("f-disc-type").value;
+  q.discountType = (dt === "percent" || dt === "flat") ? dt : "none";
+  var dtErr = document.getElementById("dt-err");
+  dtErr.textContent = "";
+  var dvEl = document.getElementById("f-disc-value");
+  var dv = Number(dvEl.value);
+  if(Number.isFinite(dv) && dv < 0){
+    dtErr.textContent = "Discount value must be 0 or more.";
+    dvEl.value = "0";
+    q.discountValue = 0;
+  }else{
+    q.discountValue = Number.isFinite(dv) && dv >= 0 ? dv : 0;
+  }
+  if(q.discountType === "percent") q.discountValue = Math.round(q.discountValue * 100) / 100;
+  /* feedback when the discount is capped (mirrors the tax>100 message) */
+  if(q.discountType === "percent" && q.discountValue > 100){
+    dtErr.textContent += (dtErr.textContent ? " " : "") + "Discount percent can't be more than 100%.";
+    dvEl.value = "100";
+    q.discountValue = 100;
+  }else if(q.discountType === "flat"){
+    var subC = 0;
+    (q.items || []).forEach(function(it){ subC += lineCents(it.qty, it.unitCents); });
+    if(toCents(q.discountValue) > subC){
+      dtErr.textContent += (dtErr.textContent ? " " : "") + "Discount can't be more than the subtotal.";
+      q.discountValue = subC / 100;
+      dvEl.value = (subC / 100).toFixed(2);
+    }
+  }
+  var trEl = document.getElementById("f-tax-rate");
+  var tr = Number(trEl.value);
+  if(Number.isFinite(tr) && tr < 0){
+    dtErr.textContent += (dtErr.textContent ? " " : "") + "Tax rate must be 0 or more.";
+    trEl.value = "0";
+    q.taxRate = 0;
+  }else if(Number.isFinite(tr) && tr > 100){
+    dtErr.textContent += (dtErr.textContent ? " " : "") + "Tax rate can't be more than 100%.";
+    trEl.value = "100";
+    q.taxRate = 100;
+  }else{
+    q.taxRate = Number.isFinite(tr) && tr >= 0 ? tr : 0;
+  }
+  q.terms = cleanText(document.getElementById("f-terms").value, MAX.terms);
+  saveSoon();
+  renderTotals(q);
+}
+function addOrSaveItem(){
+  var q = getQuote(cur.quoteId);
+  if(!q) return;
+  var err = document.getElementById("ni-err");
+  err.textContent = "";
+  var btn = document.getElementById("btn-add-item");
+  var editId = btn.dataset.editId;
+  var desc = document.getElementById("ni-desc").value.trim();
+  var qtyN = Number(document.getElementById("ni-qty").value);
+  var priceC = toCents(document.getElementById("ni-price").value);
+  if(!desc){ err.textContent = "Description is required."; return; }
+  if(desc.length > MAX.desc){ err.textContent = "Description is too long (200 max)."; return; }
+  var descLower = desc.toLowerCase();
+  var dup = false;
+  for(var i=0;i<q.items.length;i++){
+    if(editId && q.items[i].id === editId) continue;
+    if(q.items[i].desc.toLowerCase() === descLower){ dup = true; break; }
+  }
+  if(dup){ err.textContent = "Description must be unique within a quote."; return; }
+  if(!Number.isFinite(qtyN) || qtyN <= 0){ err.textContent = "Quantity must be more than 0."; return; }
+  if(qtyN > 1000000){ err.textContent = "Quantity can't be more than 1,000,000."; return; }
+  if(priceC === null || priceC < 0){ err.textContent = "Unit price must be 0 or more."; return; }
+  if(priceC > 100000000){ err.textContent = "Unit price can't be more than $1,000,000."; return; }
+  var taxable = document.getElementById("ni-taxable").checked;
+  if(editId){
+    var it = null;
+    q.items.forEach(function(x){ if(x.id===editId) it = x; });
+    if(it){ it.desc = desc; it.qty = qtyN; it.unitCents = priceC; it.taxable = taxable; }
+    delete btn.dataset.editId;
+    btn.textContent = "Add item";
+  }else{
+    q.items.push({ id: uid(), desc: desc, qty: qtyN, unitCents: priceC, taxable: taxable });
+  }
+  document.getElementById("ni-desc").value = "";
+  document.getElementById("ni-qty").value = "";
+  document.getElementById("ni-price").value = "";
+  document.getElementById("ni-taxable").checked = true;
+  save(); renderItems(q); renderTotals(q);
+}
+
+/* ---------- misc ---------- */
+function newQuote(){
+  var q = {
+    id: uid(), num: state.nextNum++, date: todayISO(), validUntil: "",
+    customer: "", contact: "", status: "Draft", items: [],
+    discountType: "none", discountValue: 0, taxRate: 0, terms: ""
+  };
+  state.quotes.push(q);
+  save(); renderList();
+  openQuote(q.id);
+}
+function renderAll(){
+  renderList();
+  var b = state.business;
+  document.getElementById("b-name").value = b.name;
+  document.getElementById("b-phone").value = b.phone;
+  document.getElementById("b-email").value = b.email;
+  document.getElementById("b-tagline").value = b.tagline;
+  if(cur.view === "edit" && cur.quoteId){
+    var q = getQuote(cur.quoteId);
+    if(q) openQuote(q.id); else { cur.quoteId = null; showView("list"); }
+  }
+}
+
+/* ---------- events ---------- */
+function bind(){
+  document.getElementById("theme-toggle").addEventListener("click", function(){
+    setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+  var tabs = [["tab-quotes","list"],["tab-business","business"],["tab-data","data"]];
+  tabs.forEach(function(p){
+    document.getElementById(p[0]).addEventListener("click", function(){ if(p[1]==="list") renderList(); showView(p[1]); });
+  });
+  document.getElementById("btn-new-quote").addEventListener("click", newQuote);
+  document.getElementById("btn-back-list").addEventListener("click", function(){
+    bindEditor(); renderList(); showView("list");
+  });
+  ["f-cust-name","f-cust-contact","f-quote-date","f-valid-until","f-status",
+   "f-disc-type","f-disc-value","f-tax-rate","f-terms"].forEach(function(id){
+    var n = document.getElementById(id);
+    n.addEventListener("change", bindEditor);
+    n.addEventListener("input", bindEditor);
+  });
+  document.getElementById("btn-add-item").addEventListener("click", addOrSaveItem);
+  document.getElementById("btn-delete-quote").addEventListener("click", function(){
+    var q = getQuote(cur.quoteId);
+    if(!q) return;
+    if(!confirm("Delete quote "+qnum(q.num)+"? This cannot be undone.")) return;
+    state.quotes = state.quotes.filter(function(x){ return x.id !== q.id; });
+    cur.quoteId = null;
+    save(); renderList(); showView("list");
+  });
+  document.getElementById("btn-print").addEventListener("click", function(){
+    bindEditor();
+    var q = getQuote(cur.quoteId);
+    if(!q) return;
+    buildPrintView(q);
+    window.print();
+  });
+  ["b-name","b-phone","b-email","b-tagline"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", function(){
+      var b = state.business;
+      b.name = cleanText(document.getElementById("b-name").value, MAX.text);
+      b.phone = cleanText(document.getElementById("b-phone").value, 40);
+      b.email = cleanText(document.getElementById("b-email").value, MAX.text);
+      b.tagline = cleanText(document.getElementById("b-tagline").value, MAX.tagline);
+      saveSoon();
+    });
+  });
+  document.getElementById("btn-export").addEventListener("click", exportJSON);
+  document.getElementById("btn-import").addEventListener("click", function(){
+    document.getElementById("file-import").click();
+  });
+  document.getElementById("file-import").addEventListener("change", function(e){
+    if(e.target.files && e.target.files[0]) importJSON(e.target.files[0]);
+    e.target.value = "";
+  });
+  document.getElementById("btn-demo").addEventListener("click", function(){
+    if(state.quotes.length && !confirm("Replace current data with demo data?")) return;
+    loadDemo();
+  });
+  document.getElementById("btn-clear").addEventListener("click", function(){
+    if(!confirm("Delete ALL data — every quote and your business profile?")) return;
+    state = { business:{name:"",phone:"",email:"",tagline:""}, quotes:[], nextNum:1, editedByUser:false };
+    cur.quoteId = null;
+    save(); renderAll(); showView("list");
+  });
+}
+
+/* ---------- init ---------- */
+initTheme();
+initState();
+bind();
+renderAll();
+if(!storageOK){ showStorageNotice(); }
+else if(corruptNotice){ showCorruptNotice(); }
+showView("list");
+})();
+</script>
+</body>
+</html>
