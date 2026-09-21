@@ -44,6 +44,19 @@ html[data-theme="dark"] #theme-toggle.theme-toggle .ic-moon{display:none}
 #es-detail{margin:8px 0 4px;font-size:.88rem;color:var(--muted)}
 #es-detail strong{color:var(--fg)}
 @media print{.g-header-actions,#theme-toggle,#sound-toggle,.es-row{cursor:default}}
+/* ---------- shared round icon-button class: theme + sound stay round together ---------- */
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+/* ---------- sample data toggle: icon-only flask button + muted hint ---------- */
+.sample-row{display:flex;align-items:center;gap:10px;margin:0 0 .5rem}
+.sample-toggle{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;border-radius:999px;border:1px solid var(--border);background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)}
+.sample-toggle svg{width:18px;height:18px}
+.sample-toggle:hover{color:var(--fg);border-color:var(--muted)}
+.sample-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.sample-hint{color:var(--muted)}
+/* ---------- bottom cross-promo ---------- */
+.cross-promo{margin:2rem 0 0;padding:1.25rem;border-top:1px solid var(--border);text-align:center}
+@media print{.sample-toggle,.sample-hint,.cross-promo{display:none!important}}
 </style>
 <script type="application/ld+json">
 {
@@ -103,8 +116,8 @@ html[data-theme="dark"] #theme-toggle.theme-toggle .ic-moon{display:none}
 <a href="https://glenerds.gumroad.com">Store</a>
 <div class="g-header-actions">
 <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-<button id="theme-toggle" class="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
-<button id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
+<button id="theme-toggle" class="theme-toggle round-btn" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+<button id="sound-toggle" class="round-btn" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
 </div>
 </nav></div></header>
 <div class="wrap"><p class="breadcrumb"><a href="../../index.html">Home</a> &rsaquo; <a href="../index.html">Free Tools</a> &rsaquo; Espresso Inspection Checklist</p>
@@ -118,6 +131,10 @@ seller's location, offline, on your phone. Free, no account.</p>
 </div>
 
 <div class="toolbox" role="region" aria-label="Espresso machine inspection checklist">
+<div class="sample-row">
+<button id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v6L4.5 18.5A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.8-2.5L14 9V3"/><path d="M7.6 15h8.8"/></svg></button>
+<span class="sample-hint small">See this app filled with demo data</span>
+</div>
 
 <div id="es-list"></div>
 <p><strong id="es-tally"></strong><br><span id="es-cost" class="small"></span></p>
@@ -163,7 +180,7 @@ seller's location, offline, on your phone. Free, no account.</p>
     ['General','Seller can show it pulling a real shot, not just powering on',0,0]
   ];
   function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
-  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
+  function save(d){if(sampleOn)return;try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
   var data=load();
   function money(n){return '$'+Math.round(n).toLocaleString('en-US');}
   function render(){
@@ -246,6 +263,27 @@ seller's location, offline, on your phone. Free, no account.</p>
   document.getElementById('es-print').onclick=function(){Sound.click();window.print();};
   document.getElementById('es-reset').onclick=function(){if(confirm('Reset the whole checklist?')){data={};save(data);render();Sound.success();}};
   render();
+  /* ---------- sample data toggle: snapshot checklist, fill realistic demo inspection, restore ---------- */
+  var sampleOn=false,sampleSnap=null;
+  var SAMPLE={0:'pass',1:'pass',2:'flag',3:'pass',4:'pass',5:'pass',6:'pass',7:'fail',8:'flag',9:'pass',10:'pass',11:'pass',
+    notes:'2018 La Marzocco Linea 2-group, asking $6,500 — seller claims it was serviced last year.'};
+  var sbtn=document.getElementById('sample-toggle');
+  function paintSample(){
+    var lbl=sampleOn?'Clear sample data':'Try sample data';
+    sbtn.setAttribute('aria-pressed',sampleOn?'true':'false');
+    sbtn.setAttribute('aria-label',lbl);sbtn.title=lbl;
+  }
+  if(sbtn){sbtn.addEventListener('click',function(){
+    if(!sampleOn){
+      sampleSnap=JSON.stringify(data);sampleOn=true;
+      data=Object.assign({},SAMPLE);render();
+    }else{
+      sampleOn=false;
+      try{data=JSON.parse(sampleSnap)||{};}catch(e){data={};}
+      sampleSnap=null;save(data);render();
+    }
+    paintSample();Sound.click();
+  });paintSample();}
 })();
 </script>
 <section class="block prose">
@@ -303,6 +341,7 @@ report &mdash; $29 one-time, offline.</dd>
 <p class="small"><a href="../../products/cremacheck/index.html">Learn more about CremaCheck</a>
 &middot; <a href="https://glenerds.gumroad.com">More offline micro-tools from Glenerds</a></p>
 </div>
+<p class="cross-promo"><a href="https://glenerds.gumroad.com">Like this tool? Check out our other apps &rarr;</a></p>
 </main>
 </div>
 <footer class="site"><div class="wrap">
@@ -325,17 +364,21 @@ inspection checklists, and calculators that run in your browser with no account 
 })();
 /* ---------- subtle sounds (Web Audio, no files, offline) ---------- */
 var Sound=(function(){
-  var KEY='espresso.sound',on=true,ctx=null;
+  var KEY='espresso-machine-inspection-checklist.sound',on=true,ctx=null;
   try{if(window.localStorage.getItem(KEY)==='off')on=false;}catch(e){}
   function ac(){try{
     if(!ctx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;ctx=new AC();}
-    if(ctx.state==='suspended')ctx.resume();return ctx;}catch(e){return null;}}
-  function tone(freq,dur,type,vol,delay){var c=ac();if(!c)return;try{
-    var t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
-    o.type=type||'sine';o.frequency.value=freq;
-    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.05);}catch(e){}}
+    return ctx;}catch(e){return null;}}
+  function tone(freq,dur,type,vol,delay){
+    var c=ac();if(!c)return;
+    function play(){try{
+      var t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
+      o.type=type||'sine';o.frequency.value=freq;
+      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.05);}catch(e){}}
+    if(c.state==='suspended'){c.resume().then(play,play);}else{play();}
+  }
   return{
     isOn:function(){return on;},
     toggle:function(){on=!on;try{window.localStorage.setItem(KEY,on?'on':'off');}catch(e){}return on;},
