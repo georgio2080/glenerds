@@ -1,85 +1,113 @@
-# TicketMath — build log
+# TurnoverCheck — Build Log (CHANGES.md)
 
 ## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
-- Standardized the header cluster: More Apps pill, icon-only dark-mode button (44x44px, moon/sun icon, no text label, dynamic aria-label/title), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
-- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `ticketmath.sound`, wired into theme toggle, add/remove cost lines and tiers, demo load, clear, export/import, and status errors.
-- Made the revenue chart bars interactive: each bar is a keyboard-accessible button — activating it spotlights the tier and shows the revenue breakdown (price × allocation × sell-through) in a detail line; activating again restores.
+- Standardized the header cluster: `.g-header-actions` wrapper with More Apps pill first, icon-only dark-mode button (44x44px circular, moon/sun icon, dynamic aria-label/title — no more "Dark mode" text label), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
+- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `turnovercheck.sound`, wired into theme toggle, start/restart turnover, add room (validation error), task check/uncheck, timer, incident save/cancel (validation errors), export/import (success/failure), demo load, and clear.
+- Made the per-room completion bars interactive: each row is a keyboard-accessible button — activating it spotlights the row and shows how many tasks are done plus the names of the remaining tasks in a detail line; activating again restores.
+- Fixed a pre-existing bug where the room-bars render reused a hoisted `host` variable also used by the room-cards render (`barsHost` rename), so spotlight clearing now targets the right container.
 
-Single-file offline app: `index.html`. All code hand-written (clean-room).
+## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
+- **New "Room progress" card** on the Checklist tab, between the overall
+  progress card and the room list: per-room completion bars (name, done/total
+  with %, gradient progress fill), live-updating as tasks are checked, each
+  track an aria progressbar plus a group-level aria summary. Card hides when
+  there are no rooms. Verified headlessly: 6 room bars, correct counts,
+  live update on task toggle (0/8 -> 1/8 = 13%); screenshot inspected.
 
-## Design notes
-- All DOM built with `document.createElement` / `createElementNS`; all user or
-  imported strings rendered via `textContent` / `.value`. No `innerHTML` anywhere
-  in the app, and no string-concatenated HTML/SVG.
-- SVG bar chart hand-rolled with `createElementNS("http://www.w3.org/2000/svg", …)`;
-  bar fills read from the `--accent` CSS variable so it matches the theme.
-- Break-even: `tickets = ceil(fixedCosts / weightedAvgPrice)` with a 1e-9 epsilon
-  to avoid float noise (e.g. 65.0000000001 → 66). Graceful notes when fixed costs
-  are $0 (break even immediately) or weighted price is $0 (cannot compute).
-- Sanitization (imports + live inputs): finite numbers ≥ 0, money rounded to
-  cents and capped at 1e12, counts floored/int and capped at 1e9, string length
-  caps (200/100/60/30), ≤50 costs, ≤4 tiers, each tier allocation ≤ capacity,
-  total allocation ≤ capacity or the import is rejected with a message.
-- Persistence: `ticketmath-state-v1`; theme: `ticketmath-theme`; theme default
-  follows `prefers-color-scheme`.
-- Sell-through uses a native range + number pair (both keyboard-operable).
-- Tap targets ≥ 44px; inputs use 16px font to avoid mobile zoom.
+App #3 of the free-product loop. Single-file offline HTML micro-tool.
+Spec: `~/workspace/microtool-research/free-loop/app3-turnovercheck-SPEC.md` (v1, picked 2026-09-19).
 
-## Defects fixed during build
-1. `renderResults`: removed a dead duplicate `textContent` assignment on the
-   profit KPI (first assignment was immediately overwritten).
-2. None other — chart, math, and import validation written defensively the
-   first time.
+## Build — 2026-09-19
 
-## QA (Playwright, headless system Chromium) — 2026-09-19
-22/22 checks passed (plus 4 supplemental edge-case checks, all passed).
-No console errors on load or at end; zero external HTTP requests;
-dark mode toggle persists across reload; demo/clear-all/export-import
-round-trip; hostile import rejected or rendered inert (script/onerror
-strings shown as literal text via textContent, negatives clamped to 0,
-over-limit tiers rejected with message); allocation > capacity shows an
-error banner that clears on fix; add-tier capped at 4 with the button
-disabled; SVG chart renders one bar per tier (3 on demo, 4 when full);
-loss shows negative profit with profit-bad styling; 390px mobile renders
-with 44px tap targets; break-even edge cases (fixed costs $0, weighted
-price $0) show graceful notes; contribution shares correct
-(15.5% / 49.6% / 34.9% on demo data).
+- Built `index.html` from scratch (IP clean-room: no copied code, copy, or branding).
+- Two tabs with `role=tablist`/`tab`/`tabpanel`; mouse click + ArrowLeft/ArrowRight/Home/End
+  keyboard navigation; roving tabindex.
+- **Checklist tab:** 6 default rooms (Kitchen, Living Room, Bedroom(s), Bathroom(s), Laundry,
+  Outdoor / Entry) with 41 default tasks total. Check/uncheck with per-room counts, overall
+  progress bar (`role=progressbar` + `aria-valuenow`), "Start turnover" timestamp, per-room
+  start/stop elapsed timers (persist across reload, resume correctly), confirm-armed
+  "Reset for next guest" (unchecks all, clears clock/timers), completion summary with
+  `aria-live="polite"` showing total time. Tasks: add / delete / move up-down. Rooms:
+  add / rename (inline) / remove (confirm-armed).
+- **Damage Log tab:** property name; incident form (room dropdown synced to room list,
+  item/area, type damage|missing|excessive cleaning, severity minor|moderate|major,
+  description, photo-reference text note — no photo upload). Incident list with edit
+  (reuses the form, Cancel edit button) and delete (confirm-armed). "Generate report"
+  renders a plain-text block (property, date, numbered incidents with severity/type/
+  timestamp/details/photo ref, totals line) into a `<pre>` + "Copy report" button
+  (Clipboard API with textarea+execCommand fallback).
+- **Data:** localStorage persistence (saved on every mutation + beforeunload/hidden tab).
+  Export JSON downloads a timestamped backup. Import sanitizes everything: allowlisted
+  enums, finite numbers, length-capped strings (60–2000 chars), capped array sizes;
+  invalid entries dropped, missing ids generated; running timers without a valid
+  `since` are stopped. Demo data (sample turnover + 2 incidents) and clear-all, both
+  confirm-armed (two-tap inline confirm, 6 s expiry).
+- **Security:** zero `innerHTML` in app code; all dynamic DOM via `createElement` +
+  `textContent` / `.value`. Zero external requests (only link is the footer anchor).
+- **Dark mode standard:** visible toggle, `prefers-color-scheme` default, localStorage
+  persistence, CSS-variable palette, readable contrast in both themes.
+- **Mobile-first:** 390px viewport verified, no horizontal overflow, all interactive
+  elements ≥ 40 px tap targets, labeled inputs, no emojis in UI chrome.
+- **Footer:** discreet "by Glenerds" → https://glenerds.gumroad.com.
 
-Hand-verified break-even (demo data): fixed costs $2,000 + $800 = $2,800;
-tier revenue 25×40=$1,000 + 40×80=$3,200 + 75×30=$2,250 → full-house
-$6,450 over 150 allocated tickets → weighted avg $6,450/150 = $43.00;
-tickets = ceil($2,800 / $43) = ceil(65.116…) = 66 → 66/150 = 44%.
-App displays "Sell 66 of 150 allocated tickets (~44%)" — matches.
+## Defects found and fixed (fix-without-asking)
 
-Defect found by QA run itself (script-side, not app): my first QA script
-clicked a correctly-disabled Add-tier button and timed out; fixed the
-script to assert disabled instead of clicking.
+1. **`hidden` attribute ignored on buttons (2026-09-19, caught by Playwright QA).**
+   `.btn { display: inline-flex }` overrode the UA stylesheet's `[hidden] { display: none }`,
+   so "Start turnover"/"Restart clock"/"Cancel edit" never actually hid. Fix: added global
+   `[hidden] { display: none !important }` rule. QA re-run confirms correct show/hide.
 
-## 2026-09-19 — outside-AI QA defect fix (verified headless Chromium)
-- The "Demo data loaded" status no longer lingers after the user edits or
-  deletes. Root cause: the notice described a one-time event but nothing ever
-  dismissed it, so it stayed factually wrong after any mutation. Fix: a
-  `demoNotice` flag set by `loadDemo()` (after its own save/showStatus);
-  any subsequent `save()` — which every edit and delete path calls —
-  clears the flag and hides the status. Showing any other status supersedes
-  the flag, so error/import/export notices are unaffected.
-- Verified in headless Chromium (Playwright): notice shows on demo load;
-  cleared after tier-price edit, tier delete, and event-name edit; no phantom
-  status after reload; zero console/page errors.
+## QA results (Playwright, system Chromium /opt/meta-chromium/chrome, headless, 390×844)
 
-## 2026-09-19 — review round 1 (outside-AI)
-- Reviewed 30,487 bytes (sha256 54ad15ae…54af): two Gemini passes on full source bytes + listing, every claim re-verified against source, live Chromium render, 8-image gallery comparison, hidden-attr CSS check.
-- Verified-real should-fix (fixed under fix-without-asking; backups *.bak-2026-09-19-r1fix):
-  1. <title> was brand-first ("TicketMath — Event Ticket Tier & Revenue Projector") → keyword-first "Free Event Ticket Pricing Calculator (TicketMath)".
-  2. Meta description was brand-first ("TicketMath: a free offline calculator…") → keyword-first "Free event ticket pricing calculator: model venue capacity, fixed costs, and up to 4 ticket tiers to find break-even points and projected profit. Offline, single-file tool (TicketMath)."
-  3. Gumroad listing description first line was brand-first ("🎟️ TicketMath — Free Event Ticket Pricing Calculator") → "🎟️ Free Event Ticket Pricing Calculator — TicketMath". Listing title already keyword-first.
-  4. 5-mobile.png was not taken at a real mobile viewport — retook at 390×844 with is_mobile/has_touch, demo loaded, scrolled to top; zero console/page errors.
-- Both AI passes and live render otherwise clean; no false claims to drop; hidden-attr CSS check passed (no defeated hidden elements).
+41/41 passed. Per-check list (spec QA list mapping):
 
-## 2026-09-19 — review round 2: ZERO ISSUES, signed off
-- Round 2 ran against the exact updated bytes (30,498; sha256 2d6f7ce5…80b08f): two Gemini passes on full source bytes + listing, independent source verification, headless Chromium live render, all 8 gallery PNGs visually compared.
-- All 4 round-1 fixes confirmed in place (keyword-first title/meta/listing, 5-mobile.png real mobile render).
-- Demo math hand-verified (fixed costs $2,800.00; full-house $6,450.00; profit $3,650.00; break-even 66/150 ~44% @ $43.00 avg); tier edit recomputes live; dark mode persists; export valid; break-even epsilon logic correct; zero console/page errors.
-- Should-fix: none. Should-improve: none. Nits: none.
-- Parent verified final bytes independently (hash, title, gallery).
-- Signed off 2026-09-19 12:36 EDT. Staging row marked Passed locally. Deploy queued for when Netlify credits reset (full-site ZIP rebuilt same turn).
+- no console errors (load + full run): PASS
+- zero external requests: PASS
+- checklist check/uncheck + progress math (Kitchen 8 tasks, 41 total, 1/41 → 2%, aria-valuenow, revert): PASS
+- custom room add / task add / task delete / room remove: PASS
+- timer start/stop (ticks, stops accumulating, elapsed persists across reload): PASS
+- reset confirm (requires second tap, resets checks + clock + timers): PASS
+- incident add / edit / delete (fields, severity badge, photo note): PASS
+- report text contains all incidents + severity + property + totals line: PASS
+- copy button works (clipboard read-back verified): PASS
+- export/import round-trip (fresh browser profile, file carries property + 2 incidents): PASS
+- hostile import sanitization (script/img/svg payloads render as inert text, zero injected
+  elements, enum fallbacks minor/damage, 2000-char cap, invalid numbers dropped): PASS
+- demo data + clear-all: PASS
+- dark mode persists across reload: PASS
+- 390px mobile (no h-overflow, touch targets ≥ 40 px): PASS
+- aria-live="polite" on completion summary: PASS
+- tab keyboard navigation (arrow keys): PASS
+
+Full QA script: `/tmp/tc_qa.py` (ephemeral; re-runnable against the file).
+
+## 2026-09-19 — outside-AI QA defect fixes (verified headless Chromium)
+- Deleting an incident now invalidates the generated incident report: added
+  `clearReport()` (clears text, hides output, disables Copy) and called it in
+  the incident delete handler. Previously the report snapshot stayed on screen
+  after the last incident was deleted.
+- "Outdoor / Entry never shows 0:00 timer" report investigated: could not
+  reproduce — all six room cards render "0:00" initially, the Outdoor/Entry
+  timer counts while running, freezes on stop, and persists across reload. No
+  code change.
+- Verified in headless Chromium (Playwright): report cleared/hidden/copy
+  disabled after deleting the last incident; regenerating with zero incidents
+  yields "No incidents recorded."; all six timers show "0:00"; zero
+  console/page errors.
+
+## 2026-09-19 — review round-1 defect fixes (verified headless Chromium)
+- Stale incident report: `clearReport()` was only called from the incident
+  delete handler. Now also called from the incident save handler, the import
+  success path, the demo loader, and clear-all — the generated report is
+  invalidated on every incident-list mutation. Verified: report generated ->
+  incident edited -> report box hidden and Copy disabled; zero page errors.
+- Silent storage failure: `save()` swallowed failures with only a comment.
+  Added `storageOK` flag + `showStorageWarn()` surfacing a persistent
+  `role="alert"` banner ("Browser storage failed — your changes are only kept
+  until this tab closes."). `load()` failure also shows it. Same issue class
+  previously fixed in SubAudit.
+- Import now uses the app's two-tap `armConfirm` ("Tap again to import")
+  instead of silently replacing all state on file pick — matches the
+  demo-load/clear-all destructive-action pattern. Verified armed label.
+- SEO: Gumroad listing description rewritten keyword-first
+  ("Free Airbnb Turnover Checklist & Damage Log — TurnoverCheck").

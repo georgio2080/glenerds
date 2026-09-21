@@ -1,44 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free Event Ticket Pricing Calculator (TicketMath)</title>
-<meta name="description" content="Free event ticket pricing calculator: model venue capacity, fixed costs, and up to 4 ticket tiers to find break-even points and projected profit. Offline, single-file tool (TicketMath).">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="TurnoverCheck — offline Airbnb turnover checklist and damage log for short-term-rental hosts. Works fully offline.">
+<title>TurnoverCheck — Turnover Checklist &amp; Damage Log</title>
 <style>
+/* ---- theme tokens ---- */
 :root{
-  --bg:#f4f5fb; --fg:#171821; --muted:#5b5e70;
-  --card:#ffffff; --border:#e2e4f0; --accent:#4f46e5;
-  --accent-2:#7c3aed; --accent-fg:#ffffff; --danger:#b3261e; --warn:#8a5a00;
-  --good:#0b6e4f; --bad:#b3261e;
-  --input-bg:#ffffff; --focus:#4f46e5;
-  --hero-1:#4f46e5; --hero-2:#7c3aed;
-  --chip-bg:#eef0ff; --chip-fg:#4f46e5;
-  --shadow:0 1px 2px rgba(23,24,33,.05),0 8px 24px -12px rgba(79,70,229,.18);
-  --table-head:#eef0ff;
+  --bg:#edf0f7; --card:#ffffff; --text:#1a2233; --muted:#5b6b82;
+  --border:#dbe2ef; --accent1:#6366f1; --accent2:#8b5cf6; --accent:#6a5cf0;
+  --accent-text:#ffffff; --accent-soft:rgba(99,102,241,.10);
+  --danger:#c0271b; --danger-soft:#fdecea;
+  --warn:#9a5b00; --warn-soft:#fef3df;
+  --input-bg:#ffffff; --radius:14px; --tap:44px;
+  --shadow:0 2px 10px rgba(31,42,83,.09);
+  --grad:linear-gradient(135deg,var(--accent1),var(--accent2));
 }
 html[data-theme="dark"]{
-  --bg:#0d0f16; --fg:#e9eaf2; --muted:#a3a7bd;
-  --card:#161a26; --border:#2b3044; --accent:#8b8bf5;
-  --accent-2:#a78bfa; --accent-fg:#12101f; --danger:#ff8a80; --warn:#ffca6a;
-  --good:#3ddc97; --bad:#ff8a80;
-  --input-bg:#10141f; --focus:#8b8bf5;
-  --hero-1:#3b348f; --hero-2:#5b21b6;
-  --chip-bg:#232842; --chip-fg:#a5a6f6;
-  --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px -12px rgba(0,0,0,.6);
-  --table-head:#1d2338;
+  --bg:#0c1017; --card:#151c2a; --text:#e9eef8; --muted:#94a2bb;
+  --border:#26314a; --accent1:#818cf8; --accent2:#a78bfa; --accent:#8b7cf6;
+  --accent-text:#10131c; --accent-soft:rgba(129,140,248,.14);
+  --danger:#f87171; --danger-soft:#2c1619;
+  --warn:#fbbf24; --warn-soft:#2b2210;
+  --input-bg:#0f1522;
+  --shadow:0 2px 10px rgba(0,0,0,.5);
 }
 *{box-sizing:border-box}
-html,body{overflow-x:clip}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
-/* ---------- hero header ---------- */
-header.hero{background:none;color:var(--fg);position:static;box-shadow:none;border:none}
-.hero-inner{max-width:760px;margin:0 auto;padding:14px 16px 6px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:46px;height:46px;flex:0 0 auto;border-radius:14px;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;box-shadow:none}
-.logo svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
-.tagline{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px; line-height:1.5;
+}
+a{color:var(--accent)}
+/* ---- hero header ---- */
+.hero{background:none; color:var(--text); box-shadow:none; border:none}
+.hero-inner{max-width:760px; margin:0 auto; padding:18px 14px 6px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+.brand{display:flex; align-items:center; gap:12px}
+.logo-badge{flex:none; width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+  background:var(--accent,#4f46e5); border:none; box-shadow:none}
+.logo-badge svg{width:26px; height:26px; color:#fff}
+.brand h1{font-size:1.4rem; margin:0; letter-spacing:.2px; color:var(--text)}
+.brand p{margin:2px 0 0; color:var(--muted); font-size:.85rem}
 /* ---------- spec header cluster (2026-09-21) ---------- */
 .round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card,var(--surface,#fff));border:1px solid var(--line,var(--border,rgba(0,0,0,.16)));color:var(--ink,var(--text,var(--fg,#1f2937)));box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem;transition:transform .08s ease,border-color .15s ease}
 .round-btn svg{width:26px;height:26px;flex:none}
@@ -47,126 +53,215 @@ header.hero{background:none;color:var(--fg);position:static;box-shadow:none;bord
 .round-btn:active{transform:scale(.92);border-color:var(--accent,#4f46e5)}
 .round-btn:focus{outline:none}
 .round-btn:focus-visible{outline:2px solid var(--accent,#4f46e5);outline-offset:2px}
-.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(79,70,229,.12))}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(99,102,241,.12))}
 .g-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;row-gap:6px;justify-content:flex-end}
-/* ---------- layout ---------- */
-main{max-width:760px;margin:0 auto;padding:0 16px 48px}
-h2{font-size:1.2rem;margin:30px 0 12px;display:flex;align-items:center;gap:10px}
-.hicon{width:32px;height:32px;flex:0 0 auto;border-radius:10px;background:var(--chip-bg);display:inline-flex;align-items:center;justify-content:center}
-.hicon svg{width:18px;height:18px;stroke:var(--chip-fg);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin:12px 0;box-shadow:var(--shadow)}
-label{display:block;font-weight:600;margin:12px 0 4px}
-input[type="text"],input[type="number"],input[type="date"],select{
-  width:100%;min-height:44px;padding:10px 12px;font-size:16px;border:1px solid var(--border);
-  border-radius:10px;background:var(--input-bg);color:var(--fg)}
-input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-button{min-height:44px;padding:10px 16px;font-size:16px;border-radius:10px;border:1px solid var(--border);
-  background:var(--input-bg);color:var(--fg);cursor:pointer;font-weight:600}
-button.primary{background:linear-gradient(120deg,var(--accent),var(--accent-2));color:var(--accent-fg);border-color:transparent;font-weight:700;box-shadow:0 4px 14px -6px rgba(79,70,229,.55)}
-button.danger{color:var(--danger);border-color:var(--danger)}
-button:disabled{opacity:.45;cursor:not-allowed}
-.row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
-.row > *{flex:1 1 0;min-width:0}
-.row .shrink{flex:0 0 auto}
-.cost-row,.tier-card{border:1px solid var(--border);border-radius:12px;padding:14px;margin:10px 0;background:var(--card)}
-.cost-row .row{align-items:flex-end}
-.tier-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
-.tier-head h3{margin:0;font-size:1rem;display:flex;align-items:center;gap:8px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-@media (max-width:480px){.grid2{grid-template-columns:1fr}}
-.sell-row{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
-input[type="range"]{flex:1 1 160px;min-height:44px;accent-color:var(--accent)}
-.sell-num{width:84px;flex:0 0 auto}
-.err{color:var(--danger);font-weight:600;margin:8px 0}
-.note{color:var(--muted);font-size:.92rem}
-/* trash icons on JS-generated Remove buttons (textContent never swapped, ::before is safe) */
-#cost-list button[aria-label^="Remove"]::before,
-#tier-list button[aria-label^="Remove"]::before{
-  content:"";display:inline-block;width:1em;height:1em;margin-right:.45em;vertical-align:-.12em;
-  background:currentColor;
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6'/%3E%3C/svg%3E") center/contain no-repeat;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/%3E%3Cpath d='M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6'/%3E%3C/svg%3E") center/contain no-repeat;
-}
-/* ---------- tables ---------- */
-.table-scroll{overflow-x:auto;border-radius:12px;margin:12px 0}
-table{width:100%;border-collapse:collapse;font-size:.95rem;min-width:560px}
-thead th{background:var(--table-head);font-weight:700}
-th,td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--border)}
-tbody tr:nth-child(even){background:rgba(127,127,160,.06)}
-td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-.profit-good{color:var(--good);font-weight:700}
-.profit-bad{color:var(--bad);font-weight:700}
-/* ---------- KPI stat cards ---------- */
-.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
-.kpi .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;box-shadow:var(--shadow)}
-.kpi .stat[role="button"]{cursor:pointer}
-.kpi .stat[role="button"]:focus{outline:none;filter:drop-shadow(0 0 3px rgba(79,70,229,.9))}
-.kpi .stat[role="button"].sel{box-shadow:inset 0 0 0 2px var(--accent,#4f46e5)}
-.kpi .stat-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.kchip{width:30px;height:30px;flex:0 0 auto;border-radius:9px;display:inline-flex;align-items:center;justify-content:center}
-.kchip svg{width:17px;height:17px;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.kchip.c1{background:#eef0ff}.kchip.c1 svg{stroke:#4f46e5}
-.kchip.c2{background:#e6fbf3}.kchip.c2 svg{stroke:#0b6e4f}
-.kchip.c3{background:#fff4e0}.kchip.c3 svg{stroke:#b25e00}
-.kchip.c4{background:#fdecec}.kchip.c4 svg{stroke:#b3261e}
-.kchip.c5{background:#f0e9ff}.kchip.c5 svg{stroke:#7c3aed}
-html[data-theme="dark"] .kchip.c1{background:#232842}html[data-theme="dark"] .kchip.c1 svg{stroke:#a5a6f6}
-html[data-theme="dark"] .kchip.c2{background:#123b2c}html[data-theme="dark"] .kchip.c2 svg{stroke:#3ddc97}
-html[data-theme="dark"] .kchip.c3{background:#3d2c10}html[data-theme="dark"] .kchip.c3 svg{stroke:#ffca6a}
-html[data-theme="dark"] .kchip.c4{background:#3d1712}html[data-theme="dark"] .kchip.c4 svg{stroke:#ff8a80}
-html[data-theme="dark"] .kchip.c5{background:#2b1f4d}html[data-theme="dark"] .kchip.c5 svg{stroke:#c4b5fd}
-.kpi dt{font-size:.82rem;color:var(--muted);margin:0;font-weight:600}
-.kpi dd{margin:4px 0 0;font-size:1.2rem;font-weight:800;font-variant-numeric:tabular-nums}
-/* ---------- break-even ---------- */
-.be-box{background:var(--card);border:2px solid transparent;border-radius:14px;padding:16px;margin:12px 0;
-  background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,var(--accent),var(--accent-2)) border-box;box-shadow:var(--shadow)}
-.be-box h3{margin:0 0 6px;font-size:1rem;display:flex;align-items:center;gap:8px}
-.be-box p{margin:6px 0}
-.be-main{font-size:1.25rem;font-weight:800;background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
-/* ---------- chart ---------- */
+/* ---- charts & timelines (dependency-free SVG/DOM) ---- */
 .chart-wrap{overflow-x:auto}
-.chart-wrap svg{width:100%;height:auto;display:block}
-.chart-wrap .tbar{cursor:pointer}
-.chart-wrap svg .tbar:focus{outline:none;filter:drop-shadow(0 0 3px var(--accent, #0b6e4f))}
-.chart-wrap .tbar.sel{stroke:#111;stroke-width:2}
-.chart-detail{margin-top:8px;font-size:.85rem;color:var(--muted,#5b6472)}
-.chart-detail strong{color:var(--text,#1c2330)}
-/* chart SVG text legibility in both page modes */
-.chart-wrap svg text{fill:var(--fg,#171821);pointer-events:none}
-.chart-wrap svg .chart-sub{fill:var(--muted,#5b5e70)}
+.chart-wrap svg{width:100%;height:auto;display:block;max-width:560px;margin:0 auto}
+.chart-wrap svg text{fill:var(--text);pointer-events:none}
+.chart-wrap svg .chart-sub{fill:var(--muted)}
 .chart-wrap svg .seg{cursor:pointer}
-.chart-wrap svg .seg:focus{outline:none;filter:drop-shadow(0 0 4px rgba(79,70,229,.9))}
+.chart-wrap svg .seg:focus{outline:none;filter:drop-shadow(0 0 4px rgba(99,102,241,.9))}
 .chart-wrap svg .seg.sel{stroke-width:40}
-.chart-wrap svg[role="button"]:focus{outline:none;filter:drop-shadow(0 0 4px rgba(79,70,229,.9))}
-/* donut legend */
+.chart-wrap svg[role="button"]:focus{outline:none;filter:drop-shadow(0 0 4px rgba(99,102,241,.9))}
+.chart-detail{margin-top:8px;font-size:.85rem;color:var(--muted)}
+.chart-detail strong{color:var(--text)}
 .donut-legend{display:grid;gap:6px;margin-top:10px}
 .donut-leg-row{display:flex;align-items:center;gap:8px;font-size:.9rem}
-.donut-leg-row[role="button"]{cursor:pointer;border-radius:8px;padding:2px 6px;margin:-2px -6px}
-.donut-leg-row[role="button"]:focus{outline:none;filter:drop-shadow(0 0 3px var(--accent,#4f46e5))}
 .donut-dot{width:12px;height:12px;border-radius:50%;flex:none}
 .donut-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* funnel */
-.funnel{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 0}
-.funnel-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:140px;min-height:44px;padding:10px 14px;border:0;border-radius:10px;color:#fff;font-weight:700;font-size:16px;cursor:pointer;box-shadow:var(--shadow)}
-.funnel-row:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-.funnel-row.sel{box-shadow:inset 0 0 0 3px rgba(255,255,255,.9),var(--shadow)}
-/* tier table rows act as chart spotlights */
-#tier-table tbody tr.trow{cursor:pointer}
-#tier-table tbody tr.trow:hover td{background:rgba(127,127,160,.12)}
-#tier-table tbody tr.trow:focus{outline:none}
-#tier-table tbody tr.trow:focus td{background:rgba(127,127,160,.18)}
-svg text{fill:var(--muted);font-size:12px}
-/* ---------- misc ---------- */
-.status{margin:12px 0;padding:10px 12px;border-radius:10px}
-.status[hidden]{display:none}
-.status.error{background:var(--card);border:1px solid var(--danger);color:var(--danger);font-weight:600}
-.status.ok{background:var(--card);border:1px solid var(--accent);font-weight:600}
-.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
-.btnrow .bicon{display:inline-flex;align-items:center;gap:8px}
-.btnrow .bicon svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-footer.site{max-width:760px;margin:0 auto;padding:24px 16px 40px;text-align:center;color:var(--muted);font-size:.9rem;border-top:1px solid var(--border)}
-footer.site a{color:var(--muted)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* severity pills double as filters (chip affordance -> useful action) */
+button.sev{font:inherit;cursor:pointer}
+.sev[aria-pressed="true"]{box-shadow:inset 0 0 0 2px currentColor}
+/* process timeline */
+.tl{display:grid;gap:0;margin-top:4px}
+.tl-step{display:grid;grid-template-columns:28px 1fr;gap:10px;min-height:58px;cursor:pointer;border-radius:10px;padding:2px 4px;margin:0 -4px}
+.tl-rail{position:relative;display:flex;justify-content:center}
+.tl-rail:after{content:"";position:absolute;top:24px;bottom:0;width:2px;background:var(--border)}
+.tl-step:last-child .tl-rail:after{display:none}
+.tl-dot{width:15px;height:15px;margin-top:4px;border-radius:50%;background:var(--border);border:2px solid var(--card);outline:2px solid var(--border);z-index:1;flex:none}
+.tl-dot.done{background:#10b981;outline-color:#10b981}
+.tl-dot.now{background:#f59e0b;outline-color:#f59e0b}
+.tl-step:focus{outline:none}
+.tl-step:focus .tl-dot{filter:drop-shadow(0 0 4px rgba(99,102,241,.9))}
+.tl-body b{font-size:.95rem}
+.tl-body p{font-size:.82rem;color:var(--muted);margin:2px 0 6px}
+.tl-time{font:600 .72rem ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
+.tl-step.is-now .tl-time{color:#f59e0b}
+/* time-per-room horizontal bars */
+.hbar-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:8px;border-radius:10px;cursor:pointer}
+.hbar-row[role="button"]:focus{outline:none;filter:drop-shadow(0 0 3px var(--accent))}
+.hbar-row[role="button"].sel{box-shadow:inset 0 0 0 2px var(--accent)}
+.hbar-name{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hbar-val{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.hbar-track{grid-column:1 / -1;height:14px;border:1px solid var(--border);border-radius:999px;background:var(--input-bg);overflow:hidden}
+.hbar-track > div{height:100%;width:0;background:var(--grad);border-radius:999px}
+@media print{.chart-wrap,.tl,#time-bars-card{display:none!important}}
+.room-bar-row[role="button"]{cursor:pointer}
+.room-bar-row[role="button"]:focus{outline:none;filter:drop-shadow(0 0 3px var(--accent, #1f7a5c))}
+.room-bar-row[role="button"].sel{box-shadow:inset 0 0 0 2px var(--accent, #1f7a5c);border-radius:10px}
+/* ---- overall % stat: clickable for a per-room breakdown ---- */
+#overall-pct[role="button"]{cursor:pointer}
+#overall-pct[role="button"]:focus{outline:none;filter:drop-shadow(0 0 3px var(--accent))}
+#overall-pct.sel{box-shadow:inset 0 0 0 2px var(--accent);border-radius:8px}
+.rb-detail{margin:8px 0 0;font-size:.85rem;color:var(--muted,#5b6472)}
+.rb-detail strong{color:var(--text,#1c2330)}
+
+/* ---- layout ---- */
+.wrap{max-width:760px; margin:0 auto; padding:0 14px 90px}
+/* ---- tabs ---- */
+.tabs{display:flex; gap:8px; margin:14px 0; position:sticky; top:0; z-index:5;
+  background:var(--bg); padding:10px 0}
+.tab{
+  flex:1; min-height:54px; border:1px solid var(--border); border-radius:14px;
+  background:var(--card); color:var(--text); font-size:1rem; font-weight:700; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  box-shadow:var(--shadow);
+}
+.tab .tic{width:20px; height:20px; color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--grad); border-color:transparent; color:#fff; box-shadow:0 4px 14px rgba(99,102,241,.4)}
+.tab[aria-selected="true"] .tic{color:#fff}
+.tab:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  outline:3px solid var(--accent); outline-offset:2px;
+}
+/* ---- cards ---- */
+.card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:16px; margin:0 0 14px}
+.card h2{font-size:1.08rem; margin:0 0 12px; display:flex; align-items:center; gap:10px}
+.card h3{font-size:1rem; margin:0}
+.hicon{flex:none; width:32px; height:32px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center;
+  background:var(--accent-soft); color:var(--accent)}
+.hicon svg{width:18px; height:18px}
+/* ---- progress ---- */
+.progress{height:16px; border:1px solid var(--border); border-radius:999px; background:var(--input-bg); overflow:hidden}
+.progress > div{height:100%; width:0; background:var(--grad); transition:width .25s ease}
+.overall-row{display:flex; align-items:center; gap:10px; margin:10px 0}
+.overall-row .progress{flex:1}
+/* room progress bars (visual representation) */
+.room-bars{display:grid;gap:10px;margin-top:4px}
+.room-bar-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.room-bar-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.room-bar-val{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.room-bar-row .progress{grid-column:1 / -1}
+.pct{font-weight:800; min-width:56px; text-align:right; font-variant-numeric:tabular-nums; font-size:1.05rem;
+  background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
+/* ---- summary (aria-live) ---- */
+.summary{border-left:4px solid var(--accent1); background:var(--accent-soft);
+  border-radius:0 var(--radius) var(--radius) 0; padding:10px 12px; margin:10px 0; font-size:.95rem}
+/* ---- storage-failure banner ---- */
+.warn-banner{border-left:4px solid var(--warn); background:var(--warn-soft); color:var(--text);
+  border-radius:0 var(--radius) var(--radius) 0; padding:10px 12px; margin:14px 0 0; font-size:.9rem; font-weight:600}
+/* ---- buttons / inputs ---- */
+button{font:inherit; color:var(--text)}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:var(--tap); padding:10px 18px; border-radius:12px;
+  border:1px solid var(--border); background:var(--card); cursor:pointer; font-weight:700;
+  box-shadow:var(--shadow);
+}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--grad); border-color:transparent; color:#fff; box-shadow:0 4px 14px rgba(99,102,241,.35)}
+.btn.primary:hover{filter:brightness(1.07); border-color:transparent}
+.btn.danger{color:var(--danger); border-color:var(--danger)}
+.btn.danger.armed{background:var(--danger); border-color:var(--danger); color:#fff}
+.btn.small{min-height:40px; padding:6px 12px; font-size:.85rem; font-weight:600}
+.btn:disabled{opacity:.5; cursor:not-allowed}
+.btn-row{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0}
+/* CSS-injected icons (survive armConfirm textContent swaps) */
+#btn-start::before,#btn-restart::before,#btn-add-room::before,#btn-export::before,
+#btn-import::before,#btn-demo::before,#btn-clear::before,#btn-inc-save::before,
+#btn-inc-cancel::before,#btn-report::before,#btn-copy::before,#btn-reset-turnover::before,
+.add-row .btn::before,.room-ops .btn::before,.incident .ops .btn::before,.timer-chip .btn::before{
+  content:""; flex:none; width:18px; height:18px; background-color:currentColor;
+  -webkit-mask:var(--ic) no-repeat center/contain; mask:var(--ic) no-repeat center/contain;
+}
+#btn-start{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27black%27%3E%3Cpath%20d%3D%27M7%204.5v15l13-7.5Z%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-restart,#btn-reset-turnover{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M21%2012a9%209%200%201%201-2.64-6.36%27%2F%3E%3Cpath%20d%3D%27M21%203v6h-6%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-add-room,.add-row .btn{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M12%205v14M5%2012h14%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-export{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M21%2015v4a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2v-4%27%2F%3E%3Cpath%20d%3D%27m7%2010%205%205%205-5%27%2F%3E%3Cpath%20d%3D%27M12%2015V3%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-import{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M21%2015v4a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2v-4%27%2F%3E%3Cpath%20d%3D%27m17%208-5-5-5%205%27%2F%3E%3Cpath%20d%3D%27M12%203v12%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-demo{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27black%27%3E%3Cpath%20d%3D%27M12%202l2.9%206.3%206.9.8-5.1%204.7%201.4%206.8L12%2017.2%205.9%2020.6l1.4-6.8L2.2%209.1l6.9-.8Z%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-clear,.room-ops .btn.danger,.incident .ops .btn.danger{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M3%206h18%27%2F%3E%3Cpath%20d%3D%27M8%206V4a2%202%200%200%201%202-2h4a2%202%200%200%201%202%202v2%27%2F%3E%3Cpath%20d%3D%27M19%206v14a2%202%200%200%201-2%202H7a2%202%200%200%201-2-2V6%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-inc-save{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M12%205v14M5%2012h14%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-inc-cancel{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M18%206%206%2018M6%206l12%2012%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-report{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M14%202H6a2%202%200%200%200-2%202v16a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V8z%27%2F%3E%3Cpath%20d%3D%27M14%202v6h6%27%2F%3E%3Cpath%20d%3D%27M9%2013h6M9%2017h6%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+#btn-copy{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%279%27%20y%3D%279%27%20width%3D%2712%27%20height%3D%2712%27%20rx%3D%272%27%2F%3E%3Cpath%20d%3D%27M5%2015H4a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2h9a2%202%200%200%201%202%202v1%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+.room-ops .btn:first-child,.incident .ops .btn:first-child{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M17%203a2.8%202.8%200%201%201%204%204L7.5%2020.5%202%2022l1.5-5.5Z%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+.timer-chip .btn{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%279%27%2F%3E%3Cpath%20d%3D%27M12%207v5l3%202%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+label{display:block; font-weight:700; font-size:.9rem; margin:10px 0 4px}
+input[type="text"], input[type="search"], select, textarea{
+  width:100%; min-height:var(--tap); padding:10px 12px; font:inherit; color:var(--text);
+  background:var(--input-bg); border:1px solid var(--border); border-radius:12px;
+}
+input[type="text"]:focus, select:focus, textarea:focus{border-color:var(--accent)}
+textarea{min-height:88px; resize:vertical}
+.hint{color:var(--muted); font-size:.82rem; margin:4px 0 0; font-weight:400}
+.inline{display:flex; gap:8px; align-items:flex-start}
+.inline > div{flex:1; min-width:0}
+/* ---- rooms / tasks ---- */
+.room-head{display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:6px}
+.room-head h3{flex:1 1 auto; display:flex; align-items:center; gap:8px; font-size:1.02rem}
+.room-head h3::before{content:""; flex:none; width:20px; height:20px; background-color:var(--accent);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27m3%2010%209-7%209%207v10a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2Z%27%2F%3E%3Cpath%20d%3D%27M9%2022V12h6v10%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") no-repeat center/contain; mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27m3%2010%209-7%209%207v10a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2Z%27%2F%3E%3Cpath%20d%3D%27M9%2022V12h6v10%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") no-repeat center/contain}
+.room-count{color:var(--muted); font-size:.85rem; font-variant-numeric:tabular-nums; white-space:nowrap;
+  background:var(--accent-soft); border-radius:999px; padding:3px 12px; font-weight:700}
+.timer-chip{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border);
+  border-radius:999px; padding:4px 6px 4px 14px; font-variant-numeric:tabular-nums; font-size:.9rem;
+  background:var(--input-bg)}
+.timer-chip .t{font-weight:800}
+.task-list{list-style:none; margin:8px 0; padding:0}
+.task{display:flex; align-items:center; gap:4px; border-top:1px solid var(--border); padding:3px 0}
+.task-check{flex:1; display:flex; align-items:center; gap:10px; min-height:var(--tap);
+  padding:8px 4px; cursor:pointer; font-weight:400; margin:0}
+.task-check input{width:22px; height:22px; flex:none; accent-color:var(--accent1); margin:0; cursor:pointer}
+.task-check .txt{flex:1; overflow-wrap:anywhere}
+.task-check input:checked + .txt{text-decoration:line-through; color:var(--muted)}
+.task-ops{display:flex; gap:2px}
+.icon-btn{min-width:40px; min-height:40px; border:1px solid transparent; background:none;
+  border-radius:10px; cursor:pointer; font-size:0; color:var(--muted); padding:4px 6px;
+  display:inline-flex; align-items:center; justify-content:center}
+.icon-btn::before{content:""; width:18px; height:18px; background-color:currentColor;
+  -webkit-mask:var(--ic) no-repeat center/contain; mask:var(--ic) no-repeat center/contain}
+.icon-btn[title="Move up"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27m18%2015-6-6-6%206%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+.icon-btn[title="Move down"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27m6%209%206%206%206-6%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+.icon-btn[title="Delete task"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M18%206%206%2018M6%206l12%2012%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+.icon-btn:hover{border-color:var(--border); color:var(--text); background:var(--accent-soft)}
+.icon-btn.del:hover{color:var(--danger); border-color:var(--danger)}
+.add-row{display:flex; gap:8px; margin-top:8px}
+.add-row input{flex:1}
+.room-ops{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+/* ---- incidents ---- */
+.incident{border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin:0 0 10px; background:var(--input-bg)}
+.incident-top{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:6px}
+.sev{font-size:.75rem; font-weight:800; letter-spacing:.4px; text-transform:uppercase;
+  border-radius:999px; padding:4px 12px 4px 10px; border:1px solid;
+  display:inline-flex; align-items:center; gap:6px}
+.sev::before{content:""; width:8px; height:8px; background-color:currentColor; border-radius:50%}
+.sev.minor{color:var(--accent); border-color:var(--accent); background:var(--accent-soft)}
+.sev.moderate{color:var(--warn); border-color:var(--warn); background:var(--warn-soft)}
+.sev.major{color:var(--danger); border-color:var(--danger); background:var(--danger-soft)}
+.incident .meta{color:var(--muted); font-size:.82rem; margin:2px 0}
+.incident .desc{margin:6px 0 0; overflow-wrap:anywhere; white-space:pre-wrap}
+.incident .ops{display:flex; gap:8px; margin-top:10px}
+.empty{color:var(--muted); font-size:.92rem; padding:8px 0}
+/* ---- report ---- */
+.report-pre{background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius);
+  padding:12px; white-space:pre-wrap; overflow-wrap:anywhere; font-size:.85rem; max-height:320px; overflow:auto}
+.copy-ok{color:var(--accent); font-weight:600; font-size:.9rem}
+/* ---- data section ---- */
+.data-grid{display:flex; flex-wrap:wrap; gap:8px}
+/* ---- footer ---- */
+footer.site{margin-top:26px; padding:16px 0 30px; text-align:center; color:var(--muted); font-size:.85rem}
+/* ---- visually hidden ---- */
+.vh{position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+@media (max-width:560px){
+  .inline{flex-direction:column}
+  .hero-inner{padding:14px}
+  .brand h1{font-size:1.2rem}
+}
+@media (min-width:640px){
+  .brand h1{font-size:1.5rem}
+}
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
 
 .g-store-btn {
@@ -202,6 +297,7 @@ footer.site a{color:var(--muted)}
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
+  .hero-inner { flex-wrap: wrap; }
 }
 @media print {
   .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
@@ -212,1157 +308,1693 @@ footer.site a{color:var(--muted)}
 <header class="hero">
   <div class="hero-inner">
     <div class="brand">
-      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2.5 2.5 0 0 0 0 5v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2.5 2.5 0 0 0 0-5z"/><path d="M13 5v2M13 11v2M13 17v2"/></svg></span>
-      <div>
-        <h1>TicketMath</h1>
-        <p class="tagline">Event ticket tier &amp; revenue projector</p>
+      <span class="logo-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x='8' y='2' width='8' height='4' rx='1'/><path d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/><path d='m9 14 2 2 4-4'/></svg></span>
+      <div class="brand-text">
+        <h1>TurnoverCheck</h1>
+        <p>Turnover checklist &amp; damage log — works offline</p>
       </div>
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button id="sample-toggle" type="button" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-    <button id="theme-toggle" type="button" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
-      <button id="sound-toggle" type="button" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
+      <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+    <button type="button" id="theme-toggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
   </div>
 </header>
+<div class="wrap">
+  <div id="storage-warn" class="warn-banner" hidden role="alert">Browser storage failed — your changes are only kept until this tab closes.</div>
 
-<main>
-  <div id="status" class="status" role="alert" hidden></div>
+  <nav class="tabs" role="tablist" aria-label="TurnoverCheck sections">
+    <button type="button" class="tab" role="tab" id="tab-checklist" aria-controls="panel-checklist" aria-selected="true"><svg class="tic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x='8' y='2' width='8' height='4' rx='1'/><path d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/><path d='M12 11h4M12 16h4M8 11h.01M8 16h.01'/></svg><span>Checklist</span></button>
+    <button type="button" class="tab" role="tab" id="tab-log" aria-controls="panel-log" aria-selected="false" tabindex="-1"><svg class="tic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z'/><path d='M12 9v4'/><path d='M12 17h.01'/></svg><span>Damage Log</span></button>
+  </nav>
 
-  <section aria-labelledby="h-event">
-    <h2 id="h-event"><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>Event</h2>
-    <div class="card">
-      <label for="event-name">Event name</label>
-      <input id="event-name" type="text" maxlength="200" autocomplete="off" placeholder="e.g. Spring Benefit Concert">
-      <div class="grid2">
-        <div>
-          <label for="capacity">Venue capacity (tickets)</label>
-          <input id="capacity" type="number" min="0" step="1" inputmode="numeric" value="150">
+  <main>
+    <!-- ============ TAB 1: CHECKLIST ============ -->
+    <section id="panel-checklist" role="tabpanel" aria-labelledby="tab-checklist">
+      <div class="card">
+        <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M3 3v16a2 2 0 0 0 2 2h16'/><path d='M7 14v3M12 10v7M17 6v11'/></svg></span>Turnover progress</h2>
+        <div class="btn-row" style="margin-top:0">
+          <button type="button" class="btn primary" id="btn-start">Start turnover</button>
+          <button type="button" class="btn" id="btn-restart" hidden>Restart clock</button>
         </div>
-        <div>
-          <label for="event-date">Date (optional)</label>
-          <input id="event-date" type="date">
+        <p class="hint" id="started-line" style="margin:0 0 8px"></p>
+        <div class="overall-row">
+          <div class="progress" role="progressbar" aria-label="Overall checklist progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="overall-bar"><div id="overall-fill"></div></div>
+          <span class="pct" id="overall-pct">0%</span>
+        </div>
+        <div class="summary" id="summary" aria-live="polite"></div>
+      </div>
+
+      <div class="card" id="timeline-card">
+        <h2><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Turnover timeline</h2>
+        <div class="tl" id="tl-steps"></div>
+      </div>
+
+      <div class="card" id="room-progress-card">
+        <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M3 3v16a2 2 0 0 0 2 2h16'/><path d='M7 14v3M12 10v7M17 6v11'/></svg></span>Room progress</h2>
+        <div id="room-bars" class="room-bars" role="group" aria-label="Completion per room — activate a row for details"></div>
+      </div>
+
+      <div class="card" id="time-bars-card">
+        <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Time per room</h2>
+        <div id="time-bars"></div>
+      </div>
+
+      <div id="rooms"></div>
+
+      <div class="card">
+        <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M12 5v14M5 12h14'/></svg></span>Add a room</h2>
+        <div class="add-row">
+          <label class="vh" for="new-room-name">New room name</label>
+          <input type="text" id="new-room-name" maxlength="60" placeholder="Room name (e.g. Guest Suite)" autocomplete="off">
+          <button type="button" class="btn primary" id="btn-add-room">Add</button>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section aria-labelledby="h-costs">
-    <h2 id="h-costs"><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg></span>Fixed costs</h2>
-    <div class="card">
-      <div id="cost-list"></div>
-      <div class="btnrow">
-        <button id="add-cost" type="button"><span class="bicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>Add cost line</button>
+      <div class="card">
+        <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx='12' cy='5' rx='9' ry='3'/><path d='M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5'/><path d='M3 12c0 1.66 4 3 9 3s9-1.34 9-3'/></svg></span>Data</h2>
+        <div class="data-grid">
+          <button type="button" class="btn" id="btn-export">Export JSON</button>
+          <button type="button" class="btn" id="btn-import">Import JSON</button>
+          <input type="file" id="file-import" accept="application/json,.json" class="vh" aria-label="Choose JSON file to import">
+          <button type="button" class="btn" id="btn-demo">Load demo data</button>
+          <button type="button" class="btn danger" id="btn-clear">Clear all data</button>
+        </div>
+        <p class="hint">Export downloads a backup file. Import replaces everything currently here. Demo loads a sample turnover with two incidents. Clear wipes the app back to a fresh checklist.</p>
+        <p class="hint" id="data-msg" role="status"></p>
       </div>
-      <p class="note">Total fixed costs: <strong id="costs-total">$0.00</strong></p>
-    </div>
-  </section>
+    </section>
 
-  <section aria-labelledby="h-tiers">
-    <h2 id="h-tiers"><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2.5 2.5 0 0 0 0 5v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2.5 2.5 0 0 0 0-5z"/><path d="M13 5v2M13 11v2M13 17v2"/></svg></span>Ticket tiers (up to 4)</h2>
-    <div id="tier-list"></div>
-    <p class="err" id="alloc-error" hidden></p>
-    <div class="btnrow">
-      <button id="add-tier" type="button"><span class="bicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>Add tier</button>
-    </div>
-    <p class="note">Total allocation: <strong id="alloc-total">0</strong> of <strong id="alloc-cap">150</strong> capacity.</p>
-  </section>
+    <!-- ============ TAB 2: DAMAGE LOG ============ -->
+    <section id="panel-log" role="tabpanel" aria-labelledby="tab-log" hidden>
+      <div class="card">
+        <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z'/><path d='M12 9v4'/><path d='M12 17h.01'/></svg></span>Log an incident</h2>
+        <label for="prop-name">Property name</label>
+        <input type="text" id="prop-name" maxlength="120" placeholder="e.g. Lakeview Cabin" autocomplete="off">
+        <p class="hint">Used in the incident report header.</p>
 
-  <section aria-labelledby="h-results">
-    <h2 id="h-results"><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></span>Results</h2>
-    <div class="card" aria-live="polite" id="results-live">
-      <dl class="kpi">
-        <div class="stat"><div class="stat-top"><span class="kchip c1" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg></span><dt>Total fixed costs</dt></div><dd id="kpi-costs">$0.00</dd></div>
-        <div class="stat"><div class="stat-top"><span class="kchip c2" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2.5 2.5 0 0 0 0 5v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2.5 2.5 0 0 0 0-5z"/><path d="M13 5v2M13 11v2M13 17v2"/></svg></span><dt>Total allocation</dt></div><dd id="kpi-alloc">0 tickets</dd></div>
-        <div class="stat"><div class="stat-top"><span class="kchip c3" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><dt>Full-house revenue</dt></div><dd id="kpi-rev">$0.00</dd></div>
-      </dl>
-      <div class="be-box">
-        <h3><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span>Break-even</h3>
-        <p id="be-main" class="be-main"></p>
-        <p class="note" id="be-note"></p>
-        <div class="chart-wrap" id="gauge-wrap"></div>
+        <label for="inc-room">Room</label>
+        <select id="inc-room"></select>
+
+        <label for="inc-item">Item / area</label>
+        <input type="text" id="inc-item" maxlength="120" placeholder="e.g. Kitchen faucet" autocomplete="off">
+
+        <div class="inline">
+          <div style="flex:1">
+            <label for="inc-type">Type</label>
+            <select id="inc-type">
+              <option value="damage">Damage</option>
+              <option value="missing">Missing item</option>
+              <option value="excessive cleaning">Excessive cleaning</option>
+            </select>
+          </div>
+          <div style="flex:1">
+            <label for="inc-sev">Severity</label>
+            <select id="inc-sev">
+              <option value="minor">Minor</option>
+              <option value="moderate">Moderate</option>
+              <option value="major">Major</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="inc-desc">Description</label>
+        <textarea id="inc-desc" maxlength="2000" placeholder="What happened, condition found, anything the next guest should know..."></textarea>
+
+        <label for="inc-photo">Photo reference <span class="hint" style="display:inline">(optional text note — no photo is uploaded)</span></label>
+        <input type="text" id="inc-photo" maxlength="120" placeholder="e.g. IMG_2041" autocomplete="off">
+
+        <div class="btn-row">
+          <button type="button" class="btn primary" id="btn-inc-save">Add incident</button>
+          <button type="button" class="btn" id="btn-inc-cancel" hidden>Cancel edit</button>
+        </div>
+        <p class="hint" id="inc-msg" role="status"></p>
       </div>
-      <h3 style="font-size:1rem;margin:18px 0 4px">Sell-through scenario</h3>
-      <dl class="kpi">
-        <div class="stat"><div class="stat-top"><span class="kchip c5" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></span><dt>Projected revenue</dt></div><dd id="kpi-projrev">$0.00</dd></div>
-        <div class="stat"><div class="stat-top"><span class="kchip c4" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><dt>Projected profit / loss</dt></div><dd id="kpi-profit">$0.00</dd></div>
-      </dl>
-      <h3 style="font-size:1rem;margin:18px 0 4px">Capacity &rarr; sold funnel</h3>
-      <div class="chart-wrap" id="funnel-wrap"></div>
-      <div class="table-scroll">
-      <table id="tier-table">
-        <caption class="sr">Per-tier revenue at current sell-through</caption>
-        <thead><tr>
-          <th scope="col">Tier</th><th scope="col" class="num">Price</th>
-          <th scope="col" class="num">Allocation</th><th scope="col" class="num">Sell-through</th>
-          <th scope="col" class="num">Revenue</th>
-        </tr></thead>
-        <tbody id="tier-tbody"></tbody>
-      </table>
-      </div>
-      <h3 style="font-size:1rem;margin:18px 0 4px">Per-tier contribution (full allocation)</h3>
-      <div class="table-scroll">
-      <table id="contrib-table">
-        <caption class="sr">Each tier's revenue and share of total revenue at full allocation</caption>
-        <thead><tr>
-          <th scope="col">Tier</th><th scope="col" class="num">Revenue</th><th scope="col" class="num">Share</th>
-        </tr></thead>
-        <tbody id="contrib-tbody"></tbody>
-      </table>
-      </div>
-      <h3 style="font-size:1rem;margin:18px 0 4px">Revenue share by tier (full allocation)</h3>
-      <div class="chart-wrap" id="donut-wrap"></div>
-      <h3 style="font-size:1rem;margin:18px 0 4px">Revenue per tier (current sell-through)</h3>
-      <div class="chart-wrap" id="chart-wrap"></div>
-    </div>
-  </section>
 
-  <section aria-labelledby="h-data">
-    <h2 id="h-data"><span class="hicon" aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>Data</h2>
-    <div class="card">
-      <div class="btnrow">
-        <button id="demo-btn" type="button"><span class="bicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg></span>Load demo data</button>
-        <button id="export-btn" type="button"><span class="bicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 21h16"/></svg></span>Export JSON</button>
-        <button id="import-btn" type="button"><span class="bicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 21h16"/></svg></span>Import JSON</button>
-        <button id="clear-btn" type="button" class="danger"><span class="bicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></span>Clear all</button>
+      <div class="card">
+        <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x='8' y='2' width='8' height='4' rx='1'/><path d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/><path d='M12 11h4M12 16h4M8 11h.01M8 16h.01'/></svg></span>Incidents <span class="hint" style="display:inline" id="inc-count"></span></h2>
+        <div class="chart-wrap" id="sev-donut"></div>
+        <div id="incidents"></div>
       </div>
-      <input id="import-file" type="file" accept="application/json,.json" class="sr" tabindex="-1" aria-hidden="true">
-      <p class="note">Everything is stored only in this browser (localStorage). Export to back up or move your numbers.</p>
-    </div>
-  </section>
-</main>
 
-<a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
-</a>
-<footer class="site">by <a href="https://glenerds.gumroad.com">Glenerds</a></footer>
+      <div class="card">
+        <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><path d='M14 2v6h6'/><path d='M9 13h6M9 17h6'/></svg></span>Incident report</h2>
+        <div class="btn-row" style="margin-top:0">
+          <button type="button" class="btn primary" id="btn-report">Generate report</button>
+          <button type="button" class="btn" id="btn-copy" disabled>Copy report</button>
+        </div>
+        <div class="report-pre" id="report-out" aria-label="Generated incident report" hidden></div>
+        <p class="hint copy-ok" id="copy-msg" role="status"></p>
+      </div>
+    </section>
+  </main>
 
+  <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+    <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
+  </a>
+  <footer class="site">
+    <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
+  </footer>
+</div>
 <script>
-"use strict";
-/* TicketMath — single-file offline event ticket projector. All hand-written. */
+'use strict';
+/* TurnoverCheck v1 — single-file offline app. No external requests. */
 
 /* ---------- constants ---------- */
-var LS_KEY = "ticketmath-state-v1";
-var THEME_KEY = "ticketmath-theme";
-var SVG_NS = "http://www.w3.org/2000/svg";
-var MAX_TIERS = 4;
-var NAME_PRESETS = ["Early Bird", "General", "VIP", "Student"];
-var usd = new Intl.NumberFormat("en-US", {style:"currency", currency:"USD"});
-var uidCounter = 1;
-
-function nextId(){ return "id" + (uidCounter++) + "-" + Date.now().toString(36); }
+var LS_KEY = 'turnovercheck-state-v1';
+var THEME_KEY = 'turnovercheck-theme';
+var INCIDENT_TYPES = ['damage', 'missing', 'excessive cleaning'];
+var SEVERITIES = ['minor', 'moderate', 'major'];
+var MAX = {
+  rooms: 40, tasks: 120, incidents: 500,
+  roomName: 60, taskText: 200, item: 120, desc: 2000, photo: 120, property: 120
+};
 
 /* ---------- tiny DOM helpers (no innerHTML anywhere) ---------- */
-function el(tag, attrs, text){
+function $(sel) { return document.querySelector(sel); }
+function el(tag, cls, text) {
   var n = document.createElement(tag);
-  if (attrs) for (var k in attrs){
-    if (k === "class") n.className = attrs[k];
-    else if (k === "for") n.htmlFor = attrs[k];
-    else n.setAttribute(k, attrs[k]);
-  }
+  if (cls) n.className = cls;
   if (text !== undefined && text !== null) n.textContent = text;
   return n;
 }
-function svgEl(tag, attrs, text){
+function uid() {
+  return 'id' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function fmtClock(ms) {
+  var s = Math.floor(ms / 1000);
+  var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+  s = s % 60;
+  return (h > 0 ? h + ':' + pad2(m) : m) + ':' + pad2(s);
+}
+function fmtDur(ms) {
+  var m = Math.round(ms / 60000);
+  if (m < 1) return 'under a minute';
+  var h = Math.floor(m / 60);
+  m = m % 60;
+  if (h === 0) return m + (m === 1 ? ' minute' : ' minutes');
+  var hs = h + (h === 1 ? ' hour' : ' hours');
+  return m === 0 ? hs : hs + ' ' + m + (m === 1 ? ' min' : ' mins');
+}
+function fmtDateTime(ts) {
+  var d = new Date(ts);
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) +
+    ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+}
+function fmtTime(ts) {
+  var d = new Date(ts), ap = d.getHours() >= 12 ? 'PM' : 'AM';
+  var h = d.getHours() % 12; if (h === 0) h = 12;
+  return h + ':' + pad2(d.getMinutes()) + ' ' + ap;
+}
+
+/* ---------- default checklist ---------- */
+function mkRoom(name, tasks) {
+  return {
+    id: uid(), name: name,
+    tasks: tasks.map(function (t) { return { id: uid(), text: t, done: false }; }),
+    timer: { elapsed: 0, running: false, since: 0 }
+  };
+}
+function defaultRooms() {
+  return [
+    mkRoom('Kitchen', [
+      'Wipe counters and stovetop',
+      'Clean microwave inside and out',
+      'Empty and wipe out fridge',
+      'Wash dishes or run the dishwasher',
+      'Take out trash and replace liner',
+      'Restock coffee, soap, and paper towels',
+      'Sweep and mop floor',
+      'Check under sink for leaks'
+    ]),
+    mkRoom('Living Room', [
+      'Dust all surfaces',
+      'Vacuum or mop floors',
+      'Fluff and arrange pillows and throws',
+      'Clean mirrors and glass',
+      'Check remotes have working batteries',
+      'Restock guest info binder',
+      'Check all lights work',
+      'Check windows are closed and locked'
+    ]),
+    mkRoom('Bedroom(s)', [
+      'Change sheets and pillowcases',
+      'Make the bed',
+      'Dust nightstands and dresser',
+      'Vacuum floor',
+      'Check closets for left-behind items',
+      'Check under the bed',
+      'Restock extra blankets'
+    ]),
+    mkRoom('Bathroom(s)', [
+      'Clean toilet',
+      'Clean shower and tub',
+      'Clean sink and mirror',
+      'Replace with fresh towels',
+      'Restock toilet paper and soap',
+      'Empty trash',
+      'Mop floor',
+      'Check drains for hair'
+    ]),
+    mkRoom('Laundry', [
+      'Start guest laundry if needed',
+      'Check washer and dryer are empty',
+      'Wipe down machines',
+      'Restock detergent'
+    ]),
+    mkRoom('Outdoor / Entry', [
+      'Sweep porch and entry',
+      'Check outdoor lights work',
+      'Empty outdoor trash',
+      'Check grill is off and covered',
+      'Lock all doors',
+      'Set thermostat'
+    ])
+  ];
+}
+
+/* ---------- state ---------- */
+function blankState() {
+  return { version: 1, property: '', startedAt: 0, completedAt: 0, rooms: defaultRooms(), incidents: [] };
+}
+var state = blankState();
+
+var storageOK = true;
+function showStorageWarn() {
+  var w = document.getElementById('storage-warn');
+  if (w) w.hidden = false;
+}
+
+function save() {
+  if (window.__gSampleOn) return; /* sample mode: real data is snapshotted — never persist demo data */
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  catch (e) { storageOK = false; showStorageWarn(); /* keep running in memory */ }
+}
+function load() {
+  var raw = null;
+  try { raw = localStorage.getItem(LS_KEY); } catch (e) { storageOK = false; showStorageWarn(); return; }
+  if (!raw) return;
+  try {
+    var parsed = JSON.parse(raw);
+    var clean = sanitizeImport(parsed);
+    if (clean) state = clean;
+  } catch (e) { /* corrupt: keep defaults */ }
+}
+
+/* ---------- import sanitization ---------- */
+function sStr(v, capLen) {
+  return (typeof v === 'string') ? v.slice(0, capLen) : '';
+}
+function sNum(v) {
+  return (typeof v === 'number' && isFinite(v) && v >= 0) ? v : 0;
+}
+function sBool(v) { return v === true; }
+function sanitizeImport(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  var data = (raw.data && typeof raw.data === 'object') ? raw.data : raw;
+  var out = {
+    version: 1,
+    property: sStr(data.property, MAX.property),
+    startedAt: sNum(data.startedAt),
+    completedAt: sNum(data.completedAt),
+    rooms: [], incidents: []
+  };
+  if (Array.isArray(data.rooms)) {
+    data.rooms.slice(0, MAX.rooms).forEach(function (r) {
+      if (!r || typeof r !== 'object') return;
+      var name = sStr(r.name, MAX.roomName).trim();
+      if (!name) return;
+      var room = {
+        id: (typeof r.id === 'string' && r.id) ? r.id.slice(0, 40) : uid(),
+        name: name, tasks: [],
+        timer: { elapsed: 0, running: false, since: 0 }
+      };
+      if (r.timer && typeof r.timer === 'object') {
+        room.timer.elapsed = Math.min(sNum(r.timer.elapsed), 30 * 86400000);
+        room.timer.running = sBool(r.timer.running);
+        room.timer.since = sNum(r.timer.since);
+        if (room.timer.running && !room.timer.since) room.timer.running = false;
+      }
+      if (Array.isArray(r.tasks)) {
+        r.tasks.slice(0, MAX.tasks).forEach(function (t) {
+          if (!t || typeof t !== 'object') return;
+          var text = sStr(t.text, MAX.taskText).trim();
+          if (!text) return;
+          room.tasks.push({
+            id: (typeof t.id === 'string' && t.id) ? t.id.slice(0, 40) : uid(),
+            text: text, done: sBool(t.done)
+          });
+        });
+      }
+      out.rooms.push(room);
+    });
+  }
+  if (Array.isArray(data.incidents)) {
+    data.incidents.slice(0, MAX.incidents).forEach(function (x) {
+      if (!x || typeof x !== 'object') return;
+      var item = sStr(x.item, MAX.item).trim();
+      if (!item) return;
+      out.incidents.push({
+        id: (typeof x.id === 'string' && x.id) ? x.id.slice(0, 40) : uid(),
+        room: sStr(x.room, MAX.roomName),
+        item: item,
+        type: INCIDENT_TYPES.indexOf(x.type) >= 0 ? x.type : 'damage',
+        severity: SEVERITIES.indexOf(x.severity) >= 0 ? x.severity : 'minor',
+        description: sStr(x.description, MAX.desc),
+        photoNote: sStr(x.photoNote, MAX.photo).trim(),
+        ts: sNum(x.ts) || Date.now()
+      });
+    });
+  }
+  out.incidents.sort(function (a, b) { return b.ts - a.ts; });
+  return out;
+}
+
+/* ---------- theme ---------- */
+function getTheme() {
+  try {
+    var s = localStorage.getItem(THEME_KEY);
+    if (s === 'light' || s === 'dark') return s;
+  } catch (e) {}
+  return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+}
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  var btn = $('#theme-toggle');
+  var dark = t === 'dark';
+  var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+  btn.setAttribute('aria-label', label);
+  btn.title = label;
+  btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+  btn.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
+  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  if (typeof paintSoundToggle === 'function') paintSoundToggle();
+}
+function initTheme() {
+  applyTheme(getTheme());
+  $('#theme-toggle').addEventListener('click', function () {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    Sound.toggleTheme();
+  });
+  bindSoundToggle();
+}
+
+/* ---------- subtle sounds (Web Audio, no files, offline) ---------- */
+var Sound = (function () {
+  var KEY = 'turnovercheck.sound', on = true, ctx = null;
+  try { if (window.localStorage.getItem(KEY) === 'off') on = false; } catch (e) {}
+  function ac() {
+    try {
+      if (!ctx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        ctx = new AC();
+      }
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    } catch (e) { return null; }
+  }
+  function tone(freq, dur, type, vol, delay) {
+    var c = ac(); if (!c) return;
+    var play = function () {
+      try {
+        var t = c.currentTime + (delay || 0);
+        var o = c.createOscillator(), g = c.createGain();
+        o.type = type || 'sine'; o.frequency.value = freq;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(c.destination);
+        o.start(t); o.stop(t + dur + 0.05);
+      } catch (e) {}
+    };
+    try {
+      if (c.state === 'suspended') { c.resume().then(play, play); }
+      else play();
+    } catch (e) { play(); }
+  }
+  return {
+    isOn: function () { return on; },
+    toggle: function () {
+      on = !on;
+      try { window.localStorage.setItem(KEY, on ? 'on' : 'off'); } catch (e) {}
+      return on;
+    },
+    click: function () { if (on) tone(520, 0.06, 'sine', 0.045); },
+    select: function () { if (on) { tone(660, 0.07, 'sine', 0.055); tone(880, 0.09, 'sine', 0.045, 0.06); } },
+    success: function () { if (on) { tone(660, 0.09, 'sine', 0.06); tone(990, 0.12, 'sine', 0.05, 0.08); } },
+    error: function () { if (on) tone(170, 0.16, 'sawtooth', 0.045); },
+    toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
+  };
+})();
+/* Sound button stays white in all states (reference spec 2026-09-21);
+   paint only swaps the icon + aria (no accent fills). */
+function paintSoundToggle() {
+  var btn = $('#sound-toggle');
+  if (!btn) return;
+  var on = Sound.isOn();
+  btn.textContent = on ? '\uD83D\uDD0A' : '\uD83D\uDD07';
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
+  btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
+}
+function bindSoundToggle() {
+  var btn = $('#sound-toggle');
+  if (!btn) return;
+  btn.addEventListener('click', function () { Sound.toggle(); paintSoundToggle(); Sound.click(); });
+  paintSoundToggle();
+}
+
+/* ---------- tabs (keyboard operable) ---------- */
+var TAB_IDS = ['tab-checklist', 'tab-log'];
+function selectTab(id, focusTab) {
+  TAB_IDS.forEach(function (tid) {
+    var tab = document.getElementById(tid);
+    var panel = document.getElementById(tab.getAttribute('aria-controls'));
+    var on = tid === id;
+    tab.setAttribute('aria-selected', on ? 'true' : 'false');
+    tab.tabIndex = on ? 0 : -1;
+    panel.hidden = !on;
+    if (on && focusTab) tab.focus();
+  });
+}
+function initTabs() {
+  TAB_IDS.forEach(function (tid, i) {
+    var tab = document.getElementById(tid);
+    tab.addEventListener('click', function () { selectTab(tid, false); });
+    tab.addEventListener('keydown', function (e) {
+      var j = null;
+      if (e.key === 'ArrowRight') j = (i + 1) % TAB_IDS.length;
+      else if (e.key === 'ArrowLeft') j = (i - 1 + TAB_IDS.length) % TAB_IDS.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = TAB_IDS.length - 1;
+      if (j !== null) { e.preventDefault(); selectTab(TAB_IDS[j], true); }
+    });
+  });
+}
+
+/* ---------- confirm-arm helper (inline, no dialogs) ---------- */
+function armConfirm(btn, label, fn) {
+  if (btn.dataset.armed === '1') {
+    clearTimeout(btn._armT);
+    delete btn.dataset.armed;
+    btn.classList.remove('armed');
+    btn.textContent = btn._orig;
+    fn();
+    return;
+  }
+  btn._orig = btn.textContent;
+  btn.dataset.armed = '1';
+  btn.classList.add('armed');
+  btn.textContent = label;
+  btn._armT = setTimeout(function () {
+    delete btn.dataset.armed;
+    btn.classList.remove('armed');
+    btn.textContent = btn._orig;
+  }, 6000);
+}
+
+/* ---------- checklist progress ---------- */
+function roomCounts(r) {
+  var done = r.tasks.filter(function (t) { return t.done; }).length;
+  return { done: done, total: r.tasks.length };
+}
+function overallCounts() {
+  var done = 0, total = 0;
+  state.rooms.forEach(function (r) {
+    var c = roomCounts(r);
+    done += c.done; total += c.total;
+  });
+  return { done: done, total: total };
+}
+function checkCompletion() {
+  var c = overallCounts();
+  if (c.total > 0 && c.done === c.total && !state.completedAt) {
+    state.completedAt = Date.now();
+    save();
+  } else if (c.done < c.total && state.completedAt) {
+    state.completedAt = 0;
+    save();
+  }
+}
+
+/* ---------- timers ---------- */
+function roomElapsed(r) {
+  var e = r.timer.elapsed || 0;
+  if (r.timer.running) e += Date.now() - r.timer.since;
+  return e;
+}
+var timerTick = null;
+function startTimerTick() {
+  if (timerTick) return;
+  timerTick = setInterval(function () {
+    var nodes = document.querySelectorAll('.js-timer');
+    for (var i = 0; i < nodes.length; i++) {
+      var room = findRoom(nodes[i].getAttribute('data-room'));
+      if (room) nodes[i].textContent = fmtClock(roomElapsed(room));
+    }
+  }, 1000);
+}
+function findRoom(id) {
+  for (var i = 0; i < state.rooms.length; i++) {
+    if (state.rooms[i].id === id) return state.rooms[i];
+  }
+  return null;
+}
+
+/* ---------- checklist render ---------- */
+function renderSummary() {
+  var box = $('#summary');
+  box.textContent = '';
+  var c = overallCounts();
+  if (c.total === 0) {
+    box.appendChild(document.createTextNode('No tasks yet — add tasks to a room to begin.'));
+    return;
+  }
+  if (state.completedAt) {
+    var dur = state.completedAt - (state.startedAt || state.completedAt);
+    var p1 = el('strong', null, 'Turnover complete: ');
+    box.appendChild(p1);
+    box.appendChild(document.createTextNode(
+      c.done + ' of ' + c.total + ' tasks finished in ' + fmtDur(dur) + '.'
+    ));
+    if (state.startedAt) {
+      box.appendChild(el('br'));
+      box.appendChild(document.createTextNode('Started ' + fmtDateTime(state.startedAt) + '.'));
+    }
+  } else if (state.startedAt) {
+    var pct = Math.round(100 * c.done / c.total);
+    box.appendChild(document.createTextNode(
+      'Turnover in progress — ' + c.done + ' of ' + c.total + ' tasks (' + pct + '%). Started ' + fmtDateTime(state.startedAt) + '.'
+    ));
+  } else {
+    box.appendChild(document.createTextNode(
+      'Press "Start turnover" when you arrive, then work through the checklist room by room.'
+    ));
+  }
+}
+
+/* Overall % stat: click/keyboard shows a per-room done/total breakdown;
+   click again or Esc restores. (clickability sweep 2026-09-21) */
+function wireOverallPct() {
+  var pct = $('#overall-pct');
+  if (!pct) return;
+  if (!pct.__wired) {
+    pct.__wired = true;
+    pct.setAttribute('role', 'button');
+    pct.setAttribute('tabindex', '0');
+    pct.setAttribute('aria-pressed', 'false');
+    var row = pct.closest ? pct.closest('.overall-row') : pct.parentNode;
+    var detail = document.getElementById('overall-detail');
+    if (!detail) {
+      detail = el('div', 'chart-detail');
+      detail.id = 'overall-detail';
+      detail.setAttribute('aria-live', 'polite');
+      row.parentNode.insertBefore(detail, row.nextSibling);
+    }
+    pct.__detail = detail;
+    (function (p) {
+      function act() {
+        var was = p.classList.contains('sel');
+        p.classList.remove('sel');
+        p.setAttribute('aria-pressed', 'false');
+        if (!was) {
+          p.classList.add('sel');
+          p.setAttribute('aria-pressed', 'true');
+          var parts = state.rooms.map(function (r) {
+            var rc = roomCounts(r);
+            return r.name + ' ' + rc.done + '/' + rc.total;
+          });
+          p.__detail.textContent = '';
+          var st = document.createElement('strong');
+          st.textContent = 'Per-room breakdown: ';
+          p.__detail.appendChild(st);
+          p.__detail.appendChild(document.createTextNode(parts.length ? parts.join(' · ') : 'no rooms yet.'));
+          Sound.select();
+        } else {
+          p.__detail.textContent = '';
+          Sound.click();
+        }
+      }
+      p.addEventListener('click', act);
+      p.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); }
+      });
+    })(pct);
+  }
+  pct.setAttribute('aria-label', 'Overall checklist progress: ' + pct.textContent + '. Activate for a per-room breakdown.');
+}
+
+function renderChecklist() {
+  var c = overallCounts();
+  renderTimeline();
+  renderTimeBars();
+  var pct = c.total === 0 ? 0 : Math.round(100 * c.done / c.total);
+  $('#overall-fill').style.width = pct + '%';
+  $('#overall-pct').textContent = pct + '%';
+  wireOverallPct();
+  /* per-room progress bars (visual representation) */
+  var barsHost = $('#room-bars');
+  barsHost.textContent = '';
+  var detail = document.getElementById('room-bars-detail');
+  if (!detail) {
+    detail = el('div', 'rb-detail');
+    detail.id = 'room-bars-detail';
+    detail.setAttribute('aria-live', 'polite');
+    barsHost.parentNode.insertBefore(detail, barsHost.nextSibling);
+  }
+  detail.textContent = '';
+  var aria = [];
+  state.rooms.forEach(function (r) {
+    var rc = roomCounts(r);
+    var rp = rc.total === 0 ? 0 : Math.round(100 * rc.done / rc.total);
+    aria.push(r.name + ': ' + rc.done + ' of ' + rc.total + ' (' + rp + '%)');
+    var row = el('div', 'room-bar-row');
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('aria-pressed', 'false');
+    row.setAttribute('aria-label', r.name + ': ' + rc.done + ' of ' + rc.total + ' tasks done. Activate to spotlight.');
+    row.appendChild(el('div', 'room-bar-name', r.name));
+    row.appendChild(el('div', 'room-bar-val',
+      rc.total === 0 ? 'no tasks' : rc.done + '/' + rc.total + ' · ' + rp + '%'));
+    var track = el('div', 'progress');
+    track.setAttribute('role', 'progressbar');
+    track.setAttribute('aria-label', r.name + ' completion');
+    track.setAttribute('aria-valuemin', '0');
+    track.setAttribute('aria-valuemax', '100');
+    track.setAttribute('aria-valuenow', String(rp));
+    var fill = el('div');
+    fill.style.width = rp + '%';
+    track.appendChild(fill);
+    row.appendChild(track);
+    (function (rr, rrrow, rrcc) {
+      function act() {
+        var was = rrrow.classList.contains('sel');
+        var sels = barsHost.querySelectorAll('.room-bar-row.sel');
+        for (var k = 0; k < sels.length; k++) {
+          sels[k].classList.remove('sel');
+          sels[k].setAttribute('aria-pressed', 'false');
+        }
+        if (!was) {
+          rrrow.classList.add('sel');
+          rrrow.setAttribute('aria-pressed', 'true');
+          var remaining = rr.tasks.filter(function (t) { return !t.done; }).map(function (t) { return t.text; });
+          detail.textContent = '';
+          var st = document.createElement('strong');
+          st.textContent = rr.name + ': ';
+          detail.appendChild(st);
+          detail.appendChild(document.createTextNode(
+            rrcc.done + ' of ' + rrcc.total + ' done' +
+            (remaining.length ? ' — ' + remaining.length + ' left: ' + remaining.join(', ') : ' — all done ✅') + '.'));
+          Sound.select();
+        } else {
+          detail.textContent = '';
+          Sound.click();
+        }
+      }
+      rrrow.addEventListener('click', act);
+      rrrow.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); }
+      });
+    })(r, row, rc);
+    barsHost.appendChild(row);
+  });
+  barsHost.setAttribute('aria-label', 'Completion per room: ' + aria.join(', '));
+  var card = $('#room-progress-card');
+  if (card) card.hidden = state.rooms.length === 0;
+  $('#overall-bar').setAttribute('aria-valuenow', String(pct));
+
+  var sl = $('#started-line');
+  sl.textContent = '';
+  if (state.startedAt) {
+    sl.appendChild(document.createTextNode('Turnover started ' + fmtDateTime(state.startedAt) + '.'));
+    $('#btn-start').hidden = true;
+    $('#btn-restart').hidden = false;
+  } else {
+    $('#btn-start').hidden = false;
+    $('#btn-restart').hidden = true;
+  }
+  renderSummary();
+
+  var host = $('#rooms');
+  host.textContent = '';
+  if (state.rooms.length === 0) {
+    var p = el('p', 'empty', 'No rooms yet. Add your first room below.');
+    host.appendChild(p);
+  }
+  state.rooms.forEach(function (room) { host.appendChild(renderRoom(room)); });
+  startTimerTick();
+}
+
+function renderRoom(room) {
+  var card = el('article', 'card');
+  card.setAttribute('data-room-id', room.id);
+
+  var head = el('div', 'room-head');
+  head.appendChild(el('h3', null, room.name));
+  var rc = roomCounts(room);
+  head.appendChild(el('span', 'room-count', rc.done + '/' + rc.total + ' done'));
+
+  var chip = el('span', 'timer-chip');
+  var t = el('span', 't js-timer', fmtClock(roomElapsed(room)));
+  t.setAttribute('data-room', room.id);
+  chip.appendChild(t);
+  var tbtn = el('button', 'btn small', room.timer.running ? 'Stop' : 'Start');
+  tbtn.type = 'button';
+  tbtn.setAttribute('aria-label', (room.timer.running ? 'Stop' : 'Start') + ' timer for ' + room.name);
+  tbtn.addEventListener('click', function () {
+    if (room.timer.running) {
+      room.timer.elapsed = roomElapsed(room);
+      room.timer.running = false;
+      room.timer.since = 0;
+    } else {
+      room.timer.running = true;
+      room.timer.since = Date.now();
+    }
+    save(); renderChecklist();
+  });
+  chip.appendChild(tbtn);
+  head.appendChild(chip);
+  card.appendChild(head);
+
+  var ul = el('ul', 'task-list');
+  room.tasks.forEach(function (task, idx) { ul.appendChild(renderTask(room, task, idx)); });
+  card.appendChild(ul);
+
+  var addRow = el('div', 'add-row');
+  var inp = el('input');
+  inp.type = 'text'; inp.maxLength = MAX.taskText; inp.placeholder = 'New task';
+  inp.setAttribute('aria-label', 'New task for ' + room.name);
+  inp.autocomplete = 'off';
+  var addBtn = el('button', 'btn primary', 'Add');
+  addBtn.type = 'button';
+  function doAdd() {
+    var v = inp.value.trim();
+    if (!v) return;
+    if (room.tasks.length >= MAX.tasks) return;
+    room.tasks.push({ id: uid(), text: v.slice(0, MAX.taskText), done: false });
+    save(); renderChecklist();
+  }
+  addBtn.addEventListener('click', doAdd);
+  inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') doAdd(); });
+  addRow.appendChild(inp); addRow.appendChild(addBtn);
+  card.appendChild(addRow);
+
+  var ops = el('div', 'room-ops');
+  var rn = el('button', 'btn small', 'Rename room');
+  rn.type = 'button';
+  rn.addEventListener('click', function () {
+    inp.focus();
+    renameRoom(room, card);
+  });
+  var del = el('button', 'btn small danger', 'Remove room');
+  del.type = 'button';
+  del.addEventListener('click', function () {
+    armConfirm(del, 'Tap again to remove', function () {
+      state.rooms = state.rooms.filter(function (r) { return r.id !== room.id; });
+      checkCompletion(); save(); renderAll();
+    });
+  });
+  ops.appendChild(rn); ops.appendChild(del);
+  card.appendChild(ops);
+  return card;
+}
+
+function renameRoom(room, card) {
+  var head = card.querySelector('.room-head h3');
+  var input = document.createElement('input');
+  input.type = 'text'; input.value = room.name; input.maxLength = MAX.roomName;
+  input.setAttribute('aria-label', 'Room name');
+  head.textContent = '';
+  head.appendChild(input);
+  input.focus(); input.select();
+  function commit() {
+    var v = input.value.trim().slice(0, MAX.roomName);
+    if (v) { room.name = v; save(); }
+    renderAll();
+  }
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') commit();
+    else if (e.key === 'Escape') renderAll();
+  });
+  input.addEventListener('blur', commit);
+}
+
+function renderTask(room, task, idx) {
+  var li = el('li', 'task');
+  var lab = el('label', 'task-check');
+  var cb = document.createElement('input');
+  cb.type = 'checkbox'; cb.checked = task.done;
+  cb.setAttribute('aria-label', task.text);
+  cb.addEventListener('change', function () {
+    task.done = cb.checked;
+    checkCompletion(); save(); renderChecklist();
+    if (cb.checked) Sound.success(); else Sound.click();
+  });
+  lab.appendChild(cb);
+  lab.appendChild(el('span', 'txt', task.text));
+  li.appendChild(lab);
+
+  var ops = el('div', 'task-ops');
+  var up = el('button', 'icon-btn', '↑');
+  up.type = 'button'; up.title = 'Move up'; up.setAttribute('aria-label', 'Move task up: ' + task.text);
+  up.disabled = idx === 0;
+  up.addEventListener('click', function () {
+    if (idx > 0) {
+      room.tasks.splice(idx, 1);
+      room.tasks.splice(idx - 1, 0, task);
+      save(); renderChecklist();
+    }
+  });
+  var down = el('button', 'icon-btn', '↓');
+  down.type = 'button'; down.title = 'Move down'; down.setAttribute('aria-label', 'Move task down: ' + task.text);
+  down.disabled = idx === room.tasks.length - 1;
+  down.addEventListener('click', function () {
+    if (idx < room.tasks.length - 1) {
+      room.tasks.splice(idx, 1);
+      room.tasks.splice(idx + 1, 0, task);
+      save(); renderChecklist();
+    }
+  });
+  var del = el('button', 'icon-btn del', '×');
+  del.type = 'button'; del.title = 'Delete task'; del.setAttribute('aria-label', 'Delete task: ' + task.text);
+  del.addEventListener('click', function () {
+    room.tasks = room.tasks.filter(function (t) { return t.id !== task.id; });
+    checkCompletion(); save(); renderChecklist();
+  });
+  ops.appendChild(up); ops.appendChild(down); ops.appendChild(del);
+  li.appendChild(ops);
+  return li;
+}
+
+/* ---------- checklist actions ---------- */
+function initChecklist() {
+  $('#btn-start').addEventListener('click', function () {
+    state.startedAt = Date.now();
+    state.completedAt = 0;
+    save(); renderChecklist();
+    Sound.click();
+  });
+  $('#btn-restart').addEventListener('click', function () {
+    var b = $('#btn-restart');
+    armConfirm(b, 'Tap again to restart', function () {
+      state.startedAt = Date.now();
+      state.completedAt = 0;
+      state.rooms.forEach(function (r) {
+        r.timer.elapsed = 0; r.timer.running = false; r.timer.since = 0;
+      });
+      save(); renderChecklist();
+    });
+  });
+  $('#btn-add-room').addEventListener('click', addRoom);
+  $('#new-room-name').addEventListener('keydown', function (e) { if (e.key === 'Enter') addRoom(); });
+  function addRoom() {
+    var inp = $('#new-room-name');
+    var v = inp.value.trim().slice(0, MAX.roomName);
+    if (!v || state.rooms.length >= MAX.rooms){ Sound.error(); return; }
+    state.rooms.push({ id: uid(), name: v, tasks: [], timer: { elapsed: 0, running: false, since: 0 } });
+    inp.value = '';
+    save(); renderAll();
+    Sound.success();
+  }
+}
+
+/* ---------- reset for next guest ---------- */
+function resetTurnover() {
+  state.startedAt = 0;
+  state.completedAt = 0;
+  state.rooms.forEach(function (r) {
+    r.tasks.forEach(function (t) { t.done = false; });
+    r.timer = { elapsed: 0, running: false, since: 0 };
+  });
+  save(); renderAll();
+}
+function addResetButton() {
+  var row = document.querySelector('#panel-checklist .card .btn-row');
+  var b = el('button', 'btn', 'Reset for next guest');
+  b.type = 'button'; b.id = 'btn-reset-turnover';
+  b.addEventListener('click', function () {
+    armConfirm(b, 'Tap again to reset', resetTurnover);
+  });
+  row.appendChild(b);
+}
+
+/* ---------- damage log ---------- */
+var editingId = null;
+var sevFilter = null; /* null = show all; otherwise a severity string — toggled by the severity pills */
+
+function renderLog() {
+  var sel = $('#inc-room');
+  var prev = sel.value;
+  sel.textContent = '';
+  state.rooms.forEach(function (r) {
+    var o = document.createElement('option');
+    o.value = r.name; o.textContent = r.name;
+    sel.appendChild(o);
+  });
+  var other = document.createElement('option');
+  other.value = 'Other'; other.textContent = 'Other';
+  sel.appendChild(other);
+  if (prev) {
+    var found = false;
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === prev) { found = true; break; }
+    }
+    sel.value = found ? prev : 'Other';
+  }
+
+  var host = $('#incidents');
+  host.textContent = '';
+  $('#inc-count').textContent = state.incidents.length ? '(' + state.incidents.length + ')' : '';
+  if (sevFilter){
+    var shown = state.incidents.filter(function (x){ return x.severity === sevFilter; });
+    var note = el('p', 'hint', 'Showing ' + shown.length + ' of ' + state.incidents.length +
+      ' incidents (' + sevFilter + ') — click the severity pill again to clear the filter.');
+    note.setAttribute('role', 'status');
+    host.appendChild(note);
+  }
+  if (state.incidents.length === 0) {
+    host.appendChild(el('p', 'empty', 'No incidents logged yet.'));
+    renderSevDonut();
+    return;
+  }
+  state.incidents.forEach(function (inc) {
+    if (sevFilter && inc.severity !== sevFilter) return;
+    host.appendChild(renderIncident(inc));
+  });
+  renderSevDonut();
+}
+
+function renderIncident(inc) {
+  var d = el('div', 'incident');
+  var top = el('div', 'incident-top');
+  /* severity pill doubles as a filter toggle: click/keyboard filters the list to that severity */
+  var sev = el('button', 'sev ' + inc.severity, inc.severity);
+  sev.type = 'button';
+  var active = sevFilter === inc.severity;
+  sev.setAttribute('aria-pressed', active ? 'true' : 'false');
+  sev.title = active ? 'Clear the severity filter' : 'Show only ' + inc.severity + ' incidents';
+  sev.addEventListener('click', function () {
+    sevFilter = (sevFilter === inc.severity) ? null : inc.severity;
+    renderLog();
+    Sound.click();
+  });
+  top.appendChild(sev);
+  var title = el('strong', null, (inc.room ? inc.room + ' — ' : '') + inc.item);
+  top.appendChild(title);
+  d.appendChild(top);
+  d.appendChild(el('p', 'meta', cap(inc.type) + ' · Reported ' + fmtDateTime(inc.ts)));
+  if (inc.description) d.appendChild(el('p', 'desc', inc.description));
+  if (inc.photoNote) d.appendChild(el('p', 'meta', 'Photo ref: ' + inc.photoNote));
+
+  var ops = el('div', 'ops');
+  var edit = el('button', 'btn small', 'Edit');
+  edit.type = 'button';
+  edit.setAttribute('aria-label', 'Edit incident: ' + inc.item);
+  edit.addEventListener('click', function () { startEdit(inc.id); });
+  var del = el('button', 'btn small danger', 'Delete');
+  del.type = 'button';
+  del.setAttribute('aria-label', 'Delete incident: ' + inc.item);
+  del.addEventListener('click', function () {
+    armConfirm(del, 'Tap again to delete', function () {
+      state.incidents = state.incidents.filter(function (x) { return x.id !== inc.id; });
+      if (editingId === inc.id) cancelEdit();
+      save(); renderLog(); clearReport();
+    });
+  });
+  ops.appendChild(edit); ops.appendChild(del);
+  d.appendChild(ops);
+  return d;
+}
+
+function incMsg(t) {
+  var m = $('#inc-msg');
+  m.textContent = t;
+  if (t) setTimeout(function () { if (m.textContent === t) m.textContent = ''; }, 4000);
+}
+
+function startEdit(id) {
+  var inc = null;
+  for (var i = 0; i < state.incidents.length; i++) {
+    if (state.incidents[i].id === id) { inc = state.incidents[i]; break; }
+  }
+  if (!inc) return;
+  editingId = id;
+  $('#inc-room').value = inc.room;
+  if ($('#inc-room').value !== inc.room) {
+    var o = document.createElement('option');
+    o.value = inc.room; o.textContent = inc.room;
+    $('#inc-room').insertBefore(o, $('#inc-room').firstChild);
+    $('#inc-room').value = inc.room;
+  }
+  $('#inc-item').value = inc.item;
+  $('#inc-type').value = inc.type;
+  $('#inc-sev').value = inc.severity;
+  $('#inc-desc').value = inc.description;
+  $('#inc-photo').value = inc.photoNote;
+  $('#btn-inc-save').textContent = 'Save changes';
+  $('#btn-inc-cancel').hidden = false;
+  $('#inc-item').focus();
+  selectTab('tab-log', false);
+}
+function cancelEdit() {
+  editingId = null;
+  $('#inc-room').selectedIndex = 0;
+  $('#inc-item').value = '';
+  $('#inc-type').value = 'damage';
+  $('#inc-sev').value = 'minor';
+  $('#inc-desc').value = '';
+  $('#inc-photo').value = '';
+  $('#btn-inc-save').textContent = 'Add incident';
+  $('#btn-inc-cancel').hidden = true;
+}
+
+function initLog() {
+  $('#prop-name').addEventListener('change', function () {
+    state.property = this.value.trim().slice(0, MAX.property);
+    save();
+  });
+  $('#btn-inc-save').addEventListener('click', function () {
+    var item = $('#inc-item').value.trim().slice(0, MAX.item);
+    if (!item) { incMsg('Item / area is required.'); Sound.error(); $('#inc-item').focus(); return; }
+    if (state.incidents.length >= MAX.incidents && !editingId) { incMsg('Incident log is full.'); Sound.error(); return; }
+    var rec = {
+      id: editingId || uid(),
+      room: $('#inc-room').value,
+      item: item,
+      type: $('#inc-type').value,
+      severity: $('#inc-sev').value,
+      description: $('#inc-desc').value.trim().slice(0, MAX.desc),
+      photoNote: $('#inc-photo').value.trim().slice(0, MAX.photo),
+      ts: Date.now()
+    };
+    if (editingId) {
+      for (var i = 0; i < state.incidents.length; i++) {
+        if (state.incidents[i].id === editingId) {
+          rec.ts = state.incidents[i].ts;
+          state.incidents[i] = rec;
+          break;
+        }
+      }
+      incMsg('Incident updated.');
+    } else {
+      state.incidents.unshift(rec);
+      incMsg('Incident added.');
+    }
+    cancelEdit();
+    save(); renderLog(); clearReport();
+    Sound.success();
+  });
+  $('#btn-inc-cancel').addEventListener('click', function () { cancelEdit(); Sound.click(); });
+  $('#btn-report').addEventListener('click', function () {
+    var txt = buildReport();
+    var out = $('#report-out');
+    out.textContent = txt;
+    out.hidden = false;
+    $('#btn-copy').disabled = false;
+    $('#copy-msg').textContent = '';
+    Sound.click();
+  });
+  $('#btn-copy').addEventListener('click', function () {
+    var txt = $('#report-out').textContent;
+    copyText(txt, function (ok) {
+      $('#copy-msg').textContent = ok ? 'Copied to clipboard.' : 'Copy failed — select the text above manually.';
+      if (ok) Sound.success(); else Sound.error();
+    });
+  });
+}
+
+/* The generated report is a snapshot of the incident list at generation time —
+   invalidate it whenever incidents change so stale text never lingers. */
+function clearReport() {
+  var out = $('#report-out');
+  out.textContent = '';
+  out.hidden = true;
+  $('#btn-copy').disabled = true;
+  $('#copy-msg').textContent = '';
+}
+
+function buildReport() {
+  var lines = [];
+  lines.push('TURNOVER INCIDENT REPORT');
+  lines.push('Property: ' + (state.property || '(not set)'));
+  lines.push('Date: ' + fmtDateTime(state.startedAt || Date.now()).slice(0, 10));
+  lines.push('Generated: ' + fmtDateTime(Date.now()));
+  lines.push('');
+  if (state.incidents.length === 0) {
+    lines.push('No incidents recorded.');
+  } else {
+    var ordered = state.incidents.slice().sort(function (a, b) { return a.ts - b.ts; });
+    ordered.forEach(function (inc, i) {
+      lines.push((i + 1) + '. [' + inc.severity.toUpperCase() + '] ' + (inc.room ? inc.room + ' — ' : '') + inc.item);
+      lines.push('   Type: ' + cap(inc.type));
+      lines.push('   Reported: ' + fmtDateTime(inc.ts));
+      if (inc.description) lines.push('   Details: ' + inc.description);
+      if (inc.photoNote) lines.push('   Photo ref: ' + inc.photoNote);
+      lines.push('');
+    });
+    var n = { minor: 0, moderate: 0, major: 0 };
+    state.incidents.forEach(function (x) { if (n[x.severity] !== undefined) n[x.severity]++; });
+    lines.push('Total incidents: ' + state.incidents.length +
+      ' (' + n.minor + ' minor, ' + n.moderate + ' moderate, ' + n.major + ' major)');
+  }
+  return lines.join('\n');
+}
+
+function copyText(t, cb) {
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = t;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    cb(ok);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(t).then(function () { cb(true); }, fallback);
+  } else {
+    fallback();
+  }
+}
+
+/* ---------- charts & timeline (dependency-free SVG/DOM) ---------- */
+var SVG_NS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs, text) {
   var n = document.createElementNS(SVG_NS, tag);
   if (attrs) for (var k in attrs) n.setAttribute(k, attrs[k]);
   if (text !== undefined && text !== null) n.textContent = text;
   return n;
 }
-function clear(n){ while (n.firstChild) n.removeChild(n.firstChild); }
+function clearEl(n) { while (n.firstChild) n.removeChild(n.firstChild); }
 
-/* ---------- state ---------- */
-function defaultState(){
-  return {
-    event: {name:"", capacity:150, date:""},
-    costs: [
-      {id: nextId(), name:"Venue rental", amount:0},
-      {id: nextId(), name:"Marketing", amount:0}
-    ],
-    tiers: [
-      {id: nextId(), name:"Early Bird", price:0, allocation:0, sellThrough:100}
-    ]
-  };
-}
-var state = defaultState();
-
-/* ---------- sanitizers (used for user input AND imports) ---------- */
-function asText(v, max){ v = String(v == null ? "" : v); return v.length > max ? v.slice(0, max) : v; }
-function asFinite(v){ var n = Number(v); return (typeof n === "number" && isFinite(n)) ? n : 0; }
-function asMoney(v){ var n = asFinite(v); if (n < 0) n = 0; if (n > 1e12) n = 1e12; return Math.round(n*100)/100; }
-function asCount(v){ var n = Math.floor(asFinite(v)); if (n < 0) n = 0; if (n > 1e9) n = 1e9; return n; }
-function asPct(v){ var n = asFinite(v); if (n < 0) n = 0; if (n > 100) n = 100; return Math.round(n*10)/10; }
-
-function sanitizeImport(raw){
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {ok:false, error:"Import must be a JSON object."};
-  var cap = asCount(raw.event && raw.event.capacity);
-  var out = {
-    event: {
-      name: asText(raw.event && raw.event.name, 200),
-      capacity: cap,
-      date: asText(raw.event && raw.event.date, 30)
-    },
-    costs: [], tiers: []
-  };
-  if (!Array.isArray(raw.costs)) return {ok:false, error:"Import is missing a valid costs list."};
-  if (!Array.isArray(raw.tiers)) return {ok:false, error:"Import is missing a valid tiers list."};
-  if (raw.costs.length > 50) return {ok:false, error:"Too many cost lines (max 50)."};
-  if (raw.tiers.length > MAX_TIERS) return {ok:false, error:"Too many tiers (max 4)."};
-  for (var i = 0; i < raw.costs.length; i++){
-    var c = raw.costs[i];
-    if (!c || typeof c !== "object") return {ok:false, error:"Cost line " + (i+1) + " is invalid."};
-    out.costs.push({id: nextId(), name: asText(c.name, 100), amount: asMoney(c.amount)});
-  }
-  var allocSum = 0;
-  for (var j = 0; j < raw.tiers.length; j++){
-    var t = raw.tiers[j];
-    if (!t || typeof t !== "object") return {ok:false, error:"Tier " + (j+1) + " is invalid."};
-    var a = asCount(t.allocation);
-    if (a > cap) return {ok:false, error:"Tier " + (j+1) + " allocation exceeds venue capacity (" + cap + ")."};
-    allocSum += a;
-    out.tiers.push({
-      id: nextId(),
-      name: asText(t.name, 60),
-      price: asMoney(t.price),
-      allocation: a,
-      sellThrough: asPct(t.sellThrough == null ? 100 : t.sellThrough)
-    });
-  }
-  if (allocSum > cap) return {ok:false, error:"Total allocation (" + allocSum + ") exceeds venue capacity (" + cap + ")."};
-  return {ok:true, state: out};
-}
-
-/* ---------- persistence ---------- */
-function save(){
-  if(window.__gSampleOn) return; /* sample mode: real data is snapshotted — never persist demo data */
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify({
-      event: state.event, costs: state.costs, tiers: state.tiers
-    }));
-  } catch (e) { /* storage full or blocked — app keeps working in memory */ }
-  if (demoNotice){ demoNotice = false; hideStatus(); }
-}
-function load(){
-  var raw = null;
-  try { raw = localStorage.getItem(LS_KEY); } catch (e) { return; }
-  if (!raw) return;
-  try {
-    var r = sanitizeImport(JSON.parse(raw));
-    if (r.ok) state = r.state;
-  } catch (e) { /* corrupt save — keep defaults */ }
-}
-
-/* ---------- math ---------- */
-function totalCosts(){ return state.costs.reduce(function(s,c){ return s + c.amount; }, 0); }
-function totalAlloc(){ return state.tiers.reduce(function(s,t){ return s + t.allocation; }, 0); }
-function fullRevenue(){ return state.tiers.reduce(function(s,t){ return s + t.price * t.allocation; }, 0); }
-function projRevenue(){ return state.tiers.reduce(function(s,t){ return s + t.price * t.allocation * t.sellThrough/100; }, 0); }
-function breakEven(){
-  var F = totalCosts(), A = totalAlloc(), R = fullRevenue();
-  if (F <= 0) return {kind:"zero-cost", text:"No fixed costs — you break even immediately.", note:"Sell tickets = pure profit."};
-  if (A <= 0 || R <= 0) return {kind:"impossible", text:"Break-even cannot be computed.", note:"Weighted average ticket price is $0 (free or unallocated tickets) — raise prices or allocate tickets first."};
-  var w = R / A;
-  var N = Math.ceil(F / w - 1e-9); /* epsilon guards float error like 65.0000000001 */
-  var pct = (N / A * 100);
-  var main = "Sell " + N + " of " + A + " allocated tickets (~" + (Math.round(pct*10)/10) + "%)";
-  var note = "Weighted average ticket price: " + usd.format(w) + ". Fixed costs: " + usd.format(F) + ".";
-  if (N > A) note += " Break-even needs more tickets than allocated — raise prices or increase allocation.";
-  return {kind:"ok", text:main, note:note};
-}
-
-/* ---------- rendering: event ---------- */
-var $ = function(id){ return document.getElementById(id); };
-var nameInput = $("event-name"), capInput = $("capacity"), dateInput = $("event-date");
-
-function renderEvent(){
-  nameInput.value = state.event.name;
-  capInput.value = String(state.event.capacity);
-  dateInput.value = state.event.date;
-}
-
-/* ---------- rendering: costs ---------- */
-function renderCosts(){
-  var list = $("cost-list"); clear(list);
-  state.costs.forEach(function(c, idx){
-    var row = el("div", {class:"cost-row"});
-    var r = el("div", {class:"row"});
-    var nameWrap = el("div");
-    nameWrap.appendChild(el("label", {for:"cost-name-"+c.id}, "Cost name"));
-    var ni = el("input", {type:"text", id:"cost-name-"+c.id, maxlength:"100", autocomplete:"off"});
-    ni.value = c.name;
-    ni.addEventListener("input", function(){ c.name = asText(ni.value, 100); save(); renderResults(); });
-    nameWrap.appendChild(ni);
-    var amtWrap = el("div");
-    amtWrap.appendChild(el("label", {for:"cost-amt-"+c.id}, "Amount ($)"));
-    var ai = el("input", {type:"number", id:"cost-amt-"+c.id, min:"0", step:"0.01", inputmode:"decimal"});
-    ai.value = c.amount === 0 ? "" : String(c.amount);
-    ai.placeholder = "0.00";
-    ai.addEventListener("input", function(){ c.amount = asMoney(ai.value); save(); renderResults(); });
-    amtWrap.appendChild(ai);
-    var btnWrap = el("div", {class:"shrink"});
-    var del = el("button", {type:"button", "aria-label":"Remove cost line " + (c.name || (idx+1))}, "Remove");
-    del.addEventListener("click", function(){
-      state.costs = state.costs.filter(function(x){ return x.id !== c.id; });
-      save(); renderCosts(); renderResults();
-      Sound.click();
-    });
-    btnWrap.appendChild(del);
-    r.appendChild(nameWrap); r.appendChild(amtWrap); r.appendChild(btnWrap);
-    row.appendChild(r); list.appendChild(row);
-  });
-  $("costs-total").textContent = usd.format(totalCosts());
-}
-
-/* ---------- rendering: tiers ---------- */
-function tierById(id){ return state.tiers.find(function(t){ return t.id === id; }); }
-
-function renderTiers(){
-  var list = $("tier-list"); clear(list);
-  state.tiers.forEach(function(t, idx){
-    var card = el("div", {class:"tier-card"});
-    var head = el("div", {class:"tier-head"});
-    head.appendChild(el("h3", null, "Tier " + (idx+1)));
-    var del = el("button", {type:"button", "aria-label":"Remove tier " + (t.name || (idx+1))}, "Remove");
-    del.addEventListener("click", function(){
-      state.tiers = state.tiers.filter(function(x){ return x.id !== t.id; });
-      save(); renderTiers(); renderResults();
-      Sound.click();
-    });
-    head.appendChild(del); card.appendChild(head);
-
-    card.appendChild(el("label", {for:"tier-name-"+t.id}, "Tier name"));
-    var nameSel = el("select", {id:"tier-name-"+t.id});
-    var customOpt = null;
-    NAME_PRESETS.forEach(function(p){
-      var o = el("option", {value:p}, p);
-      nameSel.appendChild(o);
-    });
-    customOpt = el("option", {value:"__custom"}, "Custom…");
-    nameSel.appendChild(customOpt);
-    var customWrap = el("div");
-    var customInput = el("input", {type:"text", id:"tier-custom-"+t.id, maxlength:"60", autocomplete:"off", placeholder:"Custom tier name"});
-    customWrap.appendChild(customInput);
-    if (NAME_PRESETS.indexOf(t.name) >= 0){
-      nameSel.value = t.name; customWrap.style.display = "none";
-    } else {
-      nameSel.value = "__custom"; customInput.value = t.name; customWrap.style.display = "";
-    }
-    nameSel.addEventListener("change", function(){
-      if (nameSel.value === "__custom"){ customWrap.style.display = ""; customInput.focus(); }
-      else { customWrap.style.display = "none"; t.name = nameSel.value; save(); renderResults(); }
-    });
-    customInput.addEventListener("input", function(){ t.name = asText(customInput.value, 60); save(); renderResults(); });
-    card.appendChild(nameSel); card.appendChild(customWrap);
-
-    var g = el("div", {class:"grid2"});
-    var pw = el("div");
-    pw.appendChild(el("label", {for:"tier-price-"+t.id}, "Price ($)"));
-    var pi = el("input", {type:"number", id:"tier-price-"+t.id, min:"0", step:"0.01", inputmode:"decimal"});
-    pi.value = t.price === 0 ? "" : String(t.price); pi.placeholder = "0.00";
-    pi.addEventListener("input", function(){ t.price = asMoney(pi.value); save(); renderResults(); });
-    pw.appendChild(pi);
-    var aw = el("div");
-    aw.appendChild(el("label", {for:"tier-alloc-"+t.id}, "Allocation (tickets)"));
-    var ai = el("input", {type:"number", id:"tier-alloc-"+t.id, min:"0", step:"1", inputmode:"numeric"});
-    ai.value = t.allocation === 0 ? "" : String(t.allocation); ai.placeholder = "0";
-    ai.addEventListener("input", function(){ t.allocation = asCount(ai.value); save(); renderTiersMeta(); renderResults(); });
-    aw.appendChild(ai);
-    g.appendChild(pw); g.appendChild(aw); card.appendChild(g);
-
-    var sr = el("div", {class:"sell-row"});
-    var sLabel = el("label", {for:"tier-sell-"+t.id, style:"flex:0 0 auto;margin:0"}, "Sell-through");
-    var slider = el("input", {type:"range", id:"tier-sell-"+t.id, min:"0", max:"100", step:"1"});
-    slider.value = String(Math.round(t.sellThrough));
-    slider.setAttribute("aria-valuetext", Math.round(t.sellThrough) + " percent");
-    var snum = el("input", {type:"number", id:"tier-sellnum-"+t.id, class:"sell-num", min:"0", max:"100", step:"1",
-      "aria-label":"Sell-through percent for " + (t.name || "tier " + (idx+1))});
-    snum.value = String(Math.round(t.sellThrough));
-    slider.addEventListener("input", function(){
-      t.sellThrough = asPct(slider.value);
-      snum.value = String(Math.round(t.sellThrough));
-      slider.setAttribute("aria-valuetext", Math.round(t.sellThrough) + " percent");
-      save(); renderResults();
-    });
-    snum.addEventListener("input", function(){
-      t.sellThrough = asPct(snum.value);
-      slider.value = String(Math.round(t.sellThrough));
-      slider.setAttribute("aria-valuetext", Math.round(t.sellThrough) + " percent");
-      save(); renderResults();
-    });
-    sr.appendChild(sLabel); sr.appendChild(slider); sr.appendChild(snum);
-    sr.appendChild(el("span", {class:"note", style:"flex:0 0 auto"}, "%"));
-    card.appendChild(sr);
-
-    list.appendChild(card);
-  });
-  var addBtn = $("add-tier");
-  addBtn.disabled = state.tiers.length >= MAX_TIERS;
-  renderTiersMeta();
-}
-
-function renderTiersMeta(){
-  var A = totalAlloc(), cap = state.event.capacity;
-  $("alloc-total").textContent = String(A);
-  $("alloc-cap").textContent = String(cap);
-  var err = $("alloc-error");
-  if (A > cap){
-    err.textContent = "Total allocation (" + A + ") exceeds venue capacity (" + cap + "). Reduce allocations.";
-    err.hidden = false;
-  } else { err.textContent = ""; err.hidden = true; }
-}
-
-/* ---------- rendering: results ---------- */
-function renderResults(){
-  var F = totalCosts(), A = totalAlloc(), R = fullRevenue();
-  var PR = projRevenue(), profit = PR - F;
-  $("kpi-costs").textContent = usd.format(F);
-  $("kpi-alloc").textContent = A + " ticket" + (A === 1 ? "" : "s");
-  $("kpi-rev").textContent = usd.format(R);
-  $("kpi-projrev").textContent = usd.format(PR);
-  var pe = $("kpi-profit");
-  pe.textContent = usd.format(profit);
-  pe.className = profit < 0 ? "profit-bad" : "profit-good";
-  var be = breakEven();
-  $("be-main").textContent = be.text;
-  $("be-note").textContent = be.note;
-  $("costs-total").textContent = usd.format(F);
-  renderTiersMeta();
-
-  var tb = $("tier-tbody"); clear(tb);
-  state.tiers.forEach(function(t){
-    var rev = t.price * t.allocation * t.sellThrough/100;
-    var tr = el("tr");
-    tr.appendChild(el("td", null, t.name || "(unnamed)"));
-    tr.appendChild(el("td", {class:"num"}, usd.format(t.price)));
-    tr.appendChild(el("td", {class:"num"}, String(t.allocation)));
-    tr.appendChild(el("td", {class:"num"}, (Math.round(t.sellThrough*10)/10) + "%"));
-    tr.appendChild(el("td", {class:"num"}, usd.format(rev)));
-    tb.appendChild(tr);
-  });
-
-  var cb = $("contrib-tbody"); clear(cb);
-  state.tiers.forEach(function(t){
-    var rev = t.price * t.allocation;
-    var tr = el("tr");
-    tr.appendChild(el("td", null, t.name || "(unnamed)"));
-    tr.appendChild(el("td", {class:"num"}, usd.format(rev)));
-    tr.appendChild(el("td", {class:"num"}, R > 0 ? (Math.round(rev/R*1000)/10) + "%" : "—"));
-    cb.appendChild(tr);
-  });
-
-  renderChart();
-  renderDonut();
-  renderGauge();
-  renderFunnel();
-  wireTierRows();
-}
-
-/* tier-table rows act as chart spotlights: click/keyboard jumps to the tier's bar.
-   Re-run after every renderChart() since the bars are rebuilt (stale refs go dead). */
-function wireTierRows(){
-  var rows = $("tier-tbody").querySelectorAll("tr");
-  var bars = $("chart-wrap").querySelectorAll(".tbar");
-  rows.forEach(function(row, i){
-    if (!bars[i]) return;
-    row.classList.add("trow");
-    row.setAttribute("tabindex", "0");
-    row.setAttribute("role", "button");
-    row.setAttribute("aria-label", "Spotlight " +
-      (state.tiers[i] && state.tiers[i].name ? state.tiers[i].name : ("Tier " + (i+1))) +
-      " in the revenue chart");
-    (function(b){
-      function act(){
-        if (b.dispatchEvent) b.dispatchEvent(new Event("click", {bubbles: true}));
-      }
-      row.addEventListener("click", act);
-      row.addEventListener("keydown", function(ev){
-        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
-      });
-    })(bars[i]);
-  });
-}
-
-/* ---------- SVG bar chart (hand-rolled with DOM APIs only) ---------- */
-function renderChart(){
-  var wrap = $("chart-wrap"); clear(wrap);
-  var W = 640, H = 260, padL = 64, padR = 16, padT = 16, padB = 56;
-  var svg = svgEl("svg", {viewBox:"0 0 " + W + " " + H, width:"100%", role:"img",
-    "aria-label":"Bar chart of projected revenue per ticket tier"});
-  wrap.appendChild(svg);
-  if (state.tiers.length === 0){
-    svg.appendChild(svgEl("text", {x:W/2, y:H/2, "text-anchor":"middle"}, "Add a tier to see the chart"));
+/* Donut: incident severity composition. Clicking a segment spotlights it and
+   lists the incidents of that severity; click again to restore. */
+var SEV_DONUT = [
+  { key: 'minor', style: 'var(--accent)', label: 'Minor' },
+  { key: 'moderate', style: 'var(--warn)', label: 'Moderate' },
+  { key: 'major', style: 'var(--danger)', label: 'Major' }
+];
+function renderSevDonut() {
+  var wrap = $('#sev-donut');
+  if (!wrap) return;
+  clearEl(wrap);
+  var counts = { minor: 0, moderate: 0, major: 0 };
+  state.incidents.forEach(function (x) { if (counts[x.severity] !== undefined) counts[x.severity]++; });
+  var total = counts.minor + counts.moderate + counts.major;
+  var W = 320, H = 200, cx = 160, cy = 96, R = 70, SW = 34;
+  var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, width: '100%', role: 'img',
+    'aria-label': 'Donut chart of incident severity mix' });
+  if (total === 0) {
+    svg.appendChild(svgEl('text', { x: W / 2, y: H / 2, 'text-anchor': 'middle', class: 'chart-sub' },
+      'No incidents logged yet'));
+    wrap.appendChild(svg);
     return;
   }
-  var revs = state.tiers.map(function(t){ return t.price * t.allocation * t.sellThrough/100; });
-  var max = Math.max.apply(null, revs.concat([0]));
-  var plotW = W - padL - padR, plotH = H - padT - padB;
-  var baseline = padT + plotH;
-  /* axes */
-  svg.appendChild(svgEl("line", {x1:padL, y1:padT, x2:padL, y2:baseline, stroke:"currentColor", "stroke-width":"1", opacity:"0.4"}));
-  svg.appendChild(svgEl("line", {x1:padL, y1:baseline, x2:padL+plotW, y2:baseline, stroke:"currentColor", "stroke-width":"1", opacity:"0.4"}));
-  var n = state.tiers.length;
-  var slot = plotW / n, bw = Math.min(72, slot * 0.6);
-  var detail = el("div", {class: "chart-detail"});
-  detail.setAttribute("aria-live", "polite");
-  state.tiers.forEach(function(t, i){
-    var cx = padL + slot * (i + 0.5);
-    var h = max > 0 ? (revs[i] / max) * plotH : 0;
-    var y = baseline - h;
-    var accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#0b6e4f";
-    var name = t.name || ("Tier " + (i+1));
-    var bar = svgEl("rect", {
-      x: (cx - bw/2).toFixed(1), y: y.toFixed(1), width: bw.toFixed(1),
-      height: Math.max(h, 2).toFixed(1), fill: accent, rx: "4",
-      "class": "tbar", tabindex: "0", role: "button", "aria-pressed": "false",
-      "aria-label": name + ": " + usd.format(revs[i]) + " projected revenue. Activate to spotlight."
-    });
-    (function(b, nm, rev, tier){
-      function act(){
-        var was = b.classList.contains("sel");
-        var sels = wrap.querySelectorAll(".tbar.sel");
-        for(var k = 0; k < sels.length; k++){ sels[k].classList.remove("sel"); sels[k].setAttribute("aria-pressed", "false"); }
-        if(!was){
-          b.classList.add("sel");
-          b.setAttribute("aria-pressed", "true");
-          clear(detail);
-          detail.appendChild(el("strong", {}, nm + ": "));
-          detail.appendChild(document.createTextNode(
-            usd.format(tier.price) + " \u00d7 " + tier.allocation + " tickets \u00d7 " +
-            Math.round(tier.sellThrough) + "% sold = " + usd.format(rev) + " projected revenue."));
-          Sound.select();
-        } else {
-          clear(detail);
-          Sound.click();
-        }
-      }
-      b.addEventListener("click", act);
-      b.addEventListener("keydown", function(ev){
-        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
-      });
-    })(bar, name, revs[i], t);
-    svg.appendChild(bar);
-    var lbl = svgEl("text", {x:cx.toFixed(1), y:(y - 8).toFixed(1), "text-anchor":"middle", "font-weight":"bold"},
-      usd.format(revs[i]));
-    svg.appendChild(lbl);
-    var nm = svgEl("text", {x:cx.toFixed(1), y:(baseline + 20).toFixed(1), "text-anchor":"middle"}, name);
-    svg.appendChild(nm);
-    var pct = svgEl("text", {x:cx.toFixed(1), y:(baseline + 38).toFixed(1), "text-anchor":"middle"},
-      Math.round(t.sellThrough) + "% sold");
-    svg.appendChild(pct);
-  });
-  wrap.appendChild(detail);
-  if (max === 0){
-    svg.appendChild(svgEl("text", {x:padL + plotW/2, y:padT + plotH/2, "text-anchor":"middle"}, "No revenue yet — set prices and allocations"));
-  }
-}
-
-/* ---------- donut: revenue share per tier (full allocation) ---------- */
-var DONUT_COLORS = ["#4f46e5", "#0ea5e9", "#10b981", "#f59e0b", "#ef4444", "#a855f7"];
-function renderDonut(){
-  var wrap = $("donut-wrap"); if(!wrap) return; clear(wrap);
-  var items = [];
-  state.tiers.forEach(function(t, i){
-    var rev = t.price * t.allocation;
-    if (rev > 0) items.push({name: t.name || ("Tier " + (i+1)), rev: rev,
-      color: DONUT_COLORS[i % DONUT_COLORS.length], tier: t});
-  });
-  var total = items.reduce(function(s, x){ return s + x.rev; }, 0);
-  var W = 320, H = 210, cx = 160, cy = 100, R = 72, SW = 36;
-  var svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, width: "100%", role: "img",
-    "aria-label": "Donut chart of revenue share by tier at full allocation"});
-  if (items.length === 0){
-    svg.appendChild(svgEl("text", {x: W/2, y: H/2, "text-anchor": "middle", class: "chart-sub"},
-      "No revenue yet — set prices and allocations"));
-    wrap.appendChild(svg); return;
-  }
   var C = 2 * Math.PI * R, acc = 0;
-  svg.appendChild(svgEl("circle", {cx: cx, cy: cy, r: R, fill: "none",
-    stroke: "var(--border)", "stroke-width": SW, opacity: "0.4"}));
-  var detail = el("div", {class: "chart-detail"});
-  detail.setAttribute("aria-live", "polite");
-  var segEls = []; /* ring segments, for dim-the-rest spotlight */
-  items.forEach(function(it){
-    var frac = it.rev / total;
-    var seg = svgEl("circle", {
-      cx: cx, cy: cy, r: R, fill: "none", stroke: it.color, "stroke-width": SW,
-      "stroke-dasharray": (frac * C).toFixed(2) + " " + C.toFixed(2),
-      "stroke-dashoffset": (-acc * C).toFixed(2),
-      transform: "rotate(-90 " + cx + " " + cy + ")",
-      "class": "seg", tabindex: "0", role: "button", "aria-pressed": "false",
-      "aria-label": it.name + ": " + (Math.round(frac * 1000) / 10) +
-        "% of revenue (" + usd.format(it.rev) + "). Activate to spotlight."
+  svg.appendChild(svgEl('circle', { cx: cx, cy: cy, r: R, fill: 'none',
+    stroke: 'var(--border)', 'stroke-width': SW, opacity: '0.4' }));
+  var detail = el('div', 'chart-detail');
+  detail.setAttribute('aria-live', 'polite');
+  var drawn = []; /* ring segments, for dim-the-rest spotlight */
+  SEV_DONUT.forEach(function (s) {
+    var n = counts[s.key];
+    if (n === 0) return;
+    var frac = n / total;
+    var seg = svgEl('circle', {
+      cx: cx, cy: cy, r: R, fill: 'none', 'stroke-width': SW,
+      'stroke-dasharray': (frac * C).toFixed(2) + ' ' + C.toFixed(2),
+      'stroke-dashoffset': (-acc * C).toFixed(2),
+      transform: 'rotate(-90 ' + cx + ' ' + cy + ')',
+      class: 'seg', tabindex: '0', role: 'button', 'aria-pressed': 'false',
+      'aria-label': s.label + ': ' + n + ' of ' + total + ' incidents (' +
+        (Math.round(frac * 1000) / 10) + '%). Activate to spotlight.'
     });
+    seg.style.stroke = s.style;
     acc += frac;
-    (function(sg, item, fr){
-      function act(){
-        var was = sg.classList.contains("sel");
-        var sels = wrap.querySelectorAll(".seg.sel");
-        for (var k = 0; k < sels.length; k++){
-          sels[k].classList.remove("sel");
-          sels[k].setAttribute("aria-pressed", "false");
+    (function (sg, sev, cnt, fr) {
+      function act() {
+        var was = sg.classList.contains('sel');
+        var sels = wrap.querySelectorAll('.seg.sel');
+        for (var k = 0; k < sels.length; k++) {
+          sels[k].classList.remove('sel');
+          sels[k].setAttribute('aria-pressed', 'false');
         }
-        if (!was){
-          sg.classList.add("sel");
-          sg.setAttribute("aria-pressed", "true");
+        if (!was) {
+          sg.classList.add('sel');
+          sg.setAttribute('aria-pressed', 'true');
           /* spotlight: dim the rest of the ring */
-          for (var d = 0; d < segEls.length; d++){
-            if (segEls[d] === sg) segEls[d].removeAttribute("opacity");
-            else segEls[d].setAttribute("opacity", "0.3");
+          for (var d = 0; d < drawn.length; d++) {
+            if (drawn[d] === sg) drawn[d].removeAttribute('opacity');
+            else drawn[d].setAttribute('opacity', '0.3');
           }
           /* swap the center numbers to this segment's values */
-          if (centerMain) centerMain.textContent = usd.format(item.rev);
-          if (centerSub) centerSub.textContent = item.name.toUpperCase();
-          clear(detail);
-          detail.appendChild(el("strong", {}, item.name + ": "));
-          detail.appendChild(document.createTextNode(
-            usd.format(item.rev) + " of " + usd.format(total) +
-            " (" + (Math.round(fr * 1000) / 10) + "%) — " +
-            usd.format(item.tier.price) + " × " + item.tier.allocation + " tickets."));
+          if (cNum) cNum.textContent = String(cnt);
+          if (cLbl) cLbl.textContent = sev.label.toUpperCase();
+          clearEl(detail);
+          detail.appendChild(el('strong', null, sev.label + ': '));
+          var names = state.incidents.filter(function (x) { return x.severity === sev.key; })
+            .map(function (x) { return (x.room ? x.room + ' — ' : '') + x.item; });
+          detail.appendChild(document.createTextNode(cnt + ' of ' + total + ' (' +
+            (Math.round(fr * 1000) / 10) + '%) — ' + names.join('; ') + '.'));
           Sound.select();
         } else {
-          for (var u = 0; u < segEls.length; u++) segEls[u].removeAttribute("opacity");
-          if (centerMain) centerMain.textContent = usd.format(total);
-          if (centerSub) centerSub.textContent = "TOTAL REVENUE";
-          clear(detail); Sound.click();
+          for (var u = 0; u < drawn.length; u++) drawn[u].removeAttribute('opacity');
+          if (cNum) cNum.textContent = String(total);
+          if (cLbl) cLbl.textContent = 'INCIDENTS';
+          clearEl(detail); Sound.click();
         }
       }
-      sg.addEventListener("click", act);
-      sg.addEventListener("keydown", function(ev){
-        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      sg.addEventListener('click', act);
+      sg.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); }
       });
-    })(seg, it, frac);
+    })(seg, s, n, frac);
     svg.appendChild(seg);
-    segEls.push(seg);
+    drawn.push(seg);
   });
-  var centerMain = svgEl("text", {x: cx, y: cy - 2, "text-anchor": "middle",
-    "font-size": "19", "font-weight": "800"}, usd.format(total));
-  var centerSub = svgEl("text", {x: cx, y: cy + 20, "text-anchor": "middle",
-    "font-size": "11", class: "chart-sub"}, "TOTAL REVENUE");
-  svg.appendChild(centerMain);
-  svg.appendChild(centerSub);
+  var cNum = svgEl('text', { x: cx, y: cy - 2, 'text-anchor': 'middle',
+    'font-size': '22', 'font-weight': '800' }, String(total));
+  var cLbl = svgEl('text', { x: cx, y: cy + 20, 'text-anchor': 'middle',
+    'font-size': '11', class: 'chart-sub' }, 'INCIDENTS');
+  svg.appendChild(cNum);
+  svg.appendChild(cLbl);
   wrap.appendChild(svg);
-  var leg = el("div", {class: "donut-legend"});
-  items.forEach(function(it, idx){
-    var row = el("div", {class: "donut-leg-row"});
-    /* legend rows are tappable: they spotlight the matching ring segment */
-    row.setAttribute("role", "button");
-    row.setAttribute("tabindex", "0");
-    row.setAttribute("aria-label", it.name + ": " + (Math.round(it.rev / total * 1000) / 10) +
-      "% of revenue. Activate to spotlight.");
-    (function(i){
-      function legAct(){
-        var sg = segEls[i];
-        if (sg) sg.dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: true}));
-      }
-      row.addEventListener("click", legAct);
-      row.addEventListener("keydown", function(ev){
-        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); legAct(); }
-      });
-    })(idx);
-    var dot = el("span", {class: "donut-dot"});
-    dot.style.background = it.color;
+  var leg = el('div', 'donut-legend');
+  SEV_DONUT.forEach(function (s) {
+    var n = counts[s.key];
+    if (n === 0) return;
+    var row = el('div', 'donut-leg-row');
+    var dot = el('span', 'donut-dot');
+    dot.style.background = s.style;
     row.appendChild(dot);
-    row.appendChild(el("span", {class: "donut-name"}, it.name));
-    row.appendChild(el("strong", {}, (Math.round(it.rev / total * 1000) / 10) + "%"));
+    row.appendChild(el('span', 'donut-name', s.label));
+    row.appendChild(el('strong', null, n + ' (' + (Math.round(n / total * 1000) / 10) + '%)'));
     leg.appendChild(row);
   });
   wrap.appendChild(leg);
   wrap.appendChild(detail);
 }
 
-/* ---------- gauge: break-even progress vs allocation ---------- */
-function renderGauge(){
-  var wrap = $("gauge-wrap"); if(!wrap) return; clear(wrap);
-  var F = totalCosts(), A = totalAlloc(), R = fullRevenue();
-  var W = 300, H = 172, cx = 150, cy = 142, r = 104;
-  var svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, width: "100%", role: "img",
-    "aria-label": "Break-even gauge"});
-  function pt(pct){
-    var a = Math.PI * (1 - pct / 100);
-    return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
-  }
-  var p0 = pt(0), p100 = pt(100);
-  svg.appendChild(svgEl("path", {
-    d: "M " + p0[0].toFixed(1) + " " + p0[1].toFixed(1) +
-       " A " + r + " " + r + " 0 0 1 " + p100[0].toFixed(1) + " " + p100[1].toFixed(1),
-    fill: "none", stroke: "var(--border)", "stroke-width": "20", "stroke-linecap": "round"}));
-  if (!(F > 0 && A > 0 && R > 0)){
-    var msg = F <= 0 ? "No fixed costs — break-even is immediate."
-                     : "Set prices and allocations to compute break-even.";
-    svg.appendChild(svgEl("text", {x: cx, y: cy - 44, "text-anchor": "middle",
-      "font-size": "13", class: "chart-sub"}, msg));
-    wrap.appendChild(svg); return;
-  }
-  var w = R / A, N = Math.ceil(F / w - 1e-9), pct = N / A * 100;
-  var pegged = pct > 100, show = Math.min(pct, 100);
-  var pe = pt(show);
-  svg.appendChild(svgEl("path", {
-    d: "M " + p0[0].toFixed(1) + " " + p0[1].toFixed(1) +
-       " A " + r + " " + r + " 0 " + (show > 50 ? 1 : 0) + " 1 " +
-       pe[0].toFixed(1) + " " + pe[1].toFixed(1),
-    fill: "none", stroke: pegged ? "#dc2626" : "#4f46e5",
-    "stroke-width": "20", "stroke-linecap": "round"}));
-  var na = Math.PI * (1 - show / 100);
-  var nx = cx + (r - 16) * Math.cos(na), ny = cy - (r - 16) * Math.sin(na);
-  svg.appendChild(svgEl("line", {x1: cx, y1: cy, x2: nx.toFixed(1), y2: ny.toFixed(1),
-    stroke: "var(--fg)", "stroke-width": "4", "stroke-linecap": "round"}));
-  svg.appendChild(svgEl("circle", {cx: cx, cy: cy, r: 8, fill: "var(--fg)"}));
-  var label = (Math.round(pct * 10) / 10) + "%";
-  var main = svgEl("text", {x: cx, y: cy - 36, "text-anchor": "middle",
-    "font-size": "24", "font-weight": "800"}, label);
-  svg.appendChild(main);
-  svg.appendChild(svgEl("text", {x: cx, y: cy - 16, "text-anchor": "middle",
-    "font-size": "11", class: "chart-sub"}, "OF ALLOCATION TO BREAK EVEN"));
-  wrap.appendChild(svg);
-  var detail = el("div", {class: "chart-detail"});
-  detail.setAttribute("aria-live", "polite");
-  wrap.appendChild(detail);
-  /* the gauge is a single value: click/keyboard toggles the readout between % and ticket count */
-  var modePct = true;
-  function act(){
-    modePct = !modePct;
-    main.textContent = modePct ? label : ("Sell " + N + " of " + A);
-    clear(detail);
-    detail.appendChild(el("strong", {}, "Break-even: "));
-    detail.appendChild(document.createTextNode(
-      "Sell " + N + " of " + A + " allocated tickets (" +
-      (Math.round(pct * 10) / 10) + "%) to cover " + usd.format(F) +
-      " in fixed costs." +
-      (pegged ? " Needs more tickets than allocated — raise prices or increase allocation." : "")));
-    Sound.select();
-  }
-  svg.setAttribute("tabindex", "0");
-  svg.setAttribute("role", "button");
-  svg.setAttribute("aria-pressed", "false");
-  svg.setAttribute("aria-label", "Break-even gauge: " + label +
-    " of allocation. Activate to toggle the ticket-count view.");
-  svg.addEventListener("click", act);
-  svg.addEventListener("keydown", function(ev){
-    if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+/* Process timeline: the turnover journey (started -> rooms -> complete).
+   Steps are keyboard/mouse/touch operable; activating one expands its detail. */
+function renderTimeline() {
+  var host = $('#tl-steps');
+  if (!host) return;
+  host.textContent = '';
+  var roomsDone = 0, remaining = [];
+  state.rooms.forEach(function (r) {
+    var rc = roomCounts(r);
+    if (rc.total > 0 && rc.done === rc.total) roomsDone++;
+    else if (rc.total > rc.done) remaining.push(r.name + ' (' + rc.done + '/' + rc.total + ')');
   });
-}
-
-/* ---------- funnel: capacity -> allocated -> projected sold ---------- */
-function renderFunnel(){
-  var wrap = $("funnel-wrap"); if(!wrap) return; clear(wrap);
-  var cap = state.event.capacity;
-  var alloc = totalAlloc();
-  var sold = Math.round(state.tiers.reduce(function(s, t){
-    return s + t.allocation * t.sellThrough / 100;
-  }, 0));
-  var stages = [
-    {label: "Venue capacity", val: cap, color: "#4f46e5"},
-    {label: "Allocated", val: alloc, color: "#7c3aed"},
-    {label: "Projected sold", val: sold, color: "#0ea5e9"}
-  ];
-  var max = Math.max(cap, alloc, sold, 1);
-  var fn = el("div", {class: "funnel"});
-  var detail = el("div", {class: "chart-detail"});
-  detail.setAttribute("aria-live", "polite");
-  stages.forEach(function(st, idx){
-    var w = Math.max(8, Math.round(st.val / max * 100));
-    var row = el("button", {class: "funnel-row", type: "button"});
-    row.style.width = w + "%";
-    row.style.background = st.color;
-    row.setAttribute("aria-pressed", "false");
-    row.setAttribute("aria-label", st.label + ": " + st.val + " tickets. Activate for details.");
-    row.appendChild(el("span", {}, st.label));
-    row.appendChild(el("strong", {}, String(st.val)));
-    (function(r, s, i){
-      function act(){
-        var was = r.classList.contains("sel");
-        var sels = fn.querySelectorAll(".funnel-row.sel");
-        for (var k = 0; k < sels.length; k++){
-          sels[k].classList.remove("sel");
-          sels[k].setAttribute("aria-pressed", "false");
-        }
-        if (!was){
-          r.classList.add("sel");
-          r.setAttribute("aria-pressed", "true");
-          clear(detail);
-          detail.appendChild(el("strong", {}, s.label + ": "));
-          var extra = i === 0 ? " total seats in the venue." : (function(){
-            var prev = stages[i - 1].val;
-            return prev > 0 ? " — " + (Math.round(s.val / prev * 1000) / 10) +
-              "% of " + stages[i - 1].label.toLowerCase() + "." : ".";
-          })();
-          detail.appendChild(document.createTextNode(s.val + " tickets" + extra));
-          Sound.select();
-        } else { clear(detail); Sound.click(); }
-      }
-      r.addEventListener("click", act);
-    })(row, st, idx);
-    fn.appendChild(row);
-  });
-  wrap.appendChild(fn);
-  wrap.appendChild(detail);
-}
-
-/* ---------- status ---------- */
-/* The "Demo data loaded" notice describes a one-time event. It must not
-   linger once the user mutates the data, or it becomes a stale lie. Any
-   save() after the demo notice clears it; showing any other status
-   supersedes it. */
-var demoNotice = false;
-function showStatus(kind, msg){
-  demoNotice = false;
-  var s = $("status");
-  s.className = "status " + kind;
-  s.textContent = msg;
-  s.hidden = false;
-  if(kind === "error") Sound.error();
-  else if(kind === "ok") Sound.success();
-}
-function hideStatus(){ var s = $("status"); s.hidden = true; s.textContent = ""; }
-
-/* ---------- export / import ---------- */
-function exportJSON(){
-  var payload = JSON.stringify({app:"ticketmath", version:1, event:state.event, costs:state.costs, tiers:state.tiers}, null, 2);
-  var blob = new Blob([payload], {type:"application/json"});
-  var a = el("a", {href: URL.createObjectURL(blob), download:"ticketmath-export.json"});
-  document.body.appendChild(a); a.click();
-  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  showStatus("ok", "Exported ticketmath-export.json");
-}
-
-function importFile(file){
-  var reader = new FileReader();
-  reader.onload = function(){
-    try {
-      var r = sanitizeImport(JSON.parse(reader.result));
-      if (!r.ok){ showStatus("error", "Import rejected: " + r.error); return; }
-      state = r.state;
-      save(); renderAll();
-      showStatus("ok", "Import successful.");
-    } catch (e){ showStatus("error", "Import rejected: not valid JSON."); }
-  };
-  reader.onerror = function(){ showStatus("error", "Could not read the file."); };
-  reader.readAsText(file);
-}
-
-/* ---------- demo / clear ---------- */
-function loadDemo(){
-  state = {
-    event: {name:"Spring Benefit Concert", capacity:150, date:""},
-    costs: [
-      {id: nextId(), name:"Venue rental", amount:2000},
-      {id: nextId(), name:"Marketing", amount:800}
-    ],
-    tiers: [
-      {id: nextId(), name:"Early Bird", price:25, allocation:40, sellThrough:100},
-      {id: nextId(), name:"General", price:40, allocation:80, sellThrough:100},
-      {id: nextId(), name:"VIP", price:75, allocation:30, sellThrough:100}
-    ]
-  };
-  save(); renderAll();
-  showStatus("ok", "Demo data loaded (150-cap venue, 3 tiers).");
-  demoNotice = true;
-}
-function clearAll(){
-  if (!window.confirm("Clear everything and reset TicketMath to defaults?")) return;
-  try { localStorage.removeItem(LS_KEY); } catch (e) {}
-  state = defaultState();
-  save(); renderAll(); hideStatus();
-  Sound.success();
-}
-
-/* ---------- subtle sounds (Web Audio, no files, offline) ---------- */
-var Sound = (function(){
-  var KEY = "ticketmath.sound", on = true, ctx = null;
-  try{ if(window.localStorage.getItem(KEY) === "off") on = false; }catch(e){}
-  function ac(){
-    try{
-      if(!ctx){
-        var AC = window.AudioContext || window.webkitAudioContext;
-        if(!AC) return null;
-        ctx = new AC();
-      }
-      if(ctx.state === "suspended") ctx.resume();
-      return ctx;
-    }catch(e){ return null; }
-  }
-  function tone(freq, dur, type, vol, delay){
-    var c = ac(); if(!c) return;
-    try{
-      var t = c.currentTime + (delay || 0);
-      var o = c.createOscillator(), g = c.createGain();
-      o.type = type || "sine"; o.frequency.value = freq;
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      o.connect(g); g.connect(c.destination);
-      o.start(t); o.stop(t + dur + 0.05);
-    }catch(e){}
-  }
-  return {
-    isOn: function(){ return on; },
-    toggle: function(){
-      on = !on;
-      try{ window.localStorage.setItem(KEY, on ? "on" : "off"); }catch(e){}
-      return on;
+  var steps = [
+    {
+      st: state.startedAt ? 'done' : 'now',
+      time: state.startedAt ? fmtDateTime(state.startedAt) : 'NOT STARTED',
+      title: state.startedAt ? 'Turnover started' : 'Start the turnover',
+      detail: state.startedAt
+        ? 'Property: ' + (state.property || '(not set)') + '. Started ' + fmtDateTime(state.startedAt) + '.'
+        : 'Tap "Start turnover" in the progress card when you arrive on site.'
     },
-    click: function(){ if(on) tone(520, 0.06, "sine", 0.045); },
-    select: function(){ if(on){ tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
-    success: function(){ if(on){ tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
-    error: function(){ if(on) tone(170, 0.16, "sawtooth", 0.045); },
-    toggleTheme: function(){ if(on) tone(440, 0.06, "triangle", 0.05); }
-  };
-})();
-/* Sound button stays white in all states (reference spec 2026-09-21);
-   paint only swaps the icon + aria (no accent fills). */
-function paintSoundToggle(){
-  var btn = $("sound-toggle");
-  if(!btn) return;
-  var on = Sound.isOn();
-  btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
-  btn.setAttribute("aria-pressed", on ? "true" : "false");
-  btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
-  btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
-}
-function bindSoundToggle(){
-  var btn = $("sound-toggle");
-  if(!btn) return;
-  btn.addEventListener("click", function(){ Sound.toggle(); paintSoundToggle(); Sound.click(); });
-  paintSoundToggle();
-}
-
-/* ---------- theme ---------- */
-function applyTheme(t){
-  document.documentElement.setAttribute("data-theme", t);
-  var btn = $("theme-toggle");
-  var dark = t === "dark";
-  var label = dark ? "Switch to light mode" : "Switch to dark mode";
-  btn.setAttribute("aria-label", label);
-  btn.title = label;
-  btn.setAttribute("aria-pressed", dark ? "true" : "false");
-  btn.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
-  try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
-  if (typeof paintSoundToggle === "function") paintSoundToggle();
-}
-function initTheme(){
-  var saved = null;
-  try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
-  if (saved === "dark" || saved === "light") applyTheme(saved);
-  else applyTheme(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  renderResults(); /* re-render visuals incl. tier-row wiring */
-}
-
-/* ---------- render all / init ---------- */
-/* KPI stat boxes: click for a breakdown; click again or Esc restores. */
-function wireKpiStats(){
-  var defs = [
-    {dd:"kpi-costs", label:"Total fixed costs", detail:function(){
-      var lines = state.costs.map(function(c){ return (c.name || "Unnamed") + " " + usd.format(c.amount); });
-      return state.costs.length + " cost line" + (state.costs.length === 1 ? "" : "s") + ": " +
-        (lines.length ? lines.join(" \u00B7 ") : "none yet") + " = " + usd.format(totalCosts()) + " total.";
-    }},
-    {dd:"kpi-alloc", label:"Total allocation", detail:function(){
-      var parts = state.tiers.map(function(t){ return (t.name || "Tier") + " \u00D7" + t.allocation; });
-      return state.tiers.length + " tier" + (state.tiers.length === 1 ? "" : "s") + ": " +
-        (parts.length ? parts.join(" \u00B7 ") : "none yet") + " = " + totalAlloc() + " tickets.";
-    }},
-    {dd:"kpi-rev", label:"Full-house revenue", detail:function(){
-      var revs = state.tiers.map(function(t){ return t.price * t.allocation; });
-      var R = revs.reduce(function(s, x){ return s + x; }, 0);
-      var parts = state.tiers.map(function(t, i){
-        var pc = R > 0 ? Math.round(revs[i] / R * 1000) / 10 : 0;
-        return (t.name || "Tier") + " " + usd.format(revs[i]) + " (" + pc + "%)";
-      });
-      return "At full allocation: " + (parts.length ? parts.join(" \u00B7 ") : "no tiers yet") + ".";
-    }},
-    {dd:"kpi-projrev", label:"Projected revenue", detail:function(){
-      var parts = state.tiers.map(function(t){
-        return (t.name || "Tier") + " " + usd.format(t.price * t.allocation * t.sellThrough / 100) + " @ " + t.sellThrough + "%";
-      });
-      return "Sell-through scenario: " + (parts.length ? parts.join(" \u00B7 ") : "no tiers yet") + ".";
-    }},
-    {dd:"kpi-profit", label:"Projected profit / loss", detail:function(){
-      var F = totalCosts(), PR = projRevenue(), p = PR - F;
-      var m = PR > 0 ? Math.round(p / PR * 1000) / 10 : 0;
-      return "Projected revenue " + usd.format(PR) + " \u2212 fixed costs " + usd.format(F) +
-        " = " + usd.format(p) + " (" + m + "% margin).";
-    }}
-  ];
-  defs.forEach(function(d){
-    var dd = $(d.dd); if (!dd) return;
-    var stat = dd.closest ? dd.closest(".stat") : dd.parentNode;
-    if (!stat || stat.__kpiWired) return;
-    stat.__kpiWired = true;
-    var dl = stat.parentNode;
-    var det = dl.__kpiDetail;
-    if (!det){
-      det = document.createElement("div");
-      det.className = "chart-detail";
-      det.setAttribute("aria-live", "polite");
-      dl.parentNode.insertBefore(det, dl.nextSibling);
-      dl.__kpiDetail = det;
+    {
+      st: state.completedAt ? 'done' : (state.startedAt ? 'now' : 'todo'),
+      time: roomsDone + ' of ' + state.rooms.length + ' rooms',
+      title: 'Rooms complete',
+      detail: remaining.length
+        ? 'Still open: ' + remaining.join('; ') + '.'
+        : (state.rooms.length ? 'Every room is fully checked off.' : 'Add rooms below to begin the checklist.')
+    },
+    {
+      st: state.completedAt ? 'done' : 'todo',
+      time: state.completedAt ? fmtDateTime(state.completedAt) : 'PENDING',
+      title: 'Turnover complete',
+      detail: state.completedAt
+        ? 'Finished ' + fmtDateTime(state.completedAt) + ' — ' +
+          fmtDur(state.completedAt - (state.startedAt || state.completedAt)) + ' after starting.'
+        : 'Completes automatically when every task is checked off.'
     }
-    stat.setAttribute("role", "button");
-    stat.setAttribute("tabindex", "0");
-    stat.setAttribute("aria-pressed", "false");
-    stat.setAttribute("aria-label", d.label + ". Activate for a breakdown.");
-    (function(st, dt, fn){
-      function act(){
-        var was = st.classList.contains("sel");
-        var sels = document.querySelectorAll(".kpi .stat.sel");
-        for (var k = 0; k < sels.length; k++){
-          sels[k].classList.remove("sel");
-          sels[k].setAttribute("aria-pressed", "false");
-        }
-        if (was){ dt.textContent = ""; Sound.click(); }
-        else {
-          st.classList.add("sel");
-          st.setAttribute("aria-pressed", "true");
-          dt.textContent = fn();
-          Sound.select();
-        }
-      }
-      st.addEventListener("click", act);
-      st.addEventListener("keydown", function(ev){
-        if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
-      });
-    })(stat, det, d.detail);
+  ];
+  steps.forEach(function (s) {
+    var step = el('div', 'tl-step' + (s.st === 'now' ? ' is-now' : ''));
+    step.setAttribute('role', 'button');
+    step.setAttribute('tabindex', '0');
+    step.setAttribute('aria-expanded', 'false');
+    step.setAttribute('aria-label', s.title + ' — ' + s.time + '. Activate for details.');
+    var rail = el('div', 'tl-rail');
+    rail.appendChild(el('i', 'tl-dot ' + s.st));
+    var body = el('div', 'tl-body');
+    body.appendChild(el('div', 'tl-time', s.time));
+    body.appendChild(el('b', null, s.title));
+    var more = el('p', null, s.detail);
+    more.hidden = true;
+    body.appendChild(more);
+    step.appendChild(rail);
+    step.appendChild(body);
+    function act() {
+      var open = !more.hidden;
+      more.hidden = open;
+      step.setAttribute('aria-expanded', open ? 'false' : 'true');
+      Sound.click();
+    }
+    step.addEventListener('click', act);
+    step.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); }
+    });
+    host.appendChild(step);
   });
 }
-function renderAll(){
-  renderEvent(); renderCosts(); renderTiers(); renderResults(); wireKpiStats();
+
+/* Horizontal bars: logged timer time per room, ranked. Clicking a bar
+   spotlights it and swaps the detail line to that room; click again to restore. */
+function renderTimeBars() {
+  var host = $('#time-bars');
+  if (!host) return;
+  host.textContent = '';
+  var card = $('#time-bars-card');
+  if (card) card.hidden = state.rooms.length === 0;
+  var detail = $('#time-bars-detail');
+  if (!detail) {
+    detail = el('div', 'chart-detail');
+    detail.id = 'time-bars-detail';
+    detail.setAttribute('aria-live', 'polite');
+    host.parentNode.insertBefore(detail, host.nextSibling);
+  }
+  detail.textContent = '';
+  var rows = state.rooms.map(function (r) {
+    var rc = roomCounts(r);
+    return { name: r.name, ms: roomElapsed(r), done: rc.done, total: rc.total };
+  }).filter(function (x) { return x.ms > 0; })
+    .sort(function (a, b) { return b.ms - a.ms; });
+  if (rows.length === 0) {
+    host.appendChild(el('p', 'empty',
+      'No timer time logged yet — start a room timer to compare time per room.'));
+    return;
+  }
+  var max = rows[0].ms;
+  rows.forEach(function (x) {
+    var row = el('div', 'hbar-row');
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('aria-pressed', 'false');
+    row.setAttribute('aria-label', x.name + ': ' + fmtDur(x.ms) + ' logged. Activate to spotlight.');
+    row.appendChild(el('div', 'hbar-name', x.name));
+    row.appendChild(el('div', 'hbar-val', fmtClock(x.ms)));
+    var track = el('div', 'hbar-track');
+    var fill = el('div');
+    fill.style.width = Math.max(2, Math.round(x.ms / max * 100)) + '%';
+    track.appendChild(fill);
+    row.appendChild(track);
+    (function (xx, rr) {
+      function act() {
+        var was = rr.classList.contains('sel');
+        var sels = host.querySelectorAll('.hbar-row.sel');
+        for (var k = 0; k < sels.length; k++) {
+          sels[k].classList.remove('sel');
+          sels[k].setAttribute('aria-pressed', 'false');
+        }
+        if (!was) {
+          rr.classList.add('sel');
+          rr.setAttribute('aria-pressed', 'true');
+          detail.textContent = '';
+          var st = document.createElement('strong');
+          st.textContent = xx.name + ': ';
+          detail.appendChild(st);
+          detail.appendChild(document.createTextNode(fmtClock(xx.ms) + ' logged (' +
+            fmtDur(xx.ms) + ') — ' + xx.done + ' of ' + xx.total + ' tasks done.'));
+          Sound.select();
+        } else { detail.textContent = ''; Sound.click(); }
+      }
+      rr.addEventListener('click', act);
+      rr.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); }
+      });
+    })(x, row);
+    host.appendChild(row);
+  });
 }
 
-nameInput.addEventListener("input", function(){ state.event.name = asText(nameInput.value, 200); save(); });
-capInput.addEventListener("input", function(){
-  state.event.capacity = asCount(capInput.value);
-  save(); renderTiersMeta(); renderResults();
-});
-dateInput.addEventListener("input", function(){ state.event.date = asText(dateInput.value, 30); save(); });
+/* ---------- data: export / import / demo / clear ---------- */
+function dataMsg(t) {
+  var m = $('#data-msg');
+  m.textContent = t;
+  if (t) setTimeout(function () { if (m.textContent === t) m.textContent = ''; }, 6000);
+}
 
-$("add-cost").addEventListener("click", function(){
-  if (state.costs.length >= 50){ showStatus("error", "Maximum 50 cost lines."); return; }
-  state.costs.push({id: nextId(), name:"", amount:0});
-  save(); renderCosts(); renderResults();
-  Sound.success();
-});
-$("add-tier").addEventListener("click", function(){
-  if (state.tiers.length >= MAX_TIERS){ Sound.error(); return; }
-  state.tiers.push({id: nextId(), name:NAME_PRESETS[state.tiers.length] || "Tier " + (state.tiers.length+1),
-    price:0, allocation:0, sellThrough:100});
-  save(); renderTiers(); renderResults();
-  Sound.success();
-});
-$("demo-btn").addEventListener("click", loadDemo);
-$("clear-btn").addEventListener("click", clearAll);
-$("export-btn").addEventListener("click", exportJSON);
-$("import-btn").addEventListener("click", function(){ Sound.click(); $("import-file").click(); });
-$("import-file").addEventListener("change", function(e){
-  if (e.target.files && e.target.files[0]) importFile(e.target.files[0]);
-  e.target.value = "";
-});
-$("theme-toggle").addEventListener("click", function(){
-  applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
-  renderResults(); /* rebuild chart + tier-row wiring so spotlights keep working */
-  Sound.toggleTheme();
-});
+function initData() {
+  $('#btn-export').addEventListener('click', function () {
+    var payload = { app: 'turnovercheck', version: 1, exportedAt: Date.now(), data: state };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    var d = new Date();
+    a.download = 'turnovercheck-' + d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()) +
+      '-' + pad2(d.getHours()) + pad2(d.getMinutes()) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+    dataMsg('Backup downloaded.');
+    Sound.success();
+  });
 
-load();
-initTheme();
-renderAll();
-bindSoundToggle();
+  $('#btn-import').addEventListener('click', function () {
+    var b = $('#btn-import');
+    Sound.click();
+    armConfirm(b, 'Tap again to import', function () { $('#file-import').click(); });
+  });
+  $('#file-import').addEventListener('change', function () {
+    var f = this.files && this.files[0];
+    this.value = '';
+    if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      try {
+        var clean = sanitizeImport(JSON.parse(rd.result));
+        if (!clean || clean.rooms.length === 0) { dataMsg('Import failed: no valid rooms found.'); Sound.error(); return; }
+        state = clean;
+        editingId = null;
+        save(); renderAll(); clearReport();
+        dataMsg('Import complete.');
+        Sound.success();
+      } catch (e) {
+        dataMsg('Import failed: not valid JSON.');
+        Sound.error();
+      }
+    };
+    rd.onerror = function () { dataMsg('Import failed: could not read file.'); Sound.error(); };
+    rd.readAsText(f);
+  });
+
+  $('#btn-demo').addEventListener('click', function () {
+    var b = $('#btn-demo');
+    armConfirm(b, 'Tap again to load demo', function () {
+      state = demoState();
+      editingId = null;
+      save(); renderAll(); clearReport();
+      dataMsg('Demo data loaded.');
+      Sound.success();
+    });
+  });
+
+  $('#btn-clear').addEventListener('click', function () {
+    var b = $('#btn-clear');
+    armConfirm(b, 'Tap again to clear ALL', function () {
+      state = blankState();
+      editingId = null;
+      save(); renderAll(); clearReport();
+      dataMsg('All data cleared.');
+      Sound.success();
+    });
+  });
+}
+
+function demoState() {
+  var s = blankState();
+  var now = Date.now();
+  s.property = 'Demo: Lakeview Cabin';
+  s.startedAt = now - 95 * 60000;
+  s.rooms[0].tasks.forEach(function (t, i) { t.done = i < 5; });
+  s.rooms[1].tasks.forEach(function (t, i) { t.done = i < 3; });
+  s.rooms[3].tasks.forEach(function (t, i) { t.done = i < 2; });
+  s.rooms[0].timer = { elapsed: 42 * 60000, running: false, since: 0 };
+  s.incidents = [
+    {
+      id: uid(), room: 'Kitchen', item: 'Stove knob', type: 'damage', severity: 'moderate',
+      description: 'Front-right burner knob cracked; still turns but feels loose.', photoNote: 'IMG_2041',
+      ts: now - 70 * 60000
+    },
+    {
+      id: uid(), room: 'Bedroom(s)', item: 'Bathrobe', type: 'missing', severity: 'minor',
+      description: 'One white bathrobe missing from the closet hook.', photoNote: '',
+      ts: now - 40 * 60000
+    }
+  ];
+  return s;
+}
+
+/* ---------- render all + init ---------- */
+function renderAll() {
+  $('#prop-name').value = state.property || '';
+  renderChecklist();
+  renderLog();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  load();
+  initTheme();
+  initTabs();
+  initChecklist();
+  addResetButton();
+  initLog();
+  initData();
+  renderAll();
+  window.addEventListener('beforeunload', save);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') save();
+  });
+});
 
 /* ---------- sample-data toggle: snapshot user data, realistic demo, exact restore ---------- */
-(function(){
-  var btn = document.getElementById("sample-toggle");
-  if(!btn) return;
-  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {}, snapDom = null;
-  function paintSample(){
-    var lbl = sampleOn ? "Clear sample data" : "Try sample data";
-    btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
-    btn.setAttribute("aria-label", lbl);
+(function () {
+  var btn = document.getElementById('sample-toggle');
+  if (!btn) return;
+  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {}, snapDrafts = null, snapDom = null;
+  function draftInputs() {
+    var d = {};
+    Array.prototype.forEach.call(document.querySelectorAll('input[placeholder="New task"]'), function (inp) {
+      d[inp.getAttribute('aria-label') || ''] = inp.value;
+    });
+    return d;
+  }
+  function restoreDrafts(d) {
+    if (!d) return;
+    Array.prototype.forEach.call(document.querySelectorAll('input[placeholder="New task"]'), function (inp) {
+      var k = inp.getAttribute('aria-label') || '';
+      if (Object.prototype.hasOwnProperty.call(d, k)) inp.value = d[k];
+    });
+  }
+  function paintSample() {
+    var lbl = sampleOn ? 'Clear sample data' : 'Try sample data';
+    btn.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+    btn.setAttribute('aria-label', lbl);
     btn.title = lbl;
   }
-  /* Snapshot ALL transient DOM state too: typed-but-uncommitted values, selects,
-     textareas, checked states, focused element, scroll, and validation/status UI. */
-  function snapshotDom(){
-    var d = {values:{}, checked:{}, focus:null, sx:0, sy:0, status:null};
-    try{
-      var els = document.querySelectorAll("input, textarea, select");
-      for (var i = 0; i < els.length; i++){
-        var e = els[i], k = e.id || ("noid-" + i);
-        if (e.type === "checkbox" || e.type === "radio") d.checked[k] = e.checked;
-        else if (e.type !== "file") d.values[k] = e.value;
+  function paintSample() {
+    var lbl = sampleOn ? 'Clear sample data' : 'Try sample data';
+    btn.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+    btn.setAttribute('aria-label', lbl);
+    btn.title = lbl;
+  }
+  function snapshot() {
+    try { snap = JSON.parse(JSON.stringify(state)); } catch (e) { snap = null; }
+    try { snapDom = snapshotDom(); } catch (e4) { snapDom = null; }
+    try { snapDrafts = draftInputs(); } catch (e) { snapDrafts = null; }
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
+    } catch (e) { snapLS = LS_MISSING; }
+  }
+  /* Snapshot ALL transient DOM state: typed-but-uncommitted values, selects,
+     textareas, checks, the active tab, message/status text, and editing state. */
+  function snapshotDom() {
+    var d = { values: {}, checked: {}, focus: null, sx: 0, sy: 0, tab: null, msgs: {}, edit: editingId };
+    try {
+      var els = document.querySelectorAll('input, textarea, select');
+      for (var i = 0; i < els.length; i++) {
+        var e = els[i];
+        if (e.getAttribute('placeholder') === 'New task') continue; /* covered by draftInputs */
+        var k = e.id || ('noid-' + i);
+        if (e.type === 'checkbox' || e.type === 'radio') d.checked[k] = e.checked;
+        else if (e.type !== 'file') d.values[k] = e.value;
       }
       var ae = document.activeElement;
       if (ae && ae.id) d.focus = ae.id;
       d.sx = window.scrollX || 0; d.sy = window.scrollY || 0;
-      var st = document.getElementById("status");
-      if (st) d.status = {hidden: st.hidden, cls: st.className, text: st.textContent};
-    }catch(e2){}
+      var sel = document.querySelector('.tab[aria-selected="true"]');
+      if (sel) d.tab = sel.id;
+      ['inc-msg', 'data-msg', 'copy-msg'].forEach(function (id) {
+        var m = document.getElementById(id);
+        if (m) d.msgs[id] = m.textContent;
+      });
+    } catch (e2) {}
     return d;
   }
-  function restoreDom(d){
+  function restoreDom(d) {
     if (!d) return;
-    try{
-      var els = document.querySelectorAll("input, textarea, select");
-      for (var i = 0; i < els.length; i++){
-        var e = els[i], k = e.id || ("noid-" + i);
-        if (e.type === "checkbox" || e.type === "radio"){
+    try {
+      editingId = null;
+      if (d.edit) startEdit(d.edit); /* re-opens edit mode before tab restore */
+      if (d.tab) selectTab(d.tab, false);
+      var els = document.querySelectorAll('input, textarea, select');
+      for (var i = 0; i < els.length; i++) {
+        var e = els[i];
+        if (e.getAttribute('placeholder') === 'New task') continue;
+        var k = e.id || ('noid-' + i);
+        if (e.type === 'checkbox' || e.type === 'radio') {
           if (d.checked[k] !== undefined) e.checked = d.checked[k];
-        } else if (e.type !== "file" && d.values[k] !== undefined) e.value = d.values[k];
+        } else if (e.type !== 'file' && d.values[k] !== undefined) e.value = d.values[k];
       }
-      if (d.status){
-        var st = document.getElementById("status");
-        if (st){ st.className = d.status.cls; st.textContent = d.status.text; st.hidden = d.status.hidden; }
+      for (var id in d.msgs) {
+        var m = document.getElementById(id);
+        if (m) m.textContent = d.msgs[id];
       }
-      if (d.focus){
+      if (d.focus) {
         var f = document.getElementById(d.focus);
-        if (f) f.focus({preventScroll: true});
+        if (f) f.focus({ preventScroll: true });
       }
       window.scrollTo(d.sx, d.sy);
-    }catch(e2){}
+    } catch (e2) {}
   }
-  function snapshot(){
-    try{ snap = JSON.parse(JSON.stringify(state)); }catch(e){ snap = null; }
-    try{ snapDom = snapshotDom(); }catch(e){ snapDom = null; }
-    try{
-      var raw = localStorage.getItem(LS_KEY);
-      snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
-    }catch(e){ snapLS = LS_MISSING; }
-  }
-  function applySample(){
-    /* same demo content as loadDemo(), minus the demo-button status/sound */
-    state = {
-      event: {name:"Spring Benefit Concert", capacity:150, date:""},
-      costs: [
-        {id: nextId(), name:"Venue rental", amount:2000},
-        {id: nextId(), name:"Marketing", amount:800}
-      ],
-      tiers: [
-        {id: nextId(), name:"Early Bird", price:25, allocation:40, sellThrough:100},
-        {id: nextId(), name:"General", price:40, allocation:80, sellThrough:100},
-        {id: nextId(), name:"VIP", price:75, allocation:30, sellThrough:100}
-      ]
-    };
-    demoNotice = true;
+  function applySample() {
+    state = blankState();
+    state.property = 'Sunset Villa — Unit 4B';
+    state.startedAt = Date.now() - 3600 * 1000;
+    if (state.rooms[0]) state.rooms[0].tasks.forEach(function (t) { t.done = true; });
+    if (state.rooms[1]) state.rooms[1].tasks.forEach(function (t, i) { if (i % 2 === 0) t.done = true; });
+    /* logged timer time so the time-per-room bars render under sample data */
+    var sampleTimes = [47 * 60 * 1000, 28 * 60 * 1000, 12 * 60 * 1000];
+    state.rooms.forEach(function (r, i) {
+      if (r.timer && sampleTimes[i]) r.timer.elapsed = sampleTimes[i];
+    });
+    state.incidents = [
+      { id: uid(), room: state.rooms[0] ? state.rooms[0].name : '', item: 'Wall scuff',
+        type: 'damage', severity: 'minor',
+        description: 'Scuff on the wall near the entry, about 2 ft long.', photoNote: '',
+        ts: Date.now() - 7200 * 1000 },
+      { id: uid(), room: state.rooms[1] ? state.rooms[1].name : '', item: 'Stained sheet',
+        type: 'excessive cleaning', severity: 'moderate',
+        description: 'Coffee stain on the fitted sheet; needs replacing.', photoNote: '',
+        ts: Date.now() - 3600 * 1000 }
+    ];
     renderAll();
   }
-  function restore(){
-    state = snap || defaultState();
-    try{
-      if(snapLS === LS_MISSING) localStorage.removeItem(LS_KEY);
+  function restore() {
+    state = snap || blankState();
+    try {
+      if (snapLS === LS_MISSING) localStorage.removeItem(LS_KEY);
       else localStorage.setItem(LS_KEY, snapLS);
-    }catch(e){}
-    var d = snapDom;
-    snap = null; snapLS = null; snapDom = null;
-    demoNotice = false;
+    } catch (e) {}
+    snap = null; snapLS = null;
+    var d = snapDom; snapDom = null;
+    editingId = null;
     renderAll();
-    restoreDom(d); /* last: re-applies the exact pre-sample transient UI (incl. validation status) */
+    restoreDom(d);
+    restoreDrafts(snapDrafts);
+    snapDrafts = null;
   }
-  btn.addEventListener("click", function(){
-    if(!sampleOn){
+  btn.addEventListener('click', function () {
+    if (!sampleOn) {
       snapshot();
       window.__gSampleOn = true;
       sampleOn = true;
       applySample();
-    }else{
+    } else {
       window.__gSampleOn = false;
       sampleOn = false;
       restore();
@@ -1372,13 +2004,15 @@ bindSoundToggle();
   });
   paintSample();
 })();
-/* Esc restores any active spotlight (clickability spec) */
-document.addEventListener("keydown", function(ev){
-  if (ev.key !== "Escape") return;
-  var sels = document.querySelectorAll(".tbar.sel, .seg.sel, .funnel-row.sel, .stat.sel");
-  for (var i = 0; i < sels.length; i++){
+/* Esc restores any active spotlight (clickability spec; skip while editing text) */
+document.addEventListener('keydown', function (ev) {
+  if (ev.key !== 'Escape') return;
+  var t = ev.target;
+  if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+  var sels = document.querySelectorAll('.hbar-row.sel, .seg.sel, .room-bar-row.sel, #overall-pct.sel');
+  for (var i = 0; i < sels.length; i++) {
     /* SVG elements have no .click() — dispatch a real click event instead */
-    sels[i].dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: true}));
+    sels[i].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
   }
 });
 </script>

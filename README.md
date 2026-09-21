@@ -1,23 +1,22 @@
-# TicketMath — Event Ticket Tier & Revenue Projector
+# TurnoverCheck — Airbnb Turnover Checklist & Damage Log
 
-Price your event with confidence. Model venue capacity, fixed costs, and up to
-4 ticket tiers to find your break-even point and project profit or loss at any
-sell-through rate.
+Turn guest changeovers into a repeatable operation. Room-by-room checklists with
+timers, plus a damage/missing-item log that generates ready-to-send incident reports.
 
 ## What's inside
 - `index.html` — the complete app. Single file, works offline.
   Open it in any modern browser (double-click, or File → Open). No install,
-  no account, no internet needed.
+  no account, no internet needed — built for on-site use with spotty wifi.
 - `gallery/` — 8 screenshots showing the app in action.
 
 ## Features
-- Event setup: name, venue capacity, date
-- Fixed-cost line items: venue rental, marketing, anything else
-- Up to 4 ticket tiers (Early Bird, General, VIP, Student, or custom) with
-  price and allocation — allocation can't exceed capacity
-- Break-even analysis: exact tickets to sell + percentage of allocation
-- Sell-through scenario: per-tier sliders project revenue and profit/loss
-- Per-tier revenue table and hand-drawn revenue bar chart
+- Turnover checklist: 6 rooms, 41 default tasks — check off as you go
+- Per-room progress + overall completion bar with elapsed time
+- Per-room start/stop timers; "Start turnover" timestamp
+- Add your own rooms and tasks; reorder and delete
+- Damage log: room, item, type (damage/missing/cleaning), severity, description,
+  photo reference note, auto timestamp
+- One-click incident report: clean copy-pasteable text block for platform claims
 - JSON backup export/import, demo data to explore
 - Dark mode (follows your system, remembers your choice)
 - Everything stays in your browser — your data never leaves your device
