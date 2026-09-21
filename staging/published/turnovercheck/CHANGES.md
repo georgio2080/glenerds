@@ -1,5 +1,13 @@
 # TurnoverCheck — Build Log (CHANGES.md)
 
+## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
+- **New "Room progress" card** on the Checklist tab, between the overall
+  progress card and the room list: per-room completion bars (name, done/total
+  with %, gradient progress fill), live-updating as tasks are checked, each
+  track an aria progressbar plus a group-level aria summary. Card hides when
+  there are no rooms. Verified headlessly: 6 room bars, correct counts,
+  live update on task toggle (0/8 -> 1/8 = 13%); screenshot inspected.
+
 App #3 of the free-product loop. Single-file offline HTML micro-tool.
 Spec: `~/workspace/microtool-research/free-loop/app3-turnovercheck-SPEC.md` (v1, picked 2026-09-19).
 

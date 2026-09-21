@@ -87,6 +87,12 @@ html[data-theme="dark"] .icon-moon{display:none}
 .progress > div{height:100%; width:0; background:var(--grad); transition:width .25s ease}
 .overall-row{display:flex; align-items:center; gap:10px; margin:10px 0}
 .overall-row .progress{flex:1}
+/* room progress bars (visual representation) */
+.room-bars{display:grid;gap:10px;margin-top:4px}
+.room-bar-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.room-bar-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.room-bar-val{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.room-bar-row .progress{grid-column:1 / -1}
 .pct{font-weight:800; min-width:56px; text-align:right; font-variant-numeric:tabular-nums; font-size:1.05rem;
   background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
 /* ---- summary (aria-live) ---- */
@@ -244,6 +250,11 @@ footer.site{margin-top:26px; padding:16px 0 30px; text-align:center; color:var(-
           <span class="pct" id="overall-pct">0%</span>
         </div>
         <div class="summary" id="summary" aria-live="polite"></div>
+      </div>
+
+      <div class="card" id="room-progress-card">
+        <h2><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d='M3 3v16a2 2 0 0 0 2 2h16'/><path d='M7 14v3M12 10v7M17 6v11'/></svg></span>Room progress</h2>
+        <div id="room-bars" class="room-bars" role="img" aria-label="Completion per room"></div>
       </div>
 
       <div id="rooms"></div>
@@ -710,6 +721,33 @@ function renderChecklist() {
   var pct = c.total === 0 ? 0 : Math.round(100 * c.done / c.total);
   $('#overall-fill').style.width = pct + '%';
   $('#overall-pct').textContent = pct + '%';
+  /* per-room progress bars (visual representation) */
+  var host = $('#room-bars');
+  host.textContent = '';
+  var aria = [];
+  state.rooms.forEach(function (r) {
+    var rc = roomCounts(r);
+    var rp = rc.total === 0 ? 0 : Math.round(100 * rc.done / rc.total);
+    aria.push(r.name + ': ' + rc.done + ' of ' + rc.total + ' (' + rp + '%)');
+    var row = el('div', 'room-bar-row');
+    row.appendChild(el('div', 'room-bar-name', r.name));
+    row.appendChild(el('div', 'room-bar-val',
+      rc.total === 0 ? 'no tasks' : rc.done + '/' + rc.total + ' · ' + rp + '%'));
+    var track = el('div', 'progress');
+    track.setAttribute('role', 'progressbar');
+    track.setAttribute('aria-label', r.name + ' completion');
+    track.setAttribute('aria-valuemin', '0');
+    track.setAttribute('aria-valuemax', '100');
+    track.setAttribute('aria-valuenow', String(rp));
+    var fill = el('div');
+    fill.style.width = rp + '%';
+    track.appendChild(fill);
+    row.appendChild(track);
+    host.appendChild(row);
+  });
+  host.setAttribute('aria-label', 'Completion per room: ' + aria.join(', '));
+  var card = $('#room-progress-card');
+  if (card) card.hidden = state.rooms.length === 0;
   $('#overall-bar').setAttribute('aria-valuenow', String(pct));
 
   var sl = $('#started-line');
