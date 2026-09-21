@@ -1,113 +1,94 @@
-# TurnoverCheck — Build Log (CHANGES.md)
-
-## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
-- Standardized the header cluster: `.g-header-actions` wrapper with More Apps pill first, icon-only dark-mode button (44x44px circular, moon/sun icon, dynamic aria-label/title — no more "Dark mode" text label), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
-- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `turnovercheck.sound`, wired into theme toggle, start/restart turnover, add room (validation error), task check/uncheck, timer, incident save/cancel (validation errors), export/import (success/failure), demo load, and clear.
-- Made the per-room completion bars interactive: each row is a keyboard-accessible button — activating it spotlights the row and shows how many tasks are done plus the names of the remaining tasks in a detail line; activating again restores.
-- Fixed a pre-existing bug where the room-bars render reused a hoisted `host` variable also used by the room-cards render (`barsHost` rename), so spotlight clearing now targets the right container.
+# SplitFair — build log
 
 ## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
-- **New "Room progress" card** on the Checklist tab, between the overall
-  progress card and the room list: per-room completion bars (name, done/total
-  with %, gradient progress fill), live-updating as tasks are checked, each
-  track an aria progressbar plus a group-level aria summary. Card hides when
-  there are no rooms. Verified headlessly: 6 room bars, correct counts,
-  live update on task toggle (0/8 -> 1/8 = 13%); screenshot inspected.
+1. **New "Who owes what" bar chart** in Results, below the Totals table: per-person
+   total-owed bars sorted largest-first, accent-gradient fills, values in a
+   dedicated right column (no collisions), theme-aware via --accent/--accent-2,
+   aria-label summarizes every person's total. Names render via textContent.
+   Empty state unchanged (early return before totals). Verified headlessly:
+   sorted desc, widths proportional (100/79.1/59.9%), no page errors;
+   light + dark screenshots inspected.
 
-App #3 of the free-product loop. Single-file offline HTML micro-tool.
-Spec: `~/workspace/microtool-research/free-loop/app3-turnovercheck-SPEC.md` (v1, picked 2026-09-19).
+## 2026-09-19 — Initial build (app #5, free loop)
 
-## Build — 2026-09-19
+Built per `~/workspace/microtool-research/free-loop/app5-splitfair-SPEC.md` (v1, picked 2026-09-19).
 
-- Built `index.html` from scratch (IP clean-room: no copied code, copy, or branding).
-- Two tabs with `role=tablist`/`tab`/`tabpanel`; mouse click + ArrowLeft/ArrowRight/Home/End
-  keyboard navigation; roving tabindex.
-- **Checklist tab:** 6 default rooms (Kitchen, Living Room, Bedroom(s), Bathroom(s), Laundry,
-  Outdoor / Entry) with 41 default tasks total. Check/uncheck with per-room counts, overall
-  progress bar (`role=progressbar` + `aria-valuenow`), "Start turnover" timestamp, per-room
-  start/stop elapsed timers (persist across reload, resume correctly), confirm-armed
-  "Reset for next guest" (unchecks all, clears clock/timers), completion summary with
-  `aria-live="polite"` showing total time. Tasks: add / delete / move up-down. Rooms:
-  add / rename (inline) / remove (confirm-armed).
-- **Damage Log tab:** property name; incident form (room dropdown synced to room list,
-  item/area, type damage|missing|excessive cleaning, severity minor|moderate|major,
-  description, photo-reference text note — no photo upload). Incident list with edit
-  (reuses the form, Cancel edit button) and delete (confirm-armed). "Generate report"
-  renders a plain-text block (property, date, numbered incidents with severity/type/
-  timestamp/details/photo ref, totals line) into a `<pre>` + "Copy report" button
-  (Clipboard API with textarea+execCommand fallback).
-- **Data:** localStorage persistence (saved on every mutation + beforeunload/hidden tab).
-  Export JSON downloads a timestamped backup. Import sanitizes everything: allowlisted
-  enums, finite numbers, length-capped strings (60–2000 chars), capped array sizes;
-  invalid entries dropped, missing ids generated; running timers without a valid
-  `since` are stopped. Demo data (sample turnover + 2 incidents) and clear-all, both
-  confirm-armed (two-tap inline confirm, 6 s expiry).
-- **Security:** zero `innerHTML` in app code; all dynamic DOM via `createElement` +
-  `textContent` / `.value`. Zero external requests (only link is the footer anchor).
-- **Dark mode standard:** visible toggle, `prefers-color-scheme` default, localStorage
-  persistence, CSS-variable palette, readable contrast in both themes.
-- **Mobile-first:** 390px viewport verified, no horizontal overflow, all interactive
-  elements ≥ 40 px tap targets, labeled inputs, no emojis in UI chrome.
-- **Footer:** discreet "by Glenerds" → https://glenerds.gumroad.com.
+### What was built
+- Single-file `index.html` (~33 KB), zero external requests, works from `file://`.
+- People: name + optional room sqft; add/remove; sqft edits update results live.
+- Bills: preset types (Electric, Gas, Internet, Water, Trash) + custom name, amount,
+  period start/end, split method (Equal / By square footage / By occupancy); inline
+  edit + delete per bill.
+- Occupancy editor per bill: days present (defaults to period length) + guest days
+  (each guest day = 0.5 occupant-day, rule shown in UI).
+- Results (`aria-live="polite"`): per-bill share table with math note, totals table,
+  settle-up list.
+- Math core works in integer cents; each share rounded to cents; rounding drift
+  (bill total − sum of rounded shares) assigned to the largest share (first wins
+  ties); per-bill note shows the exact adjustment. Sqft fallback: total sqft = 0 →
+  equal split with note. Occupancy fallback: total weight = 0 → equal split with note.
+- localStorage persistence (`splitfair.state.v1`); JSON export/import with full
+  sanitization (finite-number ranges, 60-char name caps, enum allowlist for method,
+  date format check, per-array count caps).
+- Demo data (3 roommates, Electric by sqft + Internet by occupancy) + Clear all
+  (confirm dialog).
+- Dark mode standard: early-script theme set (no flash), toggle button with
+  `aria-pressed`, `prefers-color-scheme` default, `localStorage` persistence
+  (`splitfair.theme.v1`), CSS-variable palette.
+- Discreet footer: "by Glenerds" → https://glenerds.gumroad.com. No emojis in UI.
+- Accessibility: every input labeled (visible labels + aria-labels on dynamic rows),
+  `scope="col"`/`scope="row"` on table headers, results region `aria-live="polite"`,
+  44px minimum tap targets, mobile-first layout.
+- Security: zero `innerHTML` / string-concatenated HTML anywhere; all dynamic content
+  built with `document.createElement` + `textContent` / `.value`. Import sanitized
+  before touching state.
 
-## Defects found and fixed (fix-without-asking)
+### Defects fixed during build
+- None in the app itself. Code review + the full QA suite below passed with no
+  app changes required. Two issues found were in the QA harness only (a duplicated
+  hostile-import fixture dict and two competing dialog handlers), not in the app;
+  both were corrected in the test script and the suite re-run green (38/38).
 
-1. **`hidden` attribute ignored on buttons (2026-09-19, caught by Playwright QA).**
-   `.btn { display: inline-flex }` overrode the UA stylesheet's `[hidden] { display: none }`,
-   so "Start turnover"/"Restart clock"/"Cancel edit" never actually hid. Fix: added global
-   `[hidden] { display: none !important }` rule. QA re-run confirms correct show/hide.
-
-## QA results (Playwright, system Chromium /opt/meta-chromium/chrome, headless, 390×844)
-
-41/41 passed. Per-check list (spec QA list mapping):
-
-- no console errors (load + full run): PASS
-- zero external requests: PASS
-- checklist check/uncheck + progress math (Kitchen 8 tasks, 41 total, 1/41 → 2%, aria-valuenow, revert): PASS
-- custom room add / task add / task delete / room remove: PASS
-- timer start/stop (ticks, stops accumulating, elapsed persists across reload): PASS
-- reset confirm (requires second tap, resets checks + clock + timers): PASS
-- incident add / edit / delete (fields, severity badge, photo note): PASS
-- report text contains all incidents + severity + property + totals line: PASS
-- copy button works (clipboard read-back verified): PASS
-- export/import round-trip (fresh browser profile, file carries property + 2 incidents): PASS
-- hostile import sanitization (script/img/svg payloads render as inert text, zero injected
-  elements, enum fallbacks minor/damage, 2000-char cap, invalid numbers dropped): PASS
-- demo data + clear-all: PASS
-- dark mode persists across reload: PASS
-- 390px mobile (no h-overflow, touch targets ≥ 40 px): PASS
-- aria-live="polite" on completion summary: PASS
-- tab keyboard navigation (arrow keys): PASS
-
-Full QA script: `/tmp/tc_qa.py` (ephemeral; re-runnable against the file).
+### QA (Playwright, real Chromium, headless) — see QA report for per-check results
+Hand-verified math case: 3-person equal split of $100.00 → raw $33.333… each,
+rounded $33.33 × 3 = $99.99, $0.01 drift to the largest share (first, Alice):
+$33.34 + $33.33 + $33.33 = $100.00 exactly. Occupancy case: $90 over 30 days,
+weights 30 / 22 (20 + 0.5×4) / 11 (10 + 0.5×2), total 63 → A: 90×30/63 =
+$42.857→$42.86; B: 90×22/63 = $31.429→$31.43; C: 90×11/63 = $15.714→$15.71;
+sum $90.00 exactly, no drift. Sqft case verified against demo data in the report.
 
 ## 2026-09-19 — outside-AI QA defect fixes (verified headless Chromium)
-- Deleting an incident now invalidates the generated incident report: added
-  `clearReport()` (clears text, hides output, disables Copy) and called it in
-  the incident delete handler. Previously the report snapshot stayed on screen
-  after the last incident was deleted.
-- "Outdoor / Entry never shows 0:00 timer" report investigated: could not
-  reproduce — all six room cards render "0:00" initially, the Outdoor/Entry
-  timer counts while running, freezes on stop, and persists across reload. No
-  code change.
-- Verified in headless Chromium (Playwright): report cleared/hidden/copy
-  disabled after deleting the last incident; regenerating with zero incidents
-  yields "No incidents recorded."; all six timers show "0:00"; zero
-  console/page errors.
+- Empty "days present" no longer becomes 0 after a reload. Root cause: the
+  occupancy sanitizer ran `cleanNum(row.days, ...)`, and `Number(null) === 0`
+  coerced the null "use period-length default" sentinel into an explicit 0,
+  so after reloading a touched-but-empty days field the person got a 0-day
+  weight. The sanitizer now preserves null/undefined/"" as null for days.
+- "Method/rounding footnotes render twice" investigated: could not reproduce
+  as a code bug — `renderResults` clears its container on every render and
+  appends exactly one `.math-note` per bill (verified with 1–2 bills, method
+  changes, and rapid re-renders). Identical footnote text under multiple bills
+  sharing one method is one footnote per bill section, by design. No change.
+- Verified in headless Chromium (Playwright): touched-but-empty days stays
+  empty with the period-length placeholder after reload and computes with the
+  30-day default ($67.50/$22.50 on a 30:10 weight split); explicit days
+  preserved; exactly one footnote per bill; zero console/page errors.
 
-## 2026-09-19 — review round-1 defect fixes (verified headless Chromium)
-- Stale incident report: `clearReport()` was only called from the incident
-  delete handler. Now also called from the incident save handler, the import
-  success path, the demo loader, and clear-all — the generated report is
-  invalidated on every incident-list mutation. Verified: report generated ->
-  incident edited -> report box hidden and Copy disabled; zero page errors.
-- Silent storage failure: `save()` swallowed failures with only a comment.
-  Added `storageOK` flag + `showStorageWarn()` surfacing a persistent
-  `role="alert"` banner ("Browser storage failed — your changes are only kept
-  until this tab closes."). `load()` failure also shows it. Same issue class
-  previously fixed in SubAudit.
-- Import now uses the app's two-tap `armConfirm` ("Tap again to import")
-  instead of silently replacing all state on file pick — matches the
-  demo-load/clear-all destructive-action pattern. Verified armed label.
-- SEO: Gumroad listing description rewritten keyword-first
-  ("Free Airbnb Turnover Checklist & Damage Log — TurnoverCheck").
+## 2026-09-19 — review round 1 (outside-AI)
+- Reviewed 33,602 bytes (sha256 d8f4483f…47ce017): two Gemini passes on full source bytes, every claim re-verified against source + live Chromium, gallery compared, demo math hand-checked to the cent.
+- Verified-real should-fix (fixed under fix-without-asking; backups *.bak-2026-09-19-r1fix):
+  1. <title> was brand-first ("SplitFair — Roommate Utility Split Calculator") → keyword-first "Free Roommate Utility Split Calculator (SplitFair)".
+  2. Meta description was brand-first → keyword-first "Free roommate utility split calculator: split electric, gas, and internet bills equally, by room size, or by occupancy. Offline, single-file tool (SplitFair)."
+  3. Gumroad listing description first line was brand-first ("⚖️ SplitFair — Free Roommate Utility Split Calculator") → "⚖️ Free Roommate Utility Split Calculator — SplitFair". Listing title/slug/tags already keyword-first.
+  4. Gallery stale: 1-people.png and 2-bills.png were byte-identical duplicates; images 1/2/3/4/6 showed old 2-person demo (Jordan/Sam, 200 sq ft) while demoData() has 3 people (Alex 140, Jordan 110, Sam 90, 340 sq ft). Regenerated all 8 PNGs from the live app in headless Chromium.
+  5. (found during gallery regeneration) REAL BUG round 1 missed: "Custom name" field was always visible despite the `hidden` attribute — CSS `.field{display:flex}` defeated the `hidden` UA style (offsetParent!==null with Electric selected). Fixed with `[hidden]{display:none!important}` at the top of the stylesheet. Verified: hidden with Electric, shown when Custom… is chosen, hidden again on switch back; zero console/page errors; full demo flow (load demo, add flows, results, dark mode, export) re-verified clean.
+- Dropped false claims: DST ±1-day periodDays bug (false — noon-to-noon + Math.round absorbs DST offset, verified spring-forward case); MAX_AMOUNT float precision (non-issue — cents rounding, < MAX_SAFE_INTEGER); occupancy sanitization "bug" (unreachable via UI; import path uses deliberate sentinel defaults).
+- Should-improve/nits: "Settle up" lists per-person balances rather than who-pays-whom (no payer data tracked — design); renderOccupancyTable writes defaults without save() (behaviorally identical via computeBill fallback).
+- Verified clean: no innerHTML/outerHTML/document.write; createElement+textContent rendering; cleanStr control-char stripping; sanitizeState on load/import; Blob export; zero external requests; zero console/page errors.
+
+## 2026-09-19 — review round 2: ZERO ISSUES, signed off
+- Round 2 ran against the exact updated bytes (33,675; sha256 f96b65ca…21399): two Gemini passes on full source bytes + listing, independent source verification, headless Chromium live render, all 8 gallery PNGs visually compared.
+- All 5 round-1 fixes confirmed in place: keyword-first title/meta/listing, gallery regenerated (no duplicates), [hidden]{display:none!important} verified live (custom name hidden with Electric, shown with Custom…, zero console/page errors).
+- Demo math hand-verified (Electric $120 → Alex $49.42 / Jordan $38.82 / Sam $31.76; Internet $75 by occupancy); dark mode persists; export works; mobile renders.
+- Should-fix: none. Should-improve: none. Nits: none.
+- Parent verified final bytes independently (hash, title, listing line, gallery uniqueness).
+- Signed off 2026-09-19 12:34 EDT. Staging row marked Passed locally. Deploy queued for when Netlify credits reset (full-site ZIP rebuilt same turn).

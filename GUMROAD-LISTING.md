@@ -1,10 +1,10 @@
-# TurnoverCheck — Gumroad listing (UNPUBLISHED $0 draft)
+# SplitFair — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free Airbnb Turnover Checklist: Room-by-Room Cleaning List + Damage Report Tool
+Free Roommate Utility Split Calculator: Fair Electric, Gas & Internet Bill Splitting
 
 ## Permalink slug
-free-airbnb-turnover-checklist-damage-report
+free-roommate-utility-split-calculator
 
 ## Price
 $0
@@ -13,42 +13,43 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/0-cover.png (also attach gallery/1-checklist.png … 7-backup.png as product images)
+gallery/0-cover.png (also attach gallery/1-people.png … 7-split-method.png as product images)
 
 ## Product file
-turnovercheck-bundle.zip
+splitfair-bundle.zip
 
 ## Tags
-airbnb checklist, turnover checklist, vacation rental, damage report, short term rental, host tools, cleaning checklist, property management, airbnb host, incident report
+roommate, utility split, bill splitter, split bills, electric bill, roommate calculator, shared expenses, apartment, rent split, fair split
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-🧹 Free Airbnb Turnover Checklist & Damage Log — TurnoverCheck
+⚖️ Free Roommate Utility Split Calculator — SplitFair
 
-Turn guest changeovers into a repeatable operation. Room-by-room checklists with timers keep every turnover consistent, and the damage log generates ready-to-send incident reports when something's wrong.
+Stop arguing about the electric bill. Add your roommates and utility bills, and SplitFair computes exactly who owes what — split equally, by room size, or by who's actually home (guests included).
 
 💸 100% FREE — no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 ✨ WHAT IT DOES
-• ✅ Room-by-room turnover checklist — 6 rooms, 41 tasks, check off as you clean
-• ⏱️ Per-room timers + overall elapsed time — know exactly how long turnovers take
-• 📊 Live progress bar — per-room counts and total completion percentage
-• ➕ Fully customizable — add your own rooms and tasks, reorder, delete
-• 📝 Damage / missing-item log — room, item, severity, description, photo reference, auto timestamp
-• 📋 One-click incident report — clean copy-pasteable text block for Airbnb/Vrbo claims
-• 🔄 Reset for next guest — one tap and you're ready for the next turnover
+• 👥 Add roommates — with optional room square footage
+• 🧾 Add utility bills — Electric, Gas, Internet, Water, Trash, or custom
+• ⚖️ Three fair split methods per bill:
+  - Equal — split evenly among roommates
+  - By square footage — bigger room pays more
+  - By occupancy — weighted by days present + guest days (a guest day counts as half)
+• 🎯 Exact-to-the-cent math — no rounding arguments, ever
+• 📊 Per-bill breakdowns, per-person totals, grand total, and a settle-up list
 
 📦 WHAT YOU GET
-• TurnoverCheck as a single HTML file — double-click to open in any browser
+• SplitFair as a single HTML file — double-click to open in any browser
 • 8 screenshot walkthrough images
 • README with quick-start guide
 • Free updates forever
 
 🖥️ HOW IT WORKS
-No install, no internet, no account — built for on-site use when the property wifi is down. Open the file on your phone, work through the checklist room by room, log any damage as you find it. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
+No install, no internet, no account. Open the file, add your roommates once, then drop in each month's bills and pick the split method. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
 
 🔒 PRIVACY
-TurnoverCheck is fully offline. No trackers, no analytics, no external requests.
+SplitFair is fully offline. No trackers, no analytics, no external requests.
 
 🛠️ MORE FROM GLENERDS
 • Browse all Glenerds tools → https://glenerds.gumroad.com

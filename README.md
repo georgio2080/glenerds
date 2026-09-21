@@ -1,22 +1,24 @@
-# TurnoverCheck — Airbnb Turnover Checklist & Damage Log
+# SplitFair — Roommate Utility Split Calculator
 
-Turn guest changeovers into a repeatable operation. Room-by-room checklists with
-timers, plus a damage/missing-item log that generates ready-to-send incident reports.
+Stop arguing about the electric bill. Add your roommates and utility bills,
+and SplitFair computes exactly who owes what — split equally, by room size,
+or by who's actually home.
 
 ## What's inside
 - `index.html` — the complete app. Single file, works offline.
   Open it in any modern browser (double-click, or File → Open). No install,
-  no account, no internet needed — built for on-site use with spotty wifi.
+  no account, no internet needed.
 - `gallery/` — 8 screenshots showing the app in action.
 
 ## Features
-- Turnover checklist: 6 rooms, 41 default tasks — check off as you go
-- Per-room progress + overall completion bar with elapsed time
-- Per-room start/stop timers; "Start turnover" timestamp
-- Add your own rooms and tasks; reorder and delete
-- Damage log: room, item, type (damage/missing/cleaning), severity, description,
-  photo reference note, auto timestamp
-- One-click incident report: clean copy-pasteable text block for platform claims
+- Add roommates with optional room square footage
+- Add utility bills: Electric, Gas, Internet, Water, Trash, or custom
+- Three split methods per bill:
+  - Equal — split evenly
+  - By square footage — bigger room pays more (falls back to equal if no sqft)
+  - By occupancy — weighted by days present + guest days (guest day = 0.5)
+- Exact-to-the-cent math: rounding drift always lands on the largest share
+- Per-bill breakdowns, per-person totals, grand total, settle-up list
 - JSON backup export/import, demo data to explore
 - Dark mode (follows your system, remembers your choice)
 - Everything stays in your browser — your data never leaves your device
