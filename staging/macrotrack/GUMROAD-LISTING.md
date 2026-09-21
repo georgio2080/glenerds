@@ -1,7 +1,7 @@
 # MacroTrack — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free TDEE Calculator & Macro Calculator: BMR, Target Calories, Protein/Carbs/Fat
+Free TDEE Calculator & Macro Calculator: BMR, Calories, Macros
 
 ## Permalink slug
 free-tdee-calculator-macro-calculator
@@ -29,11 +29,11 @@ gallery/cover-square-1200.png (Gumroad thumbnail; also attach the gallery images
 macrotrack-bundle.zip
 
 ## Tags
-tdee calculator, macro calculator, bmr calculator, calorie calculator, protein calculator, maintenance calories, cutting macros, bulking macros, iifym calculator, mifflin st jeor
+tdee calculator, macro calculator, bmr calculator, calorie calculator, protein calculator, maintenance calories, iifym calculator, mifflin st jeor calculator, cutting calories, bulking calories
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-🔥 Free TDEE Calculator & Macro Calculator — MacroTrack: BMR, Target Calories & Daily Macros
+🔥 Free TDEE Calculator & Macro Calculator — MacroTrack: BMR, Calories & Daily Macros
 
 Stop trusting black-box calorie calculators. Enter your age, height, weight, activity level and goal, and MacroTrack shows your BMR, TDEE, target calories and protein/carb/fat grams — with the exact formula and every calculation step shown on screen, so you can verify it yourself.
 
@@ -51,23 +51,20 @@ Stop trusting black-box calorie calculators. Enter your age, height, weight, act
 
 📦 WHAT YOU GET
 • MacroTrack as a single HTML file — double-click to open in any browser
-• 8 screenshot walkthrough images
-• README with quick-start guide
 • Free updates forever
 
 🖥️ HOW IT WORKS
-No install, no internet, no account. Open the file, enter your details, and your numbers appear instantly — with the full math shown underneath. Everything is stored privately in your own browser — your data never leaves your device.
+No install, no account. Open the file, enter your details, and your numbers appear instantly — with the full math shown underneath. Everything is stored privately in your own browser — your data never leaves your device.
 
 🔒 PRIVACY
 MacroTrack is fully offline. No trackers, no analytics, no external requests. Unlike the big calculator sites: no ads, no cookie banners, no account funnel.
 
-🛠️ MORE FROM GLENERDS
-• [HabitTrack](https://glenerds.gumroad.com) — free daily habit tracker with streaks, by Glenerds
-• Browse all Glenerds tools → https://glenerds.gumroad.com
+🔗 MORE FROM GLENERDS
+• More free Glenerds tools → [glenerds.gumroad.com](https://glenerds.gumroad.com)
 
 📩 SUPPORT
 Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.
 
 ⚠️ Estimates only — these formulas are population averages. For weight loss, muscle gain, or any health concern, talk to a doctor or registered dietitian.
 
-by Glenerds — free tools, no accounts, no ads: https://glenerds.gumroad.com
+by Glenerds — free tools, no accounts, no ads: [glenerds.gumroad.com](https://glenerds.gumroad.com)
