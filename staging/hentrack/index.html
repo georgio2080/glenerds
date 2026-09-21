@@ -109,6 +109,27 @@ details.how summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--ac
 .g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+/* Glenerds standard header cluster: More Apps + sample flask + theme + sound */
+.g-header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
+a.g-store-btn, header .g-store-btn { color: #ffffff; }
+.round-btn {
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; background: var(--card); border: 1px solid var(--line);
+  color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none; font-size: 1.1rem;
+}
+.round-btn svg { width: 18px; height: 18px; flex: none; }
+.round-btn:hover { border-color: var(--accent); }
+.round-btn:focus { outline: none; }
+.round-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.round-btn.sample-toggle[aria-pressed="true"] {
+  color: var(--accent); border-color: var(--accent);
+  background: var(--accent-soft);
+}
+@media (max-width: 640px) {
+  header.top { flex-wrap: wrap; }
+  .g-header-actions { margin-left: 0; gap: 6px; }
+}
 .g-cta-strip {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   margin: 28px 0 0; padding: 16px 20px;
@@ -140,8 +161,12 @@ details.how summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--ac
       <div class="logo" aria-hidden="true">🐔</div>
       <h1>HenTrack</h1>
     </div>
-    <button class="btn small theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">🌙 Theme</button>
-    <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+    <div class="g-header-actions">
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+    </div>
   </header>
   <p class="tagline">Daily egg counts, feed costs, flock records &amp; egg sales for backyard chicken keepers. 100% offline — your data never leaves this device.</p>
 
@@ -302,23 +327,111 @@ function inLastDays(s,n){return s>=daysAgo(n-1)&&s<=todayStr();}
 /* ---------- state ---------- */
 var KEY="hentrack-v1";
 var state={hens:[],eggLogs:[],expenses:[],sales:[],theme:null};
+var sampleOn=false, sampleSnap=null;
 function load(){
   try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);for(var k in state){if(s[k]!==undefined)state[k]=s[k];}}}catch(e){}
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function save(){if(sampleOn)return;try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
 load();
 
 /* ---------- theme ---------- */
 function applyTheme(t){
   state.theme=t;document.documentElement.setAttribute("data-theme",t);save();
-  $("themeBtn").textContent=(t==="dark"?"☀️":"🌙")+" Theme";
+  var dark=(t==="dark"),btn=$("themeToggle"),l=dark?"Switch to light mode":"Switch to dark mode";
+  btn.innerHTML=dark?"☀️":"🌙";
+  btn.setAttribute("aria-pressed",dark?"true":"false");
+  btn.setAttribute("aria-label",l);btn.title=l;
 }
 (function initTheme(){
   var t=state.theme;
   if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
   applyTheme(t);
 })();
-$("themeBtn").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");drawChart();});
+$("themeToggle").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");drawChart();Sound.toggleTheme();Sound.click();});
+
+/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
+function paintSample(){
+  var btn=$("sampleToggle"),l=sampleOn?"Clear sample data":"Try sample data";
+  btn.setAttribute("aria-pressed",sampleOn?"true":"false");
+  btn.setAttribute("aria-label",l);btn.title=l;
+}
+function setSample(on){
+  if(on&&!sampleOn){
+    sampleSnap=JSON.stringify(state);
+    sampleOn=true;
+    state.hens=[
+      {id:uid(),name:"Goldie",breed:"Rhode Island Red",hatch:"2024-03-15",status:"laying"},
+      {id:uid(),name:"Pepper",breed:"Barred Plymouth Rock",hatch:"2024-03-15",status:"laying"},
+      {id:uid(),name:"Daisy",breed:"Leghorn",hatch:"2024-05-02",status:"laying"},
+      {id:uid(),name:"Ruby",breed:"Australorp",hatch:"2023-06-10",status:"laying"},
+      {id:uid(),name:"Sunny",breed:"Easter Egger",hatch:"2024-05-02",status:"laying"},
+      {id:uid(),name:"Old Bess",breed:"Orpington",hatch:"2022-04-01",status:"retired"}
+    ];
+    state.eggLogs=[];
+    var counts=[5,4,6,5,3,5,6,4,5,5,6,4,5,3];
+    for(var i=13;i>=0;i--){state.eggLogs.push({id:uid(),date:daysAgo(i),count:counts[13-i],broken:(i%5===0?1:0),notes:""});}
+    state.expenses=[
+      {id:uid(),date:daysAgo(10),cat:"Feed",item:"50 lb layer feed",cost:24.99},
+      {id:uid(),date:daysAgo(6),cat:"Bedding",item:"Pine shavings bale",cost:8.49},
+      {id:uid(),date:daysAgo(2),cat:"Feed",item:"Scratch grains 25 lb",cost:14.99},
+      {id:uid(),date:daysAgo(1),cat:"Supplements / grit",item:"Grit + oyster shell",cost:11.29}
+    ];
+    state.sales=[
+      {id:uid(),date:daysAgo(9),dozens:6,pricePerDozen:4.50},
+      {id:uid(),date:daysAgo(5),dozens:8,pricePerDozen:4.50},
+      {id:uid(),date:daysAgo(1),dozens:7,pricePerDozen:5.00}
+    ];
+    renderAll();
+  }else if(!on&&sampleOn){
+    sampleOn=false;
+    try{var s=JSON.parse(sampleSnap);if(s&&typeof s==="object")state=s;}catch(e){}
+    sampleSnap=null;
+    /* repaint theme from the restored state (reverts any theme toggle made while sampling) */
+    applyTheme(state.theme||"light");
+    renderAll();
+  }
+  paintSample();
+}
+$("sampleToggle").addEventListener("click",function(){setSample(!sampleOn);Sound.click();});
+paintSample();
+
+/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
+var Sound=(function(){
+  var KEY="hentrack.sound",on=true,ctx=null;
+  try{if(window.localStorage.getItem(KEY)==="off")on=false;}catch(e){}
+  function ac(){try{
+    if(!ctx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;ctx=new AC();}
+    return ctx;}catch(e){return null;}}
+  function tone(freq,dur,type,vol,delay){
+    var c=ac();if(!c)return;
+    function play(){try{
+      var t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
+      o.type=type||"sine";o.frequency.value=freq;
+      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.05);}catch(e){}}
+    if(c.state==="suspended"){c.resume().then(play,play);}else{play();}
+  }
+  return{
+    isOn:function(){return on;},
+    toggle:function(){on=!on;try{window.localStorage.setItem(KEY,on?"on":"off");}catch(e){}return on;},
+    click:function(){if(on)tone(520,0.06,"sine",0.045);},
+    select:function(){if(on){tone(660,0.07,"sine",0.055);tone(880,0.09,"sine",0.045,0.06);}},
+    success:function(){if(on){tone(660,0.09,"sine",0.06);tone(990,0.12,"sine",0.05,0.08);}},
+    error:function(){if(on)tone(170,0.16,"sawtooth",0.045);},
+    toggleTheme:function(){if(on)tone(440,0.06,"triangle",0.05);}
+  };
+})();
+(function(){
+  var btn=$("soundToggle");if(!btn)return;
+  function paint(){var on=Sound.isOn();
+    btn.innerHTML=on?"&#128266;":"&#128263;";
+    btn.setAttribute("aria-pressed",on?"true":"false");
+    btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
+    btn.title="Toggle sounds ("+(on?"on":"off")+")";}
+  btn.addEventListener("click",function(){Sound.toggle();paint();Sound.click();});
+  paint();
+})();
 
 /* ---------- tabs ---------- */
 document.querySelectorAll(".tabs button").forEach(function(b){
@@ -330,6 +443,7 @@ document.querySelectorAll(".tabs button").forEach(function(b){
     });
     if(b.dataset.tab==="dash"){renderDash();}
     if(b.dataset.tab==="data"){renderDataStats();}
+    Sound.click();
   });
 });
 
@@ -385,7 +499,7 @@ $("eggAdd").addEventListener("click",function(){
   var rec={id:ex?ex.id:uid(),date:d,count:Math.max(0,Math.round(num($("eggCount").value))),
     broken:Math.max(0,Math.round(num($("eggBroken").value))),notes:$("eggNotes").value.trim()};
   if(ex){state.eggLogs[state.eggLogs.indexOf(ex)]=rec;}else{state.eggLogs.push(rec);}
-  save();$("eggNotes").value="";renderEggs();
+  save();$("eggNotes").value="";renderEggs();Sound.success();
 });
 function renderEggs(){
   var rows=state.eggLogs.slice().sort(function(a,b){return b.date<a.date?-1:1;}).slice(0,30);
@@ -406,9 +520,9 @@ var STATUS_LABEL={laying:"Laying",pullet:"Pullet",molting:"Molting",broody:"Broo
 var STATUS_CLASS={laying:"",pullet:"warn",molting:"warn",broody:"warn",retired:"",lost:"bad"};
 $("henAdd").addEventListener("click",function(){
   var name=$("henName").value.trim();
-  if(!name){alert("Give the hen a name first.");return;}
+  if(!name){Sound.error();alert("Give the hen a name first.");return;}
   state.hens.push({id:uid(),name:name,breed:$("henBreed").value.trim(),hatch:$("henHatch").value,status:$("henStatus").value});
-  save();$("henName").value="";$("henBreed").value="";$("henHatch").value="";renderFlock();
+  save();$("henName").value="";$("henBreed").value="";$("henHatch").value="";renderFlock();Sound.success();
 });
 function renderFlock(){
   if(!state.hens.length){$("flockList").innerHTML='<div class="empty">No hens yet — add your flock above.</div>';return;}
@@ -434,9 +548,9 @@ $("flockList").addEventListener("click",function(e){
 $("expDate").value=todayStr();
 $("expAdd").addEventListener("click",function(){
   var cost=num($("expCost").value);
-  if(cost<=0){alert("Enter the cost first.");return;}
+  if(cost<=0){Sound.error();alert("Enter the cost first.");return;}
   state.expenses.push({id:uid(),date:$("expDate").value||todayStr(),cat:$("expCat").value,item:$("expItem").value.trim(),cost:cost});
-  save();$("expItem").value="";$("expCost").value="";renderExp();
+  save();$("expItem").value="";$("expCost").value="";renderExp();Sound.success();
 });
 function renderExp(){
   var tot=state.expenses.reduce(function(a,e){return a+num(e.cost);},0);
@@ -459,9 +573,9 @@ $("expList").addEventListener("click",function(e){
 $("saleDate").value=todayStr();
 $("saleAdd").addEventListener("click",function(){
   var dz=num($("saleDoz").value),pp=num($("salePrice").value);
-  if(dz<=0||pp<0){alert("Enter dozens sold and price per dozen.");return;}
+  if(dz<=0||pp<0){Sound.error();alert("Enter dozens sold and price per dozen.");return;}
   state.sales.push({id:uid(),date:$("saleDate").value||todayStr(),dozens:dz,pricePerDozen:pp});
-  save();$("saleDoz").value="";$("salePrice").value="";renderSales();
+  save();$("saleDoz").value="";$("salePrice").value="";renderSales();Sound.success();
 });
 function renderSales(){
   var tot=state.sales.reduce(function(a,s){return a+num(s.dozens)*num(s.pricePerDozen);},0);
@@ -498,8 +612,8 @@ $("impJson").addEventListener("change",function(e){
       var s=JSON.parse(r.result);
       if(!s||typeof s!=="object"||!Array.isArray(s.hens))throw new Error("bad file");
       ["eggLogs","expenses","sales"].forEach(function(k){if(!Array.isArray(s[k]))s[k]=[];});
-      state=s;save();renderAll();renderDataStats();alert("Backup imported.");
-    }catch(err){alert("That file doesn't look like a HenTrack backup.");}
+      state=s;save();renderAll();renderDataStats();Sound.success();alert("Backup imported.");
+    }catch(err){Sound.error();alert("That file doesn't look like a HenTrack backup.");}
   };
   r.readAsText(f);e.target.value="";
 });

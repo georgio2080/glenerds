@@ -101,6 +101,18 @@ header.top p { margin: 3px 0 0; color: rgba(255,255,255,.88); font-size: 0.92rem
 #theme-toggle svg { width: 17px; height: 17px; }
 [data-theme="dark"] #theme-toggle .ic-moon { display: none; }
 [data-theme="light"] #theme-toggle .ic-sun { display: none; }
+/* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
+.sample-toggle {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  background: rgba(255,255,255,.16); color: #fff;
+  border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px;
+  box-shadow: none; cursor: pointer;
+}
+.sample-toggle svg { width: 18px; height: 18px; flex: none; }
+.sample-toggle:hover { background: rgba(255,255,255,.26); filter: none; }
+.sample-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.sample-toggle[aria-pressed="true"] { background: var(--accent, #4f46e5); border-color: var(--accent, #4f46e5); color: #fff; }
 #sound-toggle {
   flex: none; display: inline-flex; align-items: center; justify-content: center;
   width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
@@ -322,6 +334,7 @@ footer.site a { color: var(--muted); }
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+      <button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
       <button type="button" id="theme-toggle" aria-label="Switch to dark mode"><span class="ic-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 019.4 4 8.4 8.4 0 1020 14.6z"/></svg></span><span class="ic-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.8M12 18.7v2.8M2.5 12h2.8M18.7 12h2.8M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/></svg></span></button>
       <button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
     </div>
@@ -600,6 +613,7 @@ function loadState() {
   } catch (e) { return fallback; }
 }
 function saveState() {
+  if (window.__gSampleOn) return; /* sample mode: real data is snapshotted — never persist demo data */
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
 }
 var state = loadState();
@@ -1231,6 +1245,65 @@ fillZoneSelect(tzInput, state.viewerTz);
 pDate.value = viewerTodayISO();
 bindSoundToggle();
 renderAll();
+
+/* ---------- sample-data toggle: snapshot user data, realistic demo, exact restore ---------- */
+(function () {
+  var btn = document.getElementById('sample-toggle');
+  if (!btn) return;
+  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {};
+  function paintSample() {
+    var lbl = sampleOn ? 'Clear sample data' : 'Try sample data';
+    btn.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+    btn.setAttribute('aria-label', lbl);
+    btn.title = lbl;
+  }
+  function snapshot() {
+    try { snap = JSON.parse(JSON.stringify(state)); } catch (e) { snap = null; }
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
+    } catch (e) { snapLS = LS_MISSING; }
+  }
+  function applySample() {
+    /* realistic 3-person team across time zones; keeps the user's viewer time zone */
+    state = {
+      viewerTz: (state && state.viewerTz) || defaultViewerZone(),
+      members: [
+        { name: 'Alice', tz: 'America/New_York', start: 9, end: 17 },
+        { name: 'Bruno', tz: 'Europe/Berlin', start: 9, end: 17 },
+        { name: 'Chen', tz: 'Asia/Tokyo', start: 10, end: 18 }
+      ]
+    };
+    fillZoneSelect(viewerSel, state.viewerTz);
+    renderAll();
+  }
+  function restore() {
+    state = snap || { viewerTz: defaultViewerZone(), members: [] };
+    try {
+      if (snapLS === LS_MISSING) localStorage.removeItem(STORAGE_KEY);
+      else localStorage.setItem(STORAGE_KEY, snapLS);
+    } catch (e) {}
+    snap = null; snapLS = null;
+    fillZoneSelect(viewerSel, state.viewerTz);
+    fillZoneSelect(tzInput, state.viewerTz);
+    renderAll();
+  }
+  btn.addEventListener('click', function () {
+    if (!sampleOn) {
+      snapshot();
+      window.__gSampleOn = true;
+      sampleOn = true;
+      applySample();
+    } else {
+      window.__gSampleOn = false;
+      sampleOn = false;
+      restore();
+    }
+    paintSample();
+    Sound.click();
+  });
+  paintSample();
+})();
 
 })();
 </script>

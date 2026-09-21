@@ -122,6 +122,27 @@ footer.attrib a{color:var(--accent);font-weight:700;text-decoration:none}
 .g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+/* Glenerds standard header cluster: More Apps + sample flask + theme + sound */
+.g-header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
+a.g-store-btn, header .g-store-btn { color: #ffffff; }
+.round-btn {
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; background: var(--card); border: 1px solid var(--line);
+  color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none; font-size: 1.1rem;
+}
+.round-btn svg { width: 18px; height: 18px; flex: none; }
+.round-btn:hover { border-color: var(--accent); }
+.round-btn:focus { outline: none; }
+.round-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.round-btn.sample-toggle[aria-pressed="true"] {
+  color: var(--accent); border-color: var(--accent);
+  background: var(--accent-soft);
+}
+@media (max-width: 640px) {
+  header.top { flex-wrap: wrap; }
+  .g-header-actions { margin-left: 0; gap: 6px; }
+}
 .g-cta-strip {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   margin: 28px 0 0; padding: 16px 20px;
@@ -153,8 +174,12 @@ footer.attrib a{color:var(--accent);font-weight:700;text-decoration:none}
       <div class="logo" aria-hidden="true">🏫</div>
       <h1>HomeRoom</h1>
     </div>
-    <button class="btn small theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">🌙 Theme</button>
-    <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+    <div class="g-header-actions">
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+    </div>
   </header>
   <p class="tagline">Weekly lesson plans, one-tap attendance, gradebook &amp; reading logs for your homeschool. 100% offline — your family's data never leaves this device.</p>
 
@@ -319,14 +344,106 @@ function letterGrade(pct){if(pct>=90)return"A";if(pct>=80)return"B";if(pct>=70)r
 
 var KEY="homeroom-v1";
 var state={students:[],lessons:[],attendance:{},grades:[],books:[],theme:null};
+var sampleOn=false, sampleSnap=null;
 function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw);for(var k in state){if(s[k]!==undefined)state[k]=s[k];}}}catch(e){}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function save(){if(sampleOn)return;try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
 load();
 
 function applyTheme(t){state.theme=t;document.documentElement.setAttribute("data-theme",t);save();
-  $("themeBtn").textContent=(t==="dark"?"☀️":"🌙")+" Theme";}
+  var dark=(t==="dark"),btn=$("themeToggle"),l=dark?"Switch to light mode":"Switch to dark mode";
+  btn.innerHTML=dark?"☀️":"🌙";
+  btn.setAttribute("aria-pressed",dark?"true":"false");
+  btn.setAttribute("aria-label",l);btn.title=l;}
 (function(){var t=state.theme;if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}applyTheme(t);})();
-$("themeBtn").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");});
+$("themeToggle").addEventListener("click",function(){applyTheme(state.theme==="dark"?"light":"dark");Sound.toggleTheme();Sound.click();});
+
+/* ---------- sample data toggle (transient: snapshot user data + view cursors, never persisted) ---------- */
+function paintSample(){
+  var btn=$("sampleToggle"),l=sampleOn?"Clear sample data":"Try sample data";
+  btn.setAttribute("aria-pressed",sampleOn?"true":"false");
+  btn.setAttribute("aria-label",l);btn.title=l;
+}
+function setSample(on){
+  if(on&&!sampleOn){
+    sampleSnap=JSON.stringify({state:state,wkCursor:wkCursor,wkStudent:wkStudent,
+      attCursor:attCursor,grStudent:grStudent,rdStudent:rdStudent});
+    sampleOn=true;
+    var emma=uid(),liam=uid(),wk=weekStart(todayStr());
+    state.students=[
+      {id:emma,name:"Emma Everitt",grade:"Grade 4",subjects:["Math","Reading","Writing","Science","History"]},
+      {id:liam,name:"Liam Everitt",grade:"Grade 2",subjects:["Math","Reading","Writing","Science","History"]}
+    ];
+    state.lessons=[
+      {id:uid(),studentId:emma,subject:"Math",date:wk,title:"Long division review",notes:"Workbook p. 41-44",done:true},
+      {id:uid(),studentId:emma,subject:"Science",date:addDays(wk,1),title:"Water cycle experiment",notes:"",done:true},
+      {id:uid(),studentId:emma,subject:"Reading",date:addDays(wk,2),title:"Charlotte's Web ch. 8-9",notes:"Reading log 20 min",done:false},
+      {id:uid(),studentId:liam,subject:"Math",date:wk,title:"Times tables x3",notes:"Flashcards",done:true},
+      {id:uid(),studentId:liam,subject:"Writing",date:addDays(wk,1),title:"Journal entry: fall leaves",notes:"",done:false}
+    ];
+    state.attendance={};
+    for(var i=4;i>=0;i--){var d=addDays(todayStr(),-i);state.attendance[d]={};
+      state.attendance[d][emma]="p";state.attendance[d][liam]=(i===2?"a":"p");}
+    state.grades=[
+      {id:uid(),studentId:emma,subject:"Math",name:"Fractions quiz",score:17,max:20},
+      {id:uid(),studentId:emma,subject:"Science",name:"Water cycle worksheet",score:24,max:25},
+      {id:uid(),studentId:liam,subject:"Math",name:"x3 timed drill",score:9,max:10},
+      {id:uid(),studentId:liam,subject:"Reading",name:"Spelling test 12",score:10,max:12}
+    ];
+    state.books=[
+      {id:uid(),studentId:emma,title:"Charlotte's Web",author:"E.B. White",pages:192,finished:""},
+      {id:uid(),studentId:liam,title:"Frog and Toad Are Friends",author:"Arnold Lobel",pages:64,finished:todayStr()}
+    ];
+    wkCursor=weekStart(todayStr());wkStudent=emma;attCursor=todayStr();grStudent=emma;rdStudent=liam;
+    init();renderDataStats();
+  }else if(!on&&sampleOn){
+    sampleOn=false;
+    try{var s=JSON.parse(sampleSnap);
+      if(s&&s.state){state=s.state;wkCursor=s.wkCursor;wkStudent=s.wkStudent;
+        attCursor=s.attCursor;grStudent=s.grStudent;rdStudent=s.rdStudent;}}catch(e){}
+    sampleSnap=null;
+    init();renderDataStats();
+  }
+  paintSample();
+}
+$("sampleToggle").addEventListener("click",function(){setSample(!sampleOn);Sound.click();});
+paintSample();
+
+/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
+var Sound=(function(){
+  var KEY="homeroom.sound",on=true,ctx=null;
+  try{if(window.localStorage.getItem(KEY)==="off")on=false;}catch(e){}
+  function ac(){try{
+    if(!ctx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;ctx=new AC();}
+    return ctx;}catch(e){return null;}}
+  function tone(freq,dur,type,vol,delay){
+    var c=ac();if(!c)return;
+    function play(){try{
+      var t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
+      o.type=type||"sine";o.frequency.value=freq;
+      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.05);}catch(e){}}
+    if(c.state==="suspended"){c.resume().then(play,play);}else{play();}}
+  return{
+    isOn:function(){return on;},
+    toggle:function(){on=!on;try{window.localStorage.setItem(KEY,on?"on":"off");}catch(e){}return on;},
+    click:function(){if(on)tone(520,0.06,"sine",0.045);},
+    select:function(){if(on){tone(660,0.07,"sine",0.055);tone(880,0.09,"sine",0.045,0.06);}},
+    success:function(){if(on){tone(660,0.09,"sine",0.06);tone(990,0.12,"sine",0.05,0.08);}},
+    error:function(){if(on)tone(170,0.16,"sawtooth",0.045);},
+    toggleTheme:function(){if(on)tone(440,0.06,"triangle",0.05);}
+  };
+})();
+(function(){
+  var btn=$("soundToggle");if(!btn)return;
+  function paint(){var on=Sound.isOn();
+    btn.innerHTML=on?"&#128266;":"&#128263;";
+    btn.setAttribute("aria-pressed",on?"true":"false");
+    btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
+    btn.title="Toggle sounds ("+(on?"on":"off")+")";}
+  btn.addEventListener("click",function(){Sound.toggle();paint();Sound.click();});
+  paint();
+})();
 
 document.querySelectorAll(".tabs button").forEach(function(b){
   b.addEventListener("click",function(){
@@ -334,6 +451,7 @@ document.querySelectorAll(".tabs button").forEach(function(b){
     b.classList.add("active");
     ["dash","lessons","attend","grades","reading","students","data"].forEach(function(t){$("tab-"+t).hidden=(t!==b.dataset.tab);});
     renderDash();renderWeek();renderAttend();renderGrades();renderReading();renderStudents();renderDataStats();
+    Sound.click();
   });
 });
 
@@ -403,13 +521,13 @@ $("wkStuTabs").addEventListener("click",function(e){
 });
 $("lesAdd").addEventListener("click",function(){
   var stu=$("lesStu").value,title=$("lesTitle").value.trim();
-  if(!stu){alert("Add a student first (Students tab).");return;}
-  if(!title){alert("Name the lesson first.");return;}
+  if(!stu){Sound.error();alert("Add a student first (Students tab).");return;}
+  if(!title){Sound.error();alert("Name the lesson first.");return;}
   state.lessons.push({id:uid(),studentId:stu,subject:$("lesSubj").value||"",date:$("lesDate").value||todayStr(),title:title,notes:$("lesNotes").value.trim(),done:false});
-  save();$("lesTitle").value="";$("lesNotes").value="";renderWeek();
+  save();$("lesTitle").value="";$("lesNotes").value="";renderWeek();Sound.success();
 });
-$("wkPrev").addEventListener("click",function(){wkCursor=addDays(wkCursor,-7);renderWeek();});
-$("wkNext").addEventListener("click",function(){wkCursor=addDays(wkCursor,7);renderWeek();});
+$("wkPrev").addEventListener("click",function(){wkCursor=addDays(wkCursor,-7);renderWeek();Sound.click();});
+$("wkNext").addEventListener("click",function(){wkCursor=addDays(wkCursor,7);renderWeek();Sound.click();});
 $("wkToday").addEventListener("click",function(){wkCursor=weekStart(todayStr());renderWeek();});
 function renderWeek(){
   refreshLessonStudentTabs();
@@ -470,11 +588,11 @@ $("attGrid").addEventListener("click",function(e){
   var parts=v.split("|"),sid=parts[0],mark=parts[1];
   if(!state.attendance[attCursor])state.attendance[attCursor]={};
   state.attendance[attCursor][sid]=(state.attendance[attCursor][sid]===mark)?"":mark;
-  save();renderAttend();
+  save();renderAttend();Sound.select();
 });
-$("attPrev").addEventListener("click",function(){attCursor=addDays(attCursor,-1);renderAttend();});
-$("attNext").addEventListener("click",function(){attCursor=addDays(attCursor,1);renderAttend();});
-$("attToday").addEventListener("click",function(){attCursor=todayStr();renderAttend();});
+$("attPrev").addEventListener("click",function(){attCursor=addDays(attCursor,-1);renderAttend();Sound.click();});
+$("attNext").addEventListener("click",function(){attCursor=addDays(attCursor,1);renderAttend();Sound.click();});
+$("attToday").addEventListener("click",function(){attCursor=todayStr();renderAttend();Sound.click();});
 
 /* ---------- gradebook ---------- */
 var grStudent=null;
@@ -491,12 +609,12 @@ $("grStuTabs").addEventListener("click",function(e){
 });
 $("grAdd").addEventListener("click",function(){
   var stu=$("grStu").value,name=$("grName").value.trim(),sc=num($("grScore").value),mx=num($("grMax").value);
-  if(!stu){alert("Add a student first (Students tab).");return;}
-  if(!name){alert("Name the assignment first.");return;}
-  if(mx<=0){alert("Enter the max points first.");return;}
-  if(sc<0){alert("Score can't be negative.");return;}
+  if(!stu){Sound.error();alert("Add a student first (Students tab).");return;}
+  if(!name){Sound.error();alert("Name the assignment first.");return;}
+  if(mx<=0){Sound.error();alert("Enter the max points first.");return;}
+  if(sc<0){Sound.error();alert("Score can't be negative.");return;}
   state.grades.push({id:uid(),studentId:stu,subject:$("grSubj").value||"",name:name,score:sc,max:mx});
-  save();$("grName").value="";$("grScore").value="";$("grMax").value="";grStudent=stu;renderGrades();
+  save();$("grName").value="";$("grScore").value="";$("grMax").value="";grStudent=stu;renderGrades();Sound.success();
 });
 function renderGrades(){
   refreshGradeTabs();
@@ -541,10 +659,10 @@ $("rdStuTabs").addEventListener("click",function(e){
 });
 $("rdAdd").addEventListener("click",function(){
   var stu=$("rdStu").value,title=$("rdTitle").value.trim();
-  if(!stu){alert("Add a student first (Students tab).");return;}
-  if(!title){alert("Enter the book title first.");return;}
+  if(!stu){Sound.error();alert("Add a student first (Students tab).");return;}
+  if(!title){Sound.error();alert("Enter the book title first.");return;}
   state.books.push({id:uid(),studentId:stu,title:title,author:$("rdAuthor").value.trim(),pages:Math.max(0,Math.round(num($("rdPages").value))),finished:$("rdDate").value||""});
-  save();$("rdTitle").value="";$("rdAuthor").value="";$("rdPages").value="";$("rdDate").value="";rdStudent=stu;renderReading();
+  save();$("rdTitle").value="";$("rdAuthor").value="";$("rdPages").value="";$("rdDate").value="";rdStudent=stu;renderReading();Sound.success();
 });
 function renderReading(){
   refreshReadTabs();
@@ -571,9 +689,9 @@ $("rdList").addEventListener("click",function(e){
 /* ---------- students ---------- */
 $("stuAdd").addEventListener("click",function(){
   var name=$("stuName").value.trim();
-  if(!name){alert("Enter the student's name first.");return;}
+  if(!name){Sound.error();alert("Enter the student's name first.");return;}
   state.students.push({id:uid(),name:name,grade:$("stuGrade").value.trim(),subjects:["Math","Reading","Writing","Science","History"]});
-  save();$("stuName").value="";$("stuGrade").value="";fillStudentSelects();renderStudents();renderAttend();
+  save();$("stuName").value="";$("stuGrade").value="";fillStudentSelects();renderStudents();renderAttend();Sound.success();
 });
 function renderStudents(){
   var box=$("stuList");
@@ -613,6 +731,7 @@ $("expJson").addEventListener("click",function(){
   var a=document.createElement("a");a.href=URL.createObjectURL(blob);
   a.download="homeroom-backup-"+todayStr()+".json";document.body.appendChild(a);a.click();
   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+  Sound.success();
 });
 $("impJson").addEventListener("change",function(e){
   var f=e.target.files[0];if(!f)return;
@@ -623,8 +742,8 @@ $("impJson").addEventListener("change",function(e){
       if(!s||typeof s!=="object"||!Array.isArray(s.students))throw new Error("bad file");
       ["lessons","grades","books"].forEach(function(k){if(!Array.isArray(s[k]))s[k]=[];});
       if(!s.attendance||typeof s.attendance!=="object")s.attendance={};
-      state=s;save();applyTheme(state.theme||((window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light"));init();renderDataStats();alert("Backup imported.");
-    }catch(err){alert("That file doesn't look like a HomeRoom backup.");}
+      state=s;save();applyTheme(state.theme||((window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light"));init();renderDataStats();Sound.success();alert("Backup imported.");
+    }catch(err){Sound.error();alert("That file doesn't look like a HomeRoom backup.");}
   };
   r.readAsText(f);e.target.value="";
 });

@@ -30,8 +30,8 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Ar
 header.site{border-bottom:1px solid var(--border);padding:.9rem 0;margin-bottom:2rem}
 header.site .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem}
 .brand{font-weight:800;font-size:1.35rem;text-decoration:none;color:var(--fg)}
-nav.main a{margin-left:1.1rem;text-decoration:none;color:var(--muted);font-weight:600}
-nav.main a:hover{color:var(--fg)}
+nav.main a:not(.g-store-btn){margin-left:1.1rem;text-decoration:none;color:var(--muted);font-weight:600}
+nav.main a:not(.g-store-btn):hover{color:var(--fg)}
 .hero{padding:2.5rem 0 1.5rem}
 .hero h1{font-size:2.1rem;line-height:1.25;margin:.2rem 0 1rem}
 .hero p.lead{font-size:1.1rem;color:var(--muted);max-width:46rem}

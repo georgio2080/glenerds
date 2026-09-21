@@ -199,6 +199,22 @@
 #sound-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
 #sound-toggle:active { transform: scale(0.97); }
 #sound-toggle:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+/* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
+.sample-toggle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color var(--g-ease), color var(--g-ease), background var(--g-ease);
+}
+.sample-toggle svg { width: 18px; height: 18px; flex: none; }
+.sample-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
+.sample-toggle:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.sample-toggle[aria-pressed="true"] { background: var(--g-accent); border-color: var(--g-accent); color: #fff; }
 
 /* ---------- 5. TABS (segmented control) ---------- */
 .g-tabs {
@@ -910,6 +926,7 @@ document.documentElement.setAttribute('data-theme',t);})();
     </div>
     <div class="g-header-actions">
   <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+<button type="button" id="sample-toggle" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
 <button class="g-theme-toggle" id="themeBtn" aria-label="Toggle dark mode">
       <svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon" id="themeUse"/></svg>
     </button>
@@ -1003,6 +1020,7 @@ function loadState(){
 }
 let saveWarned = false; // warn once per session if persistence fails, so data loss is never silent
 function saveState(){
+  if(window.__gSampleOn) return; /* sample mode: real data is snapshotted — never persist demo data */
   try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){ /* storage full/blocked: keep running in-memory */
     if(!saveWarned){ saveWarned = true; try{ toast("Couldn't save — browser storage is full or blocked. Changes only last for this session."); }catch(_){} }
   }
@@ -1747,6 +1765,69 @@ document.getElementById("impFile").addEventListener("change", e => {
   if(e.target.files && e.target.files[0]) importFile(e.target.files[0]);
   e.target.value = "";
 });
+
+/* ---------- sample-data toggle: snapshot user data, realistic demo, exact restore ---------- */
+(function(){
+  var btn = document.getElementById('sample-toggle');
+  if(!btn) return;
+  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {};
+  function paintSample(){
+    var lbl = sampleOn ? 'Clear sample data' : 'Try sample data';
+    btn.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+    btn.setAttribute('aria-label', lbl);
+    btn.title = lbl;
+  }
+  function snapshot(){
+    try{ snap = JSON.parse(JSON.stringify(state)); }catch(e){ snap = { habits: [], log: {} }; }
+    try{
+      var raw = localStorage.getItem(LS_KEY);
+      snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
+    }catch(e){ snapLS = LS_MISSING; }
+  }
+  function applySample(){
+    function pastKey(n){ var d = new Date(); d.setDate(d.getDate() - n); return localKey(d); }
+    var h1 = { id: 'h-sample-run', name: 'Morning run', type: 'daily', weekdays: [],
+               color: COLORS[1], icon: '🏃', allowPartial: true, created: pastKey(21) };
+    var h2 = { id: 'h-sample-read', name: 'Read 20 pages', type: 'weekly', weekdays: [1,2,3,4,5],
+               color: COLORS[2], icon: '📚', allowPartial: true, created: pastKey(21) };
+    var h3 = { id: 'h-sample-water', name: 'Drink water', type: 'daily', weekdays: [],
+               color: COLORS[6], icon: '💧', allowPartial: false, created: pastKey(21) };
+    state = { habits: [h1, h2, h3], log: {} };
+    state.log[h1.id] = {}; state.log[h2.id] = {}; state.log[h3.id] = {};
+    for(var i = 0; i < 14; i++){
+      var d = new Date(); d.setDate(d.getDate() - i);
+      var k = localKey(d), wd = d.getDay();
+      state.log[h1.id][k] = { status: (i % 4 === 3 ? 'partial' : 'done'), note: '' };
+      if(wd >= 1 && wd <= 5) state.log[h2.id][k] = { status: (i % 6 === 5 ? 'skip' : 'done'), note: '' };
+      state.log[h3.id][k] = { status: (i === 9 ? 'skip' : 'done'), note: '' };
+    }
+    renderAll();
+  }
+  function restore(){
+    state = snap || { habits: [], log: {} };
+    try{
+      if(snapLS === LS_MISSING) localStorage.removeItem(LS_KEY);
+      else localStorage.setItem(LS_KEY, snapLS);
+    }catch(e){}
+    snap = null; snapLS = null;
+    renderAll();
+  }
+  btn.addEventListener('click', function(){
+    if(!sampleOn){
+      snapshot();
+      window.__gSampleOn = true;
+      sampleOn = true;
+      applySample();
+    }else{
+      window.__gSampleOn = false;
+      sampleOn = false;
+      restore();
+    }
+    paintSample();
+    Sound.click();
+  });
+  paintSample();
+})();
 
 loadState();
 initTheme();

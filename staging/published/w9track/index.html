@@ -71,6 +71,15 @@ header.topbar{
   border:1px solid rgba(255,255,255,.45); border-radius:999px; cursor:pointer}
 #sound-toggle:hover{background:rgba(255,255,255,.26)}
 #sound-toggle:focus-visible{outline:2px solid #fff; outline-offset:2px}
+/* Sample-data toggle: icon-only #14 flask, same 44px circular styling as theme/sound buttons */
+.sample-toggle{display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
+  background:rgba(255,255,255,.15);color:#fff;
+  border:1px solid rgba(255,255,255,.45);border-radius:999px;cursor:pointer}
+.sample-toggle svg{width:18px;height:18px;flex:none}
+.sample-toggle:hover{background:rgba(255,255,255,.26)}
+.sample-toggle:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.sample-toggle[aria-pressed="true"]{background:var(--accent,#4f46e5);border-color:var(--accent,#4f46e5);color:#fff}
 .theme-toggle .ic-sun{display:none}
 html[data-theme="dark"] .theme-toggle .ic-sun{display:inline}
 html[data-theme="dark"] .theme-toggle .ic-moon{display:none}
@@ -304,6 +313,7 @@ footer.site a{color:var(--accent)}
     <select id="yearSelect" style="width:auto;min-height:44px;margin:0" aria-label="Tax year"></select>
     <div class="g-header-actions">
     <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+    <button id="sample-toggle" type="button" class="sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
     <button id="themeToggle" type="button" class="theme-toggle" aria-label="Toggle dark mode"><svg class='ic-moon' viewBox='0 0 24 24' aria-hidden='true'><path d='M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg><svg class='ic-sun' viewBox='0 0 24 24' aria-hidden='true'><circle cx='12' cy='12' r='4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><path d='M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19' stroke='black' stroke-width='2' stroke-linecap='round'/></svg><span id="themeLabel" hidden>Dark</span></button>
     <button id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
   </div>
@@ -479,6 +489,7 @@ function loadStore(){
   return store;
 }
 function saveStore(){
+  if(window.__gSampleOn) return; /* sample mode: real data is snapshotted — never persist demo data */
   try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
   catch(e){
     var m = document.getElementById("dataMsg");
@@ -1592,6 +1603,75 @@ function renderAll(){
 renderYearSelect();
 renderAll();
 bindSoundToggle();
+
+/* ---------- sample-data toggle: snapshot user data, realistic demo, exact restore ---------- */
+(function(){
+  var btn = document.getElementById("sample-toggle");
+  if(!btn) return;
+  var sampleOn = false, snap = null, snapYear = null, snapLS = null, LS_MISSING = {};
+  function paintSample(){
+    var lbl = sampleOn ? "Clear sample data" : "Try sample data";
+    btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
+    btn.setAttribute("aria-label", lbl);
+    btn.title = lbl;
+  }
+  function snapshot(){
+    try{ snap = JSON.parse(JSON.stringify(store)); }catch(e){ snap = null; }
+    snapYear = currentYear;
+    try{
+      var raw = localStorage.getItem(STORE_KEY);
+      snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
+    }catch(e){ snapLS = LS_MISSING; }
+  }
+  function applySample(){
+    /* same demo content as loadDemo(), minus the demo-button confirm and status/sound */
+    var d = yearData(currentYear);
+    d.contractors = [
+      { id: uid(), name: "Alex Rivera", business: "", contact: "alex@example.com",
+        entity: "individual", w9: false, w9Date: "", notes: "Video editing.",
+        payments: [
+          { date: currentYear + "-02-15", amount: 850, memo: "Project A" },
+          { date: currentYear + "-05-20", amount: 1300, memo: "Project B" }
+        ] },
+      { id: uid(), name: "BrightSpark Studio", business: "BrightSpark LLC", contact: "",
+        entity: "llc", w9: false, w9Date: "", notes: "",
+        payments: [ { date: currentYear + "-03-10", amount: 1600, memo: "Logo design" } ] },
+      { id: uid(), name: "Maria Chen", business: "", contact: "",
+        entity: "individual", w9: true, w9Date: currentYear + "-01-08", notes: "Bookkeeper.",
+        payments: [ { date: currentYear + "-01-30", amount: 900, memo: "Q1 books" } ] },
+      { id: uid(), name: "NovaCorp Inc", business: "", contact: "",
+        entity: "corp", w9: false, w9Date: "", notes: "IT support contract.",
+        payments: [ { date: currentYear + "-04-01", amount: 4800, memo: "Annual IT contract" } ] }
+    ];
+    renderAll();
+  }
+  function restore(){
+    if(snap) store = snap;
+    if(snapYear) currentYear = snapYear;
+    try{
+      if(snapLS === LS_MISSING) localStorage.removeItem(STORE_KEY);
+      else localStorage.setItem(STORE_KEY, snapLS);
+    }catch(e){}
+    snap = null; snapYear = null; snapLS = null;
+    renderYearSelect();
+    renderAll();
+  }
+  btn.addEventListener("click", function(){
+    if(!sampleOn){
+      snapshot();
+      window.__gSampleOn = true;
+      sampleOn = true;
+      applySample();
+    }else{
+      window.__gSampleOn = false;
+      sampleOn = false;
+      restore();
+    }
+    paintSample();
+    Sound.click();
+  });
+  paintSample();
+})();
 </script>
 </body>
 </html>

@@ -557,6 +557,32 @@ a:focus-visible {
 @media print { .no-print { display: none !important; } body { background: #fff; } }
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+/* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only */
+.g-round-btn {
+  flex: 0 0 auto;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.10);
+  font-size: 1.1rem;
+  transition: border-color var(--g-ease), transform var(--g-ease);
+}
+.g-round-btn svg { width: 18px; height: 18px; flex: none; }
+.g-round-btn:hover { border-color: var(--g-accent); }
+.g-round-btn:active { transform: scale(0.97); }
+.g-round-btn:focus { outline: none; }
+.g-round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.g-round-btn.sample-toggle[aria-pressed="true"] {
+  color: var(--g-accent); border-color: var(--g-accent);
+  background: var(--g-accent-soft);
+}
+@media (max-width: 480px) {
+  .g-header-actions { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+}
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
@@ -834,9 +860,9 @@ h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catc
   </div>
   <div class="g-header-actions">
   <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-<button class="g-theme-toggle no-print" onclick="gToggleTheme()" aria-label="Toggle dark mode">
-    <svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon"/></svg><span>Theme</span>
-  </button>
+<button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data" onclick="setSample(!sampleOn);Sound.click();"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+<button class="g-round-btn" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" onclick="gToggleTheme();paintTheme();Sound.toggleTheme();Sound.click();"><svg class="g-icon" aria-hidden="true"><use href="#g-i-moon"/></svg></button>
+<button class="g-round-btn" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)" onclick="toggleSound(this)">&#128266;</button>
 </div>
 </header>
 <p class="g-tagline">Recipe cost calculator for home bakers — know exactly what each batch costs and price it with confidence.</p>
@@ -1035,6 +1061,7 @@ function uid() { return 'x' + Math.random().toString(36).slice(2, 10); }
 
 /* ---------- state ---------- */
 var state = { ingredients: [], recipes: [] };
+var sampleOn = false, sampleSnap = null;
 function load() {
   try {
     var raw = localStorage.getItem(STORE_KEY);
@@ -1044,9 +1071,10 @@ function load() {
     }
   } catch (e) { /* corrupted storage -> start fresh */ state = { ingredients: [], recipes: [] }; }
   sanitizeState();
-  if (!state.ingredients.length && !state.recipes.length) seed();
+  /* First run starts EMPTY — the flask toggle shows transient sample data instead of persisted demo. */
 }
 function save() {
+  if (sampleOn) return; /* sample data is transient — never persisted */
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
 }
 /* Harden against hand-edited / corrupted data (import file or localStorage):
@@ -1084,13 +1112,120 @@ function sanitizeState() {
     });
   });
 }
-function seed() {
+/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
+function paintSample() {
+  var b = document.getElementById('sampleToggle'); if (!b) return;
+  var l = sampleOn ? 'Clear sample data' : 'Try sample data';
+  b.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+  b.setAttribute('aria-label', l); b.title = l;
+}
+function fillSample() {
+  var flour = uid(), sugar = uid(), butter = uid(), egg = uid(), choc = uid(), salt = uid();
   state.ingredients = [
-    { id: uid(), name: 'All-purpose flour', pkgQty: 5000, pkgUnit: 'g', pkgPrice: 4.99, gPerCup: 120 },
-    { id: uid(), name: 'Granulated sugar', pkgQty: 4000, pkgUnit: 'g', pkgPrice: 3.89, gPerCup: 200 },
-    { id: uid(), name: 'Unsalted butter', pkgQty: 16, pkgUnit: 'oz', pkgPrice: 4.49, gPerCup: 227 },
-    { id: uid(), name: 'Large eggs', pkgQty: 12, pkgUnit: 'each', pkgPrice: 3.29, gPerCup: 0, gPerEach: 50 }
+    { id: flour, name: 'All-purpose flour', pkgQty: 5000, pkgUnit: 'g', pkgPrice: 4.99, gPerCup: 120 },
+    { id: sugar, name: 'Granulated sugar', pkgQty: 4000, pkgUnit: 'g', pkgPrice: 3.89, gPerCup: 200 },
+    { id: butter, name: 'Unsalted butter', pkgQty: 16, pkgUnit: 'oz', pkgPrice: 4.49, gPerCup: 227 },
+    { id: egg, name: 'Large eggs', pkgQty: 12, pkgUnit: 'each', pkgPrice: 3.29, gPerCup: 0, gPerEach: 50 },
+    { id: choc, name: 'Chocolate chips', pkgQty: 2000, pkgUnit: 'g', pkgPrice: 6.49, gPerCup: 170 },
+    { id: salt, name: 'Fine sea salt', pkgQty: 737, pkgUnit: 'g', pkgPrice: 2.79, gPerCup: 288 }
   ];
+  var r = blankRecipe();
+  r.name = 'Chocolate Chip Cookies'; r.yieldQty = 24; r.yieldUnit = 'cookies';
+  r.laborHours = 0.75; r.laborRate = 18; r.packagingPerUnit = 0.25;
+  r.overheadPct = 15; r.targetMarginPct = 60;
+  r.lines = [
+    { ingId: flour, qty: 360, unit: 'g' },
+    { ingId: sugar, qty: 200, unit: 'g' },
+    { ingId: butter, qty: 226, unit: 'g' },
+    { ingId: egg, qty: 2, unit: 'each' },
+    { ingId: choc, qty: 340, unit: 'g' },
+    { ingId: salt, qty: 5, unit: 'g' }
+  ];
+  state.recipes = [r];
+  currentRecipeId = r.id;
+  renderIngredients(); renderRecipeSelect(); renderRecipe();
+  showTab('rec');
+}
+/* transient (uncommitted) form values live only in the DOM — snapshot by id so
+   sample-off restores the exact pre-sample form state even across re-renders */
+function snapForm() {
+  var o = {}, els = document.querySelectorAll('input[id],select[id],textarea[id]');
+  for (var i = 0; i < els.length; i++) { var e = els[i];
+    o[e.id] = (e.type === 'checkbox' || e.type === 'radio') ? (e.checked ? '1' : '0') : e.value; }
+  return o;
+}
+function restoreForm(snap) {
+  if (!snap) return;
+  for (var id in snap) { if (!Object.prototype.hasOwnProperty.call(snap, id)) continue;
+    var e = document.getElementById(id); if (!e) continue; var v = snap[id];
+    if (e.type === 'checkbox' || e.type === 'radio') e.checked = (v === '1'); else e.value = v; }
+}
+function setSample(on) {
+  if (on && !sampleOn) {
+    sampleSnap = JSON.stringify({ state: state, currentRecipeId: currentRecipeId,
+      tab: document.getElementById('tab-ing').getAttribute('aria-selected') === 'true' ? 'ing' : 'rec',
+      form: snapForm() });
+    sampleOn = true;
+    fillSample();
+  } else if (!on && sampleOn) {
+    sampleOn = false;
+    try { var s = JSON.parse(sampleSnap);
+      if (s && s.state) { state = s.state; currentRecipeId = s.currentRecipeId; } } catch (e) {}
+    sampleSnap = null;
+    renderIngredients(); renderRecipeSelect(); renderRecipe();
+    try { restoreForm(s.form); showTab(s.tab === 'rec' ? 'rec' : 'ing'); } catch (e) {}
+  }
+  paintSample();
+}
+
+/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
+var Sound = (function () {
+  var K = 'recipecost.sound', on = true, ctx = null;
+  try { if (window.localStorage.getItem(K) === 'off') on = false; } catch (e) {}
+  function ac() { try {
+    if (!ctx) { var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; ctx = new AC(); }
+    return ctx; } catch (e) { return null; } }
+  function tone(freq, dur, type, vol, delay) {
+    var c = ac(); if (!c) return;
+    function play() { try {
+      var t = c.currentTime + (delay || 0), o = c.createOscillator(), g = c.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.05); } catch (e) {} }
+    if (c.state === 'suspended') { c.resume().then(play, play); } else { play(); }
+  }
+  return {
+    isOn: function () { return on; },
+    toggle: function () { on = !on; try { window.localStorage.setItem(K, on ? 'on' : 'off'); } catch (e) {} return on; },
+    click: function () { if (on) tone(520, 0.06, 'sine', 0.045); },
+    select: function () { if (on) { tone(660, 0.07, 'sine', 0.055); tone(880, 0.09, 'sine', 0.045, 0.06); } },
+    success: function () { if (on) { tone(660, 0.09, 'sine', 0.06); tone(990, 0.12, 'sine', 0.05, 0.08); } },
+    error: function () { if (on) tone(170, 0.16, 'sawtooth', 0.045); },
+    toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
+  };
+})();
+function paintSoundBtn(btn) {
+  var on = Sound.isOn();
+  btn.innerHTML = on ? '&#128266;' : '&#128263;';
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
+  btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
+}
+function toggleSound(btn) {
+  Sound.toggle();
+  paintSoundBtn(btn);
+  Sound.click();
+}
+
+/* ---------- theme icon paint ---------- */
+function paintTheme() {
+  var t = document.documentElement.getAttribute('data-theme') || 'light', dark = t === 'dark';
+  var b = document.getElementById('themeToggle'); if (!b) return;
+  var l = dark ? 'Switch to light mode' : 'Switch to dark mode';
+  b.innerHTML = '<svg class="g-icon" aria-hidden="true"><use href="#' + (dark ? 'g-i-sun' : 'g-i-moon') + '"/></svg>';
+  b.setAttribute('aria-pressed', dark ? 'true' : 'false');
+  b.setAttribute('aria-label', l); b.title = l;
 }
 
 /* ---------- ingredient costing ---------- */
@@ -1145,6 +1280,7 @@ function showTab(which) {
   document.getElementById('panel-rec').hidden = ing;
   document.getElementById('tab-ing').setAttribute('aria-selected', ing ? 'true' : 'false');
   document.getElementById('tab-rec').setAttribute('aria-selected', ing ? 'false' : 'true');
+  Sound.click();
 }
 
 /* ---------- ingredients UI ---------- */
@@ -1171,8 +1307,8 @@ function addIngredient() {
   var unit = document.getElementById('ing-unit').value;
   var gpc = num(document.getElementById('ing-gpc').value);
   var gpe = num(document.getElementById('ing-gpe').value);
-  if (!name) return ingErr('Give the ingredient a name.');
-  if (!(price >= 0) || !(qty > 0)) return ingErr('Enter a package price and a package size greater than zero.');
+  if (!name) { Sound.error(); return ingErr('Give the ingredient a name.'); }
+  if (!(price >= 0) || !(qty > 0)) { Sound.error(); return ingErr('Enter a package price and a package size greater than zero.'); }
   ingErr('');
   if (editingIngId) {
     var ing = state.ingredients.find(function (i) { return i.id === editingIngId; });
@@ -1182,7 +1318,7 @@ function addIngredient() {
   } else {
     state.ingredients.push({ id: uid(), name: name, pkgPrice: price, pkgQty: qty, pkgUnit: unit, gPerCup: gpc, gPerEach: gpe });
   }
-  save(); clearIngForm(); renderIngredients(); renderRecipeSelect();
+  save(); clearIngForm(); renderIngredients(); renderRecipeSelect(); Sound.success();
 }
 function clearIngForm() {
   ['ing-name', 'ing-price', 'ing-qty', 'ing-gpc', 'ing-gpe'].forEach(function (id) { document.getElementById(id).value = ''; });
@@ -1206,7 +1342,7 @@ function deleteIngredient(id) {
   if (used && !confirm('This ingredient is used in a recipe. Delete it anyway?')) return;
   state.ingredients = state.ingredients.filter(function (i) { return i.id !== id; });
   state.recipes.forEach(function (r) { r.lines = r.lines.filter(function (l) { return l.ingId !== id; }); });
-  save(); renderIngredients(); renderRecipe();
+  save(); renderIngredients(); renderRecipe(); Sound.click();
 }
 function renderIngredients() {
   var tb = document.getElementById('ing-tbody');
@@ -1250,16 +1386,16 @@ function renderRecipeSelect() {
 function newRecipe() {
   var r = blankRecipe();
   state.recipes.push(r); currentRecipeId = r.id;
-  save(); renderRecipeSelect(); renderRecipe();
+  save(); renderRecipeSelect(); renderRecipe(); Sound.success();
   document.getElementById('rec-name').focus();
 }
-function selectRecipe(id) { currentRecipeId = id; renderRecipe(); }
+function selectRecipe(id) { currentRecipeId = id; renderRecipe(); Sound.select(); }
 function deleteRecipe() {
   var r = cur(); if (!r) return;
   if (!confirm('Delete "' + (r.name || 'this recipe') + '"?')) return;
   state.recipes = state.recipes.filter(function (x) { return x.id !== r.id; });
   currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
-  save(); renderRecipeSelect(); renderRecipe();
+  save(); renderRecipeSelect(); renderRecipe(); Sound.click();
 }
 function recField(field, val) {
   var r = cur(); if (!r) return;
@@ -1288,11 +1424,11 @@ function addLine() {
     e.classList.add('show'); return;
   }
   r.lines.push({ ingId: state.ingredients[0].id, qty: 0, unit: state.ingredients[0].pkgUnit });
-  save(); renderLines(); renderSummary();
+  save(); renderLines(); renderSummary(); Sound.click();
 }
 function removeLine(idx) {
   var r = cur(); if (!r) return;
-  r.lines.splice(idx, 1); save(); renderLines(); renderSummary();
+  r.lines.splice(idx, 1); save(); renderLines(); renderSummary(); Sound.click();
 }
 function lineUnitOptions(selected) {
   var html = '';
@@ -1414,7 +1550,7 @@ function download(name, text, type) {
   document.body.appendChild(a); a.click();
   setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
-function exportData() { download('recipecost-backup.json', JSON.stringify(state, null, 2)); }
+function exportData() { download('recipecost-backup.json', JSON.stringify(state, null, 2)); Sound.success(); }
 function importData(input) {
   var f = input.files && input.files[0]; if (!f) return;
   var rd = new FileReader();
@@ -1424,11 +1560,11 @@ function importData(input) {
       if (!d || !Array.isArray(d.ingredients) || !Array.isArray(d.recipes)) throw new Error('bad file');
       state = d; sanitizeState();
       currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
-      save(); renderIngredients(); renderRecipe();
+      save(); renderIngredients(); renderRecipe(); Sound.success();
     } catch (e) {
       var el = document.getElementById('rec-err');
       el.textContent = 'Could not import that file — it is not a RecipeCost backup.';
-      el.classList.add('show');
+      el.classList.add('show'); Sound.error();
     }
     input.value = '';
   };
@@ -1442,6 +1578,9 @@ document.addEventListener('DOMContentLoaded', function () {
   renderIngredients();
   currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
   renderRecipe();
+  paintTheme(); paintSample();
+  var sb = document.getElementById('soundToggle');
+  if (sb) paintSoundBtn(sb);
 });
 </script>
 </body>

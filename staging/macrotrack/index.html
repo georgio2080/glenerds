@@ -198,6 +198,32 @@ function gToggleTheme() {
 
 /* "More Apps" button — permanent top-bar element on every app (Glen's pick 2026-09-21) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+/* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only */
+.g-round-btn {
+  flex: 0 0 auto;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.10);
+  font-size: 1.1rem;
+  transition: border-color var(--g-ease), transform var(--g-ease);
+}
+.g-round-btn svg { width: 18px; height: 18px; flex: none; }
+.g-round-btn:hover { border-color: var(--g-accent); }
+.g-round-btn:active { transform: scale(0.97); }
+.g-round-btn:focus { outline: none; }
+.g-round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.g-round-btn.sample-toggle[aria-pressed="true"] {
+  color: var(--g-accent); border-color: var(--g-accent);
+  background: var(--g-accent-soft);
+}
+@media (max-width: 480px) {
+  .g-header-actions { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+}
 .g-store-btn {
   display: inline-flex; align-items: center; gap: 7px;
   background: var(--g-accent);
@@ -742,7 +768,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
 .disclaimer { color: var(--g-muted); font-size: 0.85rem; margin: 16px 0 0; }
 #print-head { display: none; }
 @media print {
-  header.g-header .g-theme-toggle, header.g-header .g-store-btn, .g-cta-strip, .actions, .g-footer, #inputs-card, .no-print { display: none !important; }
+  header.g-header .g-theme-toggle, header.g-header .g-header-actions, header.g-header .g-store-btn, .g-cta-strip, .actions, .g-footer, #inputs-card, .no-print { display: none !important; }
   #print-head { display: block; margin-bottom: 12px; }
   body { background: #fff; color: #000; }
   .g-card { break-inside: avoid; background: #fff; border-color: #999; }
@@ -911,7 +937,9 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button class="g-theme-toggle" id="theme-btn" type="button" aria-label="Toggle dark mode"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon"/></svg><span>Dark</span></button>
+      <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button class="g-round-btn" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><svg class="g-icon" aria-hidden="true"><use href="#g-i-moon"/></svg></button>
+      <button class="g-round-btn" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
     </div>
   </header>
   <p class="g-tagline">Free TDEE &amp; macro calculator. Every formula shown, every step visible — your data never leaves this page.</p>
@@ -1122,20 +1150,116 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     return s;
   }
   var S = loadState();
+  var sampleOn = false, sampleSnap = null;
   function save() {
+    if (sampleOn) return; /* sample data is transient — never persisted */
     try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {}
   }
 
   // ---- theme (shared glenerds-theme key) ----
-  var themeBtn = $('theme-btn');
+  var themeBtn = $('themeToggle');
   function paintTheme() {
     var t = document.documentElement.getAttribute('data-theme') || 'light';
-    themeBtn.innerHTML = t === 'dark'
-      ? '<svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-sun"/></svg><span>Light</span>'
-      : '<svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon"/></svg><span>Dark</span>';
+    var dark = t === 'dark';
+    var l = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    themeBtn.innerHTML = '<svg class="g-icon" aria-hidden="true"><use href="#' + (dark ? 'g-i-sun' : 'g-i-moon') + '"/></svg>';
+    themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    themeBtn.setAttribute('aria-label', l);
+    themeBtn.title = l;
   }
-  themeBtn.addEventListener('click', function () { gToggleTheme(); paintTheme(); });
+  themeBtn.addEventListener('click', function () { gToggleTheme(); paintTheme(); Sound.toggleTheme(); Sound.click(); });
   paintTheme();
+
+  // ---- sample data toggle (transient: snapshot user data, never persisted) ----
+  function paintSample() {
+    var b = $('sampleToggle'), l = sampleOn ? 'Clear sample data' : 'Try sample data';
+    b.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+    b.setAttribute('aria-label', l);
+    b.title = l;
+  }
+  /* Transient (uncommitted) input values live only in the DOM, not in S — snapshot
+     them so sample-off restores the exact pre-sample form state (values, checks,
+     and derived UI such as validation hints). */
+  function snapInputs() {
+    var els = document.querySelectorAll('input,select,textarea'), out = [];
+    for (var i = 0; i < els.length; i++) out.push([els[i].value, els[i].checked]);
+    return out;
+  }
+  function restoreInputs(snap) {
+    var els = document.querySelectorAll('input,select,textarea');
+    for (var i = 0; i < snap.length && i < els.length; i++) {
+      var e = els[i], s = snap[i];
+      if (e.type === 'checkbox' || e.type === 'radio') {
+        if (e.checked !== s[1]) { e.checked = s[1]; e.dispatchEvent(new Event('change', { bubbles: true })); }
+      } else if (e.value !== s[0]) {
+        e.value = s[0];
+        e.dispatchEvent(new Event('input', { bubbles: true }));
+        e.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+  }
+  var sampleDom = null;
+  function setSample(on) {
+    if (on && !sampleOn) {
+      sampleSnap = JSON.stringify(S);
+      sampleDom = snapInputs();
+      sampleOn = true;
+      S.units = 'imp'; S.age = 34; S.sex = 'f';
+      S.weightKg = 68.04; S.heightCm = 165.1; S.bodyFat = 24;
+      S.activity = 1.725; S.goalPct = -15;
+      S.formula = 'mifflin'; S.macro = 'hp';
+      syncInputs(); paintUnits(); paintGoalLabel(); reseg(); compute();
+    } else if (!on && sampleOn) {
+      sampleOn = false;
+      try { var s = JSON.parse(sampleSnap); if (s && typeof s === 'object') S = s; } catch (e) {}
+      sampleSnap = null;
+      syncInputs(); paintUnits(); paintGoalLabel(); reseg(); compute();
+      /* re-apply transient pre-sample input values (with events, so validation
+         hints and derived UI return to their exact pre-sample state) */
+      if (sampleDom) { restoreInputs(sampleDom); sampleDom = null; }
+    }
+    paintSample();
+  }
+
+  // ---- subtle sounds (Web Audio oscillator, no files, offline) ----
+  var Sound = (function () {
+    var K = 'macrotrack.sound', on = true, ctx = null;
+    try { if (window.localStorage.getItem(K) === 'off') on = false; } catch (e) {}
+    function ac() { try {
+      if (!ctx) { var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; ctx = new AC(); }
+      return ctx; } catch (e) { return null; } }
+    function tone(freq, dur, type, vol, delay) {
+      var c = ac(); if (!c) return;
+      function play() { try {
+        var t = c.currentTime + (delay || 0), o = c.createOscillator(), g = c.createGain();
+        o.type = type || 'sine'; o.frequency.value = freq;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.05); } catch (e) {} }
+      if (c.state === 'suspended') { c.resume().then(play, play); } else { play(); }
+    }
+    return {
+      isOn: function () { return on; },
+      toggle: function () { on = !on; try { window.localStorage.setItem(K, on ? 'on' : 'off'); } catch (e) {} return on; },
+      click: function () { if (on) tone(520, 0.06, 'sine', 0.045); },
+      select: function () { if (on) { tone(660, 0.07, 'sine', 0.055); tone(880, 0.09, 'sine', 0.045, 0.06); } },
+      success: function () { if (on) { tone(660, 0.09, 'sine', 0.06); tone(990, 0.12, 'sine', 0.05, 0.08); } },
+      error: function () { if (on) tone(170, 0.16, 'sawtooth', 0.045); },
+      toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
+    };
+  })();
+  (function () {
+    var btn = $('soundToggle'); if (!btn) return;
+    function paint() { var on = Sound.isOn();
+      btn.innerHTML = on ? '&#128266;' : '&#128263;';
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
+      btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')'; }
+    btn.addEventListener('click', function () { Sound.toggle(); paint(); Sound.click(); });
+    paint();
+  })();
+  $('sampleToggle').addEventListener('click', function () { setSample(!sampleOn); Sound.click(); });
+  paintSample();
 
   // ---- segmented control helper ----
   function seg(ids, get, set) {
@@ -1145,7 +1269,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       el.addEventListener('click', function () {
         set(id);
         ids.forEach(function (id2) { $(id2).setAttribute('aria-pressed', id2 === id ? 'true' : 'false'); });
-        save(); compute();
+        save(); compute(); Sound.click();
       });
     });
   }
@@ -1234,7 +1358,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     save();
   }
 
-  $('activity').addEventListener('change', function () { persistFromInputs(readInputs(), false); compute(); });
+  $('activity').addEventListener('change', function () { persistFromInputs(readInputs(), false); compute(); Sound.click(); });
   $('goal-slider').addEventListener('input', function () {
     S.goalPct = parseInt($('goal-slider').value, 10);
     // keep preset buttons in sync when the slider matches one
@@ -1261,9 +1385,10 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
 
   $('print-btn').addEventListener('click', function () { window.print(); });
   $('reset-btn').addEventListener('click', function () {
+    if (sampleOn) { setSample(false); Sound.click(); return; } /* reset during sample = restore user data */
     S = JSON.parse(JSON.stringify(DEFAULTS));
     try { localStorage.removeItem(LS_KEY); } catch (e) {}
-    syncInputs(); paintUnits(); paintGoalLabel(); reseg(); save(); compute();
+    syncInputs(); paintUnits(); paintGoalLabel(); reseg(); save(); compute(); Sound.success();
   });
   function reseg() {
     var map = {

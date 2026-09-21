@@ -155,6 +155,30 @@ footer a{color:var(--primary)}
 .g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+/* Glenerds standard header cluster: More Apps + sample flask + theme + sound */
+.g-header-actions { margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
+a.g-store-btn, header.hero .g-store-btn { color: #ffffff; }
+.round-btn {
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; background: var(--card); border: 1px solid var(--border);
+  color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none;
+}
+.round-btn svg { width: 18px; height: 18px; flex: none; }
+.round-btn:hover { border-color: var(--g-accent, #4f46e5); }
+.round-btn:focus { outline: none; }
+.round-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.round-btn.sample-toggle[aria-pressed="true"] {
+  color: var(--g-accent, #4f46e5); border-color: var(--g-accent, #4f46e5);
+  background: color-mix(in srgb, var(--g-accent, #4f46e5) 12%, transparent);
+}
+.round-btn.theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .round-btn.theme-toggle .icon-sun { display: inline; }
+[data-theme="dark"] .round-btn.theme-toggle .icon-moon { display: none; }
+@media (max-width: 640px) {
+  .hero-inner { flex-wrap: wrap; }
+  .g-header-actions { margin-left: 0; gap: 6px; }
+}
 .g-cta-strip {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   margin: 28px 0 0; padding: 16px 20px;
@@ -189,12 +213,15 @@ footer a{color:var(--primary)}
       <h1>DebtPayoff Strategy Planner</h1>
       <p class="tagline">Snowball vs avalanche vs custom — compare payoff plans offline, privately.</p>
     </div>
-    <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-    <button class="theme-pill" id="themeToggle" aria-label="Toggle dark mode">
-      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
-      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      <span id="themeLabel">Dark mode</span>
-    </button>
+    <div class="g-header-actions">
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+    </div>
   </div>
 </header>
 <main>
@@ -327,19 +354,24 @@ function applyTheme(t){
   if(t!=="dark") t="light";
   document.documentElement.setAttribute("data-theme",t);
   try{ localStorage.setItem(LS_THEME,t); }catch(e){}
-  $("themeLabel").textContent = (t==="dark" ? "Light mode" : "Dark mode");
+  var btn=$("themeToggle"), dark=(t==="dark"), lbl=dark?"Switch to light mode":"Switch to dark mode";
+  btn.setAttribute("aria-pressed",dark?"true":"false");
+  btn.setAttribute("aria-label",lbl); btn.title=lbl;
   drawChart();
 }
 $("themeToggle").addEventListener("click",function(){
   var cur=document.documentElement.getAttribute("data-theme");
   applyTheme(cur==="dark"?"light":"dark");
+  Sound.toggleTheme(); Sound.click();
 });
 
 /* ---------- state ---------- */
 var state = { debts:[], order:[], strategy:"snowball", extraMonthly:0, schedStrat:"snowball" };
 var editingId = null;
 
+var sampleOn=false, sampleSnap=null;
 function save(){
+  if(sampleOn) return; /* sample data is transient — never persisted */
   try{ localStorage.setItem(LS_STATE, JSON.stringify(state)); }catch(e){}
 }
 function sanitizeDebt(d){
@@ -380,6 +412,78 @@ function demoData(){
   var n=$("demoNotice"); n.hidden=false;
   n.textContent="Demo data loaded (3 debts). Edit or delete these, or add your own — everything stays on this device.";
 }
+
+/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
+function paintSample(){
+  var btn=$("sampleToggle"), lbl=sampleOn?"Clear sample data":"Try sample data";
+  btn.setAttribute("aria-pressed",sampleOn?"true":"false");
+  btn.setAttribute("aria-label",lbl); btn.title=lbl;
+}
+function setSample(on){
+  if(on && !sampleOn){
+    sampleSnap=JSON.stringify(state);
+    sampleOn=true; editingId=null;
+    state.debts=[
+      {id:uid(),name:"Personal loan",balance:2500,apr:7.99,minPayment:80},
+      {id:uid(),name:"Store card",balance:4200,apr:29.99,minPayment:126},
+      {id:uid(),name:"Visa card",balance:6500,apr:24.99,minPayment:195},
+      {id:uid(),name:"Auto loan",balance:11800,apr:5.49,minPayment:312}
+    ];
+    state.order=state.debts.map(function(d){return d.id;});
+    state.strategy="snowball"; state.extraMonthly=200; state.schedStrat="snowball";
+    renderAll();
+    var n=$("demoNotice"); n.hidden=false;
+    n.textContent="Sample data is on — toggle the flask icon again to restore your own data.";
+  }else if(!on && sampleOn){
+    sampleOn=false;
+    try{ var s=JSON.parse(sampleSnap); if(s&&typeof s==="object") state=s; }catch(e){}
+    sampleSnap=null; editingId=null;
+    renderAll();
+    $("demoNotice").hidden=true;
+  }
+  paintSample();
+}
+$("sampleToggle").addEventListener("click",function(){ setSample(!sampleOn); Sound.click(); });
+
+/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
+var Sound=(function(){
+  var KEY="debtpayoff.sound", on=true, ctx=null;
+  try{ if(window.localStorage.getItem(KEY)==="off") on=false; }catch(e){}
+  function ac(){ try{
+    if(!ctx){ var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null; ctx=new AC(); }
+    return ctx; }catch(e){ return null; } }
+  function tone(freq,dur,type,vol,delay){
+    var c=ac(); if(!c) return;
+    function play(){ try{
+      var t=c.currentTime+(delay||0), o=c.createOscillator(), g=c.createGain();
+      o.type=type||"sine"; o.frequency.value=freq;
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05);
+    }catch(e){} }
+    if(c.state==="suspended"){ c.resume().then(play,play); }else{ play(); }
+  }
+  return{
+    isOn:function(){ return on; },
+    toggle:function(){ on=!on; try{ window.localStorage.setItem(KEY,on?"on":"off"); }catch(e){} return on; },
+    click:function(){ if(on) tone(520,0.06,"sine",0.045); },
+    select:function(){ if(on){ tone(660,0.07,"sine",0.055); tone(880,0.09,"sine",0.045,0.06); } },
+    success:function(){ if(on){ tone(660,0.09,"sine",0.06); tone(990,0.12,"sine",0.05,0.08); } },
+    error:function(){ if(on) tone(170,0.16,"sawtooth",0.045); },
+    toggleTheme:function(){ if(on) tone(440,0.06,"triangle",0.05); }
+  };
+})();
+(function(){
+  var btn=$("soundToggle"); if(!btn) return;
+  function paint(){ var on=Sound.isOn();
+    btn.innerHTML=on?"&#128266;":"&#128263;";
+    btn.setAttribute("aria-pressed",on?"true":"false");
+    btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
+    btn.title="Toggle sounds ("+(on?"on":"off")+")";
+  }
+  btn.addEventListener("click",function(){ Sound.toggle(); paint(); Sound.click(); });
+  paint();
+})();
 
 /* ---------- simulation engine ---------- */
 function orderFor(strategy){
@@ -477,14 +581,14 @@ function renderDebts(){
 }
 function armDelete(btn,id){
   if(btn.dataset.armed){ doDelete(id); return; }
-  btn.dataset.armed="1"; var old=btn.textContent; btn.textContent="Confirm?";
+  btn.dataset.armed="1"; var old=btn.textContent; btn.textContent="Confirm?"; Sound.click();
   setTimeout(function(){ if(btn.isConnected){btn.textContent=old; delete btn.dataset.armed;} },2500);
 }
 function doDelete(id){
   state.debts=state.debts.filter(function(d){return d.id!==id;});
   state.order=state.order.filter(function(x){return x!==id;});
   if(editingId===id) cancelEdit();
-  save(); renderAll();
+  save(); renderAll(); Sound.success();
 }
 function startEdit(id){
   var d=state.debts.filter(function(x){return x.id===id;})[0]; if(!d) return;
@@ -503,10 +607,10 @@ function submitDebt(){
   var err=$("debtErr"); err.textContent="";
   var name=$("fName").value.trim().slice(0,60);
   var bal=Number($("fBalance").value), apr=Number($("fApr").value), mn=Number($("fMin").value);
-  if(!name){ err.textContent="Give the debt a name."; return; }
-  if(!isFinite(bal)||bal<=0||bal>1e9){ err.textContent="Balance must be a number greater than 0."; return; }
-  if(!isFinite(apr)||apr<0||apr>200){ err.textContent="APR must be between 0 and 200."; return; }
-  if(!isFinite(mn)||mn<0||mn>1e9){ err.textContent="Minimum payment must be 0 or more."; return; }
+  if(!name){ err.textContent="Give the debt a name."; Sound.error(); return; }
+  if(!isFinite(bal)||bal<=0||bal>1e9){ err.textContent="Balance must be a number greater than 0."; Sound.error(); return; }
+  if(!isFinite(apr)||apr<0||apr>200){ err.textContent="APR must be between 0 and 200."; Sound.error(); return; }
+  if(!isFinite(mn)||mn<0||mn>1e9){ err.textContent="Minimum payment must be 0 or more."; Sound.error(); return; }
   bal=Math.round(bal*100)/100; apr=Math.round(apr*100)/100; mn=Math.round(mn*100)/100;
   if(editingId){
     var d=state.debts.filter(function(x){return x.id===editingId;})[0];
@@ -518,7 +622,7 @@ function submitDebt(){
     state.order.push(id);
     $("fName").value="";$("fBalance").value="";$("fApr").value="";$("fMin").value="";
   }
-  save(); renderAll();
+  save(); renderAll(); Sound.success();
 }
 
 function renderStrategy(){
@@ -668,7 +772,7 @@ function renderAll(){
 $("addDebtBtn").addEventListener("click",submitDebt);
 $("cancelEditBtn").addEventListener("click",cancelEdit);
 document.querySelectorAll(".tab").forEach(function(t){
-  t.addEventListener("click",function(){ state.strategy=t.dataset.strat; save(); renderStrategy(); });
+  t.addEventListener("click",function(){ state.strategy=t.dataset.strat; save(); renderStrategy(); Sound.click(); });
 });
 $("extraRange").addEventListener("input",function(){
   state.extraMonthly=Number($("extraRange").value);
@@ -676,7 +780,7 @@ $("extraRange").addEventListener("input",function(){
   save(); renderCompare(); renderSchedule();
 });
 $("schedStrat").addEventListener("change",function(){
-  state.schedStrat=$("schedStrat").value; save(); renderSchedule();
+  state.schedStrat=$("schedStrat").value; save(); renderSchedule(); Sound.click();
 });
 $("exportBtn").addEventListener("click",function(){
   var err=$("dataErr"); err.textContent="";
@@ -686,12 +790,13 @@ $("exportBtn").addEventListener("click",function(){
   var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download="debtpayoff-export.json"; document.body.appendChild(a); a.click();
   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+  Sound.success();
 });
 $("importBtn").addEventListener("click",function(){ $("importFile").click(); });
 $("importFile").addEventListener("change",function(e){
   var err=$("dataErr"); err.textContent="";
   var f=e.target.files[0]; if(!f) return;
-  if(f.size>1048576){ err.textContent="That file is too large to be a DebtPayoff export."; e.target.value=""; return; }
+  if(f.size>1048576){ err.textContent="That file is too large to be a DebtPayoff export."; Sound.error(); e.target.value=""; return; }
   var rd=new FileReader();
   rd.onload=function(){
     try{
@@ -714,23 +819,24 @@ $("importFile").addEventListener("change",function(e){
       err.textContent=""; 
       var n=$("demoNotice"); n.hidden=false;
       n.textContent="Imported "+debts.length+" debt"+(debts.length===1?"":"s")+(skipped?(" ("+skipped+" bad record"+(skipped===1?"":"s")+" skipped)"):"")+".";
-    }catch(ex){ err.textContent="That file isn't a valid DebtPayoff export."; }
+      Sound.success();
+    }catch(ex){ err.textContent="That file isn't a valid DebtPayoff export."; Sound.error(); }
     e.target.value="";
   };
   rd.readAsText(f);
 });
 $("demoBtn").addEventListener("click",function(){
   if(state.debts.length>0 && !confirm("Replace your current debts with the demo data?")) return;
-  demoData();
+  demoData(); Sound.click();
 });
 $("clearBtn").addEventListener("click",function(){
   var btn=$("clearBtn"), lbl=$("clearLabel");
   if(btn.dataset.armed){
     state.debts=[];state.order=[];editingId=null;save();renderAll();
     lbl.textContent="Clear all data"; delete btn.dataset.armed;
-    $("demoNotice").hidden=true;
+    $("demoNotice").hidden=true; Sound.success();
   }else{
-    btn.dataset.armed="1"; lbl.textContent="Click again to confirm";
+    btn.dataset.armed="1"; lbl.textContent="Click again to confirm"; Sound.click();
     setTimeout(function(){lbl.textContent="Clear all data";delete btn.dataset.armed;},2500);
   }
 });
@@ -739,8 +845,8 @@ $("clearBtn").addEventListener("click",function(){
 (function init(){
   var had=load();
   applyTheme(document.documentElement.getAttribute("data-theme")||"light");
-  if(!had){ demoData(); }
-  else { renderAll(); }
+  paintSample();
+  renderAll(); /* first run starts EMPTY — demo data is opt-in via the demo button or transient via the flask */
 })();
 </script>
 </body>
