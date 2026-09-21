@@ -1,22 +1,23 @@
-# MacroTrack — CHANGES.md
+# GradePlan changelog
+
+## 2026-09-20 — v1.2 (bench-review fixes)
+- Fixed: Honors/AP-weighted F no longer gains +1.0 quality point — an F stays 0.0 even when weighted + H/AP checked (was: 3-credit Honors F counted 1.0)
+- Added: incomplete course/GPA rows are now announced ("N incomplete categor(ies)/course(s) not counted") instead of silently ignored
+- Fixed: loading saved state no longer re-saves during restore (showTab skipSave)
+- Hardened: saved-value validation now strictly numeric (rejects "85garbage"-style strings on restore)
+- QA: 11/11 Playwright regression checks pass in system Chromium (weighted-F math, incomplete-row notes, strict restore validation, no-mutation reload, core math, dark persistence), zero page errors
+
+## 2026-09-20 — v1.1 (QA fixes)
+- Fixed: 0-credit courses no longer trigger a contradictory "Credits must be between 0 and 12." error — they are excluded from the GPA like blank rows (audit courses don't affect GPA)
+- Added: pure-CSS bar visuals on all three result panels (final-exam target marker on a 0–100 scale, per-category score bars, per-course grade-point bars + overall GPA bar); zero external requests, dark-mode aware, XSS-escaped labels
+- QA: 16/16 jsdom DOM checks pass (0-credit math, bar rendering, XSS escaping, dark mode + persistence), zero JS errors
 
 ## 2026-09-19 — v1.0 (initial build)
-- Built free TDEE & macro calculator as a single offline HTML file.
-- Inputs: age, sex, height/weight (imperial + metric), optional body fat %,
-  5 activity levels, goal presets (cut −20% / maintain / lean bulk +10%) with
-  fine-tune slider (−30% to +20%), 3 BMR formulas, 3 macro split presets.
-- Outputs: BMR, TDEE, target calories, protein/carbs/fat grams, weekly pace
-  estimate, full show-your-work math steps, printable results.
-- Dark mode: toggle, honors prefers-color-scheme, persisted in localStorage.
-- Inputs persist in localStorage; stored state strictly validated on load.
-- Discreet "by Glenerds" attribution link to the Gumroad store.
-- QA: zero console/page errors in system Chromium (light + dark + mobile);
-  all computed values verified against hand calculations (Mifflin-St Jeor,
-  Harris-Benedict female, Katch-McArdle, metric/imperial, validation errors).
-- Outside-AI review round 1: 4 minor findings — 2 verified non-issues
-  (init overwrites inputs from defaults; canonical metric storage already in
-  place), 2 fixed: localStorage state validation hardening, aria-live scoped
-  to the big-numbers output only.
-- Outside-AI review round 2: ZERO ISSUES.
-- Gallery: 8 real screenshots (cover, inputs, results, show-your-work,
-  dark mode, mobile, metric, Katch-McArdle).
+- Final exam solver: required-score math with impossible/guaranteed verdicts
+- Weighted course grade calculator with auto-scaling weights
+- GPA calculator: 4.0 scale, weighted/unweighted toggle (+1.0 Honors/AP)
+- Show-your-work formula blocks on every result
+- Dark mode (toggle, prefers-color-scheme, persisted)
+- localStorage persistence with strict validation (corrupt storage falls back to defaults)
+- Print stylesheet, mobile-friendly layout, zero external requests
+- QA: 20/20 Playwright checks pass in system Chromium, 0 console/page errors (light, dark, mobile)

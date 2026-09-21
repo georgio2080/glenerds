@@ -1,10 +1,10 @@
-# MacroTrack — Gumroad listing (UNPUBLISHED $0 draft)
+# GradePlan — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free TDEE Calculator & Macro Calculator: BMR, Calories, Macros
+Final Grade & GPA Calculator for Students
 
 ## Permalink slug
-free-tdee-calculator-macro-calculator
+free-final-grade-calculator-gpa-calculator
 
 ## Price
 $0
@@ -13,58 +13,51 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/cover-square-1200.png (Gumroad thumbnail; also attach the gallery images below as product images)
-
-## Gallery (in order)
-1. `gallery/cover-1280x720.png` — Hero cover: populated app in browser frame
-2. `gallery/1-inputs.png` — Input form: units, age, sex, height, weight, body fat, activity, goal
-3. `gallery/2-results.png` — Results: BMR, TDEE, target calories, pace estimate, daily macro bars
-4. `gallery/3-show-your-work.png` — Show-your-work: exact formula and every calculation step
-5. `gallery/4-dark-mode.png` — Dark mode: same dense layout, dark theme
-6. `gallery/5-mobile.png` — Mobile layout
-7. `gallery/6-metric.png` — Metric units (kg, cm) input mode
-8. `gallery/7-katch-mcardle.png` — Katch-McArdle formula with body-fat input
+gallery/cover-square-1200.png (also attach gallery/0-cover.png … 7-mobile.png as product images)
 
 ## Product file
-macrotrack-bundle.zip
+gradeplan-bundle.zip
 
 ## Tags
-tdee calculator, macro calculator, bmr calculator, calorie calculator, protein calculator, maintenance calories, iifym calculator, mifflin st jeor calculator, cutting calories, bulking calories
+final grade calculator, gpa calculator, grade calculator, what do i need on the final, weighted grade calculator, college gpa calculator, high school gpa calculator, final exam calculator, cumulative gpa calculator, semester gpa calculator
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-🔥 Free TDEE Calculator & Macro Calculator — MacroTrack: BMR, Calories & Daily Macros
+Free GPA calculator and final exam solver for students — GradePlan 🎓
 
-Stop trusting black-box calorie calculators. Enter your age, height, weight, activity level and goal, and MacroTrack shows your BMR, TDEE, target calories and protein/carb/fat grams — with the exact formula and every calculation step shown on screen, so you can verify it yourself.
+Need to know what grade you need on your final? GradePlan calculates it instantly — including when your goal is mathematically impossible.
 
-💸 100% FREE — free forever. No upsells, no subscription, no account, no internet required.
+Calculate your current grade, find the score you need on your final exam, and calculate your semester and cumulative GPA from letter grades and credit hours. Every result shows the full math with your numbers substituted, so you can verify it yourself and compare against your official syllabus.
+
+Always free. No account, email signup, subscription, or hidden upgrade. No coding or setup required — open the file and get your answer in under a minute.
 
 ✨ WHAT IT DOES
-• 🧮 BMR with 3 published formulas — Mifflin-St Jeor (default), Harris-Benedict (revised 1984), Katch-McArdle (uses lean body mass)
-• 🔥 TDEE from 5 activity levels, from sedentary to extra active
-• 🎯 Goal targets — cut, maintain, or lean bulk, with a fine-tune slider (−30% to +20%)
-• 🍗 Daily macros in grams — protein, carbs, fat with 3 split presets (balanced, high protein, lower carb)
-• 📏 Imperial + metric units (lb/ft-in or kg/cm)
+• 📝 FINAL EXAM SOLVER — current grade + desired grade + final weight → the exact score you need on the final
+• 📉 KNOW YOUR REALISTIC OUTCOME — if the math doesn't work, it says so honestly and shows the highest grade a perfect 100% on the final can reach
+• 🛡️ PROTECT YOUR CURRENT GRADE — already locked in your goal? It tells you the lowest final score you can afford
+• 📊 WEIGHTED COURSE GRADE — categories with weights and scores; if your weights don't total 100%, they're scaled fairly
+• 🏅 GPA CALCULATOR — courses with credits and letter grades on a 4.0 scale, with a weighted toggle for Honors/AP (+1.0; an F still counts as 0)
 • 🔍 SHOW YOUR WORK — every formula printed with your numbers substituted, step by step
-• 📈 Weekly pace estimate — how fast you'll lose/gain at your target
-• 🖨️ Print / save a clean results sheet
+• 🌙 DARK MODE — toggle, respects your system setting, remembers your choice
+• 💾 SAVES YOUR INPUTS — everything stored privately in your browser, picks up where you left off
+• 📱 PHONE, TABLET, COMPUTER — use it from any device, no internet needed
+
+⚠️ Estimates for planning only — always confirm with your official syllabus or registrar.
 
 📦 WHAT YOU GET
-• MacroTrack as a single HTML file — double-click to open in any browser
-• Free updates forever
-
-🖥️ HOW IT WORKS
-No install, no account. Open the file, enter your details, and your numbers appear instantly — with the full math shown underneath. Everything is stored privately in your own browser — your data never leaves your device.
+• GradePlan as a single offline file — a private copy you can keep forever; double-click to open in any browser
+• 8 screenshot walkthrough images
+• README with quick-start guide
+• Future improvements will remain free
 
 🔒 PRIVACY
-MacroTrack is fully offline. No trackers, no analytics, no external requests. Unlike the big calculator sites: no ads, no cookie banners, no account funnel.
+GradePlan is fully offline. No trackers, no analytics, no external requests, no ads, no cookie banners. Everything is stored privately in your own browser — your grades never leave your device.
 
-🔗 MORE FROM GLENERDS
-• More free Glenerds tools → [glenerds.gumroad.com](https://glenerds.gumroad.com)
+🛠️ MORE FROM GLENERDS
+• HomeRoom (homeschool lesson planner & attendance tracker) and DebtPayoff (student-loan payoff planner) — free offline tools by Glenerds
+• Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT
 Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.
 
-⚠️ Estimates only — these formulas are population averages. For weight loss, muscle gain, or any health concern, talk to a doctor or registered dietitian.
-
-by Glenerds — free tools, no accounts, no ads: [glenerds.gumroad.com](https://glenerds.gumroad.com)
+by Glenerds — free offline tools with no account, no subscription, no ads: https://glenerds.gumroad.com

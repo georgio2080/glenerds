@@ -1,151 +1,603 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Free offline trip budget planner: set a travel budget, track expenses in any currency with exact exchange-rate conversion, and see daily spend at a glance. No account, no fees — your data never leaves this device.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e7490'/%3E%3Ctext x='32' y='44' font-size='28' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9C%88%3C/text%3E%3C/svg%3E">
-<title>Free Trip Budget Planner: Travel Expense Tracker with Currency Conversion (TripBudget)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%237c3aed'/%3E%3Ctext x='32' y='44' font-size='30' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3EA%2B%3C/text%3E%3C/svg%3E">
+<title>Free Final Grade Calculator & GPA Calculator — See Every Step of the Math (GradePlan)</title>
+<meta name="description" content="Free final grade calculator: what score do you need on the final exam? Plus weighted course grade and GPA calculators. Shows every formula step, works fully offline, no account, no ads.">
 <style>
-:root{
-  --bg:#f6f7f9; --surface:#ffffff; --surface2:#eef0f4; --text:#1c2230; --muted:#64707f;
-  --border:#dde2e9; --accent:#2563eb; --accent-ink:#ffffff; --accent-soft:#e3ecff;
-  --good:#16803c; --good-soft:#e2f4e8; --warn:#b45309; --warn-soft:#fdf0dd;
-  --bad:#c0392b; --bad-soft:#fbe7e4; --bar:#2563eb; --bar-bg:#e6eaf1;
-  --radius:12px; --shadow:0 1px 4px rgba(20,30,50,.08);
-  --ch1:#197b63; --ch2:#f06f52; --ch3:#c98f14; --ch4:#3478d4; --ch5:#c45e93; --ch6:#0e7490; --ch7:#8b5cf6; --ch8:#6b7280;
-}
-html[data-theme="dark"]{
-  --bg:#11151d; --surface:#1a2030; --surface2:#232b40; --text:#eef1f6; --muted:#9aa6b8;
-  --border:#2c3550; --accent:#5b8def; --accent-ink:#0b1220; --accent-soft:#22324f;
-  --good:#4ade80; --good-soft:#173b28; --warn:#fbbf24; --warn-soft:#3d2f14;
-  --bad:#f87171; --bad-soft:#3d1d1a; --bar:#5b8def; --bar-bg:#2c3550;
-  --shadow:0 1px 4px rgba(0,0,0,.35);
-  --ch1:#58c9a7; --ch2:#ff8468; --ch3:#f5c555; --ch4:#68a5f2; --ch5:#e77eb5; --ch6:#22d3ee; --ch7:#a78bfa; --ch8:#9ca3af;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
-header.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
-header.top h1{font-size:1.15rem;margin:0;display:flex;align-items:center;gap:.45rem}
-header.top h1 svg{width:24px;height:24px}
-.top-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;width:100%}
-.spacer{flex:1}
-button{font:inherit;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:8px;padding:.45rem .8rem}
-button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-weight:600}
-button.danger{color:var(--bad);border-color:var(--bad)}
-button.icon{padding:.4rem;line-height:0}
-button.icon svg{width:18px;height:18px;vertical-align:middle}
-/* Glenerds standard cluster: flask, dark-mode, sound — circular 44x44 icon-only */
-.g-round-btn{flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--surface);border:1px solid var(--border);color:var(--text);
-  border-radius:999px;cursor:pointer;font-size:1.1rem;
-  box-shadow:0 2px 8px rgba(0,0,0,.10);
-  transition:border-color .18s ease, transform .18s ease}
-.g-round-btn svg{width:26px;height:26px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.g-round-btn.theme-toggle,.g-round-btn.sound-toggle{font-size:1.65rem;line-height:1}
-.g-round-btn:hover{border-color:var(--accent)}.g-round-btn:active{transform:scale(.92);border-color:var(--accent)}
+/* ===== GLENERDS DESIGN SYSTEM v1.0 (pasted verbatim) ===== */
+/* ==========================================================================
+   GLENERDS DESIGN SYSTEM v1.0
+   --------------------------------------------------------------------------
+   One shared visual language for every Glenerds microtool.
+   Designed to be INLINED into each app's <style> block — keeps the
+   single-file property: zero network requests, file:// safe, no webfonts,
+   no CDNs, no frameworks, no build step.
 
-.g-round-btn:focus{outline:none}
-.g-round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.g-round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);
-  background:var(--accent-soft)}
-@media(max-width:480px){.g-header-actions{gap:6px}}
-/* ---- charts (inline SVG, dependency-free) ---- */
-.ch-legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
-.ch-leg{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);
-  background:var(--surface2);color:var(--text);border-radius:999px;padding:5px 12px;
-  font-size:.8rem;cursor:pointer;font-weight:600}
-.ch-leg .sw{width:11px;height:11px;border-radius:3px;flex:none}
-.ch-leg[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
-.ch-leg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.ch-det{margin-top:10px;font-size:.92rem;background:var(--surface2);border-radius:10px;padding:10px 14px;min-height:2.6em}
-.ch-panel svg{width:100%;height:auto;display:block}
-svg .seg,svg .ch-bar{cursor:pointer}
-svg .seg:focus,svg .ch-bar:focus{outline:none;filter:drop-shadow(0 0 5px rgba(91,141,239,.9))}
-input,select,textarea{font:inherit;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.45rem .6rem;width:100%}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
-label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.25rem}
-.field{margin-bottom:.7rem}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
-main{max-width:960px;margin:0 auto;padding:1rem}
-nav.tabs{display:flex;gap:.4rem;margin:0 0 1rem;flex-wrap:wrap}
-nav.tabs button{border-radius:999px;border:1px solid var(--border);background:var(--surface);padding:.5rem 1rem;font-weight:600}
-nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;margin-bottom:1rem}
-.card h2{margin:.1rem 0 .8rem;font-size:1.05rem}
-.grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem}
-.stat{background:var(--surface2);border-radius:10px;padding:.7rem .9rem}
-.stat[role="button"]{cursor:pointer;border:1px solid transparent;transition:border-color .18s ease}
-.stat[role="button"]:hover{border-color:var(--accent)}
-.stat[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--accent))}
-.stat[role="button"][aria-pressed="true"]{border-color:var(--accent)}
-#statDet{margin-top:10px}
-.day-row[role="button"]{cursor:pointer;border-radius:8px}
-.day-row[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--accent))}
-.day-row[role="button"][aria-pressed="true"] .hd .d{color:var(--accent)}
-tr.exp-tr[role="button"]{cursor:pointer}
-tr.exp-tr[role="button"]:hover td{background:var(--surface2)}
-tr.exp-tr[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--accent))}
-.stat .k{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-.stat .v{font-size:1.35rem;font-weight:700;margin-top:.15rem}
-.stat .v.bad{color:var(--bad)} .stat .v.warn{color:var(--warn)} .stat .v.good{color:var(--good)}
-.progress{height:10px;background:var(--bar-bg);border-radius:999px;overflow:hidden;margin:.4rem 0}
-.progress>i{display:block;height:100%;background:var(--bar);border-radius:999px;transition:width .2s}
-.progress.over>i{background:var(--bad)}
-.cat-row{display:grid;grid-template-columns:1.2fr .9fr 1fr auto;gap:.6rem;align-items:center;padding:.55rem 0;border-top:1px solid var(--border)}
-.cat-row .nm{display:flex;align-items:center;gap:.5rem;font-weight:600}
-.cat-row .nm svg{width:20px;height:20px;flex:none}
-.cat-row input{width:100%}
-table{width:100%;border-collapse:collapse;font-size:.92rem}
-th,td{text-align:left;padding:.5rem .4rem;border-bottom:1px solid var(--border)}
-th{color:var(--muted);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
-td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.badge{display:inline-block;font-size:.75rem;font-weight:700;border-radius:999px;padding:.15rem .55rem}
-.badge.over{background:var(--bad-soft);color:var(--bad)}
-.badge.ok{background:var(--good-soft);color:var(--good)}
-.badge.soon{background:var(--warn-soft);color:var(--warn)}
-.day-row{border-top:1px solid var(--border);padding:.6rem 0}
-.day-row .hd .d svg{width:20px;height:20px;flex:none;vertical-align:-4px}
-.day-row details svg{width:16px;height:16px;vertical-align:-3px}
-.day-row .hd{display:flex;justify-content:space-between;gap:.5rem;align-items:baseline;margin-bottom:.35rem}
-.day-row .hd .d{font-weight:700}
-.empty{color:var(--muted);text-align:center;padding:2rem 1rem}
-footer.app{max-width:960px;margin:1.5rem auto 2.5rem;padding:0 1rem;color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
-footer.app a{color:var(--accent)}
-.tripbar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
-.tripbar select{width:auto;min-width:180px;font-weight:600}
-.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
-.toolbar .spacer{flex:1}
-details summary{cursor:pointer;font-weight:600;padding:.4rem 0}
-.note{font-size:.85rem;color:var(--muted)}
-.savings-out{background:var(--accent-soft);border-radius:10px;padding:.9rem 1rem;font-size:1.05rem;font-weight:600;margin-top:.7rem}
-#print-only{display:none}
-@media (max-width:560px){
-  .form-grid{grid-template-columns:1fr}
-  .cat-row{grid-template-columns:1fr;gap:.3rem}
-  .cat-row .bar-cell{order:3}
-  header.top h1{font-size:1rem}
-  main{padding:.7rem}
-  table{font-size:.85rem}
+   Usage: paste this whole file inside a STYLE element in <head>, then use
+   the g- classes below. See INTEGRATION.md for the theme-toggle wiring.
+
+   Conventions:
+   - Every class is prefixed `g-` to avoid collisions.
+   - Theming is driven by `data-theme="light|dark"` on <html>.
+   - First load with no saved choice honors prefers-color-scheme.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --g-bg:            #f8fafc;   /* page background: soft cool white */
+  --g-surface:       #ffffff;   /* cards, panels */
+  --g-surface-2:     #f1f5f9;   /* recessed / inset areas, tab track */
+  --g-border:        #e2e8f0;   /* hairlines */
+  --g-border-strong: #cbd5e1;
+
+  /* Text */
+  --g-text:          #0f172a;   /* slate-900 */
+  --g-text-soft:     #334155;   /* slate-700 — secondary text */
+  --g-muted:         #64748b;   /* slate-500 — captions, hints */
+
+  /* Accent: refined indigo */
+  --g-accent:        #4f46e5;   /* indigo-600 */
+  --g-accent-hover:  #4338ca;   /* indigo-700 */
+  --g-accent-ink:    #ffffff;   /* text on accent */
+  --g-accent-soft:   #eef2ff;   /* indigo-50 — tinted fills */
+  --g-accent-ring:   rgba(79, 70, 229, 0.22);
+
+  /* Status */
+  --g-good:          #047857;   /* emerald-700 */
+  --g-good-soft:     #ecfdf5;
+  --g-bad:           #b42318;
+  --g-bad-soft:      #fef3f2;
+  --g-warn:          #b45309;
+  --g-warn-soft:     #fffbeb;
+
+  /* Inputs */
+  --g-input-bg:      #ffffff;
+  --g-input-border:  #cbd5e1;
+  --g-code-bg:       #f1f5f9;
+
+  /* Shape + motion */
+  --g-radius-sm: 8px;
+  --g-radius-md: 12px;
+  --g-radius-lg: 16px;
+  --g-radius-pill: 999px;
+  --g-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --g-shadow-md: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --g-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --g-ease: 160ms ease;
+
+  /* Type */
+  --g-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, system-ui, sans-serif;
+  --g-mono: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Consolas,
+            "Liberation Mono", monospace;
 }
+
+/* Dark theme: genuinely designed — deep blue-black, lifted surfaces,
+   brightened indigo. Not an inversion of light. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --g-bg:            #0b0e14;
+  --g-surface:       #141926;
+  --g-surface-2:     #0f1420;
+  --g-border:        #232c40;
+  --g-border-strong: #33405c;
+
+  --g-text:          #f1f5f9;
+  --g-text-soft:     #cbd5e1;
+  --g-muted:         #94a3b8;
+
+  --g-accent:        #818cf8;   /* indigo-400 — readable on dark */
+  --g-accent-hover:  #a5b4fc;   /* indigo-300 */
+  --g-accent-ink:    #0b0e14;
+  --g-accent-soft:   rgba(129, 140, 248, 0.14);
+  --g-accent-ring:   rgba(129, 140, 248, 0.35);
+
+  --g-good:          #34d399;
+  --g-good-soft:     rgba(52, 211, 153, 0.12);
+  --g-bad:           #f87171;
+  --g-bad-soft:      rgba(248, 113, 113, 0.12);
+  --g-warn:          #fbbf24;
+  --g-warn-soft:     rgba(251, 191, 36, 0.12);
+
+  --g-input-bg:      #0f1420;
+  --g-input-border:  #33405c;
+  --g-code-bg:       #0f1420;
+
+  --g-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --g-shadow-md: 0 1px 3px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --g-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+
+.g-app {
+  font-family: var(--g-font);
+  background: var(--g-bg);
+  color: var(--g-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Page container */
+.g-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+/* ---------- 3. TYPOGRAPHY ---------- */
+.g-display  { font-size: 1.9rem;  font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;  margin: 0 0 8px; }
+.g-title    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;  margin: 0 0 6px; }
+.g-body     { font-size: 1rem;    color: var(--g-text-soft); margin: 0 0 12px; }
+.g-caption  { font-size: 0.85rem; color: var(--g-muted);    margin: 0; }
+.g-mono     { font-family: var(--g-mono); font-size: 0.9em; }
+
+/* ---------- 4. HEADER ---------- */
+.g-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 4px;
+}
+.g-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.g-brand-mark {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--g-accent);
+  color: var(--g-accent-ink);
+  font-weight: 800; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-sm);
+  user-select: none;
+}
+.g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
+.g-tagline { color: var(--g-muted); font-size: 0.92rem; margin: 6px 0 14px; max-width: 56ch; }
+
+/* Theme toggle */
+.g-theme-toggle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  border-radius: var(--g-radius-pill);
+  padding: 8px 14px;
+  font-size: 0.88rem; font-weight: 600; font-family: var(--g-font);
+  cursor: pointer;
+  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
+  white-space: nowrap;
+}
+.g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
+.g-theme-toggle:active { transform: scale(0.97); }
+
+/* ---------- 5. TABS (segmented control) ---------- */
+.g-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  background: var(--g-surface-2);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 4px;
+  margin: 14px 0;
+}
+.g-tab {
+  flex: 1 1 auto;
+  appearance: none;
+  border: 0; background: transparent;
+  color: var(--g-muted);
+  font-family: var(--g-font);
+  font-size: 0.93rem; font-weight: 600;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
+  white-space: nowrap;
+}
+.g-tab:hover { color: var(--g-text); }
+.g-tab[aria-selected="true"] {
+  background: var(--g-surface);
+  color: var(--g-text);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-tab:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+
+/* ---------- 6. CARDS ---------- */
+.g-card {
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  padding: 22px;
+  margin: 16px 0;
+  box-shadow: var(--g-shadow-sm);
+}
+.g-card > .g-title { margin-bottom: 4px; }
+.g-card .g-desc { color: var(--g-muted); font-size: 0.92rem; margin: 0 0 14px; }
+.g-card-flat { box-shadow: none; }
+
+/* ---------- 7. BUTTONS ---------- */
+.g-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--g-font);
+  font-size: 0.95rem; font-weight: 650;
+  border-radius: 10px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--g-ease), border-color var(--g-ease),
+              color var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
+  text-decoration: none;
+  line-height: 1.2;
+}
+.g-btn:active { transform: translateY(1px) scale(0.99); }
+.g-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.g-btn-primary {
+  background: var(--g-accent);
+  border-color: var(--g-accent);
+  color: var(--g-accent-ink);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-btn-primary:hover:not(:disabled) { background: var(--g-accent-hover); border-color: var(--g-accent-hover); }
+
+.g-btn-secondary {
+  background: var(--g-surface);
+  border-color: var(--g-border-strong);
+  color: var(--g-text);
+}
+.g-btn-secondary:hover:not(:disabled) { border-color: var(--g-accent); color: var(--g-accent); }
+
+.g-btn-danger {
+  background: var(--g-bad-soft);
+  border-color: transparent;
+  color: var(--g-bad);
+}
+.g-btn-danger:hover:not(:disabled) { background: var(--g-bad); color: #fff; }
+
+.g-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--g-text-soft);
+}
+.g-btn-ghost:hover:not(:disabled) { background: var(--g-surface-2); color: var(--g-text); }
+
+.g-btn-sm { font-size: 0.85rem; padding: 8px 13px; border-radius: 8px; }
+.g-btn-block { display: flex; width: 100%; }
+.g-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+
+/* ---------- 8. FORMS ---------- */
+.g-field { margin: 12px 0; }
+.g-label { display: block; font-weight: 650; font-size: 0.92rem; margin-bottom: 6px; color: var(--g-text); }
+.g-hint { font-size: 0.82rem; color: var(--g-muted); margin-top: 6px; }
+
+.g-input, .g-select, .g-textarea {
+  width: 100%;
+  font-family: var(--g-font);
+  font-size: 1rem;
+  color: var(--g-text);
+  background: var(--g-input-bg);
+  border: 1px solid var(--g-input-border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  transition: border-color var(--g-ease), box-shadow var(--g-ease);
+}
+.g-input::placeholder, .g-textarea::placeholder { color: var(--g-muted); opacity: 0.75; }
+.g-input:hover, .g-select:hover, .g-textarea:hover { border-color: var(--g-border-strong); }
+.g-input:focus, .g-select:focus, .g-textarea:focus {
+  outline: none;
+  border-color: var(--g-accent);
+  box-shadow: 0 0 0 3px var(--g-accent-ring);
+}
+.g-textarea { min-height: 96px; resize: vertical; }
+.g-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+[data-theme="dark"] .g-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.g-input:disabled, .g-select:disabled, .g-textarea:disabled {
+  opacity: 0.55; cursor: not-allowed; background: var(--g-surface-2);
+}
+
+/* Validation */
+.g-input.is-invalid, .g-select.is-invalid {
+  border-color: var(--g-bad);
+}
+.g-input.is-invalid:focus, .g-select.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--g-bad-soft);
+}
+.g-error { display: none; color: var(--g-bad); font-size: 0.86rem; font-weight: 600; margin-top: 6px; }
+.g-error.show { display: block; }
+
+/* Checkbox / radio rows */
+.g-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.95rem; color: var(--g-text-soft);
+  cursor: pointer; margin: 10px 0;
+}
+.g-check input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  margin: 1px 0 0;
+  border: 1.5px solid var(--g-input-border);
+  border-radius: 6px;
+  background: var(--g-input-bg);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--g-ease), border-color var(--g-ease);
+}
+.g-check input[type="radio"] { border-radius: 50%; }
+.g-check input:checked { background: var(--g-accent); border-color: var(--g-accent); }
+.g-check input:checked::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: no-repeat center / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 6.8 11.8 12.5 4.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.g-check input[type="radio"]:checked::after {
+  background: none;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--g-accent-ink);
+}
+.g-check input:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--g-accent-ring); }
+
+/* ---------- 9. RESULT PANELS ---------- */
+.g-result {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: var(--g-radius-md);
+  border: 1px solid var(--g-border);
+  background: var(--g-surface-2);
+}
+.g-big-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 2px 0 6px;
+}
+.g-verdict { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+.g-verdict-good { color: var(--g-good); }
+.g-verdict-bad  { color: var(--g-bad); }
+.g-verdict-warn { color: var(--g-warn); }
+.g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
+
+/* ---------- 9b. BAR CHARTS (pure CSS, zero requests) ---------- */
+.g-bars { margin: 14px 0 0; display: grid; gap: 8px; }
+.g-bar-row { display: grid; grid-template-columns: minmax(84px, 132px) 1fr minmax(52px, auto); gap: 10px; align-items: center; font-size: 0.88rem; }
+.g-bar-row[data-bi] { cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; }
+.g-bar-row[data-bi]:focus { outline: none; }
+.g-bar-row[data-bi]:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 1px; }
+.g-bar-row[data-bi].active { outline: 2px solid var(--g-accent); outline-offset: 1px; }
+.g-bar-row[data-bi].active .g-bar-name { font-weight: 800; }
+.g-bar-row[data-fx], .g-bar-row[data-overall] { cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; }
+.g-bar-row[data-fx]:focus, .g-bar-row[data-overall]:focus { outline: none; }
+.g-bar-row[data-fx]:focus-visible, .g-bar-row[data-overall]:focus-visible,
+.g-bar-row[data-fx][aria-expanded="true"], .g-bar-row[data-overall].active { outline: 2px solid var(--g-accent); outline-offset: 1px; }
+.g-bar-row[data-overall].active .g-bar-name { font-weight: 800; }
+/* what-if scenario breakdown under "Needed on final" */
+.g-wi { display: grid; gap: 4px; margin: 4px 0; padding: 8px 10px; border: 1px dashed var(--g-border); border-radius: 8px; background: var(--g-code-bg); }
+.g-wi-row { display: flex; justify-content: space-between; gap: 8px; font-size: 0.85rem; color: var(--g-text-soft); }
+.g-wi-row.ok { color: var(--g-good); font-weight: 700; }
+.g-bar-name { color: var(--g-text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.g-bar-track { height: 10px; border-radius: 6px; background: var(--g-code-bg); border: 1px solid var(--g-border); position: relative; }
+.g-bar-fill { display: block; height: 100%; border-radius: 6px; background: var(--g-accent); transition: width .25s var(--g-ease); }
+.g-bar-fill.good { background: var(--g-good); }
+.g-bar-fill.warn { background: var(--g-warn); }
+.g-bar-fill.bad { background: var(--g-bad); }
+.g-bar-val { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.g-bar-marker { position: absolute; top: -3px; bottom: -3px; width: 3px; border-radius: 2px; background: var(--g-accent); }
+.g-bar-marker.good { background: var(--g-good); }
+.g-bar-marker.bad { background: var(--g-bad); }
+
+/* Show-your-work math block */
+.g-math {
+  font-family: var(--g-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background: var(--g-code-bg);
+  border: 1px solid var(--g-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: var(--g-text-soft);
+}
+
+/* ---------- 10. STAT ROWS ---------- */
+.g-stats { margin: 12px 0 0; border-top: 1px solid var(--g-border); }
+.g-stat {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--g-border);
+  font-size: 0.95rem;
+}
+.g-stat:last-child { border-bottom: 0; }
+.g-stat .g-stat-label { color: var(--g-muted); }
+.g-stat .g-stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+.g-stat .g-stat-value.good { color: var(--g-good); }
+.g-stat .g-stat-value.bad  { color: var(--g-bad); }
+
+/* ---------- 11. TABLES ---------- */
+.g-table-wrap { overflow-x: auto; margin: 12px -4px 0; padding: 0 4px; }
+.g-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.g-table th {
+  text-align: left;
+  font-size: 0.76rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--g-muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--g-border-strong);
+  white-space: nowrap;
+}
+.g-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+.g-table tr:last-child td { border-bottom: 0; }
+.g-table tbody tr { transition: background var(--g-ease); }
+.g-table tbody tr:hover { background: var(--g-surface-2); }
+
+/* ---------- 12. BADGES / PILLS ---------- */
+.g-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; font-weight: 700;
+  border-radius: var(--g-radius-pill);
+  padding: 4px 11px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.g-badge-accent { background: var(--g-accent-soft); color: var(--g-accent); }
+.g-badge-good   { background: var(--g-good-soft);   color: var(--g-good); }
+.g-badge-bad    { background: var(--g-bad-soft);    color: var(--g-bad); }
+.g-badge-warn   { background: var(--g-warn-soft);   color: var(--g-warn); }
+.g-badge-neutral{ background: var(--g-surface-2);    color: var(--g-muted); border: 1px solid var(--g-border); }
+.g-badge-dot::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+}
+
+/* ---------- 13. EMPTY STATES ---------- */
+.g-empty {
+  text-align: center;
+  border: 1.5px dashed var(--g-border-strong);
+  border-radius: var(--g-radius-lg);
+  padding: 36px 20px;
+  margin: 16px 0;
+  color: var(--g-muted);
+}
+.g-empty-icon { font-size: 2rem; margin-bottom: 8px; }
+.g-empty .g-title { font-size: 1.05rem; color: var(--g-text-soft); }
+.g-empty p { font-size: 0.9rem; margin: 4px 0 14px; }
+
+/* ---------- 14. FOOTER ---------- */
+.g-footer {
+  text-align: center;
+  margin: 32px 0 8px;
+  font-size: 0.85rem;
+  color: var(--g-muted);
+}
+.g-footer a { color: var(--g-accent); text-decoration: none; font-weight: 600; }
+.g-footer a:hover { text-decoration: underline; }
+.g-footer .g-fine { display: block; margin-top: 8px; font-size: 0.78rem; }
+
+/* ---------- 15. LAYOUT HELPERS ---------- */
+.g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.g-stack > * + * { margin-top: 12px; }
+.g-divider { border: 0; border-top: 1px solid var(--g-border); margin: 20px 0; }
+
+/* ---------- 16. FOCUS (accessibility) ---------- */
+.g-btn:focus-visible,
+.g-theme-toggle:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--g-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 17. RESPONSIVE ---------- */
+@media (max-width: 560px) {
+  .g-wrap { padding: 14px 12px 40px; }
+  .g-display { font-size: 1.6rem; }
+  .g-card { padding: 18px 16px; border-radius: 14px; }
+  .g-big-number { font-size: 2rem; }
+  .g-grid-2, .g-grid-3 { grid-template-columns: 1fr; }
+  .g-brand-mark { width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px; }
+  .g-brand-name { font-size: 1.2rem; }
+  .g-tab { padding: 9px 10px; font-size: 0.88rem; }
+}
+
+/* ---------- 18. MOTION PREFERENCE ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+
+/* ---------- 19. ICONS ----------
+   Requires the glenerds-icons.svg sprite inlined in the page (see
+   INTEGRATION.md). <use> inherits stroke from the wrapper, so the two
+   variants are just classes on the <svg> element. */
+.g-icon {
+  width: 24px; height: 24px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  fill: none;
+  vertical-align: -4px;
+}
+.g-icon-sm { width: 18px; height: 18px; }
+.g-icon-lg { width: 32px; height: 32px; }
+/* Flash variant: brand indigo gradient stroke instead of text color. */
+.g-icon-flash { stroke: url(#g-grad-indigo); }
+.g-btn .g-icon { width: 20px; height: 20px; vertical-align: -3px; }
+.g-tab .g-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; }
+
+/* ---------- 20. APP ICONS ----------
+   iOS-style rounded-square gradient tile + one white glyph.
+   Each app picks its own gradient via --g-ai1 / --g-ai2. */
+.g-appicon {
+  --g-ai1: #6366f1;
+  --g-ai2: #8b5cf6;
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--g-ai1), var(--g-ai2));
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  flex: 0 0 auto;
+}
+.g-appicon .g-icon { width: 32px; height: 32px; color: #ffffff; }
+.g-appicon-sm { width: 44px; height: 44px; border-radius: 13px; }
+.g-appicon-sm .g-icon { width: 24px; height: 24px; }
+.g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
+.g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+/* ===== end design system ===== */
+/* ===== GradePlan app additions (visibility + JS-generated rows; no g- restyles) ===== */
+.g-result{display:none}
+.g-result.show{display:block}
+.rowline{display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap}
+.rowline input[type=text]{flex:2;min-width:90px}
+.rowline input[type=number]{flex:1;min-width:64px}
+.rowline select{flex:1;min-width:80px}
+.rowline input[type=text],.rowline input[type=number],.rowline select{
+  font-family:var(--g-font);font-size:1rem;color:var(--g-text);background:var(--g-input-bg);
+  border:1px solid var(--g-input-border);border-radius:10px;padding:11px 12px;width:100%}
+.rowline input:focus,.rowline select:focus{outline:2px solid var(--g-accent);outline-offset:1px;border-color:var(--g-accent)}
+.rowline .rm{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:10px;border:1px solid var(--g-border);
+  background:transparent;color:var(--g-bad);cursor:pointer}
+.rowline .rm:hover{border-color:var(--g-bad)}
+.rowline .gp-hon{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--g-muted);white-space:nowrap;margin:0}
+.rowline .gp-hon input{width:18px;height:18px;accent-color:var(--g-accent)}
 @media print{
-  header.top,nav.tabs,.toolbar,footer.app,.no-print{display:none!important}
-  body{background:#fff;color:#000}
-  .card{box-shadow:none;border:1px solid #999;break-inside:avoid}
-  #print-only{display:block}
-  #print-only h1{font-size:1.4rem;margin:0 0 .3rem}
-  #print-only .sub{color:#333;margin-bottom:1rem}
-  main{max-width:none;padding:0}
-  .progress{background:#ddd}
-  .progress>i{background:#333}
+  .g-tabs,.g-theme-toggle,#c-add,#g-add,.rm,.g-footer{display:none}
+  .g-card{break-inside:avoid;box-shadow:none}
 }
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .g-store-btn {
   display: inline-flex; align-items: center;
   background: var(--g-accent, #4f46e5);
-  color: #fff;
+  color: #ffffff;
   border-radius: var(--g-radius-pill, 999px);
   padding: 8px 15px;
   font-size: 0.88rem; font-weight: 700; line-height: 1.2;
@@ -153,10 +605,53 @@ details summary{cursor:pointer;font-weight:600;padding:.4rem 0}
   box-shadow: 0 1px 2px rgba(0,0,0,.12);
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
-[data-theme="dark"] .g-store-btn, [data-theme="dark"] .g-store-btn:hover { color: #fff; }
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+/* Glenerds standard header cluster: More Apps + sample flask + theme + sound */
+.g-header-actions { margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
+a.g-store-btn, header .g-store-btn { color: #ffffff; }
+.round-btn {
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; background: var(--g-surface); border: 1px solid var(--g-border);
+  color: var(--g-text); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none;
+}
+.round-btn svg { width: 26px; height: 26px; flex: none; }
+.round-btn:hover { border-color: var(--g-accent, #4f46e5); }
+.round-btn:active { transform: scale(.92); border-color: var(--g-accent, #4f46e5); }
+.round-btn:focus { outline: none; }
+.round-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
+/* header spec 2026-09-21: white round buttons; sample ON = accent-soft tint + accent
+   border/icon (NOT a solid accent fill); sound button stays white in all states */
+.round-btn.sample-toggle[aria-pressed="true"] { color: var(--g-accent, #4f46e5); border-color: var(--g-accent, #4f46e5); background: var(--g-accent-soft, #eef2ff); }
+/* interactive chart segments: keyboard focus = drop-shadow, never a rectangular outline */
+.g-seg { cursor: pointer; }
+.g-seg:focus { outline: none; filter: drop-shadow(0 0 5px rgba(79,70,229,.9)); }
+.g-seg.spot { stroke: #1f2937; stroke-width: 2; }
+[data-theme="dark"] .g-seg.spot { stroke: #ffffff; }
+.g-donut-wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+.g-donut { width: 132px; height: 132px; flex: none; }
+.g-donut-info { min-width: 0; flex: 1 1 180px; }
+.g-donut-title { font-weight: 800; font-size: 0.95rem; margin: 0 0 2px; }
+.g-donut-note { font-size: 0.86rem; color: var(--g-muted, #6b7280); margin: 0; }
+.g-donut-hint { font-size: 0.78rem; color: var(--g-muted, #6b7280); margin: 6px 0 0; }
+.g-donut-ct { font-size: 12px; font-weight: 700; }
+.g-donut-cv { font-size: 10px; }
+.g-gauge-wrap { margin: 6px 0 4px; max-width: 320px; }
+.g-big-number:focus { outline: none; } .g-big-number:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.g-gauge { cursor: pointer; } .g-gauge:focus { outline: none; } .g-gauge:focus-visible { filter: drop-shadow(0 0 6px var(--g-accent)); }
+.g-gauge { width: 100%; height: auto; display: block; }
+.g-gauge-needle { stroke: #1f2937; stroke-width: 3; stroke-linecap: round; }
+[data-theme="dark"] .g-gauge-needle { stroke: #f3f4f6; }
+.g-gauge-hub { fill: #1f2937; }
+[data-theme="dark"] .g-gauge-hub { fill: #f3f4f6; }
+.g-gauge-tick { font-size: 10px; }
+@media (max-width: 640px) {
+  .g-header { flex-wrap: wrap; }
+  .g-header-actions { margin-left: 0; gap: 6px; }
+}
 .g-cta-strip {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   margin: 28px 0 0; padding: 16px 20px;
@@ -171,7 +666,7 @@ details summary{cursor:pointer;font-weight:600;padding:.4rem 0}
 .g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
 .g-cta-strip:active { transform: scale(0.99); }
 .g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; vertical-align: -0.08em; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
 [data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
@@ -181,1035 +676,805 @@ details summary{cursor:pointer;font-weight:600;padding:.4rem 0}
   .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
 }
 </style>
+<script>
+(function(){var t=null;try{t=localStorage.getItem('gradeplan-theme')}catch(e){}
+if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+document.documentElement.setAttribute('data-theme',t);})();
+</script>
 </head>
-<body>
-<header class="top">
-  <div class="top-row">
-    <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>TripBudget</h1>
-    <span class="spacer"></span>
-    <div class="g-header-actions no-print">
-      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button class="g-round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
-      <button class="g-round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
+<body class="g-app">
+<!-- ==========================================================================
+     GLENERDS ICON SET v1.0 — inline SVG <symbol> sprite
+     --------------------------------------------------------------------------
+     Inline this whole file right after <body> in each app (or paste the
+     <svg> block). Zero external requests. See INTEGRATION.md for usage.
+
+     - 24x24 grid, stroke-based line icons, stroke-width 2, round caps/joins.
+     - Clean variant inherits text color (currentColor).
+     - Flash variant: add class "g-icon-flash" to the <svg> wrapper and the
+       stroke renders in the brand indigo gradient instead.
+     - All geometry inherits from the symbol; do not set stroke/fill on <use>.
+     ========================================================================== -->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-grad-indigo" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#818cf8"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="g-grad-sunset" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="g-grad-ocean" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="g-grad-royal" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#c084fc"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- calculator -->
+  <symbol id="g-i-calc" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6.5" y="3" width="11" height="18" rx="2"/>
+    <path d="M9.5 7.5h5"/>
+    <path d="M9.5 12h.02M12 12h.02M14.5 12h.02M9.5 15.5h.02M12 15.5h.02M14.5 15.5h.02"/>
+  </symbol>
+
+  <!-- chart / graph (bars) -->
+  <symbol id="g-i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20h16"/>
+    <path d="M7.5 20v-6.5M12 20V6.5M16.5 20v-9.5"/>
+  </symbol>
+
+  <!-- calendar -->
+  <symbol id="g-i-cal" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>
+    <path d="M8 3v3.5M16 3v3.5M3.5 10h17"/>
+  </symbol>
+
+  <!-- checkmark -->
+  <symbol id="g-i-check" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.8 12.6l4.7 4.7L19.2 7.2"/>
+  </symbol>
+
+  <!-- streak flame -->
+  <symbol id="g-i-flame" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.2c.9 2.8-.5 4.3-1.7 5.6C8.7 10.5 7 12.4 7 15.2a5 5 0 0010 0c0-2-1-3.5-2-4.9-.4 1.1-1.1 1.9-2.1 2.3.4-3-.4-6.7-.9-9.4z"/>
+  </symbol>
+
+  <!-- star -->
+  <symbol id="g-i-star" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/>
+  </symbol>
+
+  <!-- moon -->
+  <symbol id="g-i-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.2 14.8A8.3 8.3 0 019.2 3.8a8.3 8.3 0 1011 11z"/>
+  </symbol>
+
+  <!-- sun -->
+  <symbol id="g-i-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4.2"/>
+    <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/>
+  </symbol>
+
+  <!-- plus -->
+  <symbol id="g-i-plus" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5.5v13M5.5 12h13"/>
+  </symbol>
+
+  <!-- trash -->
+  <symbol id="g-i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 6.8h15"/>
+    <path d="M9.5 6.2V4.8a1.3 1.3 0 011.3-1.3h2.4a1.3 1.3 0 011.3 1.3v1.4"/>
+    <path d="M6.8 6.8l.9 12.4a1.6 1.6 0 001.6 1.5h5.4a1.6 1.6 0 001.6-1.5l.9-12.4"/>
+    <path d="M10 10.8v5.5M14 10.8v5.5"/>
+  </symbol>
+
+  <!-- download -->
+  <symbol id="g-i-download" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4v10.5"/>
+    <path d="M7.6 11L12 15.4 16.4 11"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- upload -->
+  <symbol id="g-i-upload" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 15.5V5"/>
+    <path d="M7.6 9.4L12 5l4.4 4.4"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+
+  <!-- settings gear -->
+  <symbol id="g-i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3.4"/>
+    <path d="M12 5v2.2M12 16.8V19M5 12h2.2M16.8 12H19M7.1 7.1l1.5 1.5M15.4 15.4l1.5 1.5M16.9 7.1l-1.5 1.5M8.6 15.4l-1.5 1.5"/>
+  </symbol>
+
+  <!-- heart -->
+  <symbol id="g-i-heart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20.5c-5-3.4-8.5-6.8-8.5-10.6C3.5 7.1 5.7 5 8.4 5c1.5 0 2.8.8 3.6 2 .8-1.2 2.1-2 3.6-2 2.7 0 4.9 2.1 4.9 4.9 0 3.8-3.5 7.2-8.5 10.6z"/>
+  </symbol>
+
+  <!-- clock -->
+  <symbol id="g-i-clock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 7.3V12l3.2 2"/>
+  </symbol>
+
+  <!-- target -->
+  <symbol id="g-i-target" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <circle cx="12" cy="12" r="4.8"/>
+    <circle cx="12" cy="12" r="1.4"/>
+  </symbol>
+
+  <!-- trophy -->
+  <symbol id="g-i-trophy" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 4h9v4.5a4.5 4.5 0 01-9 0V4z"/>
+    <path d="M7.5 5.5H4.5a3.5 3.5 0 003.8 3.8M16.5 5.5h3a3.5 3.5 0 01-3.8 3.8"/>
+    <path d="M12 13v4M8.5 20.5h7"/>
+  </symbol>
+
+  <!-- tag -->
+  <symbol id="g-i-tag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.6 13.4L11 3.8a2 2 0 00-1.4-.6H5a1.8 1.8 0 00-1.8 1.8v4.6c0 .5.2 1 .6 1.4l9.6 9.6a1.9 1.9 0 002.7 0l4.5-4.5a1.9 1.9 0 000-2.7z"/>
+    <circle cx="8" cy="8" r="1.4"/>
+  </symbol>
+
+  <!-- search -->
+  <symbol id="g-i-search" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="6.5"/>
+    <path d="M15.8 15.8l4.7 4.7"/>
+  </symbol>
+
+  <!-- edit pencil -->
+  <symbol id="g-i-edit" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20l1.2-4.2L16.7 4.3a2 2 0 012.9 2.9L8.1 18.7 4 20z"/>
+    <path d="M14.8 6.2l2.9 2.9"/>
+  </symbol>
+
+  <!-- share -->
+  <symbol id="g-i-share" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6.5" cy="12" r="2.5"/>
+    <circle cx="17" cy="5.8" r="2.5"/>
+    <circle cx="17" cy="18.2" r="2.5"/>
+    <path d="M8.7 10.9l6.1-3.5M8.7 13.1l6.1 3.5"/>
+  </symbol>
+
+  <!-- lock -->
+  <symbol id="g-i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/>
+    <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/>
+    <path d="M12 14.5v2"/>
+  </symbol>
+
+  <!-- sparkles -->
+  <symbol id="g-i-sparkles" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8-4.8-1.7 4.8-1.7L12 3.5z"/>
+    <path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/>
+  </symbol>
+
+  <!-- home -->
+  <symbol id="g-i-home" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11.2L12 4l8 7.2"/>
+    <path d="M6.2 9.8V20h11.6V9.8"/>
+    <path d="M10 20v-4.8h4V20"/>
+  </symbol>
+
+  <!-- back arrow -->
+  <symbol id="g-i-back" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.8 5.5L8.3 12l6.5 6.5"/>
+  </symbol>
+
+  <!-- close X -->
+  <symbol id="g-i-x" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 6l12 12M18 6L6 18"/>
+  </symbol>
+
+  <!-- info -->
+  <symbol id="g-i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 11v5"/>
+    <path d="M12 7.6v.2"/>
+  </symbol>
+
+  <!-- wallet -->
+  <symbol id="g-i-wallet" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="6.5" width="18" height="13" rx="3"/>
+    <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
+    <circle cx="17.5" cy="14.8" r="1.1"/>
+  </symbol>
+
+  <!-- list -->
+  <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
+    <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
+  </symbol>
+
+  <!-- bell -->
+  <symbol id="g-i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.2 16v-4.8a5.8 5.8 0 0111.6 0V16l1.7 2.8H4.5L6.2 16z"/>
+    <path d="M10 20.5a2.2 2.2 0 004 0"/>
+  </symbol>
+</svg>
+
+<div class="g-wrap">
+  <header class="g-header">
+    <div class="g-brand">
+      <span class="g-appicon g-appicon-sm" style="--g-ai1:#c084fc;--g-ai2:#6366f1" aria-hidden="true">
+        <svg class="g-icon" aria-hidden="true"><use href="#g-i-calc"/></svg>
+      </span>
+      <h1 class="g-brand-name">GradePlan</h1>
     </div>
+    <div class="g-header-actions">
+  <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+  <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+  <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">&#x1F319;</button>
+  <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+</div>
+  </header>
+  <p class="g-tagline">Free final-exam, course-grade &amp; GPA calculator — every formula shown, fully offline, no account, no ads.</p>
+
+  <div class="g-tabs" role="tablist" aria-label="Calculator tools">
+    <button class="g-tab" role="tab" id="tabbtn-final" aria-selected="true" aria-controls="tab-final" data-tab="final"><svg class="g-icon" aria-hidden="true"><use href="#g-i-edit"/></svg> Final Exam Solver</button>
+    <button class="g-tab" role="tab" id="tabbtn-course" aria-selected="false" aria-controls="tab-course" data-tab="course"><svg class="g-icon" aria-hidden="true"><use href="#g-i-chart"/></svg> Course Grade</button>
+    <button class="g-tab" role="tab" id="tabbtn-gpa" aria-selected="false" aria-controls="tab-gpa" data-tab="gpa"><svg class="g-icon" aria-hidden="true"><use href="#g-i-trophy"/></svg> GPA Calculator</button>
   </div>
-  <div class="top-row tripbar">
-    <select id="tripSelect" aria-label="Select trip"></select>
-    <button id="newTripBtn" class="primary">+ New trip</button>
-    <button id="editTripBtn">Trip settings</button>
-    <button id="deleteTripBtn" class="danger">Delete</button>
-    <span class="spacer"></span>
-    <button id="exportBtn">Export JSON</button>
-    <button id="importBtn">Import JSON</button>
-    <input type="file" id="importFile" accept="application/json" style="display:none">
-  </div>
-</header>
-<main id="app">
-  <nav class="tabs" role="tablist">
-    <button role="tab" data-tab="dashboard" aria-selected="true">Dashboard</button>
-    <button role="tab" data-tab="planner" aria-selected="false">Planner</button>
-    <button role="tab" data-tab="expenses" aria-selected="false">Expenses</button>
-    <button role="tab" data-tab="daily" aria-selected="false">Daily view</button>
-  </nav>
-  <div id="emptyState" class="card empty" style="display:none">
-    <h2>No trips yet</h2>
-    <p>Create your first trip to start planning a budget, tracking savings, and logging expenses.</p>
-    <button class="primary" id="emptyNewBtn">+ Create my first trip</button>
-  </div>
-  <section id="tab-dashboard" class="tabpane"></section>
-  <section id="tab-planner" class="tabpane" style="display:none"></section>
-  <section id="tab-expenses" class="tabpane" style="display:none"></section>
-  <section id="tab-daily" class="tabpane" style="display:none"></section>
-</main>
-<a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+
+  <!-- ============ FINAL EXAM SOLVER ============ -->
+  <section class="g-card" id="tab-final" role="tabpanel" aria-labelledby="tabbtn-final">
+    <p class="g-title">What do I need on the final?</p>
+    <p class="g-desc">Enter your current grade, the grade you want, and how much the final is worth. GradePlan solves for the exact score you need — and tells you honestly when the goal is impossible.</p>
+    <div class="g-grid-2">
+      <div class="g-field"><label class="g-label" for="f-cur">Current grade (%)</label><input class="g-input" type="number" id="f-cur" min="0" max="100" step="0.01" value="85" inputmode="decimal"></div>
+      <div class="g-field"><label class="g-label" for="f-goal">Desired final grade (%)</label><input class="g-input" type="number" id="f-goal" min="0" max="100" step="0.01" value="90" inputmode="decimal"></div>
+    </div>
+    <div class="g-field"><label class="g-label" for="f-wt">Final exam weight (% of course grade)</label><input class="g-input" type="number" id="f-wt" min="0.01" max="100" step="0.01" value="25" inputmode="decimal"></div>
+    <p class="g-error" id="f-err" role="alert"></p>
+    <div class="g-result" id="f-res">
+      <div class="g-big-number" id="f-big" aria-live="polite"></div>
+      <div id="f-verdict"></div>
+      <div class="g-gauge-wrap" id="f-gauge-wrap" hidden>
+        <svg class="g-gauge" id="f-gauge" viewBox="0 0 200 112" role="img" aria-label="Needed score gauge"></svg>
+      </div>
+      <div class="g-bars" id="f-bars" aria-hidden="true"></div>
+      <div class="g-math" id="f-work"></div>
+    </div>
+  </section>
+
+  <!-- ============ COURSE GRADE ============ -->
+  <section class="g-card" id="tab-course" role="tabpanel" aria-labelledby="tabbtn-course" hidden>
+    <p class="g-title">Weighted course grade</p>
+    <p class="g-desc">Add each grading category with its weight and your score. Weights are scaled automatically if they don't total 100%.</p>
+    <div id="c-rows"></div>
+    <button class="g-btn g-btn-secondary g-btn-sm" id="c-add"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-plus"/></svg> Add category</button>
+    <p class="g-error" id="c-err" role="alert"></p>
+    <div class="g-result" id="c-res">
+      <div class="g-big-number" id="c-big" aria-live="polite"></div>
+      <p class="g-result-note" id="c-note"></p>
+      <div class="g-bars" id="c-bars" aria-hidden="true"></div>
+      <div class="g-donut-wrap" id="c-donut-wrap" hidden>
+        <svg class="g-donut" id="c-donut" viewBox="0 0 140 140" role="group" aria-label="Weight share by category"></svg>
+        <div class="g-donut-info">
+          <p class="g-donut-title" id="c-donut-title">Weight share</p>
+          <p class="g-donut-note" id="c-donut-note"></p>
+          <p class="g-donut-hint">Tap a slice to inspect a category — tap again to restore.</p>
+        </div>
+      </div>
+      <div class="g-math" id="c-work"></div>
+    </div>
+  </section>
+
+  <!-- ============ GPA ============ -->
+  <section class="g-card" id="tab-gpa" role="tabpanel" aria-labelledby="tabbtn-gpa" hidden>
+    <p class="g-title">GPA calculator</p>
+    <p class="g-desc">Add each course with credits and letter grade. Toggle weighted mode to add +1.0 for Honors/AP courses.</p>
+    <label class="g-check"><input type="checkbox" id="g-weighted"> Weighted (Honors/AP +1.0)</label>
+    <div id="g-rows"></div>
+    <button class="g-btn g-btn-secondary g-btn-sm" id="g-add"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-plus"/></svg> Add course</button>
+    <p class="g-error" id="g-err" role="alert"></p>
+    <div class="g-result" id="g-res">
+      <div class="g-big-number" id="g-big" aria-live="polite"></div>
+      <p class="g-result-note" id="g-note"></p>
+      <div class="g-bars" id="g-bars" aria-hidden="true"></div>
+      <div class="g-donut-wrap" id="g-donut-wrap" hidden>
+        <svg class="g-donut" id="g-donut" viewBox="0 0 140 140" role="group" aria-label="Quality points share by course"></svg>
+        <div class="g-donut-info">
+          <p class="g-donut-title" id="g-donut-title">Quality points share</p>
+          <p class="g-donut-note" id="g-donut-note"></p>
+          <p class="g-donut-hint">Tap a slice to inspect a course — tap again to restore.</p>
+        </div>
+      </div>
+      <div class="g-math" id="g-work"></div>
+    </div>
+    <div class="g-table-wrap"><table class="g-table" aria-label="Grade point scale">
+      <tr><th>Grade</th><th>Points</th><th>Grade</th><th>Points</th></tr>
+      <tr><td>A+ / A</td><td>4.0</td><td>C+</td><td>2.3</td></tr>
+      <tr><td>A&minus;</td><td>3.7</td><td>C</td><td>2.0</td></tr>
+      <tr><td>B+</td><td>3.3</td><td>C&minus;</td><td>1.7</td></tr>
+      <tr><td>B</td><td>3.0</td><td>D+</td><td>1.3</td></tr>
+      <tr><td>B&minus;</td><td>2.7</td><td>D / D&minus;</td><td>1.0 / 0.7</td></tr>
+      <tr><td></td><td></td><td>F</td><td>0.0</td></tr>
+    </table></div>
+  </section>
+
+  <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
   <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
-<footer class="app">
-  <span>TripBudget — plan before you go, track while you're there. All data stays on this device.</span>
-  <span>by <a href="https://glenerds.gumroad.com" rel="noopener">Glenerds</a></span>
-</footer>
-<div id="print-only"></div>
 
-<div id="tripModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;padding:1rem">
-  <div class="card" style="max-width:520px;width:100%;margin:0;max-height:90vh;overflow:auto">
-    <h2 id="tripModalTitle">New trip</h2>
-    <div class="field"><label for="fDest">Destination</label><input id="fDest" placeholder="e.g. Japan"></div>
-    <div class="form-grid">
-      <div class="field"><label for="fStart">Start date</label><input id="fStart" type="date"></div>
-      <div class="field"><label for="fEnd">End date</label><input id="fEnd" type="date"></div>
-    </div>
-    <div class="form-grid">
-      <div class="field"><label for="fHomeCur">Home currency</label><select id="fHomeCur"></select></div>
-      <div class="field"><label for="fTripCur">Trip currency</label><select id="fTripCur"></select></div>
-    </div>
-    <div class="field"><label for="fRate">Exchange rate <span class="note" id="rateHint"></span></label>
-      <input id="fRate" type="number" min="0" step="any" placeholder="e.g. 1.08">
-      <div class="note">You enter the rate yourself — no internet needed. Check your bank or a recent receipt.</div>
-    </div>
-    <div class="field"><label for="fBudget">Total trip budget (home currency)</label><input id="fBudget" type="number" min="0" step="0.01" placeholder="e.g. 3500"></div>
-    <div style="display:flex;gap:.5rem;justify-content:flex-end">
-      <button id="tripCancel">Cancel</button>
-      <button id="tripSave" class="primary">Save trip</button>
-    </div>
-  </div>
+<footer class="g-footer">
+    <p>Made by <a href="https://glenerds.gumroad.com">Glenerds</a> &middot; free tools, no tracking, works offline</p>
+    <p class="g-hint">Estimates for planning only — always confirm with your official syllabus or registrar.</p>
+  </footer>
 </div>
-
-<div id="expenseModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;padding:1rem">
-  <div class="card" style="max-width:520px;width:100%;margin:0;max-height:90vh;overflow:auto">
-    <h2 id="expenseModalTitle">Log expense</h2>
-    <div class="form-grid">
-      <div class="field"><label for="eDate">Date</label><input id="eDate" type="date"></div>
-      <div class="field"><label for="eCat">Category</label><select id="eCat"></select></div>
-    </div>
-    <div class="field"><label for="eAmount">Amount <span class="note" id="eCurHint"></span></label><input id="eAmount" type="number" min="0" step="0.01" placeholder="0.00"></div>
-    <div class="field"><label for="eNote">Note (optional)</label><input id="eNote" placeholder="e.g. Ramen in Osaka"></div>
-    <div class="field no-print"><label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" id="eHomeCur" style="width:auto"> Amount is in home currency instead</label></div>
-    <div style="display:flex;gap:.5rem;justify-content:flex-end">
-      <button id="expenseCancel">Cancel</button>
-      <button id="expenseSave" class="primary">Save expense</button>
-    </div>
-  </div>
-</div>
-
 <script>
+
 "use strict";
-/* TripBudget — fully offline trip budget planner. All state in localStorage. */
-/* Money is stored as integer cents in the HOME currency for exact math. */
+/* ---------- theme ---------- */
+const root=document.documentElement, themeBtn=document.getElementById('themeToggle');
+function setTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('gradeplan-theme',t);}catch(e){}themeBtn.innerHTML=(t==='dark')?`<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>`:'🌙'; /* header spec: emoji icon shows the mode you GET */
+const dark=t==='dark',l=dark?'Switch to light mode':'Switch to dark mode';
+themeBtn.setAttribute('aria-pressed',dark?'true':'false');themeBtn.setAttribute('aria-label',l);themeBtn.title=l;}
+(function(){let t=root.getAttribute('data-theme');if(t!=='dark'&&t!=='light'){try{t=localStorage.getItem('gradeplan-theme');}catch(e){t=null;}}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}setTheme(t);})();
+themeBtn.addEventListener('click',()=>{setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark');Sound.toggleTheme();Sound.click();});
 
-const STORE_KEY = "tripbudget-v1";
-const THEME_KEY = "tripbudget-theme";
+/* ---------- tabs ---------- */
+const tabBtns=[...document.querySelectorAll('.g-tab')];
+function showTab(name,skipSave){tabBtns.forEach(b=>{const on=b.dataset.tab===name;b.setAttribute('aria-selected',on);document.getElementById('tab-'+b.dataset.tab).hidden=!on;});if(!skipSave)save();}
+tabBtns.forEach(b=>b.addEventListener('click',()=>{showTab(b.dataset.tab);Sound.click();}));
 
-const CATEGORIES = [
-  {id:"flights",   name:"Flights",            icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5L3 11l1.5-4.5L11 8l3.5-5.5c.6-1 2-1.2 2.8-.4l1.1 1.1c.8.8.6 2.2-.4 2.8L12.5 9l1.5 6.5L9.5 14l-2 5-2.5-.5 3-6z" transform="rotate(15 12 12)"/></svg>'},
-  {id:"lodging",   name:"Lodging",            icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>'},
-  {id:"food",      name:"Food & Drink",       icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2"/><path d="M8 2v20M17 2c-2 0-3 2.5-3 6 0 2.5 1 4 3 4v10"/><path d="M17 2v10"/></svg>'},
-  {id:"transport", name:"Local Transport",    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="13" rx="2"/><path d="M4 10h16M8 20l-2 2M16 20l2 2"/><circle cx="8.5" cy="13.5" r=".8" fill="currentColor"/><circle cx="15.5" cy="13.5" r=".8" fill="currentColor"/></svg>'},
-  {id:"activities",name:"Activities & Tours", icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>'},
-  {id:"shopping",  name:"Shopping",           icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h15l-1.7 7.5a2 2 0 0 1-2 1.5H8.7a2 2 0 0 1-2-1.5L4 4H2"/><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/></svg>'},
-  {id:"insurance", name:"Travel Insurance",   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>'},
-  {id:"other",     name:"Other",              icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.8.3-.9 1-.9 1.7"/><circle cx="12" cy="17" r=".8" fill="currentColor"/></svg>'}
-];
-const CURR_SYMBOLS = {USD:"$",EUR:"€",GBP:"£",JPY:"¥",CAD:"$",AUD:"$",NZD:"$",CHF:"CHF ",CNY:"¥",HKD:"HK$",SGD:"S$",KRW:"₩",INR:"₹",MXN:"MX$",BRL:"R$",SEK:"kr ",NOK:"kr ",DKK:"kr ",PLN:"zł ",CZK:"Kč ",THB:"฿",VND:"₫",PHP:"₱",MYR:"RM ",IDR:"Rp ",ZAR:"R ",AED:"د.إ ",TRY:"₺ ",ILS:"₪ ",RUB:"₽ ",UAH:"₴ "};
-const CURR_LIST = ["USD","EUR","GBP","JPY","CAD","AUD","NZD","CHF","CNY","HKD","SGD","KRW","INR","MXN","BRL","SEK","NOK","DKK","PLN","CZK","THB","VND","PHP","MYR","IDR","ZAR","AED","TRY","ILS","RUB","UAH"];
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const r2=x=>Math.round(x*100)/100;
+function num(v){const n=parseFloat(v);return isFinite(n)?n:NaN;}
+function showErr(id,msg){const e=$(id);if(msg){e.textContent=msg;e.classList.add('show');}else{e.textContent='';e.classList.remove('show');}}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function barCls(p){return p>=90?'good':p>=70?'':p>=60?'warn':'bad';}
 
-/* ---------- money helpers (integer cents, exact) ---------- */
-function toCents(amount){ // number|string -> integer cents, exact for 2dp input
-  const n = Number(amount);
-  if(!isFinite(n)) return 0;
-  return Math.round(n * 100);
+/* ---------- interactive visuals (inline SVG, offline, no libraries) ---------- */
+const NS='http://www.w3.org/2000/svg';
+const DONUT_COLORS=['#4f46e5','#0ea5e9','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a8'];
+let cSpot=-1,gSpot=-1;
+let fWhatIf=false, gOverall=false; /* what-if expansion; overall-GPA aggregate spotlight */
+function polar(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+function donutPath(cx,cy,r,ir,a0,a1){
+  const large=(a1-a0)>180?1:0;
+  const [x0,y0]=polar(cx,cy,r,a0),[x1,y1]=polar(cx,cy,r,a1);
+  const [ix1,iy1]=polar(cx,cy,ir,a1),[ix0,iy0]=polar(cx,cy,ir,a0);
+  return 'M'+x0.toFixed(2)+','+y0.toFixed(2)+' A'+r+','+r+' 0 '+large+',1 '+x1.toFixed(2)+','+y1.toFixed(2)+
+    ' L'+ix1.toFixed(2)+','+iy1.toFixed(2)+' A'+ir+','+ir+' 0 '+large+',0 '+ix0.toFixed(2)+','+iy0.toFixed(2)+' Z';
 }
-function fmtCents(cents, code){
-  if(!isFinite(Number(cents))) return "0.00";
-  const neg = cents < 0;
-  const a = Math.abs(Math.round(cents));
-  const whole = Math.floor(a/100).toLocaleString("en-US");
-  const frac = String(a%100).padStart(2,"0");
-  const sym = CURR_SYMBOLS[code] !== undefined ? CURR_SYMBOLS[code] : (code ? code+" " : "");
-  return (neg?"-":"") + sym + whole + "." + frac;
-}
-/* convert trip-currency amount (string/number, up to 2dp) -> home cents.
-   rate = home-currency units per 1 trip-currency unit (e.g. 1 EUR = 1.08 USD).
-   Decimal-exact: rates are finite user-entered decimals, so multiply on the
-   rate's decimal string form and round half-up — plain float math drifts
-   below exact .5-cent boundaries (e.g. 6.67*1.5 -> 1000 instead of 1001). */
-function rateParts(rate){
-  let rs = String(rate);
-  if(/e/i.test(rs)){
-    rs = Number(rate).toFixed(12);
-    if(/e/i.test(rs)) return {int: BigInt(Math.round(Number(rate))), dp: 0};
-    rs = rs.replace(/0+$/,"").replace(/\.$/,"");
-  }
-  const dot = rs.indexOf(".");
-  const dp = dot < 0 ? 0 : rs.length - dot - 1;
-  return {int: BigInt((rs.replace(".","") || "0").replace("-","")), dp};
-}
-function tripToHomeCents(tripAmount, rate){
-  const r = Number(rate), a = Number(tripAmount);
-  if(!isFinite(r) || !isFinite(a) || r < 0 || a < 0) return 0;
-  const aCents = Math.round(a*100); // exact integer for 2dp input
-  const rp = rateParts(r);
-  const prod = BigInt(aCents) * rp.int;
-  const div = 10n ** BigInt(rp.dp);
-  const q = prod / div, rem = prod % div;
-  const out = q + (rem*2n >= div ? 1n : 0n);
-  return out <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(out) : Math.round(a*r*100);
-}
-function homeCentsToTrip(cents, rate){
-  const r = Number(rate);
-  if(!isFinite(r) || r <= 0) return 0;
-  const rp = rateParts(r);
-  if(rp.int === 0n) return 0;
-  // want round-half-up of cents/r, expressed in hundredths of the trip unit
-  const num = BigInt(Math.round(cents)) * (10n ** BigInt(rp.dp));
-  const q = num / rp.int, rem = num % rp.int;
-  return Number(q + (rem*2n >= rp.int ? 1n : 0n)) / 100;
-}
-function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-
-/* ---------- state ---------- */
-function blankState(){ return {version:1, trips:[], activeTripId:null}; }
-let state = blankState();
-function save(){ if(window.__gSampleOn || sampleOn) return; /* sample data is transient — never persisted */
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
-function load(){
-  try{
-    const raw = localStorage.getItem(STORE_KEY);
-    if(!raw) return;
-    const s = JSON.parse(raw);
-    if(!s || !Array.isArray(s.trips)) return;
-    state = s;
-  }catch(e){ console.warn("TripBudget: stored data was unreadable, starting fresh.", e); }
-}
-/* harden imported data: coerce types, validate numbers, keep esc() as the render-time XSS guard */
-function isValidDateStr(s){
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(s||"")) return false;
-  const p = s.split("-"), y = +p[0], m = +p[1], d = +p[2];
-  const dt = new Date(y, m-1, d);
-  return dt.getFullYear()===y && dt.getMonth()===m-1 && dt.getDate()===d;
-}
-function sanitizeTrip(t){
-  if(!t || typeof t !== "object") return null;
-  const s = (v)=> String(v==null?"":v).slice(0,500);
-  const num = (v)=> { const n = Number(v); return isFinite(n) ? n : 0; };
-  const out = {
-    id: s(t.id) || uid(),
-    destination: s(t.destination) || "Untitled trip",
-    start: isValidDateStr(t.start) ? t.start : "",
-    end: isValidDateStr(t.end) ? t.end : "",
-    homeCur: /^[A-Z]{3}$/.test(t.homeCur||"") ? t.homeCur : "USD",
-    tripCur: /^[A-Z]{3}$/.test(t.tripCur||"") ? t.tripCur : "EUR",
-    rate: (num(t.rate) > 0) ? num(t.rate) : 1,
-    totalBudgetCents: Math.max(0, Math.round(num(t.totalBudgetCents))),
-    allocations: {}, savings: {targetCents:0}, expenses: []
-  };
-  if(out.start && out.end && daysBetween(out.start,out.end) < 0){ const tmp=out.start; out.start=out.end; out.end=tmp; }
-  CATEGORIES.forEach(c=>{
-    out.allocations[c.id] = Math.max(0, Math.round(num(t.allocations && t.allocations[c.id])));
+function svgEl(tag,attrs){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+/* interactive donut: click/Enter/Space on a slice spotlights it and swaps the note;
+   a second tap restores the default note. data = [{n, v, detail}]. */
+function renderDonut(svg,wrap,data,prefix,title,defNote,setSpot,getSpot){
+  svg.innerHTML='';
+  const tot=data.reduce((a,b)=>a+Math.max(0,b.v),0);
+  if(!tot||!data.length){wrap.hidden=true;return;}
+  wrap.hidden=false;
+  const cx=70,cy=70,r=60,ir=38;let a0=0;
+  const segs=[];
+  const hTitle=$(prefix+'-donut-title'),hNote=$(prefix+'-donut-note');
+  data.forEach((d,i)=>{
+    const frac=Math.max(0,d.v)/tot,a1=a0+frac*360;
+    const p=svgEl('path',{d:donutPath(cx,cy,r,ir,a0,Math.max(a0+0.5,a1)),
+      fill:DONUT_COLORS[i%DONUT_COLORS.length],class:'g-seg',tabindex:'0',role:'button',
+      'aria-label':d.n+': '+d.detail});
+    if(getSpot()===i)p.classList.add('spot');
+    const toggleIdx=(idx)=>{setSpot(getSpot()===idx?-1:idx);
+      const cur=getSpot();
+      segs.forEach((s,j)=>{s.classList.toggle('spot',j===cur);
+        if(cur<0)s.removeAttribute('opacity');else s.setAttribute('opacity',j===cur?'1':'0.28');});
+      document.querySelectorAll('#'+prefix+'-bars .g-bar-row[data-bi]').forEach((r,j)=>{
+        r.classList.toggle('active',j===cur);r.setAttribute('aria-pressed',j===cur?'true':'false');});
+      tTitle.textContent=cur<0?title:data[cur].n;
+      tNote.textContent=cur<0?defNote:data[cur].detail;
+      hTitle.textContent=cur<0?title:data[cur].n;
+      hNote.textContent=cur<0?defNote:data[cur].detail;
+      Sound.select();};
+    const pick=()=>toggleIdx(i);
+    wrap._toggleDonut=toggleIdx;
+    p.addEventListener('click',pick);
+    p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});
+    svg.appendChild(p);segs.push(p);a0=a1;
   });
-  out.savings.targetCents = Math.max(0, Math.round(num(t.savings && t.savings.targetCents)));
-  if(Array.isArray(t.expenses)) t.expenses.forEach(e=>{
-    if(!e || typeof e !== "object") return;
-    const hc = Math.max(0, Math.round(num(e.homeCents)));
-    out.expenses.push({
-      id: s(e.id) || uid(),
-      date: isValidDateStr(e.date) ? e.date : todayStr(),
-      cat: CATEGORIES.some(c=>c.id===e.cat) ? e.cat : "other",
-      tripAmount: Math.max(0, Math.round(num(e.tripAmount)*100)/100),
-      homeCents: hc,
-      note: s(e.note).slice(0,500)
-    });
-  });
-  return out;
+  const tTitle=svgEl('text',{x:cx,y:cy-2,'text-anchor':'middle',class:'g-donut-ct',fill:'currentColor'}),
+        tNote=svgEl('text',{x:cx,y:cy+16,'text-anchor':'middle',class:'g-donut-cv',fill:'currentColor'});
+  tTitle.textContent=getSpot()<0?title:data[getSpot()].n;
+  tNote.textContent=getSpot()<0?defNote:data[getSpot()].detail;
+  svg.appendChild(tTitle);svg.appendChild(tNote);
+  $(''+prefix+'-donut-title').textContent=getSpot()<0?title:data[getSpot()].n;
+  $(''+prefix+'-donut-note').textContent=getSpot()<0?defNote:data[getSpot()].detail;
 }
-function uid(){ return "t"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36); }
-function activeTrip(){ return state.trips.find(t=>t.id===state.activeTripId) || null; }
-function tripById(id){ return state.trips.find(t=>t.id===id) || null; }
-
-/* date helpers — parse YYYY-MM-DD as LOCAL dates (no UTC shift) */
-function parseLocal(d){ if(!d) return null; const p=d.split("-"); if(p.length<3) return null; const dt=new Date(+p[0],+p[1]-1,+p[2]); return isNaN(dt)?null:dt; }
-function fmtDate(d){ const dt=parseLocal(d); return dt?dt.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"—"; }
-function todayStr(){ const n=new Date(); return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0"); }
-function daysBetween(a,b){ const da=parseLocal(a), db=parseLocal(b); if(!da||!db) return 0; return Math.round((db-da)/86400000); }
-function tripDays(t){ if(!t.start||!t.end) return 0; return Math.max(0, daysBetween(t.start,t.end)+1); }
-function catById(id){ return CATEGORIES.find(c=>c.id===id) || CATEGORIES[CATEGORIES.length-1]; }
-
-/* ---------- theme (spec reference: emoji icon, white round button adapts via vars) ---------- */
-function paintTheme(){
-  const dark = document.documentElement.getAttribute("data-theme")==="dark";
-  const b = document.getElementById("themeToggle"); if(!b) return;
-  b.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
-  const l = dark ? "Switch to light mode" : "Switch to dark mode";
-  b.setAttribute("aria-pressed", dark?"true":"false");
-  b.setAttribute("aria-label", l); b.title = l;
-}
-function applyTheme(theme){
-  document.documentElement.setAttribute("data-theme", theme);
-  paintTheme();
-  /* muted gray follows the mode; paint funcs may not exist yet at first init — guards absorb that */
-  try{ paintSoundBtn(document.getElementById("soundToggle")); }catch(e){}
-  try{ paintSample(); }catch(e){}
-  try{ localStorage.setItem(THEME_KEY, theme); }catch(e){}
-}
-(function initTheme(){
-  let t = null;
-  try{ t = localStorage.getItem(THEME_KEY); }catch(e){}
-  if(t!=="dark" && t!=="light"){
-    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
-  }
-  applyTheme(t);
-})();
-document.getElementById("themeToggle").addEventListener("click", ()=>{
-  const cur = document.documentElement.getAttribute("data-theme");
-  applyTheme(cur==="dark" ? "light" : "dark");
-  Sound.toggleTheme(); Sound.click();
+/* result bars mirror the donut: click / Enter / Space on a bar toggles its slice */
+[['c-bars','c-donut-wrap'],['g-bars','g-donut-wrap']].forEach(function(pair){
+  var barsEl=$(pair[0]),wrapId=pair[1];
+  function barAct(t){var w=$(wrapId);if(!w)return;
+    var row=t&&t.closest?t.closest('.g-bar-row[data-bi],.g-bar-row[data-overall]'):null;
+    if(!row)return;
+    if(wrapId==='g-donut-wrap'&&row.hasAttribute('data-overall')){toggleOverall(w);return;}
+    if(gOverall&&wrapId==='g-donut-wrap')clearOverallVisuals(w); /* a slice/bar takes over */
+    if(w._toggleDonut)w._toggleDonut(+row.getAttribute('data-bi'));}
+  barsEl.addEventListener('click',function(e){barAct(e.target);});
+  barsEl.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();barAct(e.target);}});
 });
-document.getElementById("sampleToggle").addEventListener("click", ()=>{ setSample(!sampleOn); Sound.click(); });
-document.getElementById("soundToggle").addEventListener("click", function(){ toggleSound(this); });
+/* "Needed on final" row: click / Enter / Space toggles the what-if scenario breakdown */
+function fWhatIfHTML(c,wf,d){
+  var rows=[60,70,80,90,100].map(function(s){
+    var g=(1-wf)*c+wf*s, ok=g>=d-1e-9;
+    return '<div class="g-wi-row'+(ok?' ok':'')+'"><span>Score '+s+'% on the final</span><span>→ <b>'+r2(g)+'%</b> course'+(ok?' ✓':'')+'</span></div>';
+  }).join('');
+  return '<div class="g-wi" role="region" aria-label="What-if scenarios: course grade by final-exam score">'+rows+'</div>';
+}
+function toggleWhatIf(){
+  fWhatIf=!fWhatIf; Sound.select(); calcFinal();
+  var fx=document.querySelector('#f-bars .g-bar-row[data-fx]');
+  if(fx)fx.focus({preventScroll:true});
+}
+$('f-bars').addEventListener('click',function(e){
+  var row=e.target&&e.target.closest?e.target.closest('.g-bar-row[data-fx]'):null;
+  if(row)toggleWhatIf();
+});
+$('f-bars').addEventListener('keydown',function(e){
+  if(e.key==='Enter'||e.key===' '){
+    var row=e.target&&e.target.closest?e.target.closest('.g-bar-row[data-fx]'):null;
+    if(row){e.preventDefault();toggleWhatIf();}
+  }
+});
+/* ---------- headline numbers + gauge are clickable (clickability audit) ---------- */
+function spotTopCategory(){
+  var bd=window._cBarData||[],w=$('c-donut-wrap');
+  if(!bd.length||w.hidden||!w._toggleDonut)return;
+  var bi=0,bm=-1;
+  bd.forEach(function(b,i){var v=b.w*b.s;if(v>bm){bm=v;bi=i;}});
+  Sound.select(); w._toggleDonut(bi);
+}
+[['c-big','Current grade — click to spotlight the category contributing the most weighted points',function(){spotTopCategory();}],
+ ['g-big','GPA — click to spotlight the overall total',function(){var w=$('g-donut-wrap');if(w.hidden||!w._toggleDonut)return;Sound.select();toggleOverall(w);}],
+ ['f-big','Needed score — click to expand the what-if scenario',function(){if(!$('f-res').classList.contains('show'))return;toggleWhatIf();}],
+ ['f-gauge','Needed score gauge — click to expand the what-if scenario',function(){if(!$('f-res').classList.contains('show'))return;toggleWhatIf();}]
+].forEach(function(cfg){
+  var el=$(cfg[0]); if(!el)return;
+  el.setAttribute('tabindex','0'); el.setAttribute('role','button'); el.setAttribute('aria-label',cfg[1]);
+  el.style.cursor='pointer';
+  el.addEventListener('click',cfg[2]);
+  el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();cfg[2]();}});
+});
+/* "Overall GPA" row: spotlights the aggregate — dims every course bar + donut slice,
+   swaps the donut readout to the totals. A slice/bar click takes over (capture guard). */
+function clearOverallVisuals(w){
+  gOverall=false;
+  document.querySelectorAll('#g-bars .g-bar-row[data-bi]').forEach(function(r){r.style.opacity='';});
+  var orow=document.querySelector('#g-bars .g-bar-row[data-overall]');
+  if(orow){orow.classList.remove('active');orow.setAttribute('aria-pressed','false');}
+  if(w)w.querySelectorAll('.g-seg').forEach(function(s){s.removeAttribute('opacity');s.classList.remove('spot');});
+}
+function toggleOverall(w){
+  gOverall=!gOverall;
+  var orow=document.querySelector('#g-bars .g-bar-row[data-overall]');
+  if(gOverall){
+    if(gSpot>=0&&w._toggleDonut)w._toggleDonut(gSpot);else Sound.select(); /* clear slice spotlight */
+    document.querySelectorAll('#g-bars .g-bar-row[data-bi]').forEach(function(r){
+      r.style.opacity='0.35';r.classList.remove('active');r.setAttribute('aria-pressed','false');});
+    w.querySelectorAll('.g-seg').forEach(function(s){s.classList.remove('spot');s.setAttribute('opacity','0.28');});
+    $('g-donut-title').textContent='Overall GPA';
+    $('g-donut-note').textContent=$('g-note').textContent;
+    var ct=w.querySelector('.g-donut-ct'),cv=w.querySelector('.g-donut-cv');
+    if(ct)ct.textContent='Overall GPA'; if(cv)cv.textContent=$('g-big').textContent;
+    if(orow){orow.classList.add('active');orow.setAttribute('aria-pressed','true');}
+  }else{
+    clearOverallVisuals(w);
+    if(w._toggleDonut)w._toggleDonut(-1);else Sound.select(); /* restore defaults */
+  }
+}
+['click','keydown'].forEach(function(t){
+  $('g-donut-wrap').addEventListener(t,function(e){
+    if(!gOverall)return;
+    var seg=e.target&&e.target.closest?e.target.closest('.g-seg'):null;
+    if(seg)clearOverallVisuals($('g-donut-wrap'));
+  },true);
+});
+/* semicircular gauge for the final-exam solver: 0-100 scale, color zones, needle */
+function gpol(cx,cy,r,f){const a=Math.PI*(1-f);return [cx+r*Math.cos(a),cy-r*Math.sin(a)];}
+function renderGauge(need){
+  const svg=$('f-gauge');svg.innerHTML='';
+  $('f-gauge-wrap').hidden=false;
+  const cx=100,cy=100,r=80;
+  const zones=[[0,0.6,'#10b981'],[0.6,0.85,'#f59e0b'],[0.85,1,'#ef4444']];
+  zones.forEach(z=>{
+    const [x0,y0]=gpol(cx,cy,r,z[0]),[x1,y1]=gpol(cx,cy,r,z[1]);
+    svg.appendChild(svgEl('path',{d:'M'+x0.toFixed(1)+','+y0.toFixed(1)+' A'+r+','+r+' 0 0,1 '+x1.toFixed(1)+','+y1.toFixed(1),
+      stroke:z[2],'stroke-width':14,fill:'none'}));
+  });
+  [0,0.25,0.5,0.75,1].forEach(f=>{
+    const [x,y]=gpol(cx,cy,r-14,f);
+    const lab=svgEl('text',{x:x.toFixed(1),y:(y+3).toFixed(1),'text-anchor':'middle',class:'g-gauge-tick',fill:'currentColor'});
+    lab.textContent=Math.round(f*100);svg.appendChild(lab);
+  });
+  const clamped=Math.max(0,Math.min(100,need)),f=clamped/100;
+  const [nx,ny]=gpol(cx,cy,r-16,f);
+  svg.appendChild(svgEl('line',{x1:cx,y1:cy,x2:nx.toFixed(1),y2:ny.toFixed(1),class:'g-gauge-needle'}));
+  svg.appendChild(svgEl('circle',{cx:cx,cy:cy,r:6,class:'g-gauge-hub'}));
+  svg.setAttribute('aria-label','Gauge: you need '+r2(clamped)+'% on the final (0 to 100 scale)');
+}
+
+/* ---------- FINAL SOLVER ---------- */
+const fCur=$('f-cur'),fGoal=$('f-goal'),fWt=$('f-wt');
+function calcFinal(){
+  showErr('f-err','');
+  $('f-gauge-wrap').hidden=true;
+  const c=num(fCur.value),d=num(fGoal.value),w=num(fWt.value);
+  if(isNaN(c)||c<0||c>100)return showErr('f-err','Current grade must be between 0 and 100.'),$ ('f-res').classList.remove('show');
+  if(isNaN(d)||d<0||d>100)return showErr('f-err','Desired grade must be between 0 and 100.'),$ ('f-res').classList.remove('show');
+  if(isNaN(w)||w<=0||w>100)return showErr('f-err','Final weight must be more than 0 and at most 100.'),$ ('f-res').classList.remove('show');
+  const wf=w/100, need=(d-(1-wf)*c)/wf;
+  const maxScore=(1-wf)*c+wf*100, minScore=(1-wf)*c;
+  const big=$('f-big'),ver=$('f-verdict');
+  if(need>100){
+    big.textContent='Not possible';
+    ver.innerHTML='<span class="g-verdict g-verdict-bad">Even a perfect 100% on the final only gets you to '+r2(maxScore)+'%.</span> Consider aiming for '+r2(maxScore)+'% instead, or ask about extra credit.';
+  }else if(need<0){
+    big.textContent='Already guaranteed';
+    ver.innerHTML='<span class="g-verdict g-verdict-good">You keep your goal even with a 0% on the final (floor: '+r2(minScore)+'% if you skip it entirely).</span>';
+  }else{
+    big.textContent=r2(need)+'% needed';
+    ver.innerHTML='You need <b>'+r2(need)+'%</b> on the final to finish with <b>'+r2(d)+'%</b> in the course.';
+  }
+  $('f-work').textContent='required = (desired − (1 − w) × current) ÷ w\nrequired = ('+d+' − (1 − '+r2(wf)+') × '+c+') ÷ '+r2(wf)+'\nrequired = ('+d+' − '+r2((1-wf)*c)+') ÷ '+r2(wf)+' = '+r2(need)+'%';
+  const needPct=Math.max(0,Math.min(100,need));
+  const mCls=need>100?'bad':need<0?'good':'';
+  $('f-bars').innerHTML='<div class="g-bar-row" data-fx="1" tabindex="0" role="button" aria-expanded="'+fWhatIf+'" aria-label="Needed on final — click to see what-if final-score scenarios"><span class="g-bar-name">Needed on final</span>'+
+    '<span class="g-bar-track"><span class="g-bar-marker '+mCls+'" style="left:calc('+r2(needPct)+'% - 1px)"></span></span>'+
+    '<span class="g-bar-val">'+r2(need)+'%</span></div>'+
+    (fWhatIf?fWhatIfHTML(c,wf,d):'');
+  renderGauge(need);
+  $('f-res').classList.add('show');
+  save();
+}
+[fCur,fGoal,fWt].forEach(i=>i.addEventListener('input',calcFinal));
+
+/* ---------- COURSE GRADE ---------- */
+const cRows=$('c-rows');
+function cRow(name,wt,sc){
+  const d=document.createElement('div');d.className='rowline';
+  d.innerHTML='<input type="text" placeholder="Category (e.g. Homework)" aria-label="Category name" maxlength="40">'+
+    '<input type="number" placeholder="Weight %" aria-label="Weight percent" min="0" max="100" step="0.01" inputmode="decimal">'+
+    '<input type="number" placeholder="Score %" aria-label="Score percent" min="0" max="100" step="0.01" inputmode="decimal">'+
+    '<button class="rm" type="button" aria-label="Remove category"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-trash"/></svg></button>';
+  const ins=d.querySelectorAll('input');
+  if(name!==undefined)ins[0].value=name; if(wt!==undefined)ins[1].value=wt; if(sc!==undefined)ins[2].value=sc;
+  ins.forEach(i=>i.addEventListener('input',calcCourse));
+  d.querySelector('.rm').addEventListener('click',()=>{d.remove();calcCourse();});
+  return d;
+}
+function calcCourse(){
+  showErr('c-err','');
+  cSpot=-1;$('c-donut-wrap').hidden=true;
+  const rows=[...cRows.querySelectorAll('.rowline')];
+  let tw=0,ts=0,lines=[],ok=false,skipped=0;const barData=[];
+  for(const r of rows){
+    const ins=r.querySelectorAll('input');
+    const name=(ins[0].value||'Category').trim()||'Category';
+    const w=num(ins[1].value),s=num(ins[2].value);
+    if(isNaN(w)||isNaN(s)){if(ins[0].value.trim()!==''||ins[1].value!==''||ins[2].value!=='')skipped++;continue;}
+    if(w<0||w>100)return showErr('c-err','Weights must be between 0 and 100.'),$ ('c-res').classList.remove('show');
+    if(s<0||s>100)return showErr('c-err','Scores must be between 0 and 100.'),$ ('c-res').classList.remove('show');
+    ok=true;tw+=w;ts+=w*s;lines.push('  '+name+': '+w+'% × '+s+'% = '+r2(w*s));barData.push({n:name,s:s,w:w});
+  }
+  if(!ok)return $('c-res').classList.remove('show');
+  if(tw===0)return showErr('c-err','Total weight is 0 — add weights to your categories.'),$ ('c-res').classList.remove('show');
+  const avg=ts/tw;
+  window._cBarData=barData; /* headline click spotlights the top contributor */
+  $('c-big').textContent=r2(avg)+'%';
+  $('c-note').textContent=(tw===100?'Weights total exactly 100%.':'Weights total '+r2(tw)+'% — scaled to 100% automatically.')+(skipped?' '+skipped+' incomplete categor'+(skipped===1?'y':'ies')+' not counted.':'');
+  $('c-work').textContent='grade = Σ(weight × score) ÷ Σ(weight)\n'+lines.join('\n')+'\n= '+r2(ts)+' ÷ '+r2(tw)+' = '+r2(avg)+'%';
+  let cbars='';
+  for(const [bi,b] of barData.entries()){const pct=Math.max(0,Math.min(100,b.s));cbars+='<div class="g-bar-row" data-bi="'+bi+'" tabindex="0" role="button" aria-pressed="false" aria-label="'+esc(b.n)+' — click to spotlight its donut slice"><span class="g-bar-name">'+esc(b.n)+'</span><span class="g-bar-track"><span class="g-bar-fill '+barCls(pct)+'" style="width:'+r2(pct)+'%"></span></span><span class="g-bar-val">'+r2(b.s)+'%</span></div>';}
+  $('c-bars').innerHTML=cbars;
+  renderDonut($('c-donut'),$('c-donut-wrap'),barData.map(b=>({n:b.n,v:b.w,
+    detail:b.n+': '+r2(b.w)+'% weight × '+r2(b.s)+'% score = '+r2(b.w*b.s)+' weighted points'})),
+    'c','Weight share','Each slice is a category\'s share of total weight. Click a slice for details.',
+    v=>cSpot=v,()=>cSpot);
+  $('c-res').classList.add('show');
+  save();
+}
+$('c-add').addEventListener('click',()=>{cRows.appendChild(cRow());save();Sound.click();});
+
+/* ---------- GPA ---------- */
+const POINTS={'A+':4.0,'A':4.0,'A-':3.7,'B+':3.3,'B':3.0,'B-':2.7,'C+':2.3,'C':2.0,'C-':1.7,'D+':1.3,'D':1.0,'D-':0.7,'F':0.0};
+const gRows=$('g-rows'),gW=$('g-weighted');
+function gRow(name,cr,gr,hon){
+  const d=document.createElement('div');d.className='rowline';
+  let opts='';for(const g of Object.keys(POINTS))opts+='<option'+(gr===g?' selected':'')+'>'+g+'</option>';
+  d.innerHTML='<input type="text" placeholder="Course" aria-label="Course name" maxlength="40">'+
+    '<input type="number" placeholder="Credits" aria-label="Credits" min="0" max="12" step="0.5" inputmode="decimal">'+
+    '<select aria-label="Letter grade">'+opts+'</select>'+
+    '<label class="gp-hon"><input type="checkbox" aria-label="Honors or AP">H/AP</label>'+
+    '<button class="rm" type="button" aria-label="Remove course"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-trash"/></svg></button>';
+  const ins=d.querySelectorAll('input');
+  if(name!==undefined)ins[0].value=name; if(cr!==undefined)ins[1].value=cr; if(hon)ins[2].checked=true;
+  d.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',calcGpa));
+  d.querySelectorAll('input,select').forEach(i=>i.addEventListener('change',calcGpa));
+  d.querySelector('.rm').addEventListener('click',()=>{d.remove();calcGpa();});
+  return d;
+}
+function calcGpa(){
+  showErr('g-err','');
+  gSpot=-1;gOverall=false;$('g-donut-wrap').hidden=true;
+  const rows=[...gRows.querySelectorAll('.rowline')];
+  const weighted=gW.checked;
+  let tc=0,tqp=0,lines=[],ok=false,skipped=0;const gBarData=[];
+  for(const r of rows){
+    const t=r.querySelector('input[type=text]').value.trim()||'Course';
+    const cr=num(r.querySelector('input[type=number]').value);
+    const gr=r.querySelector('select').value;
+    const hon=r.querySelector('input[type=checkbox]').checked;
+    if(isNaN(cr)){if(r.querySelector('input[type=text]').value.trim()!==''||r.querySelector('input[type=number]').value!=='')skipped++;continue;}
+    if(cr===0)continue; /* 0-credit / audit courses don't affect GPA */
+    if(cr<0||cr>12)return showErr('g-err','Credits must be between 0 and 12.'),$ ('g-res').classList.remove('show');
+    const pts=POINTS[gr]+(weighted&&hon&&gr!=='F'?1.0:0);
+    ok=true;tc+=cr;tqp+=pts*cr;
+    lines.push('  '+t+': '+gr+' → '+r2(POINTS[gr])+(weighted&&hon&&gr!=='F'?' +1.0 (H/AP)':'')+' × '+cr+' cr = '+r2(pts*cr)+' pts');
+    gBarData.push({t:t,pts:pts,gr:gr,qp:r2(pts*cr),cr:cr});
+  }
+  if(!ok)return $('g-res').classList.remove('show');
+  const gpa=tqp/tc;
+  $('g-big').textContent='GPA '+r2(gpa);
+  $('g-note').textContent=r2(tc)+' total credits · '+r2(tqp)+' quality points · '+(weighted?'weighted 4.0 scale (+1.0 Honors/AP)':'unweighted 4.0 scale')+(skipped?' · '+skipped+' incomplete course'+(skipped===1?'':'s')+' not counted':'');
+  $('g-work').textContent='GPA = Σ(grade points × credits) ÷ Σ(credits)\n'+lines.join('\n')+'\n= '+r2(tqp)+' ÷ '+r2(tc)+' = '+r2(gpa);
+  const maxScale=weighted?5:4;
+  let gbars='';
+  for(const [bi,b] of gBarData.entries()){const pct=Math.max(0,Math.min(100,b.pts/maxScale*100));gbars+='<div class="g-bar-row" data-bi="'+bi+'" tabindex="0" role="button" aria-pressed="false" aria-label="'+esc(b.t)+' — click to spotlight its donut slice"><span class="g-bar-name">'+esc(b.t)+'</span><span class="g-bar-track"><span class="g-bar-fill '+barCls(pct)+'" style="width:'+r2(pct)+'%"></span></span><span class="g-bar-val">'+b.gr+'</span></div>';}
+  const gpaPct=Math.max(0,Math.min(100,gpa/maxScale*100));
+  gbars+='<div class="g-bar-row" data-overall="1" tabindex="0" role="button" aria-pressed="false" aria-label="Overall GPA — click to spotlight the aggregate"><span class="g-bar-name"><b>Overall GPA</b></span><span class="g-bar-track"><span class="g-bar-fill '+barCls(gpaPct)+'" style="width:'+r2(gpaPct)+'%"></span></span><span class="g-bar-val">'+r2(gpa)+'</span></div>';
+  $('g-bars').innerHTML=gbars;
+  renderDonut($('g-donut'),$('g-donut-wrap'),gBarData.map(b=>({n:b.t,v:b.qp,
+    detail:b.t+': '+b.gr+' ('+r2(b.pts)+' pts × '+r2(b.cr)+' cr = '+r2(b.qp)+' quality points)'})),
+    'g','Quality points share','Each course\'s slice is its share of total quality points. Click a slice for details.',
+    v=>gSpot=v,()=>gSpot);
+  $('g-res').classList.add('show');
+  save();
+}
+$('g-add').addEventListener('click',()=>{gRows.appendChild(gRow());save();Sound.click();});
+gW.addEventListener('change',calcGpa);
+
+/* ---------- persistence (strict validation) ---------- */
+const LSKEY='gradeplan-v1';
+let sampleOn=false, sampleSnap=null;
+function save(){
+  if(sampleOn) return; /* sample data is transient — never persisted */
+  try{
+    const data={
+      tab:tabBtns.find(b=>b.getAttribute('aria-selected')==='true').dataset.tab,
+      f:[fCur.value,fGoal.value,fWt.value],
+      c:[...cRows.querySelectorAll('.rowline')].map(r=>{const i=r.querySelectorAll('input');return[i[0].value,i[1].value,i[2].value];}),
+      g:[...gRows.querySelectorAll('.rowline')].map(r=>[r.querySelector('input[type=text]').value,r.querySelector('input[type=number]').value,r.querySelector('select').value,r.querySelector('input[type=checkbox]').checked]),
+      gw:gW.checked
+    };
+    localStorage.setItem(LSKEY,JSON.stringify(data));
+  }catch(e){}
+}
+function validNumStr(v,min,max){if(typeof v!=='string')return false;if(v==='')return true;if(!/^\d+(\.\d+)?$/.test(v.trim()))return false;const n=parseFloat(v);return isFinite(n)&&n>=min&&n<=max;}
+function load(){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem(LSKEY));}catch(e){return;}
+  if(!d||typeof d!=='object')return;
+  try{
+    if(Array.isArray(d.f)&&d.f.length===3&&d.f.every(v=>validNumStr(v,0,100))){fCur.value=d.f[0];fGoal.value=d.f[1];fWt.value=d.f[2];}
+    if(Array.isArray(d.c)){cRows.innerHTML='';for(const r of d.c.slice(0,30)){if(!Array.isArray(r)||r.length!==3)continue;const[n,w,s]=r;if(typeof n!=='string'||n.length>40||!validNumStr(w,0,100)||!validNumStr(s,0,100))continue;cRows.appendChild(cRow(n,w,s));}}
+    if(Array.isArray(d.g)){gRows.innerHTML='';for(const r of d.g.slice(0,30)){if(!Array.isArray(r)||r.length!==4)continue;const[n,cr,gr,hon]=r;if(typeof n!=='string'||n.length>40||!POINTS.hasOwnProperty(gr)||typeof hon!=='boolean')continue;if(!validNumStr(cr,0,12))continue;gRows.appendChild(gRow(n,cr,gr,hon));}}
+    if(typeof d.gw==='boolean')gW.checked=d.gw;
+    if(typeof d.tab==='string'&&['final','course','gpa'].includes(d.tab))showTab(d.tab,true);
+  }catch(e){}
+}
 
 /* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
-let sampleOn = false, sampleSnap = null, sampleForm = null, sampleTab = null, sampleModals = null;
 function paintSample(){
-  const b = document.getElementById("sampleToggle"); if(!b) return;
-  const l = sampleOn ? "Clear sample data" : "Try sample data";
-  b.setAttribute("aria-pressed", sampleOn?"true":"false");
-  b.setAttribute("aria-label", l); b.title = l;
-  /* ON tint comes from .sample-toggle[aria-pressed="true"] CSS — white button per spec */
+  const b=$('sampleToggle'),l=sampleOn?'Clear sample data':'Try sample data';
+  b.setAttribute('aria-pressed',sampleOn?'true':'false');
+  b.setAttribute('aria-label',l);b.title=l;
 }
 function fillSample(){
-  const E = (date,cat,tripAmount,homeCents,note)=>({id:uid(),date,cat,tripAmount,homeCents,note});
-  const t = {
-    id: uid(), destination:"Lisbon, Portugal", start:"2026-10-10", end:"2026-10-17",
-    homeCur:"USD", tripCur:"EUR", rate:1.08, totalBudgetCents:240000,
-    allocations:{flights:52000,lodging:70000,food:42000,transport:14000,activities:30000,shopping:12000,insurance:6000,other:14000},
-    savings:{targetCents:60000},
-    expenses:[
-      E("2026-10-02","flights",480,51840,"Round-trip JFK–LIS"),
-      E("2026-10-05","lodging",650,70200,"Airbnb deposit"),
-      E("2026-10-10","food",42.50,4590,"Welcome dinner in Alfama"),
-      E("2026-10-11","transport",18.75,2025,"Metro day pass"),
-      E("2026-10-12","food",61.20,6610,"Time Out Market lunch"),
-      E("2026-10-12","activities",80,8640,"Fado show tickets"),
-      E("2026-10-13","activities",35,3780,"Castelo de São Jorge"),
-      E("2026-10-14","shopping",54.99,5939,"Ceramics in Chiado"),
-      E("2026-10-15","food",47.80,5162,"Seafood dinner"),
-      E("2026-10-16","transport",22.10,2387,"Day trip to Sintra"),
-      E("2026-10-17","food",38.45,4153,"Pastéis before departure")
-    ]
-  };
-  state = {version:1, trips:[t], activeTripId:t.id};
-  renderAll();
-}
-/* transient (uncommitted) form values live only in the DOM — snapshot by id so
-   sample-off restores the exact pre-sample form state even across re-renders */
-function snapForm() {
-  var o = {}, els = document.querySelectorAll('input[id],select[id],textarea[id]');
-  for (var i = 0; i < els.length; i++) { var e = els[i];
-    o[e.id] = (e.type === 'checkbox' || e.type === 'radio') ? (e.checked ? '1' : '0') : e.value; }
-  return o;
-}
-function restoreForm(snap) {
-  if (!snap) return;
-  for (var id in snap) { if (!Object.prototype.hasOwnProperty.call(snap, id)) continue;
-    var e = document.getElementById(id); if (!e) continue; var v = snap[id];
-    if (e.type === 'checkbox' || e.type === 'radio') e.checked = (v === '1'); else e.value = v; }
+  fCur.value='82';fGoal.value='90';fWt.value='30';
+  cRows.innerHTML='';
+  [['Homework',30,94],['Quizzes',20,86],['Midterm exam',25,78],['Final project',25,91]].forEach(r=>cRows.appendChild(cRow(r[0],r[1],r[2])));
+  gRows.innerHTML='';
+  [['Biology',3,'A',false],['Algebra II',4,'B+',false],['English III',3,'A-',false],['Chemistry',4,'B',false],['Honors History',3,'A',true]].forEach(r=>gRows.appendChild(gRow(r[0],r[1],r[2],r[3])));
+  gW.checked=true;
+  calcFinal();calcCourse();calcGpa();
+  showTab('course',true);
 }
 function setSample(on){
-  if(on && !sampleOn){
-    sampleSnap = JSON.stringify(state);
-    sampleForm = snapForm();
-    const selTab = document.querySelector('nav.tabs button[aria-selected="true"]');
-    sampleTab = selTab ? selTab.dataset.tab : "dashboard";
-    sampleModals = {trip:document.getElementById("tripModal").style.display,
-                    expense:document.getElementById("expenseModal").style.display};
-    sampleOn = true; window.__gSampleOn = true;
+  if(on&&!sampleOn){
+    try{sampleSnap=JSON.stringify({
+      tab:tabBtns.find(b=>b.getAttribute('aria-selected')==='true').dataset.tab,
+      f:[fCur.value,fGoal.value,fWt.value],
+      c:[...cRows.querySelectorAll('.rowline')].map(r=>{const i=r.querySelectorAll('input');return[i[0].value,i[1].value,i[2].value];}),
+      g:[...gRows.querySelectorAll('.rowline')].map(r=>[r.querySelector('input[type=text]').value,r.querySelector('input[type=number]').value,r.querySelector('select').value,r.querySelector('input[type=checkbox]').checked]),
+      gw:gW.checked});}catch(e){sampleSnap=null;}
+    sampleOn=true;
     fillSample();
-  } else if(!on && sampleOn){
-    sampleOn = false; window.__gSampleOn = false;
-    try{ const s = JSON.parse(sampleSnap); if(s && Array.isArray(s.trips)) state = s; }catch(e){}
-    sampleSnap = null;
-    renderAll();
-    restoreForm(sampleForm); sampleForm = null;
-    if(sampleTab){
-      const btn = document.querySelector('nav.tabs button[data-tab="'+sampleTab+'"]');
-      if(btn) btn.click();
-      sampleTab = null;
+  }else if(!on&&sampleOn){
+    let d=null;try{d=JSON.parse(sampleSnap);}catch(e){}
+    if(d){
+      fCur.value=d.f[0];fGoal.value=d.f[1];fWt.value=d.f[2];
+      cRows.innerHTML='';(d.c||[]).forEach(r=>cRows.appendChild(cRow(r[0],r[1],r[2])));
+      gRows.innerHTML='';(d.g||[]).forEach(r=>gRows.appendChild(gRow(r[0],r[1],r[2],r[3])));
+      gW.checked=!!d.gw;
+      showTab(['final','course','gpa'].includes(d.tab)?d.tab:'final',true);
+      calcFinal();calcCourse();calcGpa();
+    }else{
+      cRows.innerHTML='';gRows.innerHTML='';
+      calcFinal();calcCourse();calcGpa();
     }
-    if(sampleModals){
-      document.getElementById("tripModal").style.display = sampleModals.trip || "none";
-      document.getElementById("expenseModal").style.display = sampleModals.expense || "none";
-      sampleModals = null;
-    }
+    /* keep sampleOn true until the restore recalcs finish — save() must stay
+       suppressed for the whole sample cycle or it would persist restored values */
+    sampleOn=false;
+    sampleSnap=null;
   }
   paintSample();
 }
 
 /* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
-const Sound = (function(){
-  const K = "tripbudget.sound"; let on = true, ctx = null;
-  try{ if(window.localStorage.getItem(K)==="off") on=false; }catch(e){}
-  function ac(){ try{
-    if(!ctx){ const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return null; ctx = new AC(); }
-    return ctx; }catch(e){ return null; } }
+var Sound=(function(){
+  var KEY='gradeplan.sound',on=true,ctx=null;
+  try{if(window.localStorage.getItem(KEY)==='off')on=false;}catch(e){}
+  function ac(){try{
+    if(!ctx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;ctx=new AC();}
+    return ctx;}catch(e){return null;}}
   function tone(freq,dur,type,vol,delay){
-    const c = ac(); if(!c) return;
-    function play(){ try{
-      const t = c.currentTime+(delay||0), o = c.createOscillator(), g = c.createGain();
-      o.type = type||"sine"; o.frequency.value = freq;
-      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
+    var c=ac();if(!c)return;
+    function play(){try{
+      var t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
+      o.type=type||'sine';o.frequency.value=freq;
+      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
       g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05); }catch(e){} }
-    if(c.state==="suspended"){ c.resume().then(play,play); } else { play(); }
+      o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.05);}catch(e){}}
+    if(c.state==='suspended'){c.resume().then(play,play);}else{play();}
   }
   return{
-    isOn(){ return on; },
-    toggle(){ on=!on; try{ window.localStorage.setItem(K, on?"on":"off"); }catch(e){} return on; },
-    click(){ if(on) tone(520,0.06,"sine",0.045); },
-    select(){ if(on){ tone(660,0.07,"sine",0.055); tone(880,0.09,"sine",0.045,0.06); } },
-    success(){ if(on){ tone(660,0.09,"sine",0.06); tone(990,0.12,"sine",0.05,0.08); } },
-    error(){ if(on) tone(170,0.16,"sawtooth",0.045); },
-    toggleTheme(){ if(on) tone(440,0.06,"triangle",0.05); }
+    isOn:function(){return on;},
+    toggle:function(){on=!on;try{window.localStorage.setItem(KEY,on?'on':'off');}catch(e){}return on;},
+    click:function(){if(on)tone(520,0.06,'sine',0.045);},
+    select:function(){if(on){tone(660,0.07,'sine',0.055);tone(880,0.09,'sine',0.045,0.06);}},
+    success:function(){if(on){tone(660,0.09,'sine',0.06);tone(990,0.12,'sine',0.05,0.08);}},
+    error:function(){if(on)tone(170,0.16,'sawtooth',0.045);},
+    toggleTheme:function(){if(on)tone(440,0.06,'triangle',0.05);}
   };
 })();
-function paintSoundBtn(btn){
-  /* spec reference: emoji icon, button stays white in all states */
-  const on = Sound.isOn();
-  btn.textContent = on ? "🔊" : "🔇";
-  btn.setAttribute("aria-pressed", on?"true":"false");
-  btn.setAttribute("aria-label", "Sound: "+(on?"on":"off"));
-  btn.title = "Toggle sounds ("+(on?"on":"off")+")";
-}
-function toggleSound(btn){
-  Sound.toggle();
-  paintSoundBtn(btn);
-  Sound.click();
-}
+(function(){
+  const btn=document.getElementById('soundToggle');if(!btn)return;
+  function paint(){const on=Sound.isOn();
+    btn.innerHTML=on?'&#128266;':'&#128263;';
+    btn.setAttribute('aria-pressed',on?'true':'false');
+    btn.setAttribute('aria-label','Sound: '+(on?'on':'off'));
+    btn.title='Toggle sounds ('+(on?'on':'off')+')';}
+  btn.addEventListener('click',()=>{Sound.toggle();paint();Sound.click();});
+  paint();
+})();
 
-/* ---------- trips ---------- */
-function openTripModal(editing){
-  const t = editing ? activeTrip() : null;
-  document.getElementById("tripModalTitle").textContent = editing ? "Trip settings" : "New trip";
-  document.getElementById("fDest").value = t ? t.destination : "";
-  document.getElementById("fStart").value = t ? (t.start||"") : "";
-  document.getElementById("fEnd").value = t ? (t.end||"") : "";
-  document.getElementById("fHomeCur").value = t ? t.homeCur : "USD";
-  document.getElementById("fTripCur").value = t ? t.tripCur : "EUR";
-  document.getElementById("fRate").value = t ? t.rate : "";
-  document.getElementById("fBudget").value = t ? (t.totalBudgetCents/100) : "";
-  updateRateHint();
-  document.getElementById("tripModal").style.display = "flex";
-  editingTrip = editing ? t.id : null;
-}
-let editingTrip = null;
-function updateRateHint(){
-  const hc = document.getElementById("fHomeCur").value, tc = document.getElementById("fTripCur").value;
-  document.getElementById("rateHint").textContent = "(1 "+tc+" = ? "+hc+")";
-}
-document.getElementById("tripSave").addEventListener("click", ()=>{
-  const dest = document.getElementById("fDest").value.trim();
-  const start = document.getElementById("fStart").value, end = document.getElementById("fEnd").value;
-  const homeCur = document.getElementById("fHomeCur").value, tripCur = document.getElementById("fTripCur").value;
-  const rate = Number(document.getElementById("fRate").value);
-  const budgetCents = Math.max(0, toCents(document.getElementById("fBudget").value || 0));
-  if(!dest){ alert("Please enter a destination."); Sound.error(); return; }
-  if(!start || !end){ alert("Please pick start and end dates."); Sound.error(); return; }
-  if(daysBetween(start,end) < 0){ alert("End date must be on or after the start date."); Sound.error(); return; }
-  if(!(rate > 0)){ alert("Please enter a valid exchange rate greater than 0."); Sound.error(); return; }
-  if(editingTrip){
-    const t = tripById(editingTrip); if(!t) return;
-    Object.assign(t,{destination:dest,start,end,homeCur,tripCur,rate,totalBudgetCents:budgetCents});
-  } else {
-    const t = {id:uid(), destination:dest, start, end, homeCur, tripCur, rate,
-      totalBudgetCents:budgetCents, allocations:{}, savings:{targetCents:0}, expenses:[]};
-    CATEGORIES.forEach(c=>{ t.allocations[c.id]=0; });
-    state.trips.push(t);
-    state.activeTripId = t.id;
-  }
-  save(); closeModal("tripModal"); renderAll(); Sound.success();
-});
-function closeModal(id){ document.getElementById(id).style.display = "none"; }
-document.getElementById("tripCancel").addEventListener("click", ()=>closeModal("tripModal"));
-document.getElementById("newTripBtn").addEventListener("click", ()=>openTripModal(false));
-document.getElementById("emptyNewBtn").addEventListener("click", ()=>openTripModal(false));
-document.getElementById("editTripBtn").addEventListener("click", ()=>{ if(activeTrip()) openTripModal(true); });
-document.getElementById("deleteTripBtn").addEventListener("click", ()=>{
-  const t = activeTrip(); if(!t) return;
-  if(!confirm('Delete the trip "'+t.destination+'"? All its budget data will be removed.')) return;
-  state.trips = state.trips.filter(x=>x.id!==t.id);
-  state.activeTripId = state.trips.length ? state.trips[0].id : null;
-  save(); renderAll(); Sound.click();
-});
-document.getElementById("tripSelect").addEventListener("change", e=>{
-  state.activeTripId = e.target.value; save(); renderAll(); Sound.select();
-});
-document.getElementById("fHomeCur").addEventListener("change", updateRateHint);
-document.getElementById("fTripCur").addEventListener("change", updateRateHint);
-
-/* ---------- export / import ---------- */
-function downloadFile(name, text){
-  const blob = new Blob([text], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-}
-document.getElementById("exportBtn").addEventListener("click", ()=>{
-  const stamp = todayStr();
-  downloadFile("tripbudget-export-"+stamp+".json", JSON.stringify(state,null,2));
-  Sound.success();
-});
-document.getElementById("importBtn").addEventListener("click", ()=>document.getElementById("importFile").click());
-document.getElementById("importFile").addEventListener("change", e=>{
-  const f = e.target.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = ()=>{
-    try{
-      const s = JSON.parse(r.result);
-      if(!s || !Array.isArray(s.trips)) throw new Error("bad file");
-      const clean = [];
-      s.trips.forEach(t=>{ const c = sanitizeTrip(t); if(c) clean.push(c); });
-      if(!clean.length) throw new Error("no valid trips");
-      state = {version:1, trips:clean, activeTripId:null};
-      if(!tripById(state.activeTripId)) state.activeTripId = state.trips.length?state.trips[0].id:null;
-      save(); renderAll();
-      alert("Import complete: "+state.trips.length+" trip(s) loaded.");
-      Sound.success();
-    }catch(err){ alert("Could not import that file — it isn't a valid TripBudget export."); Sound.error(); }
-    e.target.value = "";
-  };
-  r.readAsText(f);
+/* Esc clears any active spotlight / expansion (donut slices, overall-GPA aggregate, what-if breakdown) */
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  if(cSpot<0&&gSpot<0&&!fWhatIf&&!gOverall)return;
+  cSpot=-1;gSpot=-1;fWhatIf=false;
+  if(gOverall)toggleOverall($('g-donut-wrap')); /* flips to false + restores defaults */
+  calcFinal();calcCourse();calcGpa();
 });
 
-/* ---------- tabs ---------- */
-document.querySelectorAll("nav.tabs button").forEach(b=>{
-  b.addEventListener("click", ()=>{
-    document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected","false"));
-    b.setAttribute("aria-selected","true");
-    document.querySelectorAll(".tabpane").forEach(p=>p.style.display="none");
-    document.getElementById("tab-"+b.dataset.tab).style.display = "";
-    Sound.click();
-  });
-});
-
-/* ---------- inline SVG charts (dependency-free, gallery-style) ---------- */
-const CH_COLORS=["var(--ch1)","var(--ch2)","var(--ch3)","var(--ch4)","var(--ch5)","var(--ch6)","var(--ch7)","var(--ch8)"];
-/* dashed-circle donut with center readout */
-function donutSVG(uidp,segs,total,topText,subText){
-  const C=345.6; let acc=0,g="";
-  segs.forEach((s,i)=>{
-    const frac=total>0?s.value/total:0;
-    const len=segs.length>1?Math.max(frac*C-1.4,0.6):C;
-    g+='<g class="seg" tabindex="0" role="button" data-i="'+i+'" aria-pressed="false" aria-label="'+esc(s.name+": "+s.hint)+'">'
-      +'<circle cx="80" cy="80" r="55" fill="none" stroke="'+s.color+'" stroke-width="24"'
-      +' stroke-dasharray="'+len.toFixed(1)+" "+C.toFixed(1)+'" stroke-dashoffset="'+(-acc).toFixed(1)+'"/></g>';
-    acc+=frac*C;
-  });
-  return '<svg viewBox="0 0 160 160" role="img" aria-label="Spending by category donut chart">'
-    +'<circle cx="80" cy="80" r="55" fill="none" stroke="var(--border)" stroke-width="24"/>'
-    +'<g fill="none" transform="rotate(-90 80 80)">'+g+'</g>'
-    +'<text x="80" y="78" text-anchor="middle" pointer-events="none" style="font-size:19px;font-weight:700;fill:var(--text)" id="'+uidp+'-top">'+esc(topText)+'</text>'
-    +'<text x="80" y="98" text-anchor="middle" pointer-events="none" style="font-size:10.5px;letter-spacing:1.2px;fill:var(--muted)" id="'+uidp+'-sub">'+esc(subText)+'</text></svg>';
-}
-function legendHTML(segs){
-  return '<div class="ch-legend">'+segs.map((s,i)=>
-    '<button type="button" class="ch-leg" data-i="'+i+'" aria-pressed="false">'
-    +'<span class="sw" style="background:'+s.color+'"></span><span>'+esc(s.name)+'</span>'
-    +'<span style="color:var(--muted)">'+esc(s.hint)+'</span></button>').join("")+'</div>';
-}
-/* select-to-spotlight: click/Enter/Space spotlights an item and swaps the detail
-   readout; clicking again restores the default view */
-function wireSelectable(scope,segs,fmtDetail,fmtDefault,detId,onPick){
-  const det=document.getElementById(detId); let sel=-1;
-  const items=scope.querySelectorAll(".seg,.ch-bar");
-  function pick(i){
-    sel=(sel===i?-1:i);
-    items.forEach((g,gi)=>{
-      g.style.opacity=(sel===-1||sel===gi)?"1":"0.25";
-      g.setAttribute("aria-pressed",sel===gi?"true":"false");
-    });
-    scope.querySelectorAll(".ch-leg").forEach((l,li)=>l.setAttribute("aria-pressed",sel===li?"true":"false"));
-    det.innerHTML=sel===-1?fmtDefault():fmtDetail(segs[sel]);
-    if(onPick)onPick(sel);
-  }
-  items.forEach((g,i)=>{
-    g.addEventListener("click",()=>{pick(i);Sound.click();});
-    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(i);Sound.click();}});
-  });
-  scope.querySelectorAll(".ch-leg").forEach((l,i)=>l.addEventListener("click",()=>{pick(i);Sound.click();}));
-  /* Escape restores the default view for this chart's spotlight */
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sel!==-1){pick(sel);Sound.click();}});
-  det.innerHTML=fmtDefault();
-}
-/* category spend segments (positive spend only), in CATEGORIES order */
-function mixSegs(t,d){
-  return CATEGORIES.map((c,i)=>({id:c.id,name:c.name,color:CH_COLORS[i%CH_COLORS.length],
-      value:d.perCat[c.id]||0,alloc:t.allocations[c.id]||0}))
-    .filter(s=>s.value>0)
-    .map(s=>(s.hint=(d.spent>0?Math.round(s.value/d.spent*1000)/10:0)+"%",s));
-}
-function wireMixCard(t,d){
-  const wrap=document.getElementById("mixWrap"); if(!wrap) return;
-  const segs=mixSegs(t,d);
-  wireSelectable(wrap,segs,
-    s=>{
-      const left=s.alloc-s.value;
-      return "<strong>"+esc(s.name)+"</strong> &mdash; "+esc(fmtCents(s.value,t.homeCur))+" ("+esc(s.hint)+")"
-        +" &middot; allocated "+esc(fmtCents(s.alloc,t.homeCur))
-        +(s.alloc>0?(left<0?" &middot; <strong>over by "+esc(fmtCents(-left,t.homeCur))+"</strong>"
-                        :" &middot; "+esc(fmtCents(left,t.homeCur))+" left"):"");
-    },
-    ()=>"<strong>"+esc(fmtCents(d.spent,t.homeCur))+"</strong> spent across "+segs.length+" categor"+(segs.length===1?"y":"ies")
-        +". Tap a slice or a legend chip for the breakdown.",
-    "mixDet",
-    i=>{
-      document.getElementById("mixDonut-top").textContent=i===-1?fmtCents(d.spent,t.homeCur):fmtCents(segs[i].value,t.homeCur);
-      document.getElementById("mixDonut-sub").textContent=i===-1?"TOTAL":segs[i].name.toUpperCase();
-    });
-}
-
-/* ---------- tap-for-detail: stats + category rows ---------- */
-function statToggle(el){
-  const t=activeTrip(); if(!t) return;
-  const d=tripTotals(t), days=tripDays(t);
-  const det=document.getElementById("statDet");
-  const was=el.getAttribute("aria-pressed")==="true";
-  document.querySelectorAll('.stat[role="button"]').forEach(s=>s.setAttribute("aria-pressed","false"));
-  if(was||!det){ if(det){det.hidden=true;det.innerHTML="";} Sound.click(); return; }
-  const kind=el.dataset.stat;
-  const dailyAllow=days>0&&d.budget>0?Math.floor(d.budget/days):0;
-  let html="";
-  if(kind==="total"){
-    const top=CATEGORIES.map(c=>({c,a:t.allocations[c.id]||0})).filter(x=>x.a>0).sort((a,b)=>b.a-a.a).slice(0,3);
-    html="<strong>"+esc(fmtCents(d.budget,t.homeCur))+" total budget</strong> &mdash; "+esc(fmtCents(d.allocated,t.homeCur))+
-      " allocated across "+CATEGORIES.filter(c=>(t.allocations[c.id]||0)>0).length+" categories"+
-      (d.budget>d.allocated?" &middot; "+esc(fmtCents(d.budget-d.allocated,t.homeCur))+" unallocated":"")+
-      ". Top: "+top.map(x=>esc(x.c.name)+" "+esc(fmtCents(x.a,t.homeCur))).join(" &middot; ")+".";
-  }else if(kind==="spent"){
-    const top=CATEGORIES.map(c=>({c,s:d.perCat[c.id]||0})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,3);
-    html="<strong>"+esc(fmtCents(d.spent,t.homeCur))+" spent</strong> &mdash; "+t.expenses.length+" expense"+
-      (t.expenses.length===1?"":"s")+". Top categories: "+
-      (top.length?top.map(x=>esc(x.c.name)+" "+esc(fmtCents(x.s,t.homeCur))).join(" &middot; "):"none yet")+".";
-  }else if(kind==="remaining"){
-    const moreDays=dailyAllow>0&&d.remaining>0?Math.floor(d.remaining/dailyAllow):0;
-    html="<strong>"+esc(fmtCents(d.remaining,t.homeCur))+" remaining</strong> &mdash; budget "+
-      esc(fmtCents(d.budget,t.homeCur))+" &minus; spent "+esc(fmtCents(d.spent,t.homeCur))+
-      (moreDays>0?" &middot; covers ~"+moreDays+" more day"+(moreDays===1?"":"s")+
-       " at the "+esc(fmtCents(dailyAllow,t.homeCur))+"/day allowance":"")+".";
-  }else if(kind==="pct"){
-    html="<strong>"+d.pct+"% of budget used</strong> &mdash; "+esc(fmtCents(d.spent,t.homeCur))+
-      " of "+esc(fmtCents(d.budget,t.homeCur))+".";
-  }else if(kind==="timing"){
-    html="<strong>"+esc(t.destination)+"</strong> &mdash; "+esc(fmtDate(t.start))+" to "+esc(fmtDate(t.end))+
-      " ("+days+" day"+(days===1?"":"s")+").";
-  }else if(kind==="daily"){
-    html="<strong>"+esc(fmtCents(dailyAllow,t.homeCur))+"/day</strong> &mdash; budget "+
-      esc(fmtCents(d.budget,t.homeCur))+" &divide; "+days+" day"+(days===1?"":"s")+".";
-  }
-  if(!html){Sound.click();return;}
-  el.setAttribute("aria-pressed","true");
-  det.innerHTML=html; det.hidden=false;
-  Sound.click();
-}
-function catToggle(el){
-  const t=activeTrip(); if(!t) return;
-  const id=el.dataset.cat, det=document.getElementById(el.dataset.det);
-  const was=el.getAttribute("aria-pressed")==="true";
-  document.querySelectorAll('.day-row[role="button"]').forEach(r=>r.setAttribute("aria-pressed","false"));
-  if(was||!det){ if(det){det.hidden=true;det.innerHTML="";} Sound.click(); return; }
-  const d=tripTotals(t), c=catById(id);
-  const alloc=t.allocations[id]||0, spent=d.perCat[id]||0, left=alloc-spent;
-  const ex=t.expenses.filter(x=>catById(x.cat).id===id).sort((a,b)=>b.homeCents-a.homeCents).slice(0,5);
-  let html="<strong>"+esc(c.name)+"</strong> &mdash; "+esc(fmtCents(spent,t.homeCur))+" of "+
-    esc(fmtCents(alloc,t.homeCur))+(left<0?" (over by "+esc(fmtCents(-left,t.homeCur))+")":
-    " ("+esc(fmtCents(left,t.homeCur))+" left)")+".";
-  if(ex.length) html+="<br>"+ex.map(x=>esc(fmtDate(x.date))+" "+esc(x.note||"—")+" "+
-    esc(fmtCents(x.homeCents,t.homeCur))).join(" &middot; ")+".";
-  else html+=" No expenses logged in this category yet.";
-  el.setAttribute("aria-pressed","true");
-  det.innerHTML=html; det.hidden=false;
-  Sound.click();
-}
-function releaseToggles(){
-  let open=false;
-  const det=document.getElementById("statDet"); if(det&&!det.hidden){det.hidden=true;det.innerHTML="";open=true;}
-  ["catDetDash","catDetExp"].forEach(id=>{const c=document.getElementById(id); if(c&&!c.hidden){c.hidden=true;c.innerHTML="";open=true;}});
-  document.querySelectorAll('.stat[role="button"][aria-pressed="true"],.day-row[role="button"][aria-pressed="true"]')
-    .forEach(s=>{s.setAttribute("aria-pressed","false");open=true;});
-  return open;
-}
-function wireToggles(scope){
-  scope.querySelectorAll('.stat[role="button"]').forEach(st=>{
-    st.addEventListener("click",()=>statToggle(st));
-    st.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();statToggle(st);} });
-  });
-  scope.querySelectorAll('.day-row[role="button"]').forEach(r=>{
-    r.addEventListener("click",()=>catToggle(r));
-    r.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();catToggle(r);} });
-  });
-  scope.querySelectorAll('tr.exp-tr[role="button"]').forEach(tr=>{
-    const open=()=>openExpenseModal(tr.dataset.id);
-    tr.addEventListener("click",e=>{ if(e.target&&e.target.closest&&e.target.closest("button"))return; open(); });
-    tr.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();open();} });
-  });
-}
-
-/* ---------- dashboard ---------- */
-function tripTotals(t){
-  const perCat = {}; CATEGORIES.forEach(c=>perCat[c.id]=0);
-  t.expenses.forEach(x=>{ const c = catById(x.cat).id; perCat[c]+= x.homeCents; });
-  const spent = Object.values(perCat).reduce((a,b)=>a+b,0);
-  const allocated = CATEGORIES.reduce((a,c)=>a+(t.allocations[c.id]||0),0);
-  const budget = t.totalBudgetCents || allocated;
-  return {perCat, spent, allocated, budget, remaining: budget-spent,
-          pct: budget>0 ? Math.round(spent/budget*1000)/10 : 0};
-}
-function renderDashboard(t){
-  const el = document.getElementById("tab-dashboard");
-  const d = tripTotals(t), days = tripDays(t);
-  const today = todayStr();
-  const toDep = daysBetween(today, t.start);
-  const daysLeft = Math.max(0, daysBetween(today, t.end));
-  let timing;
-  if(toDep > 0) timing = '<div class="stat" data-stat="timing" role="button" tabindex="0" aria-pressed="false" aria-label="Departure — activate for trip dates"><div class="k">Departure</div><div class="v">'+toDep+' day'+(toDep===1?"":"s")+'</div></div>';
-  else if(toDep === 0) timing = '<div class="stat" data-stat="timing" role="button" tabindex="0" aria-pressed="false" aria-label="Departure — activate for trip dates"><div class="k">Departure</div><div class="v">Today!</div></div>';
-  else timing = '<div class="stat" data-stat="timing" role="button" tabindex="0" aria-pressed="false" aria-label="Trip status — activate for trip dates"><div class="k">Trip status</div><div class="v">'+(daysLeft>0?daysLeft+' day'+(daysLeft===1?"":"s")+' left':'Finished')+'</div></div>';
-  const dailyAllow = days>0 && d.budget>0 ? Math.floor(d.budget/days) : 0;
-  el.innerHTML =
-    '<div class="toolbar no-print"><span class="spacer"></span><button id="printBtn">🖨 Print trip summary</button></div>'+
-    '<div class="card"><h2>'+esc(t.destination)+' <span class="note">'+esc(fmtDate(t.start))+' → '+esc(fmtDate(t.end))+' · '+esc(t.homeCur)+' / '+esc(t.tripCur)+' · 1 '+esc(t.tripCur)+' = '+esc(String(t.rate))+' '+esc(t.homeCur)+'</span></h2>'+
-    '<div class="grid-stats">'+
-      '<div class="stat" data-stat="total" role="button" tabindex="0" aria-pressed="false" aria-label="Total budget — activate for the allocation breakdown"><div class="k">Total budget</div><div class="v">'+esc(fmtCents(d.budget,t.homeCur))+'</div></div>'+
-      '<div class="stat" data-stat="spent" role="button" tabindex="0" aria-pressed="false" aria-label="Spent — activate for the top spending categories"><div class="k">Spent</div><div class="v '+(d.spent>d.budget?'bad':'')+'">'+esc(fmtCents(d.spent,t.homeCur))+'</div></div>'+
-      '<div class="stat" data-stat="remaining" role="button" tabindex="0" aria-pressed="false" aria-label="Remaining — activate for the math"><div class="k">Remaining</div><div class="v '+(d.remaining<0?'bad':'good')+'">'+esc(fmtCents(d.remaining,t.homeCur))+'</div></div>'+
-      '<div class="stat" data-stat="pct" role="button" tabindex="0" aria-pressed="false" aria-label="Budget used — activate for the math"><div class="k">Used</div><div class="v '+(d.pct>100?'bad':d.pct>85?'warn':'')+'">'+d.pct+'%</div></div>'+
-      timing+
-      '<div class="stat" data-stat="daily" role="button" tabindex="0" aria-pressed="false" aria-label="Daily allowance — activate for the math"><div class="k">Daily allowance</div><div class="v">'+esc(fmtCents(dailyAllow,t.homeCur))+'</div></div>'+
-    '</div>'+
-    '<div class="ch-det" id="statDet" hidden></div>'+
-    '<div class="progress'+(d.pct>100?' over':'')+'"><i style="width:'+Math.min(100,d.pct)+'%"></i></div>'+
-    (d.pct>100?'<p><span class="badge over">OVER BUDGET by '+esc(fmtCents(d.spent-d.budget,t.homeCur))+'</span></p>':'')+
-    '</div>'+
-    mixCardHTML(t,d)+
-    '<div class="card"><h2>Spending by category</h2>'+
-      CATEGORIES.map(c=>{
-        const alloc = t.allocations[c.id]||0, spent = d.perCat[c.id];
-        const pct = alloc>0 ? Math.round(spent/alloc*1000)/10 : (spent>0?100:0);
-        return '<div class="day-row" data-cat="'+c.id+'" data-det="catDetDash" role="button" tabindex="0" aria-pressed="false" aria-label="'+esc(c.name)+' — activate to see the expenses in this category"><div class="hd"><div class="d">'+c.icon+' '+esc(c.name)+'</div>'+
-          '<div><strong>'+esc(fmtCents(spent,t.homeCur))+'</strong> <span class="note">of '+esc(fmtCents(alloc,t.homeCur))+'</span> '+
-          (alloc>0 && spent>alloc ? '<span class="badge over">over</span>' : '<span class="badge ok">'+pct+'%</span>')+'</div></div>'+
-          '<div class="progress'+(alloc>0&&spent>alloc?' over':'')+'"><i style="width:'+Math.min(100,pct)+'%"></i></div></div>';
-      }).join("")+
-      '<div class="ch-det" id="catDetDash" hidden></div>'+
-    '</div>';
-  document.getElementById("printBtn").addEventListener("click", printSummary);
-  wireMixCard(t,d);
-  wireToggles(el);
-}
-
-/* spend-mix donut card; empty-state when nothing is logged yet */
-function mixCardHTML(t,d){
-  const segs=mixSegs(t,d);
-  if(!segs.length) return '<div class="card no-print"><h2>Spend mix</h2><p class="note">Log expenses and the category mix will appear here.</p></div>';
-  return '<div class="card no-print"><h2>Spend mix <span class="note">(by category)</span></h2>'
-    +'<div id="mixWrap" style="max-width:230px;margin:0 auto">'
-    +donutSVG("mixDonut",segs,d.spent,fmtCents(d.spent,t.homeCur),"TOTAL")+legendHTML(segs)+'</div>'
-    +'<div class="ch-det" id="mixDet"></div></div>';
-}
-
-/* ---------- planner (allocations + savings) ---------- */
-function renderPlanner(t){
-  const el = document.getElementById("tab-planner");
-  const days = tripDays(t);
-  const allocated = CATEGORIES.reduce((a,c)=>a+(t.allocations[c.id]||0),0);
-  const dailyAllow = days>0 ? Math.floor((t.totalBudgetCents||0)/days) : 0;
-  el.innerHTML =
-    '<div class="card"><h2>Pre-trip budget allocation <span class="note">(in '+esc(t.homeCur)+')</span></h2>'+
-    '<div class="field" style="max-width:320px"><label>Total trip budget ('+esc(t.homeCur)+')</label>'+
-      '<input id="pBudget" type="number" min="0" step="0.01" value="'+(t.totalBudgetCents/100)+'"></div>'+
-    CATEGORIES.map(c=>
-      '<div class="cat-row" data-focusrow="'+c.id+'"><div class="nm">'+c.icon+' '+esc(c.name)+'</div>'+
-      '<div><input type="number" min="0" step="0.01" data-alloc="'+c.id+'" value="'+((t.allocations[c.id]||0)/100)+'" aria-label="'+esc(c.name)+' allocation"></div>'+
-      '<div class="bar-cell"><div class="progress"><i style="width:'+(allocated>0?Math.min(100,(t.allocations[c.id]||0)/allocated*100):0)+'%"></i></div></div>'+
-      '<div class="note" data-share="'+c.id+'">'+(allocated>0?Math.round((t.allocations[c.id]||0)/allocated*1000)/10:0)+'%</div></div>'
-    ).join("")+
-    '<p><strong>Allocated: <span id="pAllocTotal">'+esc(fmtCents(allocated,t.homeCur))+'</span></strong> '+
-    '<span class="note">of '+esc(fmtCents(t.totalBudgetCents,t.homeCur))+'</span> '+
-    '<span id="pAllocDiff"></span></p>'+
-    (days>0?'<p class="note">Per-day allowance: <strong>'+esc(fmtCents(dailyAllow,t.homeCur))+'</strong> over '+days+' day'+(days===1?"":"s")+'.</p>':'<p class="note">Pick valid trip dates to see the per-day allowance.</p>')+
-    '</div>'+
-    '<div class="card"><h2>Savings target</h2>'+
-    '<div class="form-grid"><div class="field"><label>Departure date</label><input id="sDepart" type="date" value="'+esc(t.start||'')+'"></div>'+
-    '<div class="field"><label>Target to save ('+esc(t.homeCur)+')</label><input id="sTarget" type="number" min="0" step="0.01" value="'+((t.savings&&t.savings.targetCents||0)/100)+'"></div></div>'+
-    '<div id="savingsOut" class="savings-out">Enter a departure date and a target above.</div>'+
-    '<p class="note">Based on today ('+esc(fmtDate(todayStr()))+'). Save a little each week and the trip pays for itself.</p></div>';
-  const recalcAlloc = ()=>{
-    let sum = 0;
-    el.querySelectorAll("[data-alloc]").forEach(inp=>{
-      const cents = Math.max(0, toCents(inp.value||0)); // negatives invalid -> clamp
-      inp.value = cents/100;
-      t.allocations[inp.dataset.alloc] = cents; sum += cents;
-    });
-    const pb = document.getElementById("pBudget");
-    t.totalBudgetCents = Math.max(0, toCents(pb.value||0));
-    pb.value = t.totalBudgetCents/100;
-    save();
-    document.getElementById("pAllocTotal").textContent = fmtCents(sum,t.homeCur);
-    const diff = t.totalBudgetCents - sum;
-    const dEl = document.getElementById("pAllocDiff");
-    if(diff === 0){ dEl.innerHTML = '<span class="badge ok">fully allocated</span>'; }
-    else if(diff > 0){ dEl.innerHTML = '<span class="badge soon">'+esc(fmtCents(diff,t.homeCur))+' unallocated</span>'; }
-    else { dEl.innerHTML = '<span class="badge over">'+esc(fmtCents(-diff,t.homeCur))+' over budget</span>'; }
-    el.querySelectorAll("[data-alloc]").forEach(inp=>{
-      const c = inp.dataset.alloc;
-      const sh = sum>0 ? Math.round((t.allocations[c]||0)/sum*1000)/10 : 0;
-      const lbl = el.querySelector('[data-share="'+c+'"]');
-      if(lbl) lbl.textContent = sh+"%";
-      const bar = inp.closest(".cat-row").querySelector(".progress>i");
-      if(bar) bar.style.width = Math.min(100, sh)+"%";
-    });
-  };
-  el.querySelectorAll("[data-alloc]").forEach(inp=>inp.addEventListener("change", recalcAlloc));
-  document.getElementById("pBudget").addEventListener("change", recalcAlloc);
-  recalcAlloc();
-  /* tapping anywhere on an allocation row focuses its amount input */
-  el.querySelectorAll("[data-focusrow]").forEach(row=>{
-    row.style.cursor="pointer";
-    row.addEventListener("click",e=>{
-      if(e.target&&e.target.closest&&e.target.closest("input,button,a"))return;
-      const inp=row.querySelector("input[data-alloc]"); if(inp){inp.focus();Sound.click();}
-    });
-  });
-  const recalcSavings = ()=>{
-    const depart = document.getElementById("sDepart").value;
-    const target = toCents(document.getElementById("sTarget").value||0);
-    t.savings = {targetCents:target}; save();
-    const out = document.getElementById("savingsOut");
-    const daysLeft = daysBetween(todayStr(), depart);
-    if(!depart || target<=0){ out.textContent = "Enter a departure date and a target above."; return; }
-    if(daysLeft <= 0){ out.textContent = "Departure is today or in the past — time to enjoy the trip!"; return; }
-    const weeks = Math.max(1, Math.ceil(daysLeft/7));
-    const months = Math.max(1, Math.ceil(daysLeft/30.44));
-    const perWeek = Math.ceil(target/weeks), perMonth = Math.ceil(target/months);
-    out.innerHTML = 'Save <strong>'+esc(fmtCents(perMonth,t.homeCur))+'/month</strong> or <strong>'+esc(fmtCents(perWeek,t.homeCur))+'/week</strong> to reach '+esc(fmtCents(target,t.homeCur))+' by '+esc(fmtDate(depart))+' <span class="note">('+daysLeft+' days to go)</span>';
-  };
-  document.getElementById("sDepart").addEventListener("change", recalcSavings);
-  document.getElementById("sTarget").addEventListener("change", recalcSavings);
-  recalcSavings();
-}
-
-/* ---------- expenses ---------- */
-function openExpenseModal(editId){
-  const t = activeTrip(); if(!t) return;
-  const sel = document.getElementById("eCat");
-  sel.innerHTML = CATEGORIES.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join("");
-  document.getElementById("eCurHint").textContent = "(in "+t.tripCur+")";
-  const x = editId ? t.expenses.find(e=>e.id===editId) : null;
-  document.getElementById("expenseModalTitle").textContent = x ? "Edit expense" : "Log expense";
-  document.getElementById("eDate").value = x ? x.date : todayStr();
-  document.getElementById("eCat").value = x ? x.cat : "food";
-  document.getElementById("eAmount").value = x ? x.tripAmount : "";
-  document.getElementById("eNote").value = x ? (x.note||"") : "";
-  document.getElementById("eHomeCur").checked = false;
-  editingExpense = editId || null;
-  document.getElementById("expenseModal").style.display = "flex";
-}
-let editingExpense = null;
-document.getElementById("expenseSave").addEventListener("click", ()=>{
-  const t = activeTrip(); if(!t) return;
-  const date = document.getElementById("eDate").value;
-  const cat = document.getElementById("eCat").value;
-  const amt = document.getElementById("eAmount").value;
-  const note = document.getElementById("eNote").value.trim();
-  const inHome = document.getElementById("eHomeCur").checked;
-  if(!date){ alert("Pick a date for the expense."); return; }
-  const num = Number(amt);
-  if(!(num > 0)){ alert("Enter an amount greater than 0."); return; }
-  // round trip amount to 2dp to keep money exact
-  const tripAmount = inHome ? homeCentsToTrip(toCents(num), t.rate) : Math.round(num*100)/100;
-  const homeCents = inHome ? toCents(num) : tripToHomeCents(tripAmount, t.rate);
-  const rec = {id: editingExpense || uid(), date, cat,
-    tripAmount: Math.round(tripAmount*100)/100, homeCents, note};
-  if(editingExpense){
-    const i = t.expenses.findIndex(e=>e.id===editingExpense);
-    if(i>=0) t.expenses[i] = rec;
-  } else t.expenses.push(rec);
-  save(); closeModal("expenseModal"); renderAll();
-});
-document.getElementById("expenseCancel").addEventListener("click", ()=>closeModal("expenseModal"));
-function renderExpenses(t){
-  const el = document.getElementById("tab-expenses");
-  const d = tripTotals(t);
-  const rows = t.expenses.slice().sort((a,b)=> a.date<b.date?-1:a.date>b.date?1:0);
-  el.innerHTML =
-    '<div class="toolbar"><button class="primary" id="addExpBtn">+ Log expense</button><span class="spacer"></span>'+
-    '<span class="note">Amounts entered in <strong>'+esc(t.tripCur)+'</strong>; totals shown in <strong>'+esc(t.homeCur)+'</strong>. Rate: 1 '+esc(t.tripCur)+' = '+esc(String(t.rate))+' '+esc(t.homeCur)+'</span></div>'+
-    '<div class="card"><h2>Budget vs actual by category</h2>'+
-    CATEGORIES.map(c=>{
-      const alloc = t.allocations[c.id]||0, spent = d.perCat[c.id];
-      const pct = alloc>0 ? Math.round(spent/alloc*1000)/10 : (spent>0?100:0);
-      const left = alloc-spent;
-      return '<div class="day-row" data-cat="'+c.id+'" data-det="catDetExp" role="button" tabindex="0" aria-pressed="false" aria-label="'+esc(c.name)+' — activate to see the expenses in this category"><div class="hd"><div class="d">'+c.icon+' '+esc(c.name)+'</div>'+
-        '<div><strong>'+esc(fmtCents(spent,t.homeCur))+'</strong> <span class="note">/ '+esc(fmtCents(alloc,t.homeCur))+'</span> '+
-        (left<0?'<span class="badge over">over by '+esc(fmtCents(-left,t.homeCur))+'</span>':'<span class="badge ok">'+esc(fmtCents(left,t.homeCur))+' left</span>')+'</div></div>'+
-        '<div class="progress'+(left<0?' over':'')+'"><i style="width:'+Math.min(100,pct)+'%"></i></div></div>';
-    }).join("")+'<div class="ch-det" id="catDetExp" hidden></div></div>'+
-    '<div class="card"><h2>Expense log ('+rows.length+')</h2>'+
-    (rows.length ?
-      '<div style="overflow-x:auto"><table><thead><tr><th>Date</th><th>Category</th><th>Note</th><th class="num">'+esc(t.tripCur)+'</th><th class="num">'+esc(t.homeCur)+'</th><th></th></tr></thead><tbody>'+
-      rows.map(x=>{
-        const c = catById(x.cat);
-        const tSym = CURR_SYMBOLS[t.tripCur]!==undefined?CURR_SYMBOLS[t.tripCur]:t.tripCur+" ";
-        return '<tr class="exp-tr" data-id="'+x.id+'" role="button" tabindex="0" aria-label="Expense '+esc(fmtDate(x.date))+' '+esc(c.name)+' — activate to edit"><td>'+esc(fmtDate(x.date))+'</td><td>'+esc(c.name)+'</td><td>'+esc(x.note||"—")+'</td>'+
-          '<td class="num">'+esc(tSym+Number(x.tripAmount).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}))+'</td>'+
-          '<td class="num">'+esc(fmtCents(x.homeCents,t.homeCur))+'</td>'+
-          '<td class="num no-print"><button data-edit="'+x.id+'">Edit</button> <button data-del="'+x.id+'" class="danger">✕</button></td></tr>';
-      }).join("")+'</tbody></table></div>'
-    : '<p class="empty">No expenses yet — log your first one above.</p>')+'</div>';
-  document.getElementById("addExpBtn").addEventListener("click", ()=>openExpenseModal(null));
-  el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click", ()=>openExpenseModal(b.dataset.edit)));
-  el.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click", ()=>{
-    if(!confirm("Delete this expense?")) return;
-    t.expenses = t.expenses.filter(e=>e.id!==b.dataset.del);
-    save(); renderAll();
-  }));
-  wireToggles(el);
-}
-
-/* ---------- daily view ---------- */
-/* daily spend vertical bars vs allowance line */
-function dailyChartHTML(t,dailyAllow,dayRows){
-  const W=400,baseY=200,topY=26,H=246,pad=8;
-  const max=Math.max.apply(null,dayRows.map(r=>r.spent).concat([dailyAllow,1]));
-  const slot=(W-pad*2)/dayRows.length,bw=Math.min(30,slot*0.55);
-  const y=v=>baseY-(v/max)*(baseY-topY);
-  let s="";
-  dayRows.forEach((r,i)=>{
-    const cx=pad+slot*(i+0.5),x=cx-bw/2,bh=r.spent>0?Math.max(baseY-y(r.spent),3):0;
-    const over=dailyAllow>0&&r.spent>dailyAllow;
-    s+='<g class="ch-bar" tabindex="0" role="button" data-i="'+i+'" aria-pressed="false"'
-      +' aria-label="'+esc(r.full+": "+fmtCents(r.spent,t.homeCur))+'">'
-      +'<rect x="'+x.toFixed(1)+'" y="'+(baseY-bh).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="4"'
-      +' fill="'+(over?"var(--bad)":"var(--bar)")+'"/>'
-      +'<text x="'+cx.toFixed(1)+'" y="'+(baseY+18)+'" text-anchor="middle" style="font-size:11px;fill:var(--muted)">'+esc(r.dayShort)+'</text></g>';
-  });
-  if(dailyAllow>0){
-    const ay=y(dailyAllow);
-    s+='<line x1="'+pad+'" y1="'+ay.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+ay.toFixed(1)+'" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="6 4"/>'
-      +'<text x="'+(W-pad)+'" y="'+(ay-6).toFixed(1)+'" text-anchor="end" style="font-size:11px;font-weight:600;fill:var(--warn)">allowance '+esc(fmtCents(dailyAllow,t.homeCur))+'</text>';
-  }
-  s+='<line x1="'+pad+'" y1="'+baseY+'" x2="'+(W-pad)+'" y2="'+baseY+'" stroke="var(--border)" stroke-width="1"/>';
-  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Daily spending bar chart">'+s+'</svg>';
-}
-function renderDaily(t){
-  const el = document.getElementById("tab-daily");
-  const d = tripTotals(t), days = tripDays(t);
-  if(days<=0){ el.innerHTML = '<div class="card empty">Set trip dates in Trip settings to see the daily view.</div>'; return; }
-  const dailyAllow = d.budget>0 ? Math.floor(d.budget/days) : 0;
-  const byDay = {};
-  t.expenses.forEach(x=>{ byDay[x.date] = (byDay[x.date]||0) + x.homeCents; });
-  const start = parseLocal(t.start);
-  const dayRows = [];
-  for(let i=0;i<days;i++){
-    const dt = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
-    const key = dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
-    const spent = byDay[key]||0;
-    const pct = dailyAllow>0 ? Math.round(spent/dailyAllow*1000)/10 : (spent>0?100:0);
-    const cats = {};
-    t.expenses.filter(x=>x.date===key).forEach(x=>{ cats[x.cat]=(cats[x.cat]||0)+x.homeCents; });
-    let topCat=null,topAmt=0;
-    Object.keys(cats).forEach(cid=>{ if(cats[cid]>topAmt){topAmt=cats[cid];topCat=catById(cid).name;} });
-    const catBars = Object.keys(cats).map(cid=>{
-      const c = catById(cid), share = spent>0?Math.round(cats[cid]/spent*100):0;
-      return '<div style="display:flex;align-items:center;gap:.5rem;margin:.2rem 0"><span style="width:150px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.icon+' '+esc(c.name)+'</span>'+
-        '<div class="progress" style="flex:1;margin:0"><i style="width:'+share+'%"></i></div>'+
-        '<span class="num" style="width:90px;text-align:right">'+esc(fmtCents(cats[cid],t.homeCur))+'</span></div>';
-    }).join("");
-    dayRows.push({key,spent,pct,catBars,topCat,
-      full:dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}),
-      dayShort:dt.toLocaleDateString("en-US",{weekday:"narrow"})+" "+dt.getDate()});
-  }
-  let html = '<div class="card no-print"><h2>Daily spend <span class="note">(bars vs daily allowance)</span></h2>'
-    +'<div id="dayChartWrap">'+dailyChartHTML(t,dailyAllow,dayRows)+'</div><div class="ch-det" id="dayDet"></div></div>';
-  html += '<div class="card"><h2>Daily spending vs allowance <span class="note">('+esc(fmtCents(dailyAllow,t.homeCur))+'/day)</span></h2>';
-  dayRows.forEach(r=>{
-    const over=r.spent>dailyAllow&&dailyAllow>0;
-    html += '<div class="day-row"><div class="hd"><div class="d">'+esc(r.full)+'</div>'+
-      '<div><strong>'+esc(fmtCents(r.spent,t.homeCur))+'</strong> <span class="note">of '+esc(fmtCents(dailyAllow,t.homeCur))+'</span> '+
-      (over?'<span class="badge over">over</span>':'<span class="badge ok">'+r.pct+'%</span>')+'</div></div>'+
-      '<div class="progress'+(over?' over':'')+'"><i style="width:'+Math.min(100,r.pct)+'%"></i></div>'+
-      (r.catBars?'<details><summary>Category breakdown</summary>'+r.catBars+'</details>':'<div class="note">No spending logged.</div>')+'</div>';
-  });
-  html += '</div>';
-  el.innerHTML = html;
-  const logged=dayRows.filter(r=>r.spent>0).length;
-  wireSelectable(document.getElementById("dayChartWrap"),dayRows,
-    r=>{
-      const over=dailyAllow>0&&r.spent>dailyAllow;
-      return "<strong>"+esc(r.full)+"</strong> &mdash; "+esc(fmtCents(r.spent,t.homeCur))+" of "+esc(fmtCents(dailyAllow,t.homeCur))
-        +" ("+r.pct+"%)"+(over?" &middot; <strong>over by "+esc(fmtCents(r.spent-dailyAllow,t.homeCur))+"</strong>":" &middot; within allowance")
-        +(r.topCat?" &middot; top: "+esc(r.topCat):" &middot; nothing logged")+".";
-    },
-    ()=>(logged?("<strong>"+logged+"</strong> of "+dayRows.length+" days with spending."):"No spending logged yet.")
-      +" Tap a bar for the day's detail.",
-    "dayDet");
-  /* whole day-row toggles its category-breakdown details (bigger tap target) */
-  el.querySelectorAll(".day-row").forEach(row=>{
-    const det=row.querySelector("details"); if(!det)return;
-    row.style.cursor="pointer";
-    row.setAttribute("role","button"); row.setAttribute("tabindex","0");
-    row.setAttribute("aria-expanded",det.open?"true":"false");
-    const flip=()=>{ det.open=!det.open; row.setAttribute("aria-expanded",det.open?"true":"false"); Sound.click(); };
-    row.addEventListener("click",e=>{
-      if(e.target&&e.target.closest&&e.target.closest("summary,a,button,input"))return;
-      flip();
-    });
-    row.addEventListener("keydown",e=>{
-      if(e.key==="Enter"||e.key===" "){e.preventDefault();flip();}
-    });
-  });
-}
-
-/* ---------- print ---------- */
-function printSummary(){
-  const t = activeTrip(); if(!t) return;
-  const d = tripTotals(t), days = tripDays(t);
-  const po = document.getElementById("print-only");
-  po.innerHTML = '<h1>Trip budget summary — '+esc(t.destination)+'</h1>'+
-    '<div class="sub">'+esc(fmtDate(t.start))+' → '+esc(fmtDate(t.end))+' ('+days+' days) · '+esc(t.homeCur)+' home / '+esc(t.tripCur)+' trip · 1 '+esc(t.tripCur)+' = '+esc(String(t.rate))+' '+esc(t.homeCur)+'</div>'+
-    '<table><thead><tr><th>Category</th><th class="num">Allocated</th><th class="num">Spent</th><th class="num">Remaining</th></tr></thead><tbody>'+
-    CATEGORIES.map(c=>{
-      const a=t.allocations[c.id]||0, s=d.perCat[c.id];
-      return '<tr><td>'+esc(c.name)+'</td><td class="num">'+esc(fmtCents(a,t.homeCur))+'</td><td class="num">'+esc(fmtCents(s,t.homeCur))+'</td><td class="num">'+esc(fmtCents(a-s,t.homeCur))+'</td></tr>';
-    }).join("")+
-    '<tr><td><strong>Total</strong></td><td class="num"><strong>'+esc(fmtCents(d.allocated,t.homeCur))+'</strong></td><td class="num"><strong>'+esc(fmtCents(d.spent,t.homeCur))+'</strong></td><td class="num"><strong>'+esc(fmtCents(d.remaining,t.homeCur))+'</strong></td></tr>'+
-    '</tbody></table><p>Budget '+esc(fmtCents(d.budget,t.homeCur))+' · used '+d.pct+'% · prepared with TripBudget</p>';
-  window.print();
-}
-
-/* ---------- render all ---------- */
-function renderTripSelect(){
-  const sel = document.getElementById("tripSelect");
-  sel.innerHTML = state.trips.map(t=>'<option value="'+t.id+'"'+(t.id===state.activeTripId?' selected':'')+'>'+esc(t.destination)+'</option>').join("");
-  sel.style.display = state.trips.length ? "" : "none";
-}
-function renderAll(){
-  renderTripSelect();
-  const t = activeTrip();
-  document.getElementById("emptyState").style.display = t ? "none" : "";
-  document.querySelectorAll(".tabpane").forEach(p=>p.style.display = t ? "" : "none");
-  document.querySelectorAll("nav.tabs").forEach(n=>n.style.display = t ? "" : "none");
-  if(!t){
-    /* clear every pane, not just the dashboard — otherwise stale inputs from a
-       deleted/last trip linger hidden in the DOM (also broke sample-off restore) */
-    document.querySelectorAll(".tabpane").forEach(p=>p.innerHTML="");
-    return;
-  }
-  // keep first tab visible unless another is selected
-  const selTab = document.querySelector('nav.tabs button[aria-selected="true"]');
-  const tab = selTab ? selTab.dataset.tab : "dashboard";
-  document.querySelectorAll(".tabpane").forEach(p=>p.style.display="none");
-  document.getElementById("tab-"+tab).style.display = "";
-  renderDashboard(t); renderPlanner(t); renderExpenses(t); renderDaily(t);
-}
-CURR_LIST.forEach(c=>{
-  ["fHomeCur","fTripCur"].forEach(id=>{
-    const o = document.createElement("option"); o.value=c; o.textContent=c;
-    document.getElementById(id).appendChild(o);
-  });
-});
-document.getElementById("fHomeCur").value = "USD";
-document.getElementById("fTripCur").value = "EUR";
+/* ---------- init ---------- */
+if(!cRows.children.length){cRows.appendChild(cRow('Homework',40,92));cRows.appendChild(cRow('Exams',60,78));}
+if(!gRows.children.length){gRows.appendChild(gRow('Biology',3,'A',false));gRows.appendChild(gRow('Algebra II',4,'B+',false));}
 load();
-renderAll();
+if(!cRows.children.length)cRows.appendChild(cRow());
+if(!gRows.children.length)gRows.appendChild(gRow());
+calcFinal();calcCourse();calcGpa();
+$('sampleToggle').addEventListener('click',()=>{setSample(!sampleOn);Sound.click();});
 paintSample();
-paintSoundBtn(document.getElementById("soundToggle"));
-/* Escape releases every tap-detail readout back to the default view */
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"&&releaseToggles()) Sound.click();
-});
-/* expose for automated QA */
-window.__tripbudget = {state:()=>state, tripTotals, tripToHomeCents, homeCentsToTrip, isValidDateStr, toCents, fmtCents, save, renderAll, load};
+
 </script>
 </body>
 </html>
