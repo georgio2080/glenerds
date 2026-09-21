@@ -861,7 +861,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       <div class="g-field" id="h-imp">
         <span class="g-label">Height <span class="g-hint" style="display:inline">feet + inches</span></span>
         <div class="row2">
-          <input class="g-input" type="number" id="h-ft" inputmode="numeric" min="2" max="8" step="1" value="5" aria-label="Height feet">
+          <input class="g-input" type="number" id="h-ft" inputmode="numeric" min="3" max="8" step="1" value="5" aria-label="Height feet">
           <input class="g-input" type="number" id="h-in" inputmode="decimal" min="0" max="11.99" step="0.01" value="10" aria-label="Height inches">
         </div>
         <div class="g-error" id="h-err">Enter a height between 3 ft and 8 ft.</div>
@@ -1102,7 +1102,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     var bf = num('bf', 'bf-err', 1, 70, true);
     var hCm, wKg;
     if (S.units === 'imp') {
-      var ft = num('h-ft', 'h-err', 2, 8), inch = num('h-in', 'h-err', 0, 11.99);
+      var ft = num('h-ft', 'h-err', 3, 8), inch = num('h-in', 'h-err', 0, 11.99);
       var lb = num('w-lb', 'w-err', 40, 1100);
       if (isFinite(ft) && isFinite(inch)) hCm = Math.round((ft * 12 + inch) * IN * 100) / 100;
       else { hCm = NaN; }
@@ -1117,16 +1117,21 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     return { ok: ok, age: age, bodyFat: bf, heightCm: hCm, weightKg: wKg };
   }
 
-  function persistFromInputs(r) {
+  function persistFromInputs(r, adoptHW) {
     if (!r.ok) return;
-    S.age = r.age; S.weightKg = r.weightKg; S.heightCm = r.heightCm;
+    S.age = r.age;
+    // Adopt height/weight into canonical state ONLY from fields the user just
+    // edited. Re-deriving from the rounded display fields on every input (e.g.
+    // after a unit toggle) silently drifted canonical state: 180 cm -> 5 ft
+    // 10.9 in -> (60+10.9)*2.54 = 180.09 cm, moving BMR by ~1 kcal.
+    if (adoptHW) { S.heightCm = r.heightCm; S.weightKg = r.weightKg; }
     S.bodyFat = r.bodyFat;
     S.activity = parseFloat($('activity').value);
     S.goalPct = parseInt($('goal-slider').value, 10);
     save();
   }
 
-  $('activity').addEventListener('change', function () { persistFromInputs(readInputs()); compute(); });
+  $('activity').addEventListener('change', function () { persistFromInputs(readInputs(), false); compute(); });
   $('goal-slider').addEventListener('input', function () {
     S.goalPct = parseInt($('goal-slider').value, 10);
     // keep preset buttons in sync when the slider matches one
@@ -1145,7 +1150,8 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
   ['age', 'h-ft', 'h-in', 'h-cm', 'w-lb', 'w-kg', 'bf'].forEach(function (id) {
     $(id).addEventListener('input', function () {
       var r = readInputs();
-      persistFromInputs(r);
+      var isHW = (id === 'h-ft' || id === 'h-in' || id === 'h-cm' || id === 'w-lb' || id === 'w-kg');
+      persistFromInputs(r, isHW);
       compute();
     });
   });
@@ -1215,7 +1221,10 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
   function compute() {
     var r = readInputs();
     var stepsEl = $('work-steps');
-    if (!r.ok || !isFinite(r.age) || !isFinite(r.weightKg) || !isFinite(r.heightCm)) {
+    // Height/weight come from canonical state S (full precision), not from the
+    // rounded display fields — see persistFromInputs. r still validates them.
+    var hCm = S.heightCm, wKg = S.weightKg;
+    if (!r.ok || !isFinite(r.age) || !isFinite(wKg) || !isFinite(hCm)) {
       ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
       ['p', 'c', 'f'].forEach(function (m) {
         $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
@@ -1227,8 +1236,8 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       return;
     }
     var b;
-    if (S.formula === 'mifflin') b = bmrMifflin(r.weightKg, r.heightCm, r.age, S.sex);
-    else if (S.formula === 'hb') b = bmrHB(r.weightKg, r.heightCm, r.age, S.sex);
+    if (S.formula === 'mifflin') b = bmrMifflin(wKg, hCm, r.age, S.sex);
+    else if (S.formula === 'hb') b = bmrHB(wKg, hCm, r.age, S.sex);
     else {
       if (r.bodyFat === null || !isFinite(r.bodyFat)) {
         $('km-notice').hidden = false;
@@ -1241,7 +1250,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
         stepsEl.innerHTML = '<div class="notice">Katch-McArdle needs body fat % — enter it above or choose another formula.</div>';
         return;
       }
-      b = bmrKatch(r.weightKg, r.bodyFat);
+      b = bmrKatch(wKg, r.bodyFat);
     }
     $('km-notice').hidden = true;
 
