@@ -227,7 +227,12 @@ function gToggleTheme() {
 .macro-pie-box { position: relative; width: min(300px, 80vw); flex: 0 0 auto; }
 .macro-pie { display: block; width: 100%; height: auto; }
 .macro-pie-track { stroke: var(--g-surface-2); }
-.pie-seg { transition: stroke-dasharray 300ms ease, stroke-dashoffset 300ms ease; }
+.pie-seg { transition: transform 300ms ease, opacity 300ms ease; }
+.macro[data-macro] { cursor: pointer; border-radius: 10px; }
+.macro[data-macro]:hover .bar { border-color: var(--g-accent); }
+.macro[data-macro].sel .bar { border-color: var(--g-accent); box-shadow: 0 0 0 1px var(--g-accent); }
+.macro[data-macro]:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 4px; }
+.macro-hint { font-size: 0.78rem; color: var(--g-muted); margin: -4px 0 4px; }
 .pie-protein { stroke: #2563eb; }
 .pie-carbs   { stroke: #d97706; }
 .pie-fat     { stroke: #9333ea; }
@@ -1029,15 +1034,16 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       <div id="pace" class="notice" hidden></div>
 
       <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Daily macros</p>
-      <div class="macro">
+      <p class="macro-hint">Tip: click a macro to spotlight its slice in the chart below.</p>
+      <div class="macro" data-macro="p" role="button" tabindex="0" aria-pressed="false" title="Spotlight protein in the chart">
         <div class="top"><span class="name macro-protein">Protein</span><span class="mvals"><b id="o-p-kcal">–</b> kcal · <span id="o-p-g">–</span> <span class="pct" id="o-p-p"></span></span></div>
         <div class="bar"><div id="o-p-bar" class="bar-fill bar-protein" style="width:0%"></div></div>
       </div>
-      <div class="macro">
+      <div class="macro" data-macro="c" role="button" tabindex="0" aria-pressed="false" title="Spotlight carbs in the chart">
         <div class="top"><span class="name macro-carbs">Carbs</span><span class="mvals"><b id="o-c-kcal">–</b> kcal · <span id="o-c-g">–</span> <span class="pct" id="o-c-p"></span></span></div>
         <div class="bar"><div id="o-c-bar" class="bar-fill bar-carbs" style="width:0%"></div></div>
       </div>
-      <div class="macro">
+      <div class="macro" data-macro="f" role="button" tabindex="0" aria-pressed="false" title="Spotlight fat in the chart">
         <div class="top"><span class="name macro-fat">Fat</span><span class="mvals"><b id="o-f-kcal">–</b> kcal · <span id="o-f-g">–</span> <span class="pct" id="o-f-p"></span></span></div>
         <div class="bar"><div id="o-f-bar" class="bar-fill bar-fat" style="width:0%"></div></div>
       </div>
@@ -1045,14 +1051,12 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Calorie split</p>
       <div class="macro-pie-wrap" id="pie-wrap">
         <div class="macro-pie-box">
-          <svg class="macro-pie" viewBox="0 0 228 228" role="img" aria-labelledby="pie-title">
+          <svg class="macro-pie" viewBox="0 0 248 248" role="img" aria-labelledby="pie-title">
             <title id="pie-title">Macro calorie split donut chart</title>
-            <circle class="macro-pie-track" cx="114" cy="114" r="95" fill="none" stroke-width="34"/>
-            <g transform="rotate(-90 114 114)">
-              <circle id="pie-p" class="pie-seg pie-protein" cx="114" cy="114" r="95" fill="none" stroke-width="34" stroke-dasharray="0 596.9" stroke-dashoffset="0"/>
-              <circle id="pie-c" class="pie-seg pie-carbs" cx="114" cy="114" r="95" fill="none" stroke-width="34" stroke-dasharray="0 596.9" stroke-dashoffset="0"/>
-              <circle id="pie-f" class="pie-seg pie-fat" cx="114" cy="114" r="95" fill="none" stroke-width="34" stroke-dasharray="0 596.9" stroke-dashoffset="0"/>
-            </g>
+            <circle class="macro-pie-track" cx="124" cy="124" r="95" fill="none" stroke-width="34"/>
+            <path id="pie-p" class="pie-seg pie-protein" d="" fill="none" stroke-width="34"/>
+            <path id="pie-c" class="pie-seg pie-carbs" d="" fill="none" stroke-width="34"/>
+            <path id="pie-f" class="pie-seg pie-fat" d="" fill="none" stroke-width="34"/>
           </svg>
           <div class="pie-center"><div class="v" id="pie-total">–</div><div class="l">target kcal/day</div></div>
         </div>
@@ -1315,21 +1319,67 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       extra: 'Lean body mass = ' + r2(w) + ' kg × (1 − ' + bf + '%) = ' + r2(lbm) + ' kg' };
   }
 
-  // ---- macro calorie-split donut chart ----
-  var PIE_C = 2 * Math.PI * 95;
+  // ---- macro calorie-split donut chart (arc paths so a slice can break out) ----
+  var PIE_R = 95, PIE_CX = 124, PIE_CY = 124;
+  var pieSelected = null; // 'p' | 'c' | 'f' | null
+  var pieState = { p: 0, c: 0, f: 0, target: NaN };
+  function piePolar(deg) {
+    var rad = deg * Math.PI / 180;
+    return [PIE_CX + PIE_R * Math.cos(rad), PIE_CY + PIE_R * Math.sin(rad)];
+  }
+  function pieSegPath(frac, startDeg, gapDeg) {
+    if (!(frac > 0)) return '';
+    var a0 = startDeg + gapDeg / 2, a1 = startDeg + frac * 360 - gapDeg / 2;
+    if (frac >= 0.9999) { // full ring: two arcs
+      var p1 = piePolar(-90), p2 = piePolar(90);
+      return 'M ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) +
+        ' A ' + PIE_R + ' ' + PIE_R + ' 0 1 1 ' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2) +
+        ' A ' + PIE_R + ' ' + PIE_R + ' 0 1 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
+    }
+    var s = piePolar(a0), e = piePolar(a1);
+    return 'M ' + s[0].toFixed(2) + ' ' + s[1].toFixed(2) +
+      ' A ' + PIE_R + ' ' + PIE_R + ' 0 ' + ((a1 - a0) > 180 ? 1 : 0) + ' 1 ' +
+      e[0].toFixed(2) + ' ' + e[1].toFixed(2);
+  }
   function paintPie(pp, cp, fp, target) {
-    var gap = PIE_C * 0.012; // small visual gap between segments
-    var off = 0;
-    [['pie-p', pp], ['pie-c', cp], ['pie-f', fp]].forEach(function (pair) {
-      var el = $(pair[0]);
-      var len = Math.max(0, PIE_C * pair[1] / 100 - gap);
-      el.setAttribute('stroke-dasharray', len.toFixed(1) + ' ' + PIE_C.toFixed(1));
-      el.setAttribute('stroke-dashoffset', (-off).toFixed(1));
-      off += PIE_C * pair[1] / 100;
+    pieState = { p: pp, c: cp, f: fp, target: target };
+    var gapDeg = 360 * 0.012; // small visual gap between segments
+    var off = -90; // start at top, like the old rotate(-90)
+    [['pie-p', 'p', pp], ['pie-c', 'c', cp], ['pie-f', 'f', fp]].forEach(function (t) {
+      var el = $(t[0]), key = t[1], frac = t[2] / 100;
+      el.setAttribute('d', pieSegPath(frac, off, gapDeg));
+      var mid = off + frac * 180;
+      if (pieSelected === key && frac > 0) {
+        var rad = mid * Math.PI / 180, dist = 10;
+        el.style.transform = 'translate(' + (Math.cos(rad) * dist).toFixed(1) + 'px,' + (Math.sin(rad) * dist).toFixed(1) + 'px)';
+        el.style.opacity = '1';
+      } else {
+        el.style.transform = '';
+        el.style.opacity = pieSelected ? '0.4' : '1';
+      }
+      off += frac * 360;
     });
     var ok = isFinite(target) && target > 0;
     $('pie-total').textContent = ok ? fmt(target) : '–';
   }
+  function repaintPie() { paintPie(pieState.p, pieState.c, pieState.f, pieState.target); }
+  // clicking a macro bar spotlights its slice (click again to release)
+  Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (m) {
+    function toggle() {
+      var k = m.getAttribute('data-macro');
+      pieSelected = (pieSelected === k) ? null : k;
+      Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (o) {
+        var on = pieSelected === o.getAttribute('data-macro');
+        o.classList.toggle('sel', on);
+        o.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      repaintPie();
+    }
+    m.addEventListener('click', toggle);
+    m.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
 
   function compute() {
     var r = readInputs();
