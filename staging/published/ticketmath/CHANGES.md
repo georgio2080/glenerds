@@ -1,5 +1,10 @@
 # TicketMath — build log
 
+## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
+- Standardized the header cluster: More Apps pill, icon-only dark-mode button (44x44px, moon/sun icon, no text label, dynamic aria-label/title), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
+- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `ticketmath.sound`, wired into theme toggle, add/remove cost lines and tiers, demo load, clear, export/import, and status errors.
+- Made the revenue chart bars interactive: each bar is a keyboard-accessible button — activating it spotlights the tier and shows the revenue breakdown (price × allocation × sell-through) in a detail line; activating again restores.
+
 Single-file offline app: `index.html`. All code hand-written (clean-room).
 
 ## Design notes

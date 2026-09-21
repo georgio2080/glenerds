@@ -39,9 +39,13 @@ header.hero{background:linear-gradient(120deg,var(--hero-1),var(--hero-2));color
 .logo svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
 .tagline{margin:2px 0 0;color:rgba(255,255,255,.85);font-size:.92rem}
-.theme-pill{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:8px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.theme-pill{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
 .theme-pill:hover{background:rgba(255,255,255,.24)}
+.theme-pill:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .theme-pill svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#sound-toggle{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;font-size:1.05rem;line-height:1;cursor:pointer}
+#sound-toggle:hover{background:rgba(255,255,255,.24)}
+#sound-toggle:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .tmoon{display:inline}
 .tsun{display:none}
 html[data-theme="dark"] .tsun{display:inline}
@@ -119,6 +123,12 @@ html[data-theme="dark"] .kchip.c5{background:#2b1f4d}html[data-theme="dark"] .kc
 .be-main{font-size:1.25rem;font-weight:800;background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
 /* ---------- chart ---------- */
 .chart-wrap{overflow-x:auto}
+.chart-wrap svg{width:100%;height:auto;display:block}
+.chart-wrap .tbar{cursor:pointer}
+.chart-wrap svg .tbar:focus{outline:none;filter:drop-shadow(0 0 3px var(--accent, #0b6e4f))}
+.chart-wrap .tbar.sel{stroke:#111;stroke-width:2}
+.chart-detail{margin-top:8px;font-size:.85rem;color:var(--muted,#5b6472)}
+.chart-detail strong{color:var(--text,#1c2330)}
 svg text{fill:var(--muted);font-size:12px}
 /* ---------- misc ---------- */
 .status{margin:12px 0;padding:10px 12px;border-radius:10px}
@@ -183,7 +193,8 @@ footer.site a{color:var(--muted)}
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-    <button id="theme-toggle" type="button" aria-pressed="false" class="theme-pill"><span class="tsun" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span class="tmoon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span id="themeLabel">Dark mode</span></button>
+    <button id="theme-toggle" type="button" aria-pressed="false" class="theme-pill"><span class="tsun" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span class="tmoon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
+      <button id="sound-toggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">🔊</button>
     </div>
   </div>
 </header>
@@ -460,6 +471,7 @@ function renderCosts(){
     del.addEventListener("click", function(){
       state.costs = state.costs.filter(function(x){ return x.id !== c.id; });
       save(); renderCosts(); renderResults();
+      Sound.click();
     });
     btnWrap.appendChild(del);
     r.appendChild(nameWrap); r.appendChild(amtWrap); r.appendChild(btnWrap);
@@ -481,6 +493,7 @@ function renderTiers(){
     del.addEventListener("click", function(){
       state.tiers = state.tiers.filter(function(x){ return x.id !== t.id; });
       save(); renderTiers(); renderResults();
+      Sound.click();
     });
     head.appendChild(del); card.appendChild(head);
 
@@ -627,25 +640,55 @@ function renderChart(){
   svg.appendChild(svgEl("line", {x1:padL, y1:baseline, x2:padL+plotW, y2:baseline, stroke:"currentColor", "stroke-width":"1", opacity:"0.4"}));
   var n = state.tiers.length;
   var slot = plotW / n, bw = Math.min(72, slot * 0.6);
+  var detail = el("div", {class: "chart-detail"});
+  detail.setAttribute("aria-live", "polite");
   state.tiers.forEach(function(t, i){
     var cx = padL + slot * (i + 0.5);
     var h = max > 0 ? (revs[i] / max) * plotH : 0;
     var y = baseline - h;
     var accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#0b6e4f";
-    svg.appendChild(svgEl("rect", {
+    var name = t.name || ("Tier " + (i+1));
+    var bar = svgEl("rect", {
       x: (cx - bw/2).toFixed(1), y: y.toFixed(1), width: bw.toFixed(1),
-      height: Math.max(h, 2).toFixed(1), fill: accent, rx: "4"
-    }));
+      height: Math.max(h, 2).toFixed(1), fill: accent, rx: "4",
+      "class": "tbar", tabindex: "0", role: "button", "aria-pressed": "false",
+      "aria-label": name + ": " + usd.format(revs[i]) + " projected revenue. Activate to spotlight."
+    });
+    (function(b, nm, rev, tier){
+      function act(){
+        var was = b.classList.contains("sel");
+        var sels = wrap.querySelectorAll(".tbar.sel");
+        for(var k = 0; k < sels.length; k++){ sels[k].classList.remove("sel"); sels[k].setAttribute("aria-pressed", "false"); }
+        if(!was){
+          b.classList.add("sel");
+          b.setAttribute("aria-pressed", "true");
+          clear(detail);
+          detail.appendChild(el("strong", {}, nm + ": "));
+          detail.appendChild(document.createTextNode(
+            usd.format(tier.price) + " \u00d7 " + tier.allocation + " tickets \u00d7 " +
+            Math.round(tier.sellThrough) + "% sold = " + usd.format(rev) + " projected revenue."));
+          Sound.select();
+        } else {
+          clear(detail);
+          Sound.click();
+        }
+      }
+      b.addEventListener("click", act);
+      b.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); act(); }
+      });
+    })(bar, name, revs[i], t);
+    svg.appendChild(bar);
     var lbl = svgEl("text", {x:cx.toFixed(1), y:(y - 8).toFixed(1), "text-anchor":"middle", "font-weight":"bold"},
       usd.format(revs[i]));
     svg.appendChild(lbl);
-    var name = t.name || ("Tier " + (i+1));
     var nm = svgEl("text", {x:cx.toFixed(1), y:(baseline + 20).toFixed(1), "text-anchor":"middle"}, name);
     svg.appendChild(nm);
     var pct = svgEl("text", {x:cx.toFixed(1), y:(baseline + 38).toFixed(1), "text-anchor":"middle"},
       Math.round(t.sellThrough) + "% sold");
     svg.appendChild(pct);
   });
+  wrap.appendChild(detail);
   if (max === 0){
     svg.appendChild(svgEl("text", {x:padL + plotW/2, y:padT + plotH/2, "text-anchor":"middle"}, "No revenue yet — set prices and allocations"));
   }
@@ -663,6 +706,8 @@ function showStatus(kind, msg){
   s.className = "status " + kind;
   s.textContent = msg;
   s.hidden = false;
+  if(kind === "error") Sound.error();
+  else if(kind === "ok") Sound.success();
 }
 function hideStatus(){ var s = $("status"); s.hidden = true; s.textContent = ""; }
 
@@ -714,6 +759,63 @@ function clearAll(){
   try { localStorage.removeItem(LS_KEY); } catch (e) {}
   state = defaultState();
   save(); renderAll(); hideStatus();
+  Sound.success();
+}
+
+/* ---------- subtle sounds (Web Audio, no files, offline) ---------- */
+var Sound = (function(){
+  var KEY = "ticketmath.sound", on = true, ctx = null;
+  try{ if(window.localStorage.getItem(KEY) === "off") on = false; }catch(e){}
+  function ac(){
+    try{
+      if(!ctx){
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if(!AC) return null;
+        ctx = new AC();
+      }
+      if(ctx.state === "suspended") ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(freq, dur, type, vol, delay){
+    var c = ac(); if(!c) return;
+    try{
+      var t = c.currentTime + (delay || 0);
+      var o = c.createOscillator(), g = c.createGain();
+      o.type = type || "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.05);
+    }catch(e){}
+  }
+  return {
+    isOn: function(){ return on; },
+    toggle: function(){
+      on = !on;
+      try{ window.localStorage.setItem(KEY, on ? "on" : "off"); }catch(e){}
+      return on;
+    },
+    click: function(){ if(on) tone(520, 0.06, "sine", 0.045); },
+    select: function(){ if(on){ tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
+    success: function(){ if(on){ tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
+    error: function(){ if(on) tone(170, 0.16, "sawtooth", 0.045); },
+    toggleTheme: function(){ if(on) tone(440, 0.06, "triangle", 0.05); }
+  };
+})();
+function bindSoundToggle(){
+  var btn = $("sound-toggle");
+  if(!btn) return;
+  function paint(){
+    var on = Sound.isOn();
+    btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
+    btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+  }
+  btn.addEventListener("click", function(){ Sound.toggle(); paint(); Sound.click(); });
+  paint();
 }
 
 /* ---------- theme ---------- */
@@ -721,7 +823,9 @@ function applyTheme(t){
   document.documentElement.setAttribute("data-theme", t);
   var btn = $("theme-toggle");
   var dark = t === "dark";
-  document.getElementById("themeLabel").textContent = dark ? "Light mode" : "Dark mode";
+  var label = dark ? "Switch to light mode" : "Switch to dark mode";
+  btn.setAttribute("aria-label", label);
+  btn.title = label;
   btn.setAttribute("aria-pressed", dark ? "true" : "false");
   try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
 }
@@ -749,17 +853,19 @@ $("add-cost").addEventListener("click", function(){
   if (state.costs.length >= 50){ showStatus("error", "Maximum 50 cost lines."); return; }
   state.costs.push({id: nextId(), name:"", amount:0});
   save(); renderCosts(); renderResults();
+  Sound.success();
 });
 $("add-tier").addEventListener("click", function(){
-  if (state.tiers.length >= MAX_TIERS) return;
+  if (state.tiers.length >= MAX_TIERS){ Sound.error(); return; }
   state.tiers.push({id: nextId(), name:NAME_PRESETS[state.tiers.length] || "Tier " + (state.tiers.length+1),
     price:0, allocation:0, sellThrough:100});
   save(); renderTiers(); renderResults();
+  Sound.success();
 });
 $("demo-btn").addEventListener("click", loadDemo);
 $("clear-btn").addEventListener("click", clearAll);
 $("export-btn").addEventListener("click", exportJSON);
-$("import-btn").addEventListener("click", function(){ $("import-file").click(); });
+$("import-btn").addEventListener("click", function(){ Sound.click(); $("import-file").click(); });
 $("import-file").addEventListener("change", function(e){
   if (e.target.files && e.target.files[0]) importFile(e.target.files[0]);
   e.target.value = "";
@@ -767,11 +873,13 @@ $("import-file").addEventListener("change", function(e){
 $("theme-toggle").addEventListener("click", function(){
   applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
   renderChart();
+  Sound.toggleTheme();
 });
 
 load();
 initTheme();
 renderAll();
+bindSoundToggle();
 </script>
 </body>
 </html>
