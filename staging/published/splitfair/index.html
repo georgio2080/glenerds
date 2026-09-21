@@ -88,17 +88,37 @@
   .brand h1 { font-size: 1.4rem; margin: 0; letter-spacing: .2px; }
   .brand p { margin: 2px 0 0; font-size: .88rem; opacity: .92; }
   .theme-pill {
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
     background: rgba(255,255,255,.16);
     border: 1px solid rgba(255,255,255,.4);
     color: #fff;
     border-radius: 999px;
-    padding: 9px 16px;
+    padding: 0;
+    width: 44px; height: 44px; min-width: 44px; min-height: 44px;
     font-weight: 600;
     cursor: pointer;
-    min-height: 44px;
   }
   .theme-pill:hover { background: rgba(255,255,255,.26); }
+  .theme-pill:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  #sound-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.4);
+    color: #fff;
+    border-radius: 999px;
+    padding: 0;
+    width: 44px; height: 44px; min-width: 44px; min-height: 44px;
+    font-size: 1.05rem; line-height: 1;
+    cursor: pointer;
+  }
+  #sound-toggle:hover { background: rgba(255,255,255,.26); }
+  #sound-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  /* ---------- interactive who-owes-what rows ---------- */
+  .sf-row[role="button"] { cursor: pointer; }
+  .sf-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
+  .sf-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent, #1f7a5c); border-radius: 8px; }
+  .sf-detail { margin: 8px 0 0; font-size: .85rem; color: var(--muted, #5b6472); min-height: 1.2em; }
+  .sf-detail strong { color: var(--text, #1c2330); }
   .theme-pill svg { width: 18px; height: 18px; }
   .theme-pill .ic-sun { display: none; }
   [data-theme="dark"] .theme-pill .ic-sun { display: inline; }
@@ -322,7 +342,8 @@
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-    <button type="button" id="themeToggle" class="theme-pill" aria-pressed="false"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.5A8 8 0 1 1 10.5 4 6.5 6.5 0 0 0 20 13.5z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><span id="themeLabel">Dark mode</span></button>
+    <button type="button" id="themeToggle" class="theme-pill" aria-pressed="false"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13.5A8 8 0 1 1 10.5 4 6.5 6.5 0 0 0 20 13.5z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></button>
+      <button type="button" id="soundToggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">🔊</button>
     </div>
   </div>
 </header>
@@ -987,11 +1008,14 @@ function renderResults() {
   var ranked = state.people.map(function (p) { return { name: p.name, total: totals[p.id] }; })
     .sort(function (a, b) { return b.total - a.total; });
   var maxTotal = ranked.length ? ranked[0].total : 0;
-  var bars = el("div", { "class": "sf-bars", role: "img",
-    "aria-label": "Bar chart of total owed per person: " +
-      ranked.map(function (r) { return r.name + " " + money(r.total); }).join(", ") });
+  var bars = el("div", { "class": "sf-bars" });
+  var detail = el("p", { "class": "sf-detail" });
+  detail.setAttribute("aria-live", "polite");
   ranked.forEach(function (r) {
-    var row = el("div", { "class": "sf-row" });
+    var row = el("div", {
+      "class": "sf-row", role: "button", tabindex: "0", "aria-pressed": "false",
+      "aria-label": r.name + " owes " + money(r.total) + ". Activate to spotlight."
+    });
     row.appendChild(el("div", { "class": "sf-name", title: r.name }, r.name));
     row.appendChild(el("div", { "class": "sf-val" }, money(r.total)));
     var track = el("div", { "class": "sf-track" });
@@ -999,9 +1023,34 @@ function renderResults() {
     fill.style.width = (maxTotal > 0 ? (r.total / maxTotal * 100) : 0).toFixed(1) + "%";
     track.appendChild(fill);
     row.appendChild(track);
+    (function (rr, rrrow) {
+      function act() {
+        var was = rrrow.classList.contains("sel");
+        var sels = bars.querySelectorAll(".sf-row.sel");
+        for (var k = 0; k < sels.length; k++) { sels[k].classList.remove("sel"); sels[k].setAttribute("aria-pressed", "false"); }
+        if (!was) {
+          rrrow.classList.add("sel");
+          rrrow.setAttribute("aria-pressed", "true");
+          var pct = grandTotal > 0 ? (rr.total / grandTotal * 100) : 0;
+          detail.innerHTML = "";
+          detail.appendChild(el("strong", null, rr.name + ": "));
+          detail.appendChild(document.createTextNode(
+            money(rr.total) + " \u2014 " + pct.toFixed(1) + "% of " + money(grandTotal) + " total."));
+          Sound.select();
+        } else {
+          detail.innerHTML = "";
+          Sound.click();
+        }
+      }
+      rrrow.addEventListener("click", act);
+      rrrow.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(); }
+      });
+    })(r, row);
     bars.appendChild(row);
   });
   resultsEl.appendChild(bars);
+  resultsEl.appendChild(detail);
 
   /* Settle up */
   resultsEl.appendChild(el("h3", null, "Settle up"));
@@ -1019,6 +1068,7 @@ function renderResults() {
 document.getElementById("addPerson").addEventListener("click", function () {
   state.people.push({ id: uid(), name: "Person " + (state.people.length + 1), sqft: 0 });
   save(); renderPeople(); renderBills(); renderResults();
+  Sound.success();
 });
 
 document.getElementById("addBill").addEventListener("click", function () {
@@ -1042,6 +1092,7 @@ document.getElementById("addBill").addEventListener("click", function () {
   amtEl.value = "";
   newBillCustom.value = "";
   save(); renderBills(); renderResults();
+  Sound.success();
 });
 
 function demoData() {
@@ -1064,16 +1115,18 @@ function demoData() {
 
 document.getElementById("loadDemo").addEventListener("click", function () {
   if (state.people.length || state.bills.length) {
-    if (!window.confirm("Replace current data with the demo?")) return;
+    if (!window.confirm("Replace current data with the demo?")) { Sound.click(); return; }
   }
   state = demoData();
   save(); renderPeople(); renderBills(); renderResults();
+  Sound.success();
 });
 
 document.getElementById("clearAll").addEventListener("click", function () {
-  if (!window.confirm("Delete all people and bills? This cannot be undone.")) return;
+  if (!window.confirm("Delete all people and bills? This cannot be undone.")) { Sound.click(); return; }
   state = blankState();
   save(); renderPeople(); renderBills(); renderResults();
+  Sound.success();
 });
 
 document.getElementById("exportBtn").addEventListener("click", function () {
@@ -1083,10 +1136,11 @@ document.getElementById("exportBtn").addEventListener("click", function () {
   document.body.appendChild(a);
   a.click();
   setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  Sound.success();
 });
 
 var importFile = document.getElementById("importFile");
-document.getElementById("importBtn").addEventListener("click", function () { importFile.click(); });
+document.getElementById("importBtn").addEventListener("click", function () { Sound.click(); importFile.click(); });
 importFile.addEventListener("change", function () {
   var f = importFile.files && importFile.files[0];
   if (!f) return;
@@ -1095,16 +1149,73 @@ importFile.addEventListener("change", function () {
     try {
       var parsed = JSON.parse(String(reader.result));
       var clean = sanitizeState(parsed);
-      if (!clean) { window.alert("Import failed: file is not valid SplitFair data."); return; }
+      if (!clean) { Sound.error(); window.alert("Import failed: file is not valid SplitFair data."); return; }
       state = clean;
       save(); renderPeople(); renderBills(); renderResults();
+      Sound.success();
     } catch (e) {
-      window.alert("Import failed: could not read that file.");
+      Sound.error(); window.alert("Import failed: could not read that file.");
     }
     importFile.value = "";
   };
   reader.readAsText(f);
 });
+
+/* ---------- subtle sounds (Web Audio, no files, offline) ---------- */
+var Sound = (function () {
+  var KEY = "splitfair.sound", on = true, ctx = null;
+  try { if (window.localStorage.getItem(KEY) === "off") on = false; } catch (e) {}
+  function ac() {
+    try {
+      if (!ctx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        ctx = new AC();
+      }
+      if (ctx.state === "suspended") ctx.resume();
+      return ctx;
+    } catch (e) { return null; }
+  }
+  function tone(freq, dur, type, vol, delay) {
+    var c = ac(); if (!c) return;
+    try {
+      var t = c.currentTime + (delay || 0);
+      var o = c.createOscillator(), g = c.createGain();
+      o.type = type || "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.05);
+    } catch (e) {}
+  }
+  return {
+    isOn: function () { return on; },
+    toggle: function () {
+      on = !on;
+      try { window.localStorage.setItem(KEY, on ? "on" : "off"); } catch (e) {}
+      return on;
+    },
+    click: function () { if (on) tone(520, 0.06, "sine", 0.045); },
+    select: function () { if (on) { tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
+    success: function () { if (on) { tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
+    error: function () { if (on) tone(170, 0.16, "sawtooth", 0.045); },
+    toggleTheme: function () { if (on) tone(440, 0.06, "triangle", 0.05); }
+  };
+})();
+function bindSoundToggle() {
+  var btn = document.getElementById("soundToggle");
+  if (!btn) return;
+  function paint() {
+    var on = Sound.isOn();
+    btn.textContent = on ? "🔊" : "🔇";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
+    btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+  }
+  btn.addEventListener("click", function () { Sound.toggle(); paint(); Sound.click(); });
+  paint();
+}
 
 /* ---------- theme ---------- */
 var themeToggle = document.getElementById("themeToggle");
@@ -1112,13 +1223,16 @@ function currentTheme() { return document.documentElement.getAttribute("data-the
 function paintThemeButton() {
   var dark = currentTheme() === "dark";
   themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
-  document.getElementById("themeLabel").textContent = dark ? "Light mode" : "Dark mode";
+  var label = dark ? "Switch to light mode" : "Switch to dark mode";
+  themeToggle.setAttribute("aria-label", label);
+  themeToggle.title = label;
 }
 themeToggle.addEventListener("click", function () {
   var next = currentTheme() === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", next);
   try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
   paintThemeButton();
+  Sound.toggleTheme();
 });
 paintThemeButton();
 
@@ -1127,6 +1241,7 @@ load();
 renderPeople();
 renderBills();
 renderResults();
+bindSoundToggle();
 </script>
 </body>
 </html>
