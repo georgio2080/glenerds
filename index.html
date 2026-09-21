@@ -1,140 +1,1125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free Offline Micro-Tools &amp; Calculators | Glenerds</title>
-<meta name="description" content="Free offline micro-tools and calculators from Glenerds: habit tracker, 52-week savings challenge, net worth tracker, plus paid one-time toolkits. No account, no subscription.">
-<link rel="canonical" href="https://glenerds.github.io/glenerds/">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Glenerds">
-<meta property="og:title" content="Free Offline Micro-Tools &amp; Calculators | Glenerds">
-<meta property="og:description" content="Free offline micro-tools and calculators from Glenerds: habit tracker, 52-week savings challenge, net worth tracker, plus paid one-time toolkits. No account, no subscription.">
-<meta property="og:url" content="https://glenerds.github.io/glenerds/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23059669'/%3E%3Ctext x='32' y='44' font-size='32' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E$%3C/text%3E%3C/svg%3E">
+<title>Free Debt Payoff Planner: Snowball vs Avalanche Calculator (DebtPayoff)</title>
+<meta name="description" content="Compare debt payoff strategies offline: snowball, avalanche, and custom order. No account, no ads — your data never leaves this device.">
 <script>
-(function(){try{var t=localStorage.getItem('glenerds-theme');if(t){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+/* Pre-theme: set data-theme before first paint to avoid flash */
+(function(){try{
+  var t=localStorage.getItem("debtpayoff-theme");
+  if(t!=="dark"&&t!=="light"){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
+  document.documentElement.setAttribute("data-theme",t);
+}catch(e){}})();
 </script>
-<link rel="stylesheet" href="style.css">
-</head><body>
-<header class="site"><div class="wrap">
-<a class="brand" href="./index.html">Glenerds</a>
-<nav class="main">
-<a href="./index.html">Home</a>
-<a href="./index.html#free-tools">Free Tools</a>
-<a href="./index.html#products">Products</a>
-<a href="https://glenerds.gumroad.com">Store</a>
-<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">◐ Dark</button>
-</nav></div></header>
-<div class="wrap">
+<style>
+:root,[data-theme="light"]{
+  --bg:#f3f1fa; --card:#ffffff; --text:#1e1b2e; --muted:#6b6584;
+  --border:#e4e0f3; --input-bg:#ffffff; --input-border:#d8d3ea;
+  --chip-bg:#f0edfb; --header-grad:linear-gradient(135deg,#4f46e5 0%,#7c3aed 55%,#9333ea 100%);
+  --primary:#6d28d9; --primary2:#8b5cf6; --btn-text:#ffffff;
+  --btn-bg:#ffffff; --btn-border:#d8d3ea;
+  --shadow:0 8px 24px rgba(109,40,217,.10);
+  --good:#15803d; --good-bg:#dcfce7; --warn:#b45309; --warn-bg:#fef3c7;
+  --table-head:#f0edfb; --zebra:#faf9fe; --bar:#e9e5f7;
+  --danger:#dc2626; --danger-bg:#fee2e2;
+}
+[data-theme="dark"]{
+  --bg:#0e0c17; --card:#171425; --text:#f1eefc; --muted:#a49dc2;
+  --border:#2b2644; --input-bg:#1f1b31; --input-border:#3a3357;
+  --chip-bg:#221e38; --input-bg:#1f1b31;
+  --primary:#a78bfa; --primary2:#8b5cf6; --btn-text:#1a1430;
+  --btn-bg:#262142; --btn-border:#4a4468;
+  --shadow:0 8px 24px rgba(0,0,0,.35);
+  --good:#4ade80; --good-bg:#14532d; --warn:#fbbf24; --warn-bg:#451a03;
+  --table-head:#221e38; --zebra:#1a1629; --bar:#2b2644;
+  --danger:#f87171; --danger-bg:#450a0a;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.5}
+.hero{position:static;background:none;color:var(--text);
+  padding:14px 20px 6px;box-shadow:none}
+.hero-inner{max-width:1024px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.logo-badge{width:48px;height:48px;flex:0 0 48px;border-radius:14px;background:var(--primary);
+  display:flex;align-items:center;justify-content:center;border:none}
+.logo-badge svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
+.hero .tagline{margin:2px 0 0;font-size:.85rem;color:var(--muted);opacity:1}
+.theme-pill{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.85rem}
+.theme-pill:hover{background:rgba(255,255,255,.24)}
+.theme-pill svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
+main{max-width:1024px;margin:0 auto;padding:20px 16px 60px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.card-head{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.icon-chip{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:var(--chip-bg);
+  display:flex;align-items:center;justify-content:center}
+.icon-chip svg{width:19px;height:19px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-head h2{margin:0;font-size:1.12rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+input[type=text],input[type=number],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--input-border);
+  border-radius:10px;background:var(--input-bg);color:var(--text);font-size:.95rem}
+input:focus,select:focus{outline:2px solid var(--primary2);border-color:var(--primary2)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;cursor:pointer;
+  font-size:.92rem;font-weight:600;padding:10px 16px}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
+  box-shadow:0 4px 14px rgba(109,40,217,.35)}
+[data-theme="dark"] .btn-primary{color:#fff}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-secondary{background:transparent;border:1px solid var(--input-border);color:var(--text)}
+.btn-secondary:hover{border-color:var(--primary)}
+.btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
+.btn-danger:hover{background:var(--danger-bg)}
+.btn-sm{padding:6px 10px;font-size:.8rem;border-radius:8px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+[hidden]{display:none!important}
+.debt-item{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--zebra)}
+.debt-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.debt-name{font-weight:700;font-size:1.02rem}
+.debt-meta{color:var(--muted);font-size:.85rem}
+.debt-actions{margin-left:auto;display:flex;gap:8px}
+.tabs{display:flex;background:var(--chip-bg);border-radius:12px;padding:4px;gap:4px;margin-bottom:14px}
+.tab{flex:1;border:none;background:transparent;color:var(--muted);border-radius:9px;padding:10px;cursor:pointer;
+  font-weight:600;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:8px}
+.tab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tab.active{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 3px 10px rgba(109,40,217,.35)}
+[data-theme="dark"] .tab.active{color:#fff}
+.order-row{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:10px;
+  padding:8px 12px;margin-bottom:8px;background:var(--zebra)}
+.order-rank{font-weight:800;color:var(--primary);min-width:26px}
+.order-name{flex:1;font-weight:600}
+.order-btns{display:flex;gap:6px}
+.stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px}
+.stat{border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--zebra);position:relative}
+.stat .s-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
+.stat .s-val{font-size:1.35rem;font-weight:800;margin-top:4px}
+.stat .s-sub{font-size:.8rem;color:var(--muted)}
+.stat .best{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#059669,#34d399);color:#fff;
+  font-size:.7rem;font-weight:700;border-radius:999px;padding:3px 10px}
+.progress{height:10px;background:var(--bar);border-radius:999px;overflow:hidden;margin:10px 0 4px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));border-radius:999px}
+.table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+thead th{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;text-align:left;
+  padding:10px 12px;font-size:.78rem;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+[data-theme="dark"] thead th{color:#fff}
+tbody td{padding:9px 12px;border-top:1px solid var(--border);white-space:nowrap}
+tbody tr:nth-child(even){background:var(--zebra)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+canvas.chart{width:100%;height:260px;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin:8px 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 6px;margin:0;font:inherit;color:inherit;cursor:pointer;border-radius:6px}
+.legend-btn:hover{text-decoration:underline}
+.legend-btn:focus{outline:none}
+.legend-btn:focus-visible{outline:2px solid var(--g-accent,#4f46e5);outline-offset:2px}
+.legend-btn[aria-pressed="true"]{font-weight:700}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.notice{border-left:4px solid var(--primary);background:var(--chip-bg);border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:12px 0;font-size:.92rem}
+.warnbox{border-left:4px solid var(--warn);background:var(--warn-bg);border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:12px 0;font-size:.92rem;color:var(--text)}
+.err{color:var(--danger);font-size:.88rem;margin-top:6px;min-height:1.2em}
+input[type=range]{width:100%;accent-color:var(--primary);margin-left:0;margin-right:0}
+.slider-val{font-weight:800;color:var(--primary);font-size:1.1rem}
+footer{max-width:1024px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:.82rem;text-align:center}
+footer a{color:var(--primary)}
+.disclaimer{margin-top:8px;font-size:.78rem;opacity:.85}
+@media(max-width:640px){
+  .grid2{grid-template-columns:1fr}
+  .stat-cards{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:1.15rem}
+  .hero .tagline{display:none}
+  .card{padding:16px}
+  .tab{font-size:.78rem;padding:8px 4px;gap:5px}
+  .tab svg{width:14px;height:14px}
+  .slider-val{font-size:1rem}
+  .field label{overflow-wrap:anywhere}
+}
+/* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
+.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.g-store-btn {
+  display: inline-flex; align-items: center;
+  background: var(--g-accent, #4f46e5);
+  color: #ffffff;
+  border-radius: var(--g-radius-pill, 999px);
+  padding: 8px 15px;
+  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
+  text-decoration: none; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:active { transform: scale(0.97); }
+.g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+/* Glenerds standard header cluster: More Apps + sample flask + theme + sound */
+.g-header-actions { margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
+a.g-store-btn, header.hero .g-store-btn { color: #ffffff; }
+.round-btn {
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; background: var(--btn-bg); border: 1px solid var(--btn-border);
+  color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none;
+  transition: transform .08s ease, border-color .15s ease;
+}
+.round-btn svg { width: 26px; height: 26px; flex: none; }
+.round-btn:hover { border-color: var(--g-accent, #4f46e5); }
+.round-btn:active { transform: scale(.92); border-color: var(--g-accent, #4f46e5); }
+.round-btn:focus { outline: none; }
+.round-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
+/* header spec 2026-09-21: white round buttons; sample ON = accent-soft tint + accent
+   border/icon (NOT a solid accent fill); sound button stays white in all states */
+.round-btn.sample-toggle[aria-pressed="true"] {
+  color: var(--g-accent, #4f46e5);
+  border-color: var(--g-accent, #4f46e5);
+  background: var(--g-accent-soft, #eef2ff);
+}
+/* clickable comparison stat cards (click isolates that strategy's line) */
+.stat.spot-card { cursor: pointer; }
+.stat.spot-card:hover { border-color: var(--g-accent, #4f46e5); }
+.stat.spot-card:focus { outline: none; }
+.stat.spot-card:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.stat.spot-card[aria-pressed="true"] { border-color: var(--g-accent, #4f46e5); box-shadow: 0 0 0 2px var(--g-accent, #4f46e5); }
+.chart-cap { font-size: .8rem; color: var(--muted); margin: 6px 0 0; }
+/* balance-share donut */
+.donut-wrap { display: grid; grid-template-columns: 190px 1fr; gap: 18px; align-items: center; margin-top: 14px; }
+.donut-wrap svg { width: 100%; max-width: 190px; height: auto; display: block; margin: 0 auto; }
+.donut-seg { cursor: pointer; transition: opacity .15s; }
+.donut-seg:focus { outline: none; filter: drop-shadow(0 0 4px var(--g-accent, #4f46e5)); }
+.donut-legend { display: grid; gap: 6px; }
+.dl-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+  background: none; border: 1px solid transparent; border-radius: 8px; padding: 6px 8px;
+  color: var(--text); font-size: .82rem; cursor: pointer; }
+.dl-item:hover { border-color: var(--border); }
+.dl-item:focus { outline: none; }
+.dl-item:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 1px; }
+.dl-item[aria-pressed="true"] { border-color: var(--g-accent, #4f46e5); background: var(--zebra); }
+.dl-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.dl-item .dl-amt { margin-left: auto; font-weight: 700; white-space: nowrap; }
+.donut-detail { font-size: .85rem; color: var(--muted); margin-top: 10px; min-height: 1.4em; }
+.donut-detail strong { color: var(--text); }
+/* payoff-order timeline */
+.timeline { display: flex; align-items: stretch; gap: 0; margin-top: 14px; overflow-x: auto; padding-bottom: 4px; }
+.tl-step { flex: 1 1 0; min-width: 120px; text-align: center; cursor: pointer; background: none; border: none;
+  color: var(--text); padding: 6px 4px; border-radius: 10px; font-family: inherit; }
+.tl-step:hover { background: var(--zebra); }
+.tl-step:focus { outline: none; }
+.tl-step:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.tl-dot { width: 30px; height: 30px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: .8rem; background: var(--zebra); border: 2px solid var(--border); color: var(--text); position: relative; z-index: 1; }
+.tl-step[aria-pressed="true"] .tl-dot { background: var(--g-accent, #4f46e5); border-color: var(--g-accent, #4f46e5); color: #fff; }
+.tl-name { font-size: .8rem; font-weight: 700; }
+.tl-when { font-size: .72rem; color: var(--muted); }
+.tl-rail { align-self: center; flex: 0 0 18px; height: 2px; background: var(--border); margin: 0 -4px; position: relative; top: -21px; }
+.tl-note { font-size: .8rem; color: var(--muted); margin-top: 8px; min-height: 1.4em; }
+.tl-note strong { color: var(--text); }
+.sub-h { font-size: .95rem; font-weight: 800; margin: 18px 0 2px; }
+@media (max-width: 640px) { .donut-wrap { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .hero-inner { flex-wrap: wrap; }
+  .g-header-actions { margin-left: 0; gap: 6px; }
+}
+.g-cta-strip {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 28px 0 0; padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(79,70,229,.08);
+  border: 1px solid rgba(79,70,229,.28);
+  color: inherit;
+  font-size: 0.95rem; font-weight: 600;
+  text-decoration: none;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
+.g-cta-strip:active { transform: scale(0.99); }
+.g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
+@media (max-width: 440px) {
+  .g-store-btn { padding: 8px 12px; }
+  .g-header-actions { gap: 6px; }
+}
+@media print {
+  .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="logo-badge" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/><path d="M3 21h18"/></svg>
+    </div>
+    <div>
+      <h1>DebtPayoff Strategy Planner</h1>
+      <p class="tagline">Snowball vs avalanche vs custom — compare payoff plans offline, privately.</p>
+    </div>
+    <div class="g-header-actions">
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">&#x1F319;</button>
+      <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+    </div>
+  </div>
+</header>
 <main>
-<div class="hero">
-<h1>Free Offline Micro-Tools &amp; Calculators</h1>
-<p class="lead">Glenerds builds tiny, single-purpose tools that run entirely in your browser.
-No accounts, no subscriptions, no uploads &mdash; your data never leaves your device.
-Start with a free tool below, or browse the paid toolkits when you need the full power version.</p>
-</div>
+  <div id="demoNotice" class="notice" hidden></div>
 
-<section class="block" id="free-tools">
-<h2 class="sec">Free Tools &mdash; Use Them Right Now</h2>
-<div class="grid">
-<div class="card"><h3>Free Offline Habit Tracker</h3><p>Build daily streaks with a simple printable-style tracker that saves to your browser. No account, no app install.</p>
-<a class="btn" href="tools/habit-tracker/index.html">Open the free tool</a></div>
-<div class="card"><h3>Free 52-Week Savings Challenge Calculator</h3><p>See exactly how much a 52-week money challenge adds up to, customize the weekly amount, and track your progress week by week.</p>
-<a class="btn" href="tools/savings-challenge/index.html">Open the free tool</a></div>
-<div class="card"><h3>Free Net Worth Tracker</h3><p>List what you own and what you owe, watch your net worth change over time, all stored privately on your device.</p>
-<a class="btn" href="tools/net-worth-tracker/index.html">Open the free tool</a></div>
-<div class="card"><h3>Free Debt Payoff Strategy Planner</h3><p>Compare snowball vs avalanche vs custom payoff plans — total interest, payoff date, and schedule. Runs entirely offline, privately.</p>
-<a class="btn" href="tools/debt-payoff-planner/index.html">Open the free tool</a></div>
-<div class="card"><h3>Free Compound Interest Calculator</h3><p>Model investing growth with inflation, fees, and tax adjustments — simple or advanced mode.</p>
-<a class="btn" href="tools/compound-interest-calculator/index.html">Open the free tool</a></div>
-</div>
-<p class="small">More free tools: <a href="tools/moving-cost-calculator/index.html">moving cost calculator</a>
-&middot; <a href="tools/craft-pricing-calculator/index.html">craft pricing calculator</a>
-&middot; <a href="tools/contractor-bid-comparison/index.html">contractor bid comparison worksheet</a>
-&middot; <a href="tools/security-deposit-deduction-calculator/index.html">deposit deduction calculator</a>
-&middot; <a href="tools/hoa-special-assessment-calculator/index.html">HOA assessment calculator</a>
-&middot; <a href="tools/css-specificity-calculator/index.html">CSS specificity calculator</a>
-&middot; <a href="tools/index.html">all 14 free tools</a></p>
-</section>
+  <section class="card" aria-labelledby="debts-h">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></div>
+      <h2 id="debts-h">Your debts</h2>
+    </div>
+    <div id="debtList"></div>
+    <div id="debtForm">
+      <div class="grid2">
+        <div class="field"><label for="fName">Debt name</label><input type="text" id="fName" maxlength="60" placeholder="e.g. Visa card" autocomplete="off"></div>
+        <div class="field"><label for="fBalance">Balance ($)</label><input type="number" id="fBalance" min="0" step="0.01" placeholder="6500.00" inputmode="decimal"></div>
+        <div class="field"><label for="fApr">APR (%)</label><input type="number" id="fApr" min="0" step="0.01" placeholder="24.99" inputmode="decimal"></div>
+        <div class="field"><label for="fMin">Minimum payment ($/mo)</label><input type="number" id="fMin" min="0" step="0.01" placeholder="195.00" inputmode="decimal"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="addDebtBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Add debt</span></button>
+        <button class="btn btn-secondary" id="cancelEditBtn" hidden><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg><span>Cancel edit</span></button>
+      </div>
+      <div class="err" id="debtErr" role="alert"></div>
+    </div>
+  </section>
 
-<section class="block prose">
-<h2 class="sec">Why offline tools?</h2>
-<p>Most web apps make you create an account before you can do anything, then charge you every month
-for the privilege. Every Glenerds tool takes the opposite approach: it is a single file that runs
-in any modern browser, works with no internet connection, and stores everything in your browser's
-local storage. There is nothing to sign up for, nothing to sync, and nothing that can leak your
-financial or personal data &mdash; because the data never goes anywhere.</p>
-<p>The free tools on this page are fully working, not demos. The habit tracker, the 52-week savings
-challenge calculator, and the net worth tracker each do their job completely, for free, forever.
-They are also a good preview of how Glenerds builds software: fast, private, and focused on exactly
-one task. If you like the approach, the paid toolkits below apply the same philosophy to bigger
-jobs &mdash; vetting a moving company, inspecting a used boat, comparing contractor bids, or pricing
-handmade products &mdash; as a one-time purchase with no subscription attached.</p>
-<p>New to the idea of offline-first software? Pick any free tool above and try it. Everything happens
-on your device, so there is zero risk in experimenting: close the tab and nothing of yours was ever
-uploaded anywhere.</p>
-</section>
+  <section class="card" aria-labelledby="strat-h">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></div>
+      <h2 id="strat-h">Payoff strategy</h2>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" data-strat="snowball" role="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7"/></svg>Snowball</button>
+      <button class="tab" data-strat="avalanche" role="tab"><svg viewBox="0 0 24 24"><path d="M12 3l9 18H3z"/><path d="M12 10v4M12 17.5v.5"/></svg>Avalanche</button>
+      <button class="tab" data-strat="custom" role="tab"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="18" r="2"/></svg>Custom</button>
+    </div>
+    <div class="notice" id="stratDesc"></div>
+    <div id="customOrder" hidden>
+      <div class="field"><label>Custom payoff order (top = paid first)</label></div>
+      <div id="orderList"></div>
+    </div>
+    <div class="field" style="margin-top:14px">
+      <label for="extraRange">What-if: extra payment each month — <span class="slider-val" id="extraVal">$0</span></label>
+      <input type="range" id="extraRange" min="0" max="2000" step="10" value="0">
+    </div>
+  </section>
 
-<section class="block" id="products">
-<h2 class="sec">Paid Toolkits &mdash; One-Time Purchase, Yours Forever</h2>
-<div class="grid">
-<div class="card"><h3>Online Fitness Coach Check-In Tracker</h3><p>Log client check-ins, compare weeks side by side, and draft feedback in one click.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/online-fitness-coach-check-in-tracker/index.html">Learn more</a></div>
-<div class="card"><h3>Used Commercial Espresso Machine Inspection Checklist</h3><p>Brand-specific checklists with a risk score and repair-cost estimate before you buy used.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/cremacheck/index.html">Learn more</a></div>
-<div class="card"><h3>Moving Company Scam Checker</h3><p>Score movers on 35 red-flag signals and compare up to 4 quotes side by side.</p>
-<span class="price">$9 one-time</span>
-<a class="btn" href="products/moving-company-quote-comparison-scam-checker/index.html">Learn more</a></div>
-<div class="card"><h3>Contractor Bid Comparison Tool for House Flippers</h3><p>Normalize up to 3 bids into one scope matrix and flag price gaps and scope holes.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/flipbid-reconciler/index.html">Learn more</a></div>
-<div class="card"><h3>HOA Financial Health & Reserve Study Analyzer</h3><p>Score HOA finances from resale-package figures and flag special-assessment risk.</p>
-<span class="price">$9 one-time</span>
-<a class="btn" href="products/hoa-resale-package-reserve-study-risk-analyzer/index.html">Learn more</a></div>
-<div class="card"><h3>Used Boat Pre-Purchase Inspection Checklist</h3><p>Boat-type-specific checklists with weighted risk scoring and repair estimates.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/hullcheck/index.html">Learn more</a></div>
-<div class="card"><h3>Security Deposit Deduction Statement Generator</h3><p>Itemize deposit deductions and print professional tenant statements for small landlords.</p>
-<span class="price">$14 one-time</span>
-<a class="btn" href="products/depositdocket/index.html">Learn more</a></div>
-<div class="card"><h3>Competition BBQ Expense & Payout Tracker</h3><p>Log every contest and see your true season P&amp;L, best and worst contests.</p>
-<span class="price">$29 one-time</span>
-<a class="btn" href="products/pitprofit/index.html">Learn more</a></div>
-<div class="card"><h3>Handmade Pricing Calculator for Etsy &amp; Craft Sellers</h3><p>Turn supplies, labor, and fees into suggested prices for every sales channel.</p>
-<span class="price">$14 one-time</span>
-<a class="btn" href="products/handmade-pricing-calculator-etsy-craft-sellers/index.html">Learn more</a></div>
-<div class="card"><h3>CSS Element Inspector for Chrome</h3><p>Hover any element to inspect it, click to lock, copy CSS, selectors, and Tailwind classes.</p>
-<span class="price">$9 one-time</span>
-<a class="btn" href="products/css-element-inspector-chrome/index.html">Learn more</a></div>
-</div>
-<p class="small">Comparison guides: <a href="alternatives/craftybase-alternative/index.html">Craftybase alternative for makers</a>
-&middot; <a href="alternatives/moving-quote-websites-alternative/index.html">moving quote website alternative</a>
-&middot; <a href="alternatives/servicetitan-alternative/index.html">ServiceTitan alternative for flippers</a>
-&middot; <a href="alternatives/hoa-management-software-alternative/index.html">HOA software alternative for buyers</a>
-&middot; <a href="alternatives/trainerize-truecoach-alternative/index.html">Trainerize / TrueCoach alternative</a></p>
-<p class="small">Every paid toolkit is sold through Gumroad as a one-time purchase.
-No subscription, no account required to use the tool itself &mdash; download it and it runs offline in your browser.</p>
-</section>
+  <section class="card" aria-labelledby="cmp-h">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
+      <h2 id="cmp-h">Strategy comparison</h2>
+    </div>
+    <div id="compareEmpty" class="notice">Add at least one debt above to see the comparison.</div>
+    <div id="compareWrap" hidden>
+      <div class="stat-cards" id="compareCards"></div>
+      <div class="legend" role="group" aria-label="Strategy lines">
+        <button type="button" class="legend-btn" data-strat="snowball" aria-pressed="false" aria-label="Snowball — click to isolate its line"><span class="dot" style="background:#6366f1"></span>Snowball</button>
+        <button type="button" class="legend-btn" data-strat="avalanche" aria-pressed="false" aria-label="Avalanche — click to isolate its line"><span class="dot" style="background:#8b5cf6"></span>Avalanche</button>
+        <button type="button" class="legend-btn" data-strat="custom" aria-pressed="false" aria-label="Custom — click to isolate its line"><span class="dot" style="background:#14b8a6"></span>Custom</button>
+      </div>
+      <canvas class="chart" id="balanceChart" aria-label="Remaining balance over time chart"></canvas>
+      <p class="chart-cap" id="chartCap">Click a strategy card above to isolate its line — click again to show all.</p>
+      <h3 class="sub-h">Where your balance sits</h3>
+      <div class="donut-wrap">
+        <svg id="donutSvg" viewBox="0 0 200 200" role="img" aria-label="Balance share by debt"></svg>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+      <div class="donut-detail" id="donutDetail" aria-live="polite"></div>
+      <h3 class="sub-h">Payoff order timeline <span class="chart-cap" id="tlStrat"></span></h3>
+      <div class="timeline" id="payoffTl" role="list" aria-label="Payoff order timeline"></div>
+      <div class="tl-note" id="tlNote" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="sched-h">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
+      <h2 id="sched-h">Payoff schedule</h2>
+    </div>
+    <div class="field" style="max-width:320px">
+      <label for="schedStrat">Show schedule for</label>
+      <select id="schedStrat">
+        <option value="snowball">Snowball</option>
+        <option value="avalanche">Avalanche</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    <div id="schedEmpty" class="notice">Add at least one debt to see the month-by-month schedule.</div>
+    <div id="schedWrap" hidden>
+      <div class="table-scroll"><table aria-label="Monthly payoff schedule">
+        <thead><tr><th>Month</th><th class="num">Payment</th><th class="num">Interest</th><th class="num">Remaining</th></tr></thead>
+        <tbody id="schedBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="data-h">
+    <div class="card-head">
+      <div class="icon-chip"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+      <h2 id="data-h">Data</h2>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="exportBtn"><svg viewBox="0 0 24 24"><path d="M12 3v12M6 11l6 6 6-6"/><path d="M4 21h16"/></svg><span>Export JSON</span></button>
+      <button class="btn btn-secondary" id="importBtn"><svg viewBox="0 0 24 24"><path d="M12 15V3M6 9l6-6 6 6"/><path d="M4 21h16"/></svg><span>Import JSON</span></button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+      <button class="btn btn-secondary" id="demoBtn"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8z"/></svg><span>Load demo data</span></button>
+      <button class="btn btn-danger" id="clearBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 14h10l1-14"/></svg><span id="clearLabel">Clear all data</span></button>
+    </div>
+    <div class="err" id="dataErr" role="alert"></div>
+    <p style="font-size:.82rem;color:var(--muted);margin:12px 0 0">Import validates and sanitizes everything: text is length-capped, amounts must be finite numbers ≥ 0. Bad records are skipped and reported.</p>
+  </section>
 </main>
-</div>
-<footer class="site"><div class="wrap">
-<p><strong>Glenerds</strong> makes single-purpose offline micro-tools: habit trackers, savings planners,
-inspection checklists, and calculators that run in your browser with no account and no subscription.</p>
-<p>More offline micro-tools from Glenerds: <a href="https://glenerds.gumroad.com">https://glenerds.gumroad.com</a></p>
-<p class="small"><a href="./site-map/index.html">Site map</a> &mdash; every free tool, paid product, and guide on this site.</p>
-<p class="small">&copy; 2026 Glenerds. All tools on this site run locally in your browser; nothing you enter is sent anywhere.</p>
-</div></footer>
+<a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
+</a>
+<footer>
+  <div>DebtPayoff Strategy Planner — your data never leaves this device.</div>
+  <div>by <a href="https://glenerds.gumroad.com">Glenerds</a></div>
+  <div class="disclaimer">Educational estimates only — not financial advice. Interest is modeled as monthly APR/12 with no fees or rate changes.</div>
+</footer>
 <script>
+"use strict";
+/* ============ DebtPayoff Strategy Planner ============ */
+var LS_STATE = "debtpayoff-state-v1";
+var LS_THEME = "debtpayoff-theme";
+var MAX_MONTHS = 600;
+
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+var fmtMoney = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"});
+function money(n){ return fmtMoney.format(Math.round(n*100)/100); }
+function uid(){ return "d"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36); }
+
+/* ---------- theme ---------- */
+function applyTheme(t){
+  if(t!=="dark") t="light";
+  document.documentElement.setAttribute("data-theme",t);
+  try{ localStorage.setItem(LS_THEME,t); }catch(e){}
+  var btn=$("themeToggle"), dark=(t==="dark"), lbl=dark?"Switch to light mode":"Switch to dark mode";
+  btn.setAttribute("aria-pressed",dark?"true":"false");
+  btn.setAttribute("aria-label",lbl); btn.title=lbl;
+  btn.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19"; /* header spec: emoji icon shows the mode you GET */
+  if(window.paintSoundBtn) window.paintSoundBtn();
+  drawChart();
+}
+$("themeToggle").addEventListener("click",function(){
+  var cur=document.documentElement.getAttribute("data-theme");
+  applyTheme(cur==="dark"?"light":"dark");
+  Sound.toggleTheme(); Sound.click();
+});
+
+/* ---------- state ---------- */
+var state = { debts:[], order:[], strategy:"snowball", extraMonthly:0, schedStrat:"snowball" };
+var editingId = null;
+
+var sampleOn=false, sampleSnap=null, sampleDom=null;
+function save(){
+  if(sampleOn) return; /* sample data is transient — never persisted */
+  try{ localStorage.setItem(LS_STATE, JSON.stringify(state)); }catch(e){}
+}
+function sanitizeDebt(d){
+  if(!d || typeof d!=="object") return null;
+  var name = String(d.name||"").slice(0,60).trim();
+  var balance = Number(d.balance), apr = Number(d.apr), min = Number(d.minPayment);
+  if(!name) return null;
+  if(!isFinite(balance)||balance<=0||balance>1e9) return null;
+  if(!isFinite(apr)||apr<0||apr>200) return null;
+  if(!isFinite(min)||min<0||min>1e9) return null;
+  return { id:String(d.id||uid()).slice(0,40), name:name, balance:Math.round(balance*100)/100,
+           apr:Math.round(apr*100)/100, minPayment:Math.round(min*100)/100 };
+}
+function load(){
+  try{
+    var raw=localStorage.getItem(LS_STATE); if(!raw) return false;
+    var s=JSON.parse(raw); if(!s||typeof s!=="object") return false;
+    var debts=(Array.isArray(s.debts)?s.debts:[]).map(sanitizeDebt).filter(Boolean);
+    state.debts=debts;
+    var ids=debts.map(function(d){return d.id;});
+    state.order=(Array.isArray(s.order)?s.order:[]).filter(function(id){return ids.indexOf(id)>=0;});
+    ids.forEach(function(id){ if(state.order.indexOf(id)<0) state.order.push(id); });
+    state.strategy=["snowball","avalanche","custom"].indexOf(s.strategy)>=0?s.strategy:"snowball";
+    state.extraMonthly=(isFinite(Number(s.extraMonthly))&&Number(s.extraMonthly)>=0)?Math.min(100000,Number(s.extraMonthly)):0;
+    state.schedStrat=["snowball","avalanche","custom"].indexOf(s.schedStrat)>=0?s.schedStrat:"snowball";
+    return true;
+  }catch(e){ return false; }
+}
+function demoData(){
+  state.debts=[
+    {id:uid(),name:"Personal loan",balance:2500,apr:7.99,minPayment:80},
+    {id:uid(),name:"Store card",balance:4200,apr:29.99,minPayment:126},
+    {id:uid(),name:"Visa card",balance:6500,apr:24.99,minPayment:195}
+  ];
+  state.order=state.debts.map(function(d){return d.id;});
+  state.strategy="snowball"; state.extraMonthly=150; state.schedStrat="snowball";
+  save(); renderAll();
+  var n=$("demoNotice"); n.hidden=false;
+  n.textContent="Demo data loaded (3 debts). Edit or delete these, or add your own — everything stays on this device.";
+}
+
+/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
+function paintSample(){
+  var btn=$("sampleToggle"), lbl=sampleOn?"Clear sample data":"Try sample data";
+  btn.setAttribute("aria-pressed",sampleOn?"true":"false");
+  btn.setAttribute("aria-label",lbl); btn.title=lbl;
+}
+function setSample(on){
+  if(on && !sampleOn){
+    sampleSnap=JSON.stringify(state);
+    /* transient (uncommitted) form + control state — snapshot the DOM too */
+    sampleDom={ fName:$("fName").value, fBalance:$("fBalance").value, fApr:$("fApr").value, fMin:$("fMin").value,
+      extraRange:$("extraRange").value, schedStrat:$("schedStrat").value, debtErr:$("debtErr").textContent,
+      addLabel:$("addDebtBtn").querySelector("span").textContent, cancelHidden:$("cancelEditBtn").hidden };
+    sampleOn=true; editingId=null;
+    window._spotDebt=null; window._spotStrat=null;
+    state.debts=[
+      {id:uid(),name:"Personal loan",balance:2500,apr:7.99,minPayment:80},
+      {id:uid(),name:"Store card",balance:4200,apr:29.99,minPayment:126},
+      {id:uid(),name:"Visa card",balance:6500,apr:24.99,minPayment:195},
+      {id:uid(),name:"Auto loan",balance:11800,apr:5.49,minPayment:312}
+    ];
+    state.order=state.debts.map(function(d){return d.id;});
+    state.strategy="snowball"; state.extraMonthly=200; state.schedStrat="snowball";
+    renderAll();
+    var n=$("demoNotice"); n.hidden=false;
+    n.textContent="Sample data is on — toggle the flask icon again to restore your own data.";
+  }else if(!on && sampleOn){
+    sampleOn=false;
+    try{ var s=JSON.parse(sampleSnap); if(s&&typeof s==="object") state=s; }catch(e){}
+    sampleSnap=null; editingId=null;
+    window._spotDebt=null; window._spotStrat=null;
+    /* restore the exact transient form/control values, not just committed state */
+    if(sampleDom){
+      $("fName").value=sampleDom.fName; $("fBalance").value=sampleDom.fBalance;
+      $("fApr").value=sampleDom.fApr; $("fMin").value=sampleDom.fMin;
+      $("extraRange").value=sampleDom.extraRange; $("schedStrat").value=sampleDom.schedStrat;
+      $("debtErr").textContent=sampleDom.debtErr;
+      $("addDebtBtn").querySelector("span").textContent=sampleDom.addLabel;
+      $("cancelEditBtn").hidden=sampleDom.cancelHidden;
+      sampleDom=null;
+    }
+    renderAll();
+    $("demoNotice").hidden=true;
+  }
+  paintSample();
+}
+$("sampleToggle").addEventListener("click",function(){ setSample(!sampleOn); Sound.click(); });
+
+/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
+var Sound=(function(){
+  var KEY="debtpayoff.sound", on=true, ctx=null;
+  try{ if(window.localStorage.getItem(KEY)==="off") on=false; }catch(e){}
+  function ac(){ try{
+    if(!ctx){ var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null; ctx=new AC(); }
+    return ctx; }catch(e){ return null; } }
+  function tone(freq,dur,type,vol,delay){
+    var c=ac(); if(!c) return;
+    function play(){ try{
+      var t=c.currentTime+(delay||0), o=c.createOscillator(), g=c.createGain();
+      o.type=type||"sine"; o.frequency.value=freq;
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05);
+    }catch(e){} }
+    if(c.state==="suspended"){ c.resume().then(play,play); }else{ play(); }
+  }
+  return{
+    isOn:function(){ return on; },
+    toggle:function(){ on=!on; try{ window.localStorage.setItem(KEY,on?"on":"off"); }catch(e){} return on; },
+    click:function(){ if(on) tone(520,0.06,"sine",0.045); },
+    select:function(){ if(on){ tone(660,0.07,"sine",0.055); tone(880,0.09,"sine",0.045,0.06); } },
+    success:function(){ if(on){ tone(660,0.09,"sine",0.06); tone(990,0.12,"sine",0.05,0.08); } },
+    error:function(){ if(on) tone(170,0.16,"sawtooth",0.045); },
+    toggleTheme:function(){ if(on) tone(440,0.06,"triangle",0.05); }
+  };
+})();
 (function(){
-  var KEY='glenerds-theme',root=document.documentElement,btn=document.getElementById('theme-toggle');
-  function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
-  function cur(){try{var s=localStorage.getItem(KEY);if(s==='dark'||s==='light')return s;}catch(e){}return sysDark()?'dark':'light';}
-  function paint(){var t=cur();root.setAttribute('data-theme',t);
-    if(btn){btn.textContent=(t==='dark'?'\u2600 Light':'\u25D0 Dark');btn.setAttribute('aria-pressed',t==='dark'?'true':'false');}}
-  if(btn){btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';try{localStorage.setItem(KEY,n);}catch(e){}paint();});}
+  var btn=$("soundToggle"); if(!btn) return;
+  function paint(){ var on=Sound.isOn();
+    btn.innerHTML=on?"&#128266;":"&#128263;";
+    btn.setAttribute("data-snd",on?"on":"off");
+    btn.setAttribute("aria-pressed",on?"true":"false");
+    btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
+    btn.title="Toggle sounds ("+(on?"on":"off")+")";
+  }
+  window.paintSoundBtn=paint;
+  btn.addEventListener("click",function(){ Sound.toggle(); paint(); Sound.click(); });
   paint();
+})();
+
+/* ---------- simulation engine ---------- */
+function orderFor(strategy){
+  var ds=state.debts.slice();
+  if(strategy==="snowball"){ ds.sort(function(a,b){return a.balance-b.balance;}); }
+  else if(strategy==="avalanche"){ ds.sort(function(a,b){return b.apr-a.apr;}); }
+  else { var pos=Object.create(null); state.order.forEach(function(id,i){pos[id]=i;});
+         ds.sort(function(a,b){return (pos[a.id]==null?999:pos[a.id])-(pos[b.id]==null?999:pos[b.id]);}); }
+  return ds.map(function(d){return d.id;});
+}
+function simulate(strategy, extraMonthly){
+  var debts=state.debts.map(function(d){return {id:d.id,bal:d.balance,apr:d.apr,min:d.minPayment};});
+  var byId=Object.create(null); debts.forEach(function(d){byId[d.id]=d;});
+  var order=orderFor(strategy);
+  var totalInterest=0, totalPaid=0, month=0, streak=0, prevBal=Infinity;
+  var schedule=[];
+  var paidOff=[], paidSeen=Object.create(null); /* per-debt payoff months — recording only, no math change */
+  var now=new Date(); var startY=now.getFullYear(), startM=now.getMonth();
+  var startBal=debts.reduce(function(s,d){return s+d.bal;},0);
+  if(startBal<=0.004) return {never:true,reason:"empty"};
+  var monthPaid0=debts.reduce(function(s,d){return s+d.min;},0)+extraMonthly;
+  if(monthPaid0<=0) return {never:true,reason:"nopay"};
+  while(month<MAX_MONTHS){
+    var anyLeft=false;
+    for(var i=0;i<debts.length;i++){ if(debts[i].bal>0.004){anyLeft=true;break;} }
+    if(!anyLeft) break;
+    month++;
+    var mInt=0, mPaid=0, extra=extraMonthly;
+    for(i=0;i<debts.length;i++){ var d=debts[i];
+      if(d.bal>0.004){ var it=d.bal*d.apr/1200; d.bal+=it; mInt+=it; } }
+    totalInterest+=mInt;
+    var oi, dd;
+    for(oi=0;oi<order.length;oi++){ dd=byId[order[oi]];
+      if(!dd) continue;
+      if(dd.bal<=0.004){ extra+=dd.min; continue; } /* paid-off debt: its minimum rolls into the attack pool */
+      var pay=Math.min(dd.min,dd.bal);
+      dd.bal-=pay; mPaid+=pay;
+      extra+=(dd.min-pay); /* freed minimum rolls into the extra pool */
+    }
+    for(oi=0;oi<order.length;oi++){ dd=byId[order[oi]];
+      if(!dd||dd.bal<=0.004||extra<=0) continue;
+      var p=Math.min(extra,dd.bal);
+      dd.bal-=p; mPaid+=p; extra-=p; /* leftover cascades to the next debt in order */
+    }
+    totalPaid+=mPaid;
+    var bal=debts.reduce(function(s,x){return s+Math.max(0,x.bal);},0);
+    for(var pi=0;pi<debts.length;pi++){ var pd=debts[pi];
+      if(pd.bal<=0.004 && !paidSeen[pd.id]){ paidSeen[pd.id]=1; paidOff.push({id:pd.id,month:month}); } }
+    schedule.push({month:month,paid:mPaid,interest:mInt,balance:bal,
+      date:new Date(startY,startM+month-1,1)});
+    if(mPaid<=1e-9) return {never:true,reason:"stuck"};
+    if(bal>=prevBal-1e-6){ streak++; } else { streak=0; }
+    prevBal=bal;
+    if(streak>=6) return {never:true,reason:"growing"};
+  }
+  if(month>=MAX_MONTHS) return {never:true,reason:"toolong"};
+  var payoff=new Date(startY,startM+month-1,1);
+  return {never:false,months:month,totalInterest:totalInterest,totalPaid:totalPaid,
+    startBal:startBal,schedule:schedule,paidOff:paidOff,
+    payoffLabel:payoff.toLocaleDateString("en-US",{month:"short",year:"numeric"})};
+}
+
+/* ---------- descriptions ---------- */
+var STRAT_DESC={
+  snowball:"Snowball: pay the smallest balance first. Quick wins keep you motivated.",
+  avalanche:"Avalanche: pay the highest APR first. Mathematically the cheapest way out.",
+  custom:"Custom: you choose the payoff order below — drag your priorities with the arrows."
+};
+</script>
+<script>
+"use strict";
+/* ---------- rendering ---------- */
+var STRAT_NAMES={snowball:"Snowball",avalanche:"Avalanche",custom:"Custom"};
+var STRAT_COLORS={snowball:"#6366f1",avalanche:"#8b5cf6",custom:"#14b8a6"};
+
+function renderDebts(){
+  var wrap=$("debtList"); wrap.innerHTML="";
+  if(state.debts.length===0){
+    wrap.innerHTML='<div class="notice">No debts yet — add your first one below, or load the demo data.</div>';
+    return;
+  }
+  state.debts.forEach(function(d){
+    var div=document.createElement("div"); div.className="debt-item";
+    div.innerHTML=
+      '<div class="debt-top">'+
+      '<span class="debt-name"></span>'+
+      '<span class="debt-meta"></span>'+
+      '<span class="debt-actions">'+
+      '<button class="btn btn-secondary btn-sm edit-btn">Edit</button>'+
+      '<button class="btn btn-danger btn-sm del-btn">Delete</button>'+
+      '</span></div>';
+    div.querySelector(".debt-name").textContent=d.name;
+    div.querySelector(".debt-meta").textContent=money(d.balance)+" · "+d.apr+"% APR · "+money(d.minPayment)+"/mo min";
+    div.querySelector(".edit-btn").addEventListener("click",function(){startEdit(d.id);});
+    div.querySelector(".del-btn").addEventListener("click",function(e){armDelete(e.currentTarget,d.id);});
+    wrap.appendChild(div);
+  });
+}
+function armDelete(btn,id){
+  if(btn.dataset.armed){ doDelete(id); return; }
+  btn.dataset.armed="1"; var old=btn.textContent; btn.textContent="Confirm?"; Sound.click();
+  setTimeout(function(){ if(btn.isConnected){btn.textContent=old; delete btn.dataset.armed;} },2500);
+}
+function doDelete(id){
+  state.debts=state.debts.filter(function(d){return d.id!==id;});
+  state.order=state.order.filter(function(x){return x!==id;});
+  if(editingId===id) cancelEdit();
+  save(); renderAll(); Sound.success();
+}
+function startEdit(id){
+  var d=state.debts.filter(function(x){return x.id===id;})[0]; if(!d) return;
+  editingId=id;
+  $("fName").value=d.name; $("fBalance").value=d.balance; $("fApr").value=d.apr; $("fMin").value=d.minPayment;
+  $("addDebtBtn").querySelector("span").textContent="Save changes";
+  $("cancelEditBtn").hidden=false;
+  $("fName").focus();
+}
+function cancelEdit(){
+  editingId=null; $("fName").value="";$("fBalance").value="";$("fApr").value="";$("fMin").value="";
+  $("addDebtBtn").querySelector("span").textContent="Add debt";
+  $("cancelEditBtn").hidden=true; $("debtErr").textContent="";
+}
+function submitDebt(){
+  var err=$("debtErr"); err.textContent="";
+  var name=$("fName").value.trim().slice(0,60);
+  var bal=Number($("fBalance").value), apr=Number($("fApr").value), mn=Number($("fMin").value);
+  if(!name){ err.textContent="Give the debt a name."; Sound.error(); return; }
+  if(!isFinite(bal)||bal<=0||bal>1e9){ err.textContent="Balance must be a number greater than 0."; Sound.error(); return; }
+  if(!isFinite(apr)||apr<0||apr>200){ err.textContent="APR must be between 0 and 200."; Sound.error(); return; }
+  if(!isFinite(mn)||mn<0||mn>1e9){ err.textContent="Minimum payment must be 0 or more."; Sound.error(); return; }
+  bal=Math.round(bal*100)/100; apr=Math.round(apr*100)/100; mn=Math.round(mn*100)/100;
+  if(editingId){
+    var d=state.debts.filter(function(x){return x.id===editingId;})[0];
+    if(d){ d.name=name; d.balance=bal; d.apr=apr; d.minPayment=mn; }
+    cancelEdit();
+  }else{
+    var id=uid();
+    state.debts.push({id:id,name:name,balance:bal,apr:apr,minPayment:mn});
+    state.order.push(id);
+    $("fName").value="";$("fBalance").value="";$("fApr").value="";$("fMin").value="";
+  }
+  save(); renderAll(); Sound.success();
+}
+
+function renderStrategy(){
+  var tabs=document.querySelectorAll(".tab");
+  tabs.forEach(function(t){ t.classList.toggle("active",t.dataset.strat===state.strategy); });
+  $("stratDesc").textContent=STRAT_DESC[state.strategy];
+  var co=$("customOrder"); co.hidden=(state.strategy!=="custom");
+  if(state.strategy==="custom") renderOrder();
+  $("extraRange").value=state.extraMonthly;
+  $("extraVal").textContent=money(state.extraMonthly);
+}
+function renderOrder(){
+  var wrap=$("orderList"); wrap.innerHTML="";
+  var pos=Object.create(null); state.order.forEach(function(id,i){pos[id]=i;});
+  var sorted=state.debts.slice().sort(function(a,b){
+    return (pos[a.id]==null?999:pos[a.id])-(pos[b.id]==null?999:pos[b.id]);});
+  sorted.forEach(function(d,i){
+    var row=document.createElement("div"); row.className="order-row";
+    row.innerHTML='<span class="order-rank"></span><span class="order-name"></span><span class="order-btns"></span>';
+    row.querySelector(".order-rank").textContent=(i+1)+".";
+    row.querySelector(".order-name").textContent=d.name;
+    var btns=row.querySelector(".order-btns");
+    var up=document.createElement("button"); up.className="btn btn-secondary btn-sm"; up.textContent="▲"; up.setAttribute("aria-label","Move up");
+    var dn=document.createElement("button"); dn.className="btn btn-secondary btn-sm"; dn.textContent="▼"; dn.setAttribute("aria-label","Move down");
+    up.disabled=(i===0); dn.disabled=(i===sorted.length-1);
+    up.addEventListener("click",function(){moveOrder(d.id,-1);});
+    dn.addEventListener("click",function(){moveOrder(d.id,1);});
+    btns.appendChild(up); btns.appendChild(dn);
+    wrap.appendChild(row);
+  });
+}
+function moveOrder(id,dir){
+  var i=state.order.indexOf(id), j=i+dir;
+  if(i<0||j<0||j>=state.order.length) return;
+  var t=state.order[i]; state.order[i]=state.order[j]; state.order[j]=t;
+  save(); renderOrder(); renderCompare(); renderSchedule();
+}
+
+/* strategy-line spotlight shared by cards + legend; canvas point inspection */
+window._chartSpot=null;
+function toggleSpotStrat(s){ window._spotStrat=(window._spotStrat===s)?null:s; Sound.select(); renderCompare(); }
+function paintChartCap(){
+  var cap=$("chartCap"); if(!cap) return;
+  var res=window._cmpResults;
+  if(window._chartSpot!=null && res){
+    var m=window._chartSpot, parts=[];
+    ["snowball","avalanche","custom"].forEach(function(s){
+      var r=res[s]; if(r.never||!r.schedule.length) return;
+      var pt=null; for(var i=0;i<r.schedule.length;i++){ if(r.schedule[i].month<=m) pt=r.schedule[i]; else break; }
+      parts.push(STRAT_NAMES[s]+" "+money(pt?pt.balance:0).replace(".00",""));
+    });
+    cap.textContent="Month "+m+" — remaining balance: "+parts.join(" · ")+" — click the chart again to clear.";
+    return;
+  }
+  cap.textContent=window._spotStrat ?
+    ("Showing "+STRAT_NAMES[window._spotStrat]+" only — click its card again to show all.") :
+    "Click a strategy card above to isolate its line — click again to show all.";
+}
+function renderCompare(){
+  var empty=state.debts.length===0;
+  $("compareEmpty").hidden=!empty; $("compareWrap").hidden=empty;
+  if(empty){ /* clear stale visuals so off-sample/empty state is truly empty */
+    $("donutSvg").innerHTML=""; $("donutLegend").innerHTML=""; $("donutDetail").textContent="";
+    $("payoffTl").innerHTML=""; $("tlNote").textContent="";
+    return;
+  }
+  var results={};
+  ["snowball","avalanche","custom"].forEach(function(s){ results[s]=simulate(s,state.extraMonthly); });
+  var wrap=$("compareCards");
+  var cfa=document.activeElement, cfk=cfa&&cfa.getAttribute?cfa.getAttribute("data-strat"):null;
+  wrap.innerHTML="";
+  var best=null,bestInt=Infinity;
+  ["snowball","avalanche","custom"].forEach(function(s){
+    var r=results[s];
+    if(!r.never&&r.totalInterest<bestInt){bestInt=r.totalInterest;best=s;}
+  });
+  ["snowball","avalanche","custom"].forEach(function(s){
+    var r=results[s];
+    var card=document.createElement("div"); card.className="stat spot-card";
+    card.setAttribute("data-strat",s);
+    card.tabIndex=0; card.setAttribute("role","button");
+    card.setAttribute("aria-pressed",window._spotStrat===s?"true":"false");
+    card.setAttribute("aria-label",STRAT_NAMES[s]+" — click to isolate its line on the chart");
+    (function(strat){
+      card.addEventListener("click",function(){ toggleSpotStrat(strat); });
+      card.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggleSpotStrat(strat); } });
+    })(s);
+    var html="";
+    if(s===best) html+='<span class="best">Lowest interest</span>';
+    html+='<div class="s-label">'+STRAT_NAMES[s]+'</div>';
+    if(r.never){
+      html+='<div class="s-val" style="font-size:1rem;color:var(--danger)">Never pays off</div>'+
+            '<div class="s-sub">Payments don\'t cover the interest. Raise a minimum or add extra.</div>';
+    }else{
+      html+='<div class="s-val">'+money(r.totalInterest)+'</div>'+
+            '<div class="s-sub">total interest · '+r.months+' months</div>'+
+            '<div class="s-sub">Debt-free: <strong>'+esc(r.payoffLabel)+'</strong></div>'+
+            '<div class="progress"><div style="width:'+Math.min(100,r.months/240*100)+'%"></div></div>'+
+            '<div class="s-sub">Total paid: '+money(r.totalPaid)+'</div>';
+    }
+    card.innerHTML=html;
+    wrap.appendChild(card);
+  });
+  window._cmpResults=results;
+  document.querySelectorAll(".legend-btn").forEach(function(b){ b.setAttribute("aria-pressed", window._spotStrat===b.getAttribute("data-strat")?"true":"false"); });
+  paintChartCap();
+  drawChart();
+  renderDonut();
+  renderTimeline(results);
+  if(cfk){ var nc=wrap.querySelector('.spot-card[data-strat="'+cfk+'"]'); if(nc)nc.focus({preventScroll:true}); }
+}
+
+function drawChart(){
+  var cv=$("balanceChart"); if(!cv||$("compareWrap").hidden) return;
+  var res=window._cmpResults; if(!res) return;
+  var dpr=window.devicePixelRatio||1;
+  var W=cv.clientWidth||900, H=260;
+  cv.width=W*dpr; cv.height=H*dpr;
+  var ctx=cv.getContext("2d"); ctx.scale(dpr,dpr);
+  var dark=document.documentElement.getAttribute("data-theme")==="dark";
+  ctx.clearRect(0,0,W,H);
+  var maxM=0,maxB=0;
+  ["snowball","avalanche","custom"].forEach(function(s){
+    var r=res[s]; if(r.never) return;
+    maxM=Math.max(maxM,r.months); maxB=Math.max(maxB,r.startBal);
+  });
+  if(maxM===0) return;
+  var padL=64,padB=26,padT=14,padR=12;
+  var iw=W-padL-padR, ih=H-padT-padB;
+  ctx.strokeStyle=dark?"#3a3357":"#e4e0f3"; ctx.fillStyle=dark?"#a49dc2":"#6b6584";
+  ctx.font="11px sans-serif"; ctx.lineWidth=1;
+  var steps=4;
+  for(var g=0;g<=steps;g++){
+    var y=padT+ih-(ih*g/steps);
+    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();
+    ctx.fillText(money(maxB*g/steps).replace(".00",""),6,y+4);
+  }
+  var xStep=Math.max(1,Math.ceil(maxM/12));
+  ctx.fillStyle=dark?"#a49dc2":"#6b6584";
+  for(var m=0;m<=maxM;m+=xStep){
+    var x=padL+iw*m/maxM, label="mo "+m, tw=ctx.measureText(label).width;
+    var lx=Math.max(padL-12,Math.min(x-tw/2, W-padR-tw));
+    ctx.fillText(label,lx,H-8);
+  }
+  ["snowball","avalanche","custom"].forEach(function(s){
+    var r=res[s]; if(r.never||!r.schedule.length) return;
+    var spot=window._spotStrat;
+    ctx.globalAlpha=spot?(s===spot?1:0.15):1;
+    ctx.strokeStyle=STRAT_COLORS[s]; ctx.lineWidth=(spot&&s===spot)?4:2.5; ctx.beginPath();
+    r.schedule.forEach(function(pt,i){
+      var x=padL+iw*pt.month/maxM, y=padT+ih-(ih*pt.balance/maxB);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke(); ctx.globalAlpha=1;
+  });
+  if(window._chartSpot!=null){
+    var sx=padL+iw*window._chartSpot/maxM;
+    ctx.save(); ctx.setLineDash([5,4]); ctx.strokeStyle=dark?"#a5b4fc":"#4f46e5"; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(sx,padT); ctx.lineTo(sx,padT+ih); ctx.stroke(); ctx.restore();
+  }
+}
+
+/* ---------- balance-share donut (gallery SHARE) + payoff-order timeline (gallery STEPS) ---------- */
+var DEBT_COLORS=["#6366f1","#8b5cf6","#14b8a6","#f59e0b","#ef4444","#0ea5e9","#ec4899","#84cc16"];
+window._spotDebt=null; window._spotStrat=null;
+function toggleSpotDebt(id){
+  window._spotDebt=(window._spotDebt===id)?null:id;
+  Sound.select(); renderDonut(); renderTimeline(window._cmpResults);
+}
+function renderDonut(){
+  var svg=$("donutSvg"), leg=$("donutLegend"), det=$("donutDetail");
+  if(!svg) return;
+  /* keep keyboard focus on the same debt across the rebuild so Enter/Space can toggle back */
+  var fa=document.activeElement, fk=fa&&fa.getAttribute?fa.getAttribute("data-did"):null;
+  svg.innerHTML=""; leg.innerHTML="";
+  var debts=state.debts.slice();
+  var total=debts.reduce(function(s,d){return s+d.balance;},0);
+  var spot=window._spotDebt;
+  if(!debts.length||total<=0){ det.textContent=""; return; }
+  var NS="http://www.w3.org/2000/svg", C=2*Math.PI*70, cum=0;
+  debts.forEach(function(d,i){
+    var frac=d.balance/total, len=frac*C, col=DEBT_COLORS[i%DEBT_COLORS.length];
+    var c=document.createElementNS(NS,"circle");
+    c.setAttribute("cx",100); c.setAttribute("cy",100); c.setAttribute("r",70);
+    c.setAttribute("fill","none"); c.setAttribute("stroke",col);
+    c.setAttribute("stroke-width",spot===d.id?36:26);
+    c.setAttribute("stroke-dasharray",Math.max(0.1,len-1.5)+" "+C);
+    c.setAttribute("stroke-dashoffset",-cum);
+    c.setAttribute("transform","rotate(-90 100 100)");
+    c.setAttribute("class","donut-seg");
+    c.setAttribute("data-did",d.id);
+    c.setAttribute("tabindex","0"); c.setAttribute("role","button");
+    c.setAttribute("aria-label",d.name+": "+money(d.balance)+" ("+Math.round(frac*100)+"%) — click for details");
+    if(spot&&spot!==d.id) c.setAttribute("opacity","0.25");
+    (function(id){ function t(){ toggleSpotDebt(id); }
+      c.addEventListener("click",t);
+      c.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); t(); } });
+    })(d.id);
+    svg.appendChild(c);
+    cum+=len;
+    var b=document.createElement("button"); b.className="dl-item";
+    b.setAttribute("data-did",d.id);
+    b.setAttribute("aria-pressed",spot===d.id?"true":"false");
+    b.setAttribute("aria-label",d.name+" — click to spotlight");
+    b.innerHTML='<span class="dl-dot" style="background:'+col+'"></span><span class="dl-name"></span><span class="dl-amt"></span>';
+    b.querySelector(".dl-name").textContent=d.name;
+    b.querySelector(".dl-amt").textContent=money(d.balance);
+    (function(id){ b.addEventListener("click",function(){ toggleSpotDebt(id); }); })(d.id);
+    leg.appendChild(b);
+  });
+  var sd=debts.filter(function(d){return d.id===spot;})[0];
+  function txt(y,size,weight,str){
+    var t=document.createElementNS(NS,"text");
+    t.setAttribute("x",100); t.setAttribute("y",y); t.setAttribute("text-anchor","middle");
+    t.setAttribute("font-size",size); t.setAttribute("font-weight",weight);
+    t.setAttribute("fill","var(--text)"); t.setAttribute("pointer-events","none");
+    t.textContent=str; svg.appendChild(t);
+  }
+  if(sd){ txt(97,17,800,Math.round(sd.balance/total*100)+"%"); txt(118,11,600,sd.name.slice(0,18)); }
+  else { txt(97,17,800,money(total).replace(".00","")); txt(118,11,600,"total balance"); }
+  if(sd){
+    var pos=orderFor(state.strategy).indexOf(sd.id);
+    det.innerHTML="<strong>"+esc(sd.name)+"</strong> — "+money(sd.balance)+" · "+sd.apr+"% APR · "+
+      money(sd.minPayment)+"/mo min · "+Math.round(sd.balance/total*100)+"% of total balance"+
+      (pos>=0?" · #"+(pos+1)+" in "+STRAT_NAMES[state.strategy]+" order":"")+". Click the slice again to clear.";
+  }else{
+    det.innerHTML="Total balance <strong>"+money(total)+"</strong> across "+debts.length+
+      " debt"+(debts.length>1?"s":"")+" — click a slice or legend item for details.";
+  }
+  if(fk){ var ne=svg.querySelector('circle.donut-seg[data-did="'+fk+'"]')||leg.querySelector('button.dl-item[data-did="'+fk+'"]'); if(ne)ne.focus({preventScroll:true}); }
+}
+function renderTimeline(results){
+  var tl=$("payoffTl"), note=$("tlNote"), lab=$("tlStrat");
+  if(!tl) return;
+  /* keep keyboard focus on the same step across the rebuild so Space can toggle back */
+  var rfa=document.activeElement, rfk=rfa&&rfa.getAttribute?rfa.getAttribute("data-fk"):null;
+  tl.innerHTML="";
+  var s=state.strategy, r=results&&results[s];
+  lab.textContent="— "+STRAT_NAMES[s]+" plan";
+  if(!r||r.never||!r.paidOff||!r.paidOff.length){ note.textContent=""; return; }
+  var byId=Object.create(null); state.debts.forEach(function(d){byId[d.id]=d;});
+  var now=new Date();
+  r.paidOff.forEach(function(p,i){
+    var d=byId[p.id]; if(!d) return;
+    var dt=new Date(now.getFullYear(),now.getMonth()+p.month-1,1);
+    var when=dt.toLocaleDateString("en-US",{month:"short",year:"numeric"});
+    var st=document.createElement("button");
+    st.className="tl-step"; st.setAttribute("role","listitem");
+    st.setAttribute("data-fk","tl-"+p.id);
+    st.setAttribute("aria-pressed",window._spotDebt===p.id?"true":"false");
+    st.setAttribute("aria-label","Step "+(i+1)+": "+d.name+", paid off "+when+" — click for details");
+    st.innerHTML='<div class="tl-dot">'+(i+1)+'</div><div class="tl-name"></div><div class="tl-when"></div>';
+    st.querySelector(".tl-name").textContent=d.name;
+    st.querySelector(".tl-when").textContent=when;
+    if(window._spotDebt && window._spotDebt!==p.id) st.style.opacity="0.35"; /* dim the rest */
+    (function(id,monthN,whenS){ st.addEventListener("click",function(){
+      if(window._spotDebt===id){ window._spotDebt=null; }
+      else{ window._spotDebt=id; }
+      Sound.select(); renderDonut(); renderTimeline(window._cmpResults);
+    }); })(p.id,p.month,when);
+    tl.appendChild(st);
+    if(i<r.paidOff.length-1){ var rail=document.createElement("div"); rail.className="tl-rail"; tl.appendChild(rail); }
+  });
+  var sd=state.debts.filter(function(d){return d.id===window._spotDebt;})[0];
+  if(sd){
+    var sp=r.paidOff.filter(function(p){return p.id===sd.id;})[0];
+    var sdt=sp?new Date(now.getFullYear(),now.getMonth()+sp.month-1,1).toLocaleDateString("en-US",{month:"short",year:"numeric"}):"";
+    note.innerHTML="<strong>"+esc(sd.name)+"</strong> — "+money(sd.balance)+" at "+sd.apr+"% APR, "+
+      money(sd.minPayment)+"/mo minimum — paid off <strong>"+esc(sdt)+"</strong>, month "+(sp?sp.month:"?")+
+      " of the "+STRAT_NAMES[s]+" plan.";
+  }else{
+    note.textContent="Click a step to see that debt's payoff details.";
+  }
+  if(rfk){ var rne=tl.querySelector('[data-fk="'+rfk+'"]'); if(rne) rne.focus({preventScroll:true}); }
+}
+
+function renderSchedule(){
+  var empty=state.debts.length===0;
+  $("schedEmpty").hidden=!empty; $("schedWrap").hidden=empty;
+  if(empty) return;
+  $("schedStrat").value=state.schedStrat;
+  var r=simulate(state.schedStrat,state.extraMonthly);
+  var tb=$("schedBody"); tb.innerHTML="";
+  if(r.never){
+    var tr=document.createElement("tr");
+    var td=document.createElement("td"); td.colSpan=4;
+    td.textContent="This plan never pays the debt off — payments don't cover the interest. Raise a minimum payment or increase the extra amount.";
+    tr.appendChild(td); tb.appendChild(tr); return;
+  }
+  r.schedule.forEach(function(pt){
+    var tr=document.createElement("tr");
+    var d=pt.date.toLocaleDateString("en-US",{month:"short",year:"numeric"});
+    tr.innerHTML="<td></td><td class='num'></td><td class='num'></td><td class='num'></td>";
+    tr.children[0].textContent=d;
+    tr.children[1].textContent=money(pt.paid);
+    tr.children[2].textContent=money(pt.interest);
+    tr.children[3].textContent=money(pt.balance);
+    tb.appendChild(tr);
+  });
+}
+
+function renderAll(){
+  renderDebts(); renderStrategy(); renderCompare(); renderSchedule();
+}
+/* balance chart: click/tap inspects that month's balances; Enter/Space inspects the midpoint */
+function chartMonthFromX(clientX){
+  var cv=$("balanceChart"), res=window._cmpResults; if(!cv||!res) return null;
+  var r=cv.getBoundingClientRect(), x=clientX-r.left, maxM=0;
+  ["snowball","avalanche","custom"].forEach(function(s){ if(!res[s].never) maxM=Math.max(maxM,res[s].months); });
+  if(maxM<=0) return null;
+  var padL=64,padR=12, W=cv.clientWidth||900, iw=W-padL-padR;
+  return Math.max(0,Math.min(maxM,Math.round((x-padL)/iw*maxM)));
+}
+function toggleChartSpot(m){ window._chartSpot=(window._chartSpot===m)?null:m; Sound.select(); paintChartCap(); drawChart(); }
+(function(){
+  var cv=$("balanceChart"); if(!cv) return;
+  cv.setAttribute("tabindex","0"); cv.setAttribute("role","button");
+  cv.setAttribute("aria-label","Remaining balance over time chart. Click to inspect a month's balances; keyboard: Enter or Space inspects the midpoint month.");
+  cv.style.cursor="pointer";
+  cv.addEventListener("click",function(e){ var m=chartMonthFromX(e.clientX); if(m!=null) toggleChartSpot(m); });
+  cv.addEventListener("keydown",function(e){
+    if(e.key==="Enter"||e.key===" "){ e.preventDefault();
+      var res=window._cmpResults, maxM=0;
+      if(res)["snowball","avalanche","custom"].forEach(function(s){ if(!res[s].never) maxM=Math.max(maxM,res[s].months); });
+      if(maxM>0) toggleChartSpot(Math.round(maxM/2)); }
+  });
+  document.querySelectorAll(".legend-btn").forEach(function(b){
+    b.addEventListener("click",function(){ toggleSpotStrat(b.getAttribute("data-strat")); });
+  });
+})();
+/* Esc clears any active spotlight (balance donut / legend / timeline debt, strategy card, chart point) */
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape")return;
+  if(!window._spotDebt&&!window._spotStrat&&window._chartSpot==null)return;
+  window._spotDebt=null; window._spotStrat=null; window._chartSpot=null;
+  renderDonut(); renderTimeline(window._cmpResults); renderCompare(); Sound.select();
+});
+
+/* ---------- events ---------- */
+$("addDebtBtn").addEventListener("click",submitDebt);
+$("cancelEditBtn").addEventListener("click",cancelEdit);
+document.querySelectorAll(".tab").forEach(function(t){
+  t.addEventListener("click",function(){ state.strategy=t.dataset.strat; save(); renderStrategy(); Sound.click(); });
+});
+$("extraRange").addEventListener("input",function(){
+  state.extraMonthly=Number($("extraRange").value);
+  $("extraVal").textContent=money(state.extraMonthly);
+  save(); renderCompare(); renderSchedule();
+});
+$("schedStrat").addEventListener("change",function(){
+  state.schedStrat=$("schedStrat").value; save(); renderSchedule(); Sound.click();
+});
+$("exportBtn").addEventListener("click",function(){
+  var err=$("dataErr"); err.textContent="";
+  var blob=new Blob([JSON.stringify({app:"debtpayoff",version:1,exported:new Date().toISOString(),
+    debts:state.debts,order:state.order,strategy:state.strategy,extraMonthly:state.extraMonthly},null,2)],
+    {type:"application/json"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="debtpayoff-export.json"; document.body.appendChild(a); a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+  Sound.success();
+});
+$("importBtn").addEventListener("click",function(){ $("importFile").click(); });
+$("importFile").addEventListener("change",function(e){
+  var err=$("dataErr"); err.textContent="";
+  var f=e.target.files[0]; if(!f) return;
+  if(f.size>1048576){ err.textContent="That file is too large to be a DebtPayoff export."; Sound.error(); e.target.value=""; return; }
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var obj=JSON.parse(rd.result);
+      var list=Array.isArray(obj)?obj:obj.debts;
+      if(!Array.isArray(list)) throw new Error("bad");
+      var debts=list.map(sanitizeDebt).filter(Boolean);
+      var skipped=list.length-debts.length;
+      if(debts.length===0) throw new Error("none");
+      state.debts=debts;
+      var ids=debts.map(function(d){return d.id;});
+      state.order=(Array.isArray(obj.order)?obj.order:[]).filter(function(id){return ids.indexOf(id)>=0;});
+      ids.forEach(function(id){ if(state.order.indexOf(id)<0) state.order.push(id); });
+      /* restore strategy + extra payment saved by export, validated */
+      if(obj.strategy==="snowball"||obj.strategy==="avalanche"||obj.strategy==="custom"){ state.strategy=obj.strategy; }
+      var ex=Number(obj.extraMonthly);
+      if(isFinite(ex)&&ex>=0&&ex<=100000){ state.extraMonthly=Math.round(ex*100)/100; }
+      state.schedStrat=state.strategy;
+      save(); renderAll();
+      err.textContent=""; 
+      var n=$("demoNotice"); n.hidden=false;
+      n.textContent="Imported "+debts.length+" debt"+(debts.length===1?"":"s")+(skipped?(" ("+skipped+" bad record"+(skipped===1?"":"s")+" skipped)"):"")+".";
+      Sound.success();
+    }catch(ex){ err.textContent="That file isn't a valid DebtPayoff export."; Sound.error(); }
+    e.target.value="";
+  };
+  rd.readAsText(f);
+});
+$("demoBtn").addEventListener("click",function(){
+  if(state.debts.length>0 && !confirm("Replace your current debts with the demo data?")) return;
+  demoData(); Sound.click();
+});
+$("clearBtn").addEventListener("click",function(){
+  var btn=$("clearBtn"), lbl=$("clearLabel");
+  if(btn.dataset.armed){
+    state.debts=[];state.order=[];editingId=null;save();renderAll();
+    lbl.textContent="Clear all data"; delete btn.dataset.armed;
+    $("demoNotice").hidden=true; Sound.success();
+  }else{
+    btn.dataset.armed="1"; lbl.textContent="Click again to confirm"; Sound.click();
+    setTimeout(function(){lbl.textContent="Clear all data";delete btn.dataset.armed;},2500);
+  }
+});
+
+/* ---------- init ---------- */
+(function init(){
+  var had=load();
+  applyTheme(document.documentElement.getAttribute("data-theme")||"light");
+  paintSample();
+  renderAll(); /* first run starts EMPTY — demo data is opt-in via the demo button or transient via the flask */
 })();
 </script>
 </body>
