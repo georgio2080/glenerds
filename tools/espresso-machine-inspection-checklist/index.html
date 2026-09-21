@@ -182,7 +182,8 @@ seller's location, offline, on your phone. Free, no account.</p>
         var lab=document.createElement('label');lab.style.marginRight='1rem';
         var r=document.createElement('input');r.type='radio';r.name='es'+i;r.value=s;
         if(st===s)r.checked=true;
-        r.onchange=function(){data[i]=s;save(data);render();};
+        r.onchange=function(){data[i]=s;save(data);render();
+          if(s==='pass')Sound.click();else if(s==='flag')Sound.select();else Sound.error();};
         lab.appendChild(r);lab.appendChild(document.createTextNode(' '+s.charAt(0).toUpperCase()+s.slice(1)));
         div.appendChild(lab);
       });
@@ -194,6 +195,23 @@ seller's location, offline, on your phone. Free, no account.</p>
       (flags+fails)>0?('Rough repair exposure: '+money(lo)+' – '+money(hi)+' (midpoints of flagged items)'):'No issues flagged yet.';
     /* per-category pass/flag/fail stacked bars (visual representation) */
     var evis=document.getElementById('es-vis');evis.innerHTML='';
+    /* interactive category bars: click/keyboard spotlights the flagged and failed items */
+    var esSel=null;
+    var edet=document.getElementById('es-detail');
+    if(!edet){edet=document.createElement('div');edet.id='es-detail';edet.setAttribute('aria-live','polite');evis.parentNode.insertBefore(edet,evis.nextSibling);}
+    edet.textContent='';
+    function esSpot(c,row){
+      var rows=evis.querySelectorAll('.es-row');
+      for(var q=0;q<rows.length;q++)rows[q].classList.remove('sel');
+      if(esSel===c){esSel=null;edet.textContent='';Sound.click();return;}
+      esSel=c;row.classList.add('sel');
+      var bad=[];
+      ITEMS.forEach(function(it,i){var st=data[i]||'';
+        if(it[0]===c&&(st==='flag'||st==='fail'))
+          bad.push((st==='fail'?'FAIL: ':'Flagged: ')+it[1]+' ('+money(it[2])+'–'+money(it[3])+')');});
+      edet.innerHTML='<strong>'+c+':</strong> '+(bad.length?bad.join('<br>'):'All clear — no flagged or failed items in this category.');
+      Sound.select();
+    }
     var ecats={},eorder=[];
     ITEMS.forEach(function(it,i){
       var c=it[0];
@@ -207,6 +225,10 @@ seller's location, offline, on your phone. Free, no account.</p>
       var s=ecats[c],chk=s.pass+s.flag+s.fail;
       ebaria.push(c+': '+chk+' of '+s.tot+' checked'+(s.flag?', '+s.flag+' flagged':'')+(s.fail?', '+s.fail+' failed':''));
       var row=document.createElement('div');row.className='es-row';
+      row.tabIndex=0;row.setAttribute('role','button');
+      row.setAttribute('aria-label',c+': '+chk+' of '+s.tot+' checked. Activate to show flagged and failed items.');
+      row.addEventListener('click',function(){esSpot(c,row);});
+      row.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();esSpot(c,row);}});
       var nm=document.createElement('div');nm.className='es-name';nm.textContent=c;
       var ct=document.createElement('div');ct.className='es-count';ct.textContent=chk+'/'+s.tot+' checked';
       var tr=document.createElement('div');tr.className='es-track';
@@ -221,8 +243,8 @@ seller's location, offline, on your phone. Free, no account.</p>
     document.getElementById('es-notes').value=data.notes||'';
   }
   document.getElementById('es-notes').addEventListener('input',function(e){data.notes=e.target.value;save(data);});
-  document.getElementById('es-print').onclick=function(){window.print();};
-  document.getElementById('es-reset').onclick=function(){if(confirm('Reset the whole checklist?')){data={};save(data);render();}};
+  document.getElementById('es-print').onclick=function(){Sound.click();window.print();};
+  document.getElementById('es-reset').onclick=function(){if(confirm('Reset the whole checklist?')){data={};save(data);render();Sound.success();}};
   render();
 })();
 </script>
