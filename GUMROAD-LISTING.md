@@ -1,10 +1,10 @@
-# MoveInProof — Gumroad listing (UNPUBLISHED $0 draft)
+# PackTrack — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free Apartment Move-In Checklist: Document Damage & Protect Your Security Deposit
+Free Moving Box Inventory Tracker: Find Anything in Every Box (Printable Labels)
 
 ## Permalink slug
-free-apartment-move-in-checklist-damage-logger
+free-moving-box-inventory-tracker
 
 ## Price
 $0
@@ -13,43 +13,42 @@ $0
 I want this!
 
 ## Thumbnail
-gallery/0-cover.png (also attach gallery/1-property.png … 7-backup.png as product images)
+gallery/0-cover.png (also attach gallery/1-dashboard.png … 7-mobile.png as product images)
 
 ## Product file
-moveinproof-bundle.zip
+packtrack-bundle.zip
 
 ## Tags
-move in checklist, apartment checklist, security deposit, damage documentation, renter tools, move in inspection, property condition report, tenant rights, lease, handover report
+moving organizer, packing checklist, moving box labels, moving planner, relocation organizer, inventory tracker, moving day, printable box labels, home organization, moving house
 
 ## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-📸 Free Apartment Move-In Checklist & Damage Logger — MoveInProof
-
-Document your apartment's condition on move-in day, room by room — with photos — before you unpack. When move-out comes, you'll have timestamped proof of every pre-existing scuff, stain, and crack, so no landlord can charge you for damage you didn't cause.
+Free Moving Box Inventory Tracker — "Where did I pack the HDMI cables?" PackTrack ends that question forever. Number your boxes, list what's inside each one, and find any item in seconds — then print clean box labels for moving day.
 
 💸 100% FREE — no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
 ✨ WHAT IT DOES
-• 🏠 Property details — address, landlord, tenants, lease start, move-in date
-• 📝 Room-by-room condition log — rate each room Excellent → Poor + notes
-• 🔍 Defect entries — item, defect type (scuff/stain/crack/dent/missing/broken/dirty), severity, auto timestamp
-• 📷 Photo documentation — attach photos to rooms and defects (auto-optimized, stored privately on your device)
-• 🖨️ Printable handover report — full condition report with tenant + landlord signature blocks
-• ➕ Fully customizable — add your own rooms, edit anything
+• 📋 Numbered boxes by room — auto-numbering from Box 101, 8 default rooms plus your own
+• 🔍 Instant item search — type "HDMI cable", see exactly which box holds it, with match highlighting
+• 🏷️ Color tags & fragile flags — spot priority boxes at a glance
+• ✅ Unpack mode — check off items at the new place with a live progress bar
+• 🖨️ Printable labels — one per page: huge box number, room, item list, FRAGILE banner
+• 📊 Dashboard — total boxes, items, packed vs open, per-room counts
 
 📦 WHAT YOU GET
-• MoveInProof as a single HTML file — double-click to open in any browser
+• PackTrack as a single HTML file — double-click to open in any browser
 • 8 screenshot walkthrough images
 • README with quick-start guide
 • Free updates forever
 
 🖥️ HOW IT WORKS
-No install, no internet, no account. Open the file on your phone on move-in day, walk room by room, log every defect with photos. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
+No install, no internet, no account — built for moving day, when the wifi is down. Open the file on any phone or laptop, add boxes as you pack, search when you need something. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
 
 🔒 PRIVACY
-MoveInProof is fully offline. No trackers, no analytics, no external requests.
+PackTrack is fully offline. No trackers, no analytics, no external requests.
 
 🛠️ MORE FROM GLENERDS
+• Free Moving Cost Calculator → https://glenerds.netlify.app/tools/moving-cost-calculator/
 • Browse all Glenerds tools → https://glenerds.gumroad.com
 
 📩 SUPPORT

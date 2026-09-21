@@ -1,82 +1,122 @@
-# MoveInProof — build log
+# PackTrack — Build Log
 
 ## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
-- Standardized the header cluster: `.g-header-actions` wrapper with More Apps pill first, icon-only dark-mode button (44x44px, moon/sun icon, no text label, dynamic aria-label/title), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
-- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `moveinproof.sound`, wired into theme toggle, add room (with validation error), delete room, demo load, clear, export/import, and print.
-- Made the report's condition-overview bars interactive: each row (room ratings, defect severities) is a keyboard-accessible button — activating it spotlights the row and shows which rooms or defects it counts in a detail line; activating again restores.
+- Standardized the header cluster: `.g-header-actions` wrapper with More Apps pill first, icon-only dark-mode button (44x44px circular, moon/sun icon, dynamic aria-label/title — no more "Dark mode" text label), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
+- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `packtrack.sound`, wired into theme toggle, add-box form (validation errors and success), color swatch select, add item (success/error), item unpack check/uncheck, item remove, seal/unseal, delete box (success/cancel), print, unpack mode, export, import (success/failure), and demo load.
+- Made the "Unpack progress by room" bars interactive: each row is a keyboard-accessible button — activating it spotlights the row and shows unpacked/total plus a per-box breakdown in a detail line; activating again restores.
+- Made the room-count pills interactive: each pill is a keyboard-accessible button that lists the room's boxes (with labels) in a detail line.
 
 ## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
-1. **New "Condition overview" in the Move-In Condition Report**: Room ratings
-   distribution (Excellent/Good/Fair/Poor/Not rated) and Defects-by-severity
-   (Minor/Moderate/Major) bar groups at the top of the report, theme-aware
-   colors (--good/--accent1/--warn/--bad), counts in a right column, aria-labels
-   per group, print-color-adjust so bars survive printing. Only renders when
-   rooms exist. Verified headlessly with demo data (1 Good, 1 Fair; 1 minor,
-   2 moderate); screenshot inspected.
+- **New "Unpack progress by room" bars** on the Dashboard, between the room
+  pills and the overall unpack bar: per-room unpacked/total with % and green
+  gradient fills matching the existing overall progress style. Live-updates
+  through the app's own render path (unpack-mode toggles -> save -> renderAll
+  -> renderDashboard). Group-level aria-label summarizes every room.
+  Verified headlessly: 3 room bars, correct counts, live update on toggle
+  (Kitchen 2/9 = 22%); screenshot inspected.
 
-## 2026-09-19 — Initial build (spec v1)
-- Single-file offline app at `staging/moveinproof/index.html` (~39 KB, zero external requests, works from file://).
-- Property header (address, landlord/manager, tenant names, lease start, move-in date defaulting to today), saved to localStorage on change.
-- Rooms: 6 seeded defaults (Living Room, Kitchen, Bedroom, Bathroom, Hallway, Exterior/Balcony); add/delete custom rooms; per-room condition rating (Excellent/Good/Fair/Poor radios), notes, room-level photos.
-- Defects per room: item/area, type (scuff/stain/crack/dent/missing/broken/dirty/other), severity (minor/moderate/major), description, auto timestamp; add/edit/delete.
-- Photo attach (per room and per defect): `<input type="file" accept="image/*">` multiple; canvas downscale to max 1200px longest edge, JPEG q0.7; thumbnail grid with per-photo delete; storage-quota failure shows a message naming the largest photo's location and size.
-- Printable handover report: property header, per-room ratings/notes, defects with severity + thumbnails, tenant/landlord signature blocks (printed name, signature, date); print stylesheet hides app chrome and forces light colors.
-- JSON export (download) / import (file picker) with aggressive sanitization: photos allowlisted to `data:image/jpeg`/`data:image/png` only, strings length-capped, enums allowlisted, unknown keys dropped.
-- Demo data (2 rooms, 3 defects, no photos) + clear-all (confirm dialog).
-- Dark mode standard: visible toggle, `prefers-color-scheme` default, localStorage persistence, CSS variables, pre-DOMContentLoaded set to avoid flash.
-- Discreet footer: "by Glenerds" → https://glenerds.gumroad.com. No emojis in UI chrome.
-- Accessibility: labeled inputs, keyboard-operable controls (file inputs stay focusable via visually-hidden class), `aria-live="polite"` on the report section and status message, 44px minimum tap targets, mobile-first layout.
+**App:** PackTrack (Moving Box Inventory Indexer) — free-loop app #2
+**Built:** 2026-09-19
+**File:** `index.html` (single file, ~36 KB, zero external requests)
 
-### Security notes (implemented)
-- Zero `innerHTML`/`outerHTML`/`document.write` in the file (verified by grep; only prose comments mention it).
-- Photos render only via `img.src = dataURL`; `isPhotoURL()` allowlist enforced on attach (post-downscale), on every stored photo at load/import, and SVG dataURLs are always dropped.
-- All other user/imported strings rendered via `textContent` or DOM text nodes.
+## Build notes
 
-### QA results (Playwright, real system Chromium /opt/meta-chromium/chrome, headless) — 13/13 pass
-- property header save: PASS (values persisted across reload via localStorage)
-- room add/rating/notes: PASS (Garage, rating Poor, notes persisted)
-- defect add/edit/delete: PASS (fields + auto timestamp on add; edit saves; delete removes)
-- photo attach downscales: PASS (3000x2000 PIL test JPEG → stored dataURL starts `data:image/jpeg`, 15,415 chars vs 176,724 original — ~11x smaller)
-- photo delete: PASS
-- hostile import neutralized: PASS (svg dataURLs dropped from room + defect photos; `<script>`/`<img onerror>` strings rendered as inert literal text; only the app's own 2 script tags in DOM; print-emulation screenshot confirms inert rendering)
-- print report renders: PASS (print media: report visible, app chrome hidden, signature blocks with 6+ sig lines)
-- export/import round-trip: PASS (1 room exported → clear → import → 1 room back)
-- demo + clear-all: PASS (demo = 2 rooms / 3 defects / 0 photos; clear-all empties rooms + header)
-- dark mode persists: PASS (dark survives reload; toggled back to light after)
-- 390px mobile: PASS (no horizontal overflow; all visible buttons/file-labels ≥40px tall)
-- zero external requests: PASS (no http/https requests during full run)
-- no console errors: PASS (no console errors, no pageerrors across the whole run)
+- Data model: `state = { boxes: [{number, room, label, color, fragile, packed, items: [{text, unpacked}]}], customRooms, nextNumber }` persisted to localStorage key `packtrack-v1`.
+- Box numbers start at 101, auto-increment; user-editable with duplicate guard and 1–9999 validation.
+- Rooms: 8 defaults + user-addable custom rooms via the "New room" field (sanitized, deduped, capped at 50).
+- Color tag: 6 swatch buttons (none/blue/green/red/yellow/purple), aria-pressed toggle.
+- Search: instant (120 ms debounce), case-insensitive partial match across items, rooms, labels; matches highlighted with `<mark>` built via DOM text nodes (no innerHTML).
+- Security: every user/imported string enters the DOM via `textContent`/`.value`/text nodes. Import pipeline runs through `sanitizeState`/`sanitizeBox`: finite numbers clamped, strings trimmed + length-capped (room 40, label 40, item 120), color restricted to an allowlist, items capped (300/box), boxes capped (500), duplicate box numbers dropped. Corrupt localStorage falls back to empty state silently.
+- Dark mode: `data-theme` on `<html>`, CSS variables, prefers-color-scheme on first load, persisted to `packtrack-theme`, visible toggle in header.
+- Print labels: screen-hidden `.print-label` container; print button builds the label DOM and adds `printing-label` to `<body>`; print CSS hides the app, shows one label per page (big number, room, tag, FRAGILE banner, item list, count). "Print all labels" builds one label div per box. Class removed on `afterprint` + 2s fallback.
+- Unpack mode: toggle in the Boxes toolbar; in unpack mode each item gets a checkbox; progress bar + % label on dashboard; "Fully unpacked" stat counts packed boxes with all items unpacked.
+- Empty states: dashboard zeroes, "No boxes yet" note, search no-hit message, data note about localStorage.
+- No emojis anywhere in UI chrome. Footer: "by Glenerds" → https://glenerds.gumroad.com.
 
-### QA fixes applied
-- None needed — all checks passed on the first run. No defects found.
+## Fixes during build
 
-## 2026-09-19 — outside-AI QA defect fix (verified headless Chromium)
-- Prefilled property address now appears in the handover report on load.
-  Root cause: the report rendered only from `state.header`, which updated
-  solely on input `change` events — and `bindHeader()` unconditionally
-  overwrote the address input with the (empty) stored value, destroying any
-  prefilled/autofilled value. Fix: `bindHeader()` no longer clobbers a
-  non-empty input, and a new `syncHeaderInputsToState()` (called on init
-  before the first report render) pulls visible prefilled values into state
-  and saves them.
-- Verified in headless Chromium (Playwright): prefilled "999 Prefill Ave"
-  survives load, renders in the report, and persists to localStorage; saved
-  state still populates input + report; demo address renders; typing + change
-  still updates the report; zero console/page errors.
+1. **Print-cleanup race:** `window.print()` returns immediately in headless; class removal via `afterprint` alone can leave the app hidden if the event never fires — added a 2 s `setTimeout` fallback so the app always reappears.
+2. **Color-swatch form submission:** swatch buttons sit inside the new-box form — explicitly `type="button"` so they never trigger submit.
+3. **"Other" rooms not in defaults:** boxes imported with an unknown room keep the room string and render in the per-room pill list via `allRooms()`-based filtering (pill only shows rooms that have boxes, so no stray select options needed).
+4. **Item add focus:** after adding an item with Enter the input keeps focus for fast multi-add.
 
-## 2026-09-19 — review round 1 (outside-AI; coordinator report truncated mid-delivery, recovered from transcript + Gemini pass files)
-- Review round 1 ran against 39,497 bytes (sha256 6f4802f8…): two Gemini API passes (security + functional), full-source read, headless Chromium live render + 8-image gallery pixel comparison.
-- Coordinator verified gallery: all 8 images accurate; live render zero console/page errors; all 8 functional areas verified clean.
-- Dropped (false/fabricated): pass-1 claim that loadDemo() "bypasses sanitizeState()" is a defect — demo values are hardcoded safe literals, sanitizeState is for untrusted input; not a real issue.
-- 1 verified should-fix: **Gumroad description opened brand-first** ("📸 MoveInProof — Free Apartment Move-In Damage Logger"), violating the SEO-first keyword-first rule.
-- Same rule applied to the app's own HTML: <title> and meta description were also brand-first.
-- Fixes applied (2026-09-19): listing description first line → "📸 Free Apartment Move-In Checklist & Damage Logger — MoveInProof"; <title> → "Free Apartment Move-In Checklist & Damage Logger (MoveInProof)"; meta description → "Free apartment move-in checklist and damage logger: document your rental's condition room by room with photos, print a timestamped handover report. Offline, single-file tool (MoveInProof)."
-- Verified headless Chromium: new title renders, header + report load, demo renders report, zero console/page errors.
-- New bytes: 39,558; sha256 b9b5ec4e6a6dbc6911e428e29e855628be0b6c70c54483b2d050b26344badf08.
+## QA — Playwright (system Chromium /opt/meta-chromium/chrome, headless, file://) — 2026-09-19
 
-## 2026-09-19 — review round 2: ZERO ISSUES, signed off
-- Round 2 ran against the exact updated bytes (39,558; sha256 b9b5ec4e…badf08): two Gemini API passes on full source bytes (security + functional/SEO), independent source verification, headless Chromium live render + 8-image gallery comparison, listing SEO recheck.
-- Verified clean: no XSS surface (no executable innerHTML/outerHTML/document.write; photo dataURLs allowlisted at 4 enforcement sites; user strings via textContent at 8 sites), import sanitization path, localStorage quota/error handling, report completeness, edge cases, no dead controls, dark mode persistence, keyword-first title/meta/slug/tags, gallery accurate, zero console/page errors.
-- Should-fix: none. Should-improve: none. Nits: none. No false claims to drop.
-- Parent verified final bytes independently (title + meta + hash match).
-- Signed off 2026-09-19 12:30 EDT. Staging row marked Passed locally. Deploy queued for when Netlify credits reset (full-site ZIP rebuilt same turn).
+**22/22 checks passed.**
+
+| Check | Result |
+|---|---|
+| No console errors on load | PASS |
+| Box create (auto number, custom room, fragile, color) | PASS |
+| Duplicate box number rejected | PASS |
+| Item add via Enter + remove | PASS |
+| Search finds items, case-insensitive, hand-checked ("hdmi" → Box 101 Kitchen, HDMI highlighted) | PASS |
+| Seal/unseal box | PASS |
+| Unpack mode checkboxes + progress bar updates ("Unpacked 1 of 2 items (50%)") | PASS |
+| Print label view renders (print media emulation: label visible, big "Box 101", FRAGILE, app hidden) | PASS |
+| Export JSON (download valid, box 101 present) | PASS |
+| Import JSON round-trip (Box 201, items, custom room loaded) | PASS |
+| Malformed import rejected gracefully (alert + existing data intact) | PASS |
+| Hostile import sanitized (number clamped, strings length-capped, color allowlisted, no script content in DOM, truthy "fragile" not coerced) | PASS |
+| Demo data load (2 rooms / 4 boxes / ~20 items) + clear-all | PASS |
+| Dark mode toggle persists across reload (dark → dark) | PASS |
+| 390px mobile layout, no horizontal overflow | PASS |
+| Zero external requests (network log: no file://-external requests) | PASS |
+
+QA notes: two harness-only issues fixed during the run — (1) `ElementHandle.check` race
+(checkbox re-renders on change; switched to `dispatch_event("click")`), (2) duplicate
+`page.on("dialog")` handlers throwing "already handled"; consolidated to a single
+record-and-accept handler. No app code was changed for either.
+
+## 2026-09-19 — outside-AI QA defect fixes (verified headless Chromium)
+- Seal/Unseal buttons: removed the misleading `aria-pressed` attribute. The
+  button label already flips between "Seal box" and "Unseal", which conveys the
+  state; `aria-pressed` implied a toggle-button pattern that didn't fit.
+- Export JSON: added a visible confirmation line ("Exported N boxes — download
+  started (packtrack-backup.json).") in the Backup & demo section, cleared on
+  the next render. The download itself was verified working (real download
+  event for packtrack-backup.json); the message makes success observable.
+- "Add item inputs don't accept text" report investigated: could not reproduce
+  — `fill()`, `keyboard.type()`, and Enter-to-commit all work with demo data
+  and with boxes added via the form; the item count updates correctly. The
+  builder's own QA table (same file, same flows) also passes. No code change.
+- "Export does nothing" report investigated: the download fires correctly
+  (verified via Playwright download event); only the confirmation message was
+  added. No change to download mechanics.
+- "Dark-mode toggle does nothing" report investigated: could not reproduce —
+  clicking the toggle sets `data-theme="dark"` on `<html>` and the computed
+  body background changes light→dark; the builder's QA also passes this. No
+  code change.
+- Verified in headless Chromium (Playwright): seal buttons carry no
+  aria-pressed and still toggle Sealed/Open; export downloads
+  packtrack-backup.json and shows the confirmation; add-item and theme toggle
+  regressions pass; zero console/page errors.
+
+## 2026-09-19 — review round-1 defect fixes
+- Room select didn't stick after adding a box: submit handler called
+  `refreshRoomSelect(room)` then `form.reset()`, so the select snapped back
+  to the first room. Reordered — `form.reset()` now runs first, then the
+  room is re-applied (the `room` string is a JS variable, unaffected by reset).
+  Packing several boxes for one room no longer forces re-selecting the room.
+- SEO: description now opens keyword-first ("Free Moving Box Inventory
+  Tracker — ...") instead of brand-first; title trimmed to 82 chars.
+
+## 2026-09-19 — review round-2 defect fixes
+- Add-item lost keyboard focus after every commit: `commit()` called
+  `inp.focus()` on an input that `renderAll()` had just destroyed (no-op).
+  Now re-queries the fresh input via its aria-label ("Add item to box N")
+  and focuses that. Verified live: focus stays in the input, second item
+  typed without clicking goes through, zero page errors.
+- Import hardening: `sanitizeState` now derives `nextNumber` from max box
+  number + 1 when the imported JSON lacks the field (previously reset to
+  101, causing a confusing "Box 101 already exists" error on first add).
+  Verified: missing -> 108 for boxes 101/107; present respected; empty -> 101.
+
+## 2026-09-19 — review round-3 defect fix
+- Reset button didn't reset the color-swatch state: native reset wipes form
+  fields but not module-level `selectedColor` or swatch `aria-pressed`, so a
+  box submitted after Reset still got the previously picked color. Added a
+  `form.addEventListener("reset", ...)` that clears `selectedColor` and
+  re-applies `aria-pressed` (same pattern as the submit handler). Verified
+  live: red pressed -> Reset -> red unpressed, "No color" pressed, submitted
+  box has color "", zero page errors.

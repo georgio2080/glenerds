@@ -1,290 +1,451 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Free apartment move-in checklist and damage logger: document your rental's condition room by room with photos, print a timestamped handover report. Offline, single-file tool (MoveInProof).">
-<title>Free Apartment Move-In Checklist & Damage Logger (MoveInProof)</title>
-<script>
-/* Early theme set (prevents flash); mirrors the stored preference logic below. */
-(function(){try{var t=localStorage.getItem("moveinproof.theme.v1");if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
-</script>
+<title>PackTrack — Moving Box Inventory Indexer</title>
+<meta name="description" content="PackTrack: track your moving boxes room by room, search contents instantly, print box labels. Free offline tool by Glenerds.">
 <style>
-  :root {
-    color-scheme: light;
-    --bg: #edf0f7;
-    --surface: #ffffff;
-    --surface-2: #f3f5fb;
-    --text: #1a2233;
-    --muted: #5b6b82;
-    --border: #dbe2ef;
-    --accent1: #6366f1;
-    --accent2: #8b5cf6;
-    --accent: #6a5cf0;
-    --accent-strong: #5a4fe0;
-    --on-accent: #ffffff;
-    --accent-soft: rgba(99,102,241,.10);
-    --good: #146c38;
-    --warn: #9a5b00;
-    --bad: #c0271b;
-    --chip: #e9eefb;
-    --radius: 14px;
-    --tap: 44px;
-    --shadow: 0 2px 10px rgba(31,42,83,.09);
-    --grad: linear-gradient(135deg, var(--accent1), var(--accent2));
-    --ic-plus: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%3E%3Cpath%20d%3D%27M12%205v14M5%2012h14%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-    --ic-pencil: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M17%203a2.8%202.8%200%201%201%204%204L7.5%2020.5%202%2022l1.5-5.5Z%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-    --ic-trash: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M3%206h18%27%2F%3E%3Cpath%20d%3D%27M8%206V4a2%202%200%200%201%202-2h4a2%202%200%200%201%202%202v2%27%2F%3E%3Cpath%20d%3D%27M19%206l-1%2014a2%202%200%200%201-2%202H8a2%202%200%200%201-2-2L5%206%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-    --ic-check: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M20%206%209%2017l-5-5%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-    --ic-x: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%3E%3Cpath%20d%3D%27M18%206%206%2018M6%206l12%2012%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-    --ic-camera: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M23%2019a2%202%200%200%201-2%202H3a2%202%200%200%201-2-2V8a2%202%200%200%201%202-2h4l2-3h6l2%203h4a2%202%200%200%201%202%202Z%27%2F%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2713%27%20r%3D%274%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-    --ic-alert: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cg%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M10.3%203.9%201.8%2018a2%202%200%200%200%201.7%203h17a2%202%200%200%200%201.7-3L13.7%203.9a2%202%200%200%200-3.4%200Z%27%2F%3E%3Cpath%20d%3D%27M12%209v4%27%2F%3E%3Cpath%20d%3D%27M12%2017h.01%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+/* ============ Theme variables ============ */
+:root {
+  color-scheme: light;
+  --bg: #f2f3fa;
+  --bg-elev: #ffffff;
+  --bg-input: #ffffff;
+  --text: #1a1d29;
+  --text-muted: #5d6478;
+  --border: #e3e5f0;
+  --accent: #6366f1;
+  --accent-2: #8b5cf6;
+  --accent-ink: #ffffff;
+  --accent-soft: #eceffd;
+  --grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #9333ea 100%);
+  --danger: #dc2626;
+  --danger-soft: #fde8e8;
+  --ok: #15803d;
+  --ok-soft: #e2f5e8;
+  --warn: #b45309;
+  --warn-soft: #fdf0d9;
+  --fragile: #be123c;
+  --fragile-soft: #ffe4ec;
+  --tag-blue: #dbeafe; --tag-green: #dcfce7; --tag-red: #fee2e2;
+  --tag-yellow: #fef3c7; --tag-purple: #ede9fe; --tag-gray: #e8eaf1;
+  --shadow: 0 2px 10px rgba(79,70,229,.08);
+  --shadow-lg: 0 8px 28px rgba(79,70,229,.14);
+  --radius: 16px;
+  --chip1-bg: #e3e8ff; --chip1-ic: #4f46e5;
+  --chip2-bg: #d9f7f0; --chip2-ic: #0d9488;
+  --chip3-bg: #ddf6e3; --chip3-ic: #15803d;
+  --chip4-bg: #fdeccd; --chip4-ic: #b45309;
+  --chip5-bg: #ece4fd; --chip5-ic: #7c3aed;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11131c;
+  --bg-elev: #1a1d2b;
+  --bg-input: #222636;
+  --text: #eaecf5;
+  --text-muted: #a3a9c0;
+  --border: #2d3247;
+  --accent: #818cf8;
+  --accent-2: #a78bfa;
+  --accent-ink: #141221;
+  --accent-soft: #262b4d;
+  --grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #9333ea 100%);
+  --danger: #f87171;
+  --danger-soft: #3d2226;
+  --ok: #4ade80;
+  --ok-soft: #173324;
+  --warn: #fbbf24;
+  --warn-soft: #3a2d15;
+  --fragile: #fb7185;
+  --fragile-soft: #3d2129;
+  --tag-blue: #1e3a5f; --tag-green: #1d4a2c; --tag-red: #5b2626;
+  --tag-yellow: #5b4718; --tag-purple: #3d3260; --tag-gray: #333947;
+  --shadow: 0 2px 10px rgba(0,0,0,.35);
+  --shadow-lg: 0 8px 28px rgba(0,0,0,.5);
+  --chip1-bg: #2b3160; --chip1-ic: #a5b4fc;
+  --chip2-bg: #143d3a; --chip2-ic: #5eead4;
+  --chip3-bg: #173d27; --chip3-ic: #86efac;
+  --chip4-bg: #4a3512; --chip4-ic: #fcd34d;
+  --chip5-bg: #372a63; --chip5-ic: #c4b5fd;
+}
+
+/* ============ Base ============ */
+* { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  background-image: radial-gradient(1200px 300px at 50% -80px, rgba(124,58,237,.10), transparent 70%);
+  color: var(--text);
+  line-height: 1.5;
+}
+html[data-theme="dark"] body {
+  background-image: radial-gradient(1200px 300px at 50% -80px, rgba(124,58,237,.16), transparent 70%);
+}
+.skip-link { position: absolute; left: -9999px; }
+.skip-link:focus { left: 8px; top: 8px; background: var(--accent); color: var(--accent-ink); padding: 8px 12px; border-radius: 8px; z-index: 99; }
+
+/* ============ Header ============ */
+.app-header {
+  background: none;
+  color: var(--text);
+  padding: 18px 20px 6px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  position: static;
+  box-shadow: none;
+  border: none;
+}
+.brand { display: flex; align-items: center; gap: 13px; }
+.logo-badge {
+  width: 46px; height: 46px; border-radius: 14px; flex: none;
+  background: var(--accent);
+  border: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: none;
+}
+.logo-badge svg { width: 26px; height: 26px; color: #fff; }
+.app-header h1 { font-size: 1.5rem; margin: 0; letter-spacing: -.02em; color: var(--text); }
+.app-header .tagline { color: var(--text-muted); font-size: .88rem; margin: 2px 0 0; }
+/* Header cluster reference (2026-09-21): exact HenTrack bytes mapped to this app's
+   vars — --bg-elev (card), --border (line), --text (ink), --accent, --accent-soft. */
+.round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg-elev);border:1px solid var(--border);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem;transition:transform .08s ease,border-color .15s ease}
+.round-btn svg{width:26px;height:26px;flex:none}
+.round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
+.round-btn:hover{border-color:var(--accent)}
+.round-btn:active{transform:scale(.92);border-color:var(--accent)}
+.round-btn:focus{outline:none}
+.round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+/* ---------- interactive dashboard rows ---------- */
+.ru-row[role="button"] { cursor: pointer; }
+.ru-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
+.ru-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent, #1f7a5c); border-radius: 10px; }
+.room-pill[role="button"] { cursor: pointer; }
+.room-pill[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
+.ru-detail { margin: 8px 0 0; font-size: .85rem; color: var(--muted, #5b6472); }
+.ru-detail strong { color: var(--text, #1c2330); }
+
+/* ============ Controls ============ */
+button, input[type="text"], input[type="number"], select, textarea {
+  font: inherit;
+  color: var(--text);
+}
+input[type="text"], input[type="number"], input[type="search"], select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  transition: border-color .15s, box-shadow .15s;
+}
+input[type="text"]:focus, input[type="number"]:focus, input[type="search"]:focus, select:focus, button:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+button {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  display: inline-flex; align-items: center; gap: 7px;
+  font-weight: 600;
+  transition: transform .08s, box-shadow .15s, border-color .15s;
+}
+button:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); }
+button:active { transform: translateY(1px); }
+button.primary {
+  background: var(--grad); color: #fff; border: none; font-weight: 700;
+  box-shadow: 0 4px 14px rgba(124,58,237,.4);
+}
+button.primary:hover { box-shadow: 0 6px 20px rgba(124,58,237,.55); filter: brightness(1.05); }
+button.danger { color: var(--danger); border-color: var(--danger); }
+button.small { padding: 5px 10px; font-size: .85rem; border-radius: 8px; }
+button[disabled] { opacity: .5; cursor: not-allowed; }
+button svg { width: 15px; height: 15px; flex: none; }
+
+main { max-width: 1024px; margin: 0 auto; padding: 20px 16px 32px; }
+section { margin-bottom: 30px; }
+section > h2 {
+  font-size: 1.2rem; margin: 0 0 12px; letter-spacing: -.01em;
+  display: flex; align-items: center; gap: 10px;
+}
+.hicon {
+  width: 34px; height: 34px; border-radius: 11px; flex: none;
+  background: var(--grad); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(124,58,237,.35);
+}
+.hicon svg { width: 19px; height: 19px; }
+
+.card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* ============ Dashboard ============ */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.stat {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 14px;
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 11px;
+  align-items: center;
+  box-shadow: var(--shadow);
+  transition: transform .12s, box-shadow .15s;
+}
+.stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.stat::before {
+  content: ""; grid-row: 1 / span 2;
+  width: 42px; height: 42px; border-radius: 13px;
+  background: var(--chip-bg, var(--chip1-bg)) var(--chip-ic) center / 23px 23px no-repeat;
+}
+.stat:nth-child(1) { --chip-bg: var(--chip1-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpath d='M3.3 7l8.7 5 8.7-5'/%3E%3Cpath d='M12 22V12'/%3E%3C/svg%3E"); }
+.stat:nth-child(2) { --chip-bg: var(--chip2-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230d9488' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M8 6h13M8 12h13M8 18h13'/%3E%3Cpath d='M3 6h.01M3 12h.01M3 18h.01'/%3E%3C/svg%3E"); }
+.stat:nth-child(3) { --chip-bg: var(--chip3-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2315803d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8.5 12.5l2.5 2.5 4.5-5'/%3E%3C/svg%3E"); }
+.stat:nth-child(4) { --chip-bg: var(--chip4-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b45309' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='10' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 7.9-.8'/%3E%3C/svg%3E"); }
+.stat:nth-child(5) { --chip-bg: var(--chip5-bg); --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237c3aed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z'/%3E%3Cpath d='M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(1) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a5b4fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpath d='M3.3 7l8.7 5 8.7-5'/%3E%3Cpath d='M12 22V12'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(2) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235eead4' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M8 6h13M8 12h13M8 18h13'/%3E%3Cpath d='M3 6h.01M3 12h.01M3 18h.01'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(3) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386efac' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8.5 12.5l2.5 2.5 4.5-5'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(4) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fcd34d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='10' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 7.9-.8'/%3E%3C/svg%3E"); }
+html[data-theme="dark"] .stat:nth-child(5) { --chip-ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c4b5fd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z'/%3E%3Cpath d='M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z'/%3E%3C/svg%3E"); }
+.stat .num { font-size: 1.65rem; font-weight: 800; letter-spacing: -.02em; grid-column: 2; line-height: 1.15; }
+.stat .lbl { color: var(--text-muted); font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; grid-column: 2; }
+.room-counts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.room-pill {
+  background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 999px; padding: 5px 13px; font-size: .85rem; font-weight: 600;
+  box-shadow: var(--shadow);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.room-pill::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--grad);
+}
+.room-pill b { font-weight: 800; }
+/* clickable stat cards: activate to filter the box list or jump to a section */
+.stat[role="button"] { cursor: pointer; }
+.stat[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #4f46e5)); }
+.stat.stat-sel { box-shadow: inset 0 0 0 2px var(--accent, #4f46e5); }
+[id$="-h"] { scroll-margin-top: 96px; }
+/* Boxes-by-room donut */
+.donut-wrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 8px; }
+#room-donut { width: 152px; height: 152px; flex: none; }
+#room-donut .vseg { cursor: pointer; }
+#room-donut .vseg:focus { outline: none; filter: drop-shadow(0 0 4px var(--accent, #4f46e5)); }
+.donut-legend { display: grid; gap: 6px; flex: 1 1 210px; }
+.donut-legend .leg-row { display: flex; align-items: center; gap: 9px; font-size: .9rem; font-weight: 600; border-radius: 9px; padding: 5px 9px; }
+.donut-legend .leg-row[role="button"] { cursor: pointer; }
+.donut-legend .leg-row[role="button"]:hover { background: var(--accent-soft); }
+.donut-legend .leg-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #4f46e5)); }
+.donut-legend .leg-row.leg-sel { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent, #4f46e5); }
+.donut-legend .sw { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+.donut-legend .amt { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 800; }
+/* unpack progress by room (visual representation) */
+.ru-title { font-size: .88rem; color: var(--text-muted); font-weight: 600; margin-top: 12px; }
+.room-unpack { display: grid; gap: 8px; margin-top: 6px; }
+.ru-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; }
+.ru-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ru-val { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; white-space: nowrap; }
+.ru-track { grid-column: 1 / -1; height: 12px; border-radius: 999px; background: var(--border); overflow: hidden; }
+.ru-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #22c55e, #10b981); }
+.progress-wrap { margin-top: 14px; }
+progress {
+  width: 100%; height: 16px; accent-color: var(--ok);
+  -webkit-appearance: none; appearance: none;
+  border-radius: 999px; overflow: hidden;
+  background: var(--border);
+}
+progress::-webkit-progress-bar { background: var(--border); border-radius: 999px; }
+progress::-webkit-progress-value { background: linear-gradient(90deg, #22c55e, #10b981); border-radius: 999px; }
+progress::-moz-progress-bar { background: linear-gradient(90deg, #22c55e, #10b981); border-radius: 999px; }
+.progress-label { font-size: .88rem; color: var(--text-muted); margin-top: 6px; font-weight: 600; }
+
+/* ============ Search ============ */
+.search-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+.search-wrap input[type="search"] {
+  flex: 1 1 220px;
+  font-size: 1rem;
+  padding: 11px 14px 11px 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235d6478' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.3-4.3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 18px 18px;
+}
+.search-results { margin-top: 12px; display: grid; gap: 8px; }
+.search-hit { border-left: 4px solid var(--accent); }
+.search-hit .snip { color: var(--text-muted); font-size: .9rem; }
+mark { background: var(--warn-soft); color: var(--text); border-radius: 3px; padding: 0 3px; font-weight: 600; }
+html[data-theme="dark"] mark { background: #5b4718; }
+.empty { color: var(--text-muted); font-style: italic; }
+
+/* ============ New box form ============ */
+.new-box-form { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); align-items: end; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field > label { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); }
+.field label:not([for]) { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); }
+.checkbox-row { display: flex; align-items: center; gap: 9px; padding-bottom: 8px; font-weight: 600; }
+.checkbox-row input[type="checkbox"] { width: 19px; height: 19px; accent-color: var(--fragile); cursor: pointer; }
+.form-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.color-swatch-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-swatch {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid transparent; cursor: pointer; padding: 0;
+  box-shadow: var(--shadow);
+  transition: transform .1s;
+}
+.color-swatch:hover { transform: scale(1.12); }
+.color-swatch[aria-pressed="true"] { border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; }
+.color-swatch.none { background: var(--bg-input); border-color: var(--border); position: relative; }
+.color-swatch.none::after { content: "–"; color: var(--text-muted); font-weight: bold; }
+
+/* ============ Boxes list ============ */
+.boxes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.box-card { display: flex; flex-direction: column; gap: 10px; transition: transform .12s, box-shadow .15s; }
+.box-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.box-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.box-number { font-size: 1.3rem; font-weight: 800; letter-spacing: -.01em; }
+.box-room { color: var(--text-muted); font-size: .9rem; font-weight: 600; }
+.box-tag {
+  font-size: .75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+  background: var(--tag-gray); color: var(--text);
+  border: 1px solid var(--border);
+}
+.box-tag[data-color="blue"] { background: var(--tag-blue); border-color: transparent; }
+.box-tag[data-color="green"] { background: var(--tag-green); border-color: transparent; }
+.box-tag[data-color="red"] { background: var(--tag-red); border-color: transparent; }
+.box-tag[data-color="yellow"] { background: var(--tag-yellow); border-color: transparent; }
+.box-tag[data-color="purple"] { background: var(--tag-purple); border-color: transparent; }
+.box-fragile {
+  font-size: .72rem; font-weight: 800; color: var(--fragile);
+  background: var(--fragile-soft); border: 1px solid var(--fragile);
+  padding: 3px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: .05em;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.box-fragile::before {
+  content: ""; width: 13px; height: 13px; flex: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23be123c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/%3E%3Cpath d='M12 9v4M12 17h.01'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html[data-theme="dark"] .box-fragile::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fb7185' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/%3E%3Cpath d='M12 9v4M12 17h.01'/%3E%3C/svg%3E");
+}
+.box-status {
+  font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em;
+  padding: 3px 10px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.box-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.box-status.packed { color: var(--ok); background: var(--ok-soft); }
+.box-status.open { color: var(--warn); background: var(--warn-soft); }
+.item-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+.item-list li {
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border); border-radius: 9px; padding: 7px 9px;
+  font-size: .95rem; background: var(--bg-input);
+}
+.item-list li.unpacked .item-text { text-decoration: line-through; color: var(--text-muted); }
+.item-list li input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--ok); flex: none; cursor: pointer; }
+.item-list li .item-text { flex: 1; overflow-wrap: anywhere; }
+.item-remove { padding: 3px 9px; font-size: .8rem; }
+.item-remove::before {
+  content: ""; width: 12px; height: 12px; flex: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html[data-theme="dark"] .item-remove::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f87171' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E");
+}
+.add-item-row { display: flex; gap: 6px; }
+.add-item-row input { flex: 1; min-width: 0; }
+.add-item-row .small::before {
+  content: ""; width: 13px; height: 13px; flex: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.box-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.box-actions .small::before { content: ""; width: 14px; height: 14px; flex: none; background: center / contain no-repeat; }
+.box-actions .small:first-child::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='10' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E");
+}
+.box-actions .small:nth-child(2)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9V3h12v6'/%3E%3Crect x='4' y='9' width='16' height='8' rx='2'/%3E%3Cpath d='M6 14h12v7H6z'/%3E%3C/svg%3E");
+}
+.box-actions .small.danger::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2'/%3E%3Cpath d='M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] .box-actions .small:first-child::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23818cf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='10' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] .box-actions .small:nth-child(2)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23818cf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9V3h12v6'/%3E%3Crect x='4' y='9' width='16' height='8' rx='2'/%3E%3Cpath d='M6 14h12v7H6z'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] .box-actions .small.danger::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f87171' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2'/%3E%3Cpath d='M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13'/%3E%3C/svg%3E");
+}
+.item-count { font-size: .85rem; color: var(--text-muted); font-weight: 600; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.mode-toggle[aria-pressed="true"] { background: var(--grad); color: #fff; border: none; font-weight: 700; box-shadow: 0 4px 14px rgba(124,58,237,.4); }
+
+/* ============ Footer ============ */
+.app-footer {
+  border-top: 1px solid var(--border);
+  padding: 18px 16px 26px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: .85rem;
+}
+.app-footer a { color: var(--accent); font-weight: 700; text-decoration: none; }
+.app-footer a:hover { text-decoration: underline; }
+
+/* ============ Screen-only print label ============ */
+.print-label { display: none; }
+
+/* ============ Print stylesheet ============ */
+@media print {
+  body.printing-label > *:not(.print-label) { display: none !important; }
+  body.printing-label .print-label { display: block; }
+  .print-label { page-break-after: always; }
+  .pl-box {
+    width: 100%; min-height: 90vh;
+    border: 6px solid #000; border-radius: 12px;
+    padding: 40px 32px; text-align: center;
+    display: flex; flex-direction: column; justify-content: center;
   }
-  [data-theme="dark"] {
-    color-scheme: dark;
-    --bg: #0c1017;
-    --surface: #151c2a;
-    --surface-2: #1b2334;
-    --text: #e9eef8;
-    --muted: #94a2bb;
-    --border: #26314a;
-    --accent1: #818cf8;
-    --accent2: #a78bfa;
-    --accent: #8b7cf6;
-    --accent-strong: #9a8cf7;
-    --on-accent: #10131c;
-    --accent-soft: rgba(129,140,248,.14);
-    --good: #82dda6;
-    --warn: #fbbf24;
-    --bad: #f87171;
-    --chip: #1d2740;
-    --shadow: 0 2px 10px rgba(0,0,0,.5);
+  .pl-number { font-size: 140pt; font-weight: 900; line-height: 1; margin: 0; }
+  .pl-room { font-size: 40pt; font-weight: 700; margin: 12px 0 0; }
+  .pl-tag { font-size: 28pt; margin: 8px 0 0; }
+  .pl-fragile {
+    font-size: 48pt; font-weight: 900; color: #000; margin: 16px 0 0;
+    border: 4px solid #000; display: inline-block; padding: 4px 24px;
+    text-transform: uppercase; letter-spacing: .08em;
   }
-  * { box-sizing: border-box; }
-  html, body { overflow-x: clip; }
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-  }
-  a { color: var(--accent); }
-  /* ---- hero header ---- */
-  header.top {
-    background: none;
-    color: var(--text);
-    box-shadow: none;
-    padding: 0;
-    border: none;
-  }
-  /* legibility: the header element wraps the whole page, so reset inherited
-     white text back to the theme text color inside the main content */
-  header.top main { color: var(--text); }
-  .hero-inner {
-    max-width: 46rem; margin: 0 auto; padding: 1.1rem 1rem;
-    display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap;
-  }
-  .brand { display: flex; align-items: center; gap: .8rem; }
-  .logo-badge {
-    flex: none; width: 48px; height: 48px; border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--accent1); border: none;
-    box-shadow: none;
-  }
-  .logo-badge svg { width: 26px; height: 26px; color: #fff; }
-  .brand h1 { margin: 0; font-size: 1.4rem; letter-spacing: .2px; color: var(--text); }
-  .brand p { margin: 2px 0 0; color: var(--muted); font-size: .85rem; }
-  /* Header cluster reference (2026-09-21): exact HenTrack bytes mapped to this app's
-     vars — --surface (card), --border (line), --text (ink), --accent1, --accent-soft. */
-  .round-btn{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.10);flex:none;font-size:1.1rem;transition:transform .08s ease,border-color .15s ease}
-  .round-btn svg{width:26px;height:26px;flex:none}
-  .round-btn.theme-toggle,.round-btn.sound-toggle{font-size:1.65rem;line-height:1}
-  .round-btn:hover{border-color:var(--accent1)}
-  .round-btn:active{transform:scale(.92);border-color:var(--accent1)}
-  .round-btn:focus{outline:none}
-  .round-btn:focus-visible{outline:2px solid var(--accent1);outline-offset:2px}
-  .round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent1);border-color:var(--accent1);background:var(--accent-soft)}
-  /* ---------- interactive condition-overview rows ---------- */
-  .ov-row[role="button"] { cursor: pointer; }
-  .ov-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent1, #4f46e5)); }
-  .ov-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent1, #4f46e5); border-radius: 8px; }
-  .ov-detail { margin-top: .5rem; font-size: .85rem; color: var(--muted); min-height: 1.2em; }
-  .ov-detail strong { color: var(--text); }
-  /* ---------- donut chart: defect severity mix (2026-09-21) ---------- */
-  .donut-wrap { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: .4rem; }
-  .donut-svg { width: 132px; height: 132px; flex: none; }
-  .donut-svg text { pointer-events: none; } /* center labels must not eat segment clicks */
-  .donut-seg { cursor: pointer; transition: opacity .15s ease; }
-  .donut-seg:focus { outline: none; filter: drop-shadow(0 0 4px var(--accent1, #4f46e5)); }
-  .donut-seg.dim { opacity: .25; }
-  .donut-legend { display: grid; gap: .35rem; font-size: .88rem; }
-  .donut-legend .lg-row { display: flex; align-items: center; gap: .5rem; }
-  .donut-legend .lg-dot { width: 12px; height: 12px; border-radius: 4px; flex: none; }
-  .donut-legend .lg-val { font-weight: 700; font-variant-numeric: tabular-nums; }
-  /* ---------- funnel: documentation completeness (2026-09-21) ---------- */
-  .funnel { display: grid; gap: .45rem; margin-top: .4rem; }
-  .funnel-stage {
-    margin: 0 auto; border: 0; font: inherit; color: #fff;
-    border-radius: 10px; padding: .55rem .9rem; min-height: 44px;
-    display: flex; align-items: center; justify-content: space-between; gap: .8rem;
-    cursor: pointer; transition: filter .15s ease;
-  }
-  .funnel-stage:hover { filter: brightness(1.08); }
-  .funnel-stage:focus { outline: none; filter: drop-shadow(0 0 4px var(--accent1, #4f46e5)) brightness(1.08); }
-  .funnel-stage.sel { filter: drop-shadow(0 0 4px var(--accent1, #4f46e5)); }
-  .funnel-stage .fs-name { font-weight: 700; font-size: .92rem; }
-  .funnel-stage .fs-val { font-weight: 800; font-variant-numeric: tabular-nums; }
-  .funnel-detail { margin-top: .5rem; font-size: .85rem; color: var(--muted); min-height: 1.2em; }
-  .funnel-detail strong { color: var(--text); }
-  main { max-width: 46rem; margin: 0 auto; padding: 1rem; display: grid; gap: 1rem; }
-  section.card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-    box-shadow: var(--shadow); padding: 1.25rem;
-  }
-  section.card h2 { margin: 0 0 .75rem; font-size: 1.15rem; display: flex; align-items: center; gap: .6rem; }
-  .hicon {
-    flex: none; width: 32px; height: 32px; border-radius: 10px;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: var(--accent-soft); color: var(--accent);
-  }
-  .hicon svg { width: 18px; height: 18px; }
-  .field { margin-bottom: .8rem; }
-  label.flabel { display: block; font-weight: 600; font-size: .92rem; margin-bottom: .3rem; }
-  input[type="text"], input[type="date"], textarea, select {
-    width: 100%; min-height: var(--tap); padding: .6rem .7rem; font: inherit; color: var(--text);
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-  }
-  textarea { min-height: 88px; resize: vertical; }
-  input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible, .filebtn:focus-within {
-    outline: 3px solid var(--accent); outline-offset: 2px;
-  }
-  /* ---- buttons ---- */
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-    min-height: var(--tap); padding: .65rem 1.1rem; border-radius: 12px; font: inherit; font-weight: 700;
-    cursor: pointer; border: 1px solid var(--border); text-decoration: none;
-    background: var(--surface); color: var(--text); box-shadow: var(--shadow);
-  }
-  .btn svg { width: 18px; height: 18px; flex: none; }
-  .btn-primary { background: var(--grad); border-color: transparent; color: #fff; box-shadow: 0 4px 14px rgba(99,102,241,.35); }
-  .btn-primary:hover { filter: brightness(1.07); border-color: transparent; }
-  .btn-secondary { background: var(--surface-2); color: var(--text); border-color: var(--border); }
-  .btn-secondary:hover { border-color: var(--accent); }
-  .btn-danger { background: transparent; color: var(--bad); border-color: var(--bad); }
-  .btn-row { display: flex; flex-wrap: wrap; gap: .6rem; margin: .5rem 0; }
-  .filebtn {
-    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-    min-height: var(--tap); padding: .6rem 1rem; border-radius: 12px; font: inherit; font-weight: 600;
-    background: var(--surface-2); color: var(--text); border: 1px dashed var(--border); cursor: pointer;
-  }
-  .filebtn::before {
-    content: ""; width: 18px; height: 18px; flex: none; background-color: var(--accent);
-    -webkit-mask: var(--ic-camera) no-repeat center/contain; mask: var(--ic-camera) no-repeat center/contain;
-  }
-  /* CSS-injected icons for JS-generated buttons (survive textContent swaps, adapt to dark mode) */
-  .def-edit::before, .def-delete::before, .room-del::before, .d-add::before,
-  .de-save::before, .de-cancel::before, .ph-del::before {
-    content: ""; width: 16px; height: 16px; flex: none; background-color: currentColor;
-    -webkit-mask: var(--ic) no-repeat center/contain; mask: var(--ic) no-repeat center/contain;
-  }
-  .def-edit { --ic: var(--ic-pencil); }
-  .def-delete { --ic: var(--ic-trash); }
-  .room-del { --ic: var(--ic-trash); }
-  .d-add { --ic: var(--ic-plus); }
-  .de-save { --ic: var(--ic-check); }
-  .de-cancel { --ic: var(--ic-x); }
-  .ph-del { --ic: var(--ic-x); }
-  .visually-hidden {
-    position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0;
-    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-  }
-  .room-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; background: var(--surface); box-shadow: var(--shadow); }
-  .room-card > h3 { display: flex; align-items: center; gap: .5rem; font-size: 1rem; margin: 1rem 0 .5rem; }
-  .room-card > h3::before {
-    content: ""; width: 18px; height: 18px; flex: none; background-color: var(--warn);
-    -webkit-mask: var(--ic-alert) no-repeat center/contain; mask: var(--ic-alert) no-repeat center/contain;
-  }
-  .room-head { display: flex; gap: .6rem; align-items: center; margin-bottom: .8rem; flex-wrap: wrap; }
-  .room-head input.room-name { flex: 1 1 12rem; font-size: 1.05rem; font-weight: 700; }
-  fieldset.rating { border: 1px solid var(--border); border-radius: 10px; padding: .6rem .8rem; margin: 0 0 .8rem; }
-  fieldset.rating legend { font-weight: 600; font-size: .92rem; padding: 0 .4rem; }
-  .rating-opts { display: flex; flex-wrap: wrap; gap: .4rem; }
-  .rating-opts label {
-    display: inline-flex; align-items: center; gap: .4rem; min-height: var(--tap); padding: .4rem .8rem;
-    border: 1px solid var(--border); border-radius: 999px; cursor: pointer; font-size: .92rem; background: var(--surface);
-  }
-  .rating-opts input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); margin: 0; }
-  .defect { border: 1px solid var(--border); border-left: 4px solid var(--warn); border-radius: 10px; padding: .8rem; margin: .7rem 0; background: var(--surface); }
-  .defect-head { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: .4rem; }
-  .defect-head strong { font-size: 1.02rem; }
-  .chip { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 700; text-transform: capitalize;
-    padding: .15rem .6rem; border-radius: 999px; background: var(--chip); color: var(--text); }
-  .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background-color: currentColor; flex: none; }
-  .chip.sev-minor { background: var(--chip); color: var(--good); }
-  .chip.sev-moderate { background: var(--chip); color: var(--warn); }
-  .chip.sev-major { background: var(--chip); color: var(--bad); }
-  .defect-meta { color: var(--muted); font-size: .85rem; margin: .3rem 0; }
-  .defect p.desc { margin: .4rem 0; white-space: pre-wrap; }
-  .defect-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
-  .btn-sm { min-height: 40px; padding: .45rem .8rem; font-size: .9rem; border-radius: 10px; }
-  .add-defect { border: 1px dashed var(--border); border-radius: 10px; padding: .8rem; margin-top: .8rem; background: var(--surface-2); }
-  .add-defect h4 { margin: 0 0 .6rem; font-size: .95rem; display: flex; align-items: center; gap: .5rem; }
-  .add-defect h4::before {
-    content: ""; width: 18px; height: 18px; flex: none; background-color: var(--accent);
-    -webkit-mask: var(--ic-plus) no-repeat center/contain; mask: var(--ic-plus) no-repeat center/contain;
-  }
-  .form-grid { display: grid; gap: .6rem; grid-template-columns: 1fr; }
-  @media (min-width: 560px) { .form-grid.two { grid-template-columns: 1fr 1fr; } }
-  .ph-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: .5rem; margin: .6rem 0; }
-  figure.ph-thumb { margin: 0; position: relative; }
-  figure.ph-thumb img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); display: block; }
-  .ph-del {
-    position: absolute; top: 4px; right: 4px; min-height: 40px; min-width: 40px; border-radius: 10px;
-    background: rgba(0,0,0,.65); color: #fff; border: 1px solid rgba(255,255,255,.4); font-size: .8rem; cursor: pointer; padding: .3rem .5rem;
-    display: inline-flex; align-items: center; justify-content: center; gap: .3rem;
-  }
-  .sec-label { font-weight: 600; font-size: .9rem; margin: .8rem 0 .2rem; color: var(--muted); }
-  #msg { min-height: 1.5em; margin-top: .6rem; font-size: .92rem; color: var(--muted); }
-  #msg.alert { color: var(--bad); font-weight: 600; }
-  /* Report */
-  #report .rep-block { margin-bottom: 1.2rem; }
-  #report dl.rep-head { display: grid; grid-template-columns: auto 1fr; gap: .25rem .8rem; margin: 0; }
-  #report dl.rep-head dt { font-weight: 700; color: var(--muted); font-size: .9rem; }
-  #report dl.rep-head dd { margin: 0; }
-  .rep-room { border: 1px solid var(--border); border-radius: 10px; padding: .8rem; margin: .8rem 0; break-inside: avoid; page-break-inside: avoid; background: var(--surface); }
-  .rep-room h3 { margin: 0 0 .3rem; }
-  /* condition overview bars (visual representation) */
-  .ov-group { margin-top: .9rem; }
-  .ov-group h4 { margin: .8rem 0 .4rem; font-size: .95rem; }
-  .ov-bars { display: grid; gap: .55rem; }
-  .ov-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 3px 10px; align-items: center; }
-  .ov-name { font-weight: 600; }
-  .ov-val { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; }
-  .ov-track { grid-column: 1 / -1; height: 12px; border-radius: 999px; background: var(--chip); border: 1px solid var(--border); overflow: hidden; }
-  .ov-fill { height: 100%; border-radius: 999px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .rep-defect { margin: .6rem 0; padding-top: .6rem; border-top: 1px solid var(--border); }
-  .rep-thumbs { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .4rem; }
-  .rep-thumbs img { width: 120px; height: 120px; object-fit: cover; border: 1px solid var(--border); border-radius: 8px; }
-  .sig-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; margin-top: 1.5rem; }
-  @media (min-width: 560px) { .sig-grid { grid-template-columns: 1fr 1fr; } }
-  .sig-box { border: 1px solid var(--border); border-radius: 10px; padding: .8rem; }
-  .sig-line { border-bottom: 1px solid var(--text); min-height: 2.2rem; margin: .6rem 0 .2rem; }
-  .sig-cap { font-size: .8rem; color: var(--muted); }
-  footer.site { text-align: center; color: var(--muted); font-size: .85rem; padding: 1.5rem 1rem 2rem; }
-  @media print {
-    html[data-theme="dark"] {
-      --bg: #ffffff; --surface: #ffffff; --surface-2: #f2f2f2; --text: #111111;
-      --muted: #444444; --border: #999999; --accent: #000000; --on-accent: #ffffff;
-      --good: #0a5a2a; --warn: #6a3d00; --bad: #8f1d16; --chip: #eeeeee;
-    }
-    header.top, #propSection, #roomsSection, #actionsSection, footer.site { display: none !important; }
-    main { max-width: none; padding: 0; display: block; }
-    section.card { border: none; box-shadow: none; padding: 0; }
-    body { background: #fff; }
-    .rep-thumbs img { width: 110px; height: 110px; }
-  }
+  .pl-items { text-align: left; font-size: 20pt; margin: 24px auto 0; max-width: 7in; }
+  .pl-items li { margin-bottom: 6px; }
+  .pl-count { font-size: 18pt; color: #333; margin-top: 12px; }
+}
+
+@media (max-width: 560px) {
+  .app-header { padding: 14px 14px; }
+  .logo-badge { width: 40px; height: 40px; }
+  .app-header h1 { font-size: 1.3rem; }
+  .boxes-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+}
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
 .g-store-btn {
@@ -327,281 +488,271 @@
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="hero-inner">
-    <div class="brand">
-      <span class="logo-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>
-      <div>
-        <h1>MoveInProof</h1>
-        <p>Document your move-in condition, room by room — with photos, before you unpack.</p>
-      </div>
-    </div>
-    <div class="g-header-actions">
-      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button type="button" class="round-btn theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
-      <button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
-    </div>
+<a class="skip-link" href="#main">Skip to main content</a>
 
-<main>
-  <section class="card" id="propSection" aria-labelledby="propH">
-    <h2 id="propH"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 22V12h6v10"/></svg></span>Property</h2>
-    <div class="field">
-      <label class="flabel" for="f-address">Property address</label>
-      <input type="text" id="f-address" autocomplete="off" placeholder="123 Main St, Apt 4B, Bloomington, IN">
+<header class="app-header">
+  <div class="brand">
+    <span class="logo-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7l8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+    <div>
+      <h1>PackTrack</h1>
+      <p class="tagline">Moving box inventory &mdash; know where everything is packed.</p>
     </div>
-    <div class="form-grid two">
-      <div class="field">
-        <label class="flabel" for="f-landlord">Landlord / manager name</label>
-        <input type="text" id="f-landlord" autocomplete="off">
-      </div>
-      <div class="field">
-        <label class="flabel" for="f-tenants">Tenant name(s)</label>
-        <input type="text" id="f-tenants" autocomplete="off">
-      </div>
-      <div class="field">
-        <label class="flabel" for="f-lease">Lease start date</label>
-        <input type="date" id="f-lease">
-      </div>
-      <div class="field">
-        <label class="flabel" for="f-movein">Move-in date</label>
-        <input type="date" id="f-movein">
-      </div>
+  </div>
+  <div class="g-header-actions">
+    <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+    <button type="button" id="sample-toggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+    <button type="button" class="round-btn theme-toggle" id="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+    <button type="button" id="sound-toggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Dashboard -->
+  <section aria-labelledby="dash-h">
+    <h2 id="dash-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>Dashboard</h2>
+    <div class="stat-grid" id="stat-grid" role="group" aria-label="Totals"></div>
+    <div class="room-counts" id="room-counts" role="group" aria-label="Boxes per room — activate a room for its box list"></div>
+    <div class="ru-title">Boxes by room</div>
+    <div class="donut-wrap" id="room-donut-wrap">
+      <svg id="room-donut" viewBox="0 0 120 120" role="img" aria-label="Boxes by room"></svg>
+      <div class="donut-legend" id="room-donut-legend"></div>
+    </div>
+    <p class="empty" id="room-donut-empty" hidden>No boxes yet — add a box to see the room breakdown.</p>
+    <div class="ru-title">Unpack progress by room</div>
+    <div class="room-unpack" id="room-unpack" role="group" aria-label="Unpack progress by room"></div>
+    <div class="progress-wrap">
+      <progress id="unpack-progress" max="100" value="0" aria-label="Unpacking progress"></progress>
+      <div class="progress-label" id="unpack-label"></div>
     </div>
   </section>
 
-  <section class="card" id="roomsSection" aria-labelledby="roomsH">
-    <h2 id="roomsH"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>Rooms</h2>
-    <div id="roomsList"></div>
-    <div class="add-defect">
-      <h4>Add a room</h4>
-      <div class="room-head" style="margin-bottom:0">
-        <label class="visually-hidden" for="addRoomName">New room name</label>
-        <input type="text" id="addRoomName" class="room-name" placeholder="e.g. Garage, Office, Patio">
-        <button type="button" class="btn btn-primary" id="addRoomBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add room</button>
+  <!-- Search -->
+  <section aria-labelledby="search-h">
+    <h2 id="search-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>Find an item</h2>
+    <div class="search-wrap">
+      <input type="search" id="search" placeholder="Type an item name, e.g. HDMI cable" aria-label="Search box contents" autocomplete="off">
+      <button type="button" id="search-clear">Clear</button>
+    </div>
+    <div class="search-results" id="search-results" aria-live="polite" aria-atomic="false"></div>
+  </section>
+
+  <!-- New box -->
+  <section aria-labelledby="newbox-h">
+    <h2 id="newbox-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M12 8v8M8 12h8"/></svg></span>Add a box</h2>
+    <form class="card new-box-form" id="new-box-form" novalidate>
+      <div class="field">
+        <label for="nb-number">Box number</label>
+        <input type="number" id="nb-number" min="1" max="9999" step="1" required>
       </div>
-    </div>
+      <div class="field">
+        <label for="nb-room">Room</label>
+        <select id="nb-room"></select>
+      </div>
+      <div class="field">
+        <label for="nb-new-room">New room (optional)</label>
+        <input type="text" id="nb-new-room" maxlength="40" placeholder="e.g. Nursery">
+      </div>
+      <div class="field">
+        <label for="nb-label">Label / color tag</label>
+        <input type="text" id="nb-label" maxlength="40" placeholder="e.g. Books, cables">
+      </div>
+      <div class="field">
+        <label>Color tag</label>
+        <div class="color-swatch-row" id="nb-colors" role="group" aria-label="Color tag choice"></div>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="nb-fragile">
+        <label for="nb-fragile">Fragile</label>
+      </div>
+      <div class="form-actions" style="grid-column: 1 / -1;">
+        <button type="submit" class="primary">Add box</button>
+        <button type="reset" id="nb-reset">Reset</button>
+      </div>
+      <p class="empty" id="nb-error" role="alert" hidden style="grid-column: 1 / -1; color: var(--danger); font-style: normal;"></p>
+    </form>
   </section>
 
-  <section class="card" id="actionsSection" aria-labelledby="actH">
-    <h2 id="actH"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>Report and data</h2>
-    <div class="btn-row">
-      <button type="button" class="btn btn-primary" id="printBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print handover report</button>
-      <button type="button" class="btn btn-secondary" id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Export backup (JSON)</button>
-      <button type="button" class="btn btn-secondary" id="importBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>Import backup</button>
-      <input type="file" id="importFile" class="visually-hidden" accept="application/json,.json" tabindex="-1">
-      <button type="button" class="btn btn-secondary" id="demoBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.7 5.7 1.9-5.7 1.9L12 18.2l-1.9-5.7L4.4 10.6l5.7-1.9Z"/><path d="M19 15l.9 2.6 2.6.9-2.6.9L19 22l-.9-2.6-2.6-.9 2.6-.9Z"/></svg>Load demo data</button>
-      <button type="button" class="btn btn-danger" id="clearBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear everything</button>
+  <!-- Boxes -->
+  <section aria-labelledby="boxes-h">
+    <h2 id="boxes-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7l8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>Boxes</h2>
+    <div class="toolbar">
+      <button type="button" id="unpack-mode" class="mode-toggle" aria-pressed="false">Unpack mode: off</button>
+      <button type="button" id="print-all">Print all labels</button>
+      <span class="item-count" id="boxes-empty-note"></span>
     </div>
-    <p id="msg" aria-live="polite"></p>
+    <div class="boxes-grid" id="boxes-grid"></div>
   </section>
 
-  <section class="card" id="reportSection" aria-labelledby="repH" aria-live="polite">
-    <h2 id="repH"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg></span>Handover report</h2>
-    <p class="sec-label">This report updates automatically as you document each room. Print it on move-in day and have both parties sign.</p>
-    <div id="report"></div>
+  <!-- Data -->
+  <section aria-labelledby="data-h">
+    <h2 id="data-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>Backup &amp; demo</h2>
+    <div class="card" style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button type="button" id="export-btn">Export JSON</button>
+      <button type="button" id="import-btn">Import JSON</button>
+      <input type="file" id="import-file" accept="application/json,.json" hidden aria-label="Choose JSON backup file">
+      <button type="button" id="demo-btn">Load demo data</button>
+      <button type="button" class="danger" id="clear-btn">Clear all data</button>
+    </div>
+    <p class="empty" id="export-status" role="status" aria-live="polite" style="margin:8px 0 0;"></p>
+    <p class="empty" id="data-note">Data is stored only in this browser (localStorage). Export a JSON backup before moving day.</p>
   </section>
+
 </main>
 
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
   <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
-<footer class="site">
+<footer class="app-footer">
   <a href="https://glenerds.gumroad.com">by Glenerds</a> &nbsp;·&nbsp; Single-file offline app — your data never leaves this browser.
 </footer>
 
+<!-- Screen-hidden label printed on demand -->
+<div class="print-label" id="print-label" aria-hidden="true"></div>
+
 <script>
 "use strict";
-/* ============================================================
-   MoveInProof — move-in damage logger. Single-file offline app.
-   Security: user/imported strings are rendered ONLY via
-   textContent and DOM APIs. Photos are rendered ONLY via
-   img.src assignment, allowlisted to data:image/jpeg and
-   data:image/png. No innerHTML anywhere in this file.
-   ============================================================ */
+/* ===================== PackTrack =====================
+   Single-file, offline, zero external requests.
+   Security: no innerHTML with user/imported data anywhere.
+   All user strings enter the DOM via textContent or .value.
+------------------------------------------------------ */
 
-var LS_KEY = "moveinproof.state.v1";
-var LS_THEME = "moveinproof.theme.v1";
-var RATINGS = ["Excellent", "Good", "Fair", "Poor"];
-var TYPES = ["scuff", "stain", "crack", "dent", "missing", "broken", "dirty", "other"];
-var SEVS = ["minor", "moderate", "major"];
-var MAX_STR = 2000;
+// ---------- Constants ----------
+const LS_KEY = "packtrack-v1";
+const THEME_KEY = "packtrack-theme";
+const DEFAULT_ROOMS = ["Living Room", "Kitchen", "Bedroom", "Bathroom", "Office", "Garage", "Storage", "Other"];
+const COLOR_TAGS = ["", "blue", "green", "red", "yellow", "purple"];
+const LIMITS = { numberMin: 1, numberMax: 9999, roomLen: 40, labelLen: 40, itemLen: 120, maxBoxes: 500, maxItemsPerBox: 300, maxRooms: 50 };
 
-/* ---------- tiny DOM helpers ---------- */
-function h(tag, cls, text) {
-  var e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (text !== undefined && text !== null) e.textContent = text;
-  return e;
-}
-function uid() {
-  return "x" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-}
-function todayStr() {
-  var d = new Date();
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-}
-function fmtTs(iso) {
-  try { return new Date(iso).toLocaleString(); } catch (e) { return String(iso || ""); }
-}
-function esc2cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+// ---------- State ----------
+let state = { boxes: [], customRooms: [], nextNumber: 101 };
+let unpackMode = false;
+let selectedColor = "";
+let boxFilter = null; /* stat-card filter: null | "packed" | "open" | "unpacked" */
+let roomPills = {};   /* room name -> pill element, rebuilt by renderDashboard */
 
-/* ---------- sanitizers (import path + storage) ---------- */
-function cap(v, max) {
-  if (v === null || v === undefined) return "";
-  return String(v).slice(0, max || MAX_STR);
+// ---------- Sanitizers ----------
+function cleanStr(v, max) {
+  if (typeof v !== "string") return "";
+  return v.trim().slice(0, max);
 }
-function enumPick(v, allowed, dflt) {
-  return allowed.indexOf(v) !== -1 ? v : dflt;
+function cleanNum(v, min, max, fallback) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return fallback;
+  const i = Math.floor(n);
+  if (i < min || i > max) return fallback;
+  return i;
 }
-function isPhotoURL(v) {
-  return typeof v === "string" &&
-    (v.indexOf("data:image/jpeg") === 0 || v.indexOf("data:image/png") === 0);
+function isValidColor(c) { return COLOR_TAGS.includes(c); }
+
+function sanitizeBox(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const number = cleanNum(raw.number, LIMITS.numberMin, LIMITS.numberMax, null);
+  if (number === null) return null;
+  const room = cleanStr(raw.room, LIMITS.roomLen) || "Other";
+  const label = cleanStr(raw.label, LIMITS.labelLen);
+  const color = isValidColor(raw.color) ? raw.color : "";
+  const fragile = raw.fragile === true;
+  const packed = raw.packed === true;
+  const items = [];
+  if (Array.isArray(raw.items)) {
+    for (const it of raw.items.slice(0, LIMITS.maxItemsPerBox)) {
+      const text = typeof it === "string" ? cleanStr(it, LIMITS.itemLen) : cleanStr(it && it.text, LIMITS.itemLen);
+      if (text) items.push({ text, unpacked: !!(it && typeof it === "object" && it.unpacked === true) });
+    }
+  }
+  return { number, room, label, color, fragile, packed, items };
 }
-function sanPhotos(a) {
-  var out = [];
-  if (!Array.isArray(a)) return out;
-  for (var i = 0; i < a.length && out.length < 60; i++) {
-    if (isPhotoURL(a[i])) out.push(String(a[i]).slice(0, 6 * 1024 * 1024));
+
+function sanitizeState(raw) {
+  const out = { boxes: [], customRooms: [], nextNumber: 101 };
+  if (!raw || typeof raw !== "object") return out;
+  const seen = new Set();
+  if (Array.isArray(raw.boxes)) {
+    for (const b of raw.boxes.slice(0, LIMITS.maxBoxes)) {
+      const box = sanitizeBox(b);
+      if (box && !seen.has(box.number)) { seen.add(box.number); out.boxes.push(box); }
+    }
+  }
+  if (Array.isArray(raw.customRooms)) {
+    for (const r of raw.customRooms.slice(0, LIMITS.maxRooms)) {
+      const room = cleanStr(r, LIMITS.roomLen);
+      if (room && !DEFAULT_ROOMS.includes(room) && !out.customRooms.includes(room)) out.customRooms.push(room);
+    }
+  }
+  if (raw.nextNumber === undefined || raw.nextNumber === null) {
+    const max = out.boxes.reduce((m, b) => Math.max(m, b.number), 100);
+    out.nextNumber = Math.min(Math.max(max + 1, LIMITS.numberMin), LIMITS.numberMax);
+  } else {
+    out.nextNumber = cleanNum(raw.nextNumber, LIMITS.numberMin, LIMITS.numberMax, 101);
   }
   return out;
 }
-function sanitizeState(o) {
-  o = (o && typeof o === "object") ? o : {};
-  var hd = (o.header && typeof o.header === "object") ? o.header : {};
-  var st = {
-    header: {
-      address: cap(hd.address, 300),
-      landlord: cap(hd.landlord, 160),
-      leaseStart: cap(hd.leaseStart, 20),
-      moveIn: cap(hd.moveIn, 20),
-      tenants: cap(hd.tenants, 240)
-    },
-    rooms: []
-  };
-  var rooms = Array.isArray(o.rooms) ? o.rooms : [];
-  for (var i = 0; i < rooms.length && st.rooms.length < 60; i++) {
-    var r = rooms[i];
-    if (!r || typeof r !== "object") continue;
-    var room = {
-      id: cap(r.id, 40) || uid(),
-      name: cap(r.name, 80) || "Room",
-      rating: enumPick(r.rating, RATINGS, ""),
-      notes: cap(r.notes, 3000),
-      photos: sanPhotos(r.photos),
-      defects: []
-    };
-    var defs = Array.isArray(r.defects) ? r.defects : [];
-    for (var j = 0; j < defs.length && room.defects.length < 200; j++) {
-      var d = defs[j];
-      if (!d || typeof d !== "object") continue;
-      room.defects.push({
-        id: cap(d.id, 40) || uid(),
-        item: cap(d.item, 120),
-        type: enumPick(d.type, TYPES, "other"),
-        severity: enumPick(d.severity, SEVS, "minor"),
-        desc: cap(d.desc, 3000),
-        ts: cap(d.ts, 40),
-        photos: sanPhotos(d.photos)
-      });
-    }
-    st.rooms.push(room);
-  }
-  return st;
-}
 
-/* ---------- state ---------- */
-function blankState() {
-  return { header: { address: "", landlord: "", leaseStart: "", moveIn: todayStr(), tenants: "" }, rooms: [] };
+// ---------- Persistence ----------
+function save() {
+  if (window.__gSampleOn) return; /* sample mode: real data is snapshotted — never persist demo data */
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  catch (e) { /* storage full/blocked — app still works in memory */ }
 }
-function seedRooms() {
-  return ["Living Room", "Kitchen", "Bedroom", "Bathroom", "Hallway", "Exterior/Balcony"].map(function (n) {
-    return { id: uid(), name: n, rating: "", notes: "", photos: [], defects: [] };
-  });
-}
-function loadState() {
+function load() {
   try {
-    var raw = localStorage.getItem(LS_KEY);
-    if (raw) return sanitizeState(JSON.parse(raw));
-  } catch (e) { /* corrupt or unavailable: start fresh */ }
-  var st = blankState();
-  st.rooms = seedRooms();
-  return st;
-}
-var state = loadState();
-var editingDefectId = null;
-
-function saveState() {
-  if (window.__gSampleOn) return true; /* sample mode: real data is snapshotted — never persist demo data */
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify(state));
-    return true;
-  } catch (e) {
-    var largest = findLargestPhoto();
-    say("Storage is full — the last change was not saved. " +
-      (largest ? ("The largest photo (" + largest.kb + " KB) is attached to " + largest.where +
-        ". Delete it or other photos to free space.") :
-        "Delete some photos to free space."), true);
-    return false;
-  }
-}
-function findLargestPhoto() {
-  var best = null;
-  function consider(url, where) {
-    var bytes = Math.round(String(url).length * 3 / 4);
-    if (!best || bytes > best.bytes) best = { bytes: bytes, kb: Math.round(bytes / 1024), where: where };
-  }
-  state.rooms.forEach(function (r) {
-    r.photos.forEach(function (u) { consider(u, "the room '" + r.name + "'"); });
-    r.defects.forEach(function (d) {
-      d.photos.forEach(function (u) { consider(u, "the defect '" + (d.item || "untitled") + "' in '" + r.name + "'"); });
-    });
-  });
-  return best;
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) state = sanitizeState(JSON.parse(raw));
+  } catch (e) { /* corrupted JSON — start fresh */ }
 }
 
-/* ---------- messaging ---------- */
-var msgEl = null;
-function say(text, isAlert) {
-  if (!msgEl) msgEl = document.getElementById("msg");
-  msgEl.textContent = text;
-  msgEl.classList.toggle("alert", !!isAlert);
+// ---------- DOM helpers (no innerHTML with user data) ----------
+function el(tag, className) {
+  const n = document.createElement(tag);
+  if (className) n.className = className;
+  return n;
+}
+function txt(parent, s) { parent.appendChild(document.createTextNode(s)); }
+function labeledValue(parent, labelText, value) {
+  const d = el("div");
+  const b = el("strong"); txt(b, labelText + ": ");
+  d.appendChild(b); txt(d, value);
+  parent.appendChild(d);
 }
 
-/* ---------- theme ---------- */
-function applyTheme(t) {
-  document.documentElement.setAttribute("data-theme", t);
-  var btn = document.getElementById("themeToggle");
-  btn.setAttribute("aria-pressed", t === "dark" ? "true" : "false");
-  var label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
+// ---------- Theme ----------
+function applyTheme(mode) {
+  document.documentElement.setAttribute("data-theme", mode);
+  const btn = document.getElementById("theme-toggle");
+  const label = mode === "dark" ? "Switch to light mode" : "Switch to dark mode";
   btn.setAttribute("aria-label", label);
   btn.title = label;
-  btn.innerHTML = (t === "dark") ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
-  try { localStorage.setItem(LS_THEME, t); } catch (e) {}
+  btn.setAttribute("aria-pressed", mode === "dark" ? "true" : "false");
+  btn.innerHTML = (mode === "dark") ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
+  try { localStorage.setItem(THEME_KEY, mode); } catch (e) {}
 }
 function initTheme() {
-  var t = "light";
-  try {
-    t = localStorage.getItem(LS_THEME) || t;
-    if (t !== "dark" && t !== "light") t = "light";
-  } catch (e) {}
-  applyTheme(t);
-  document.getElementById("themeToggle").addEventListener("click", function () {
-    var cur = document.documentElement.getAttribute("data-theme");
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+  const mode = saved === "dark" || saved === "light"
+    ? saved
+    : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  applyTheme(mode);
+  document.getElementById("theme-toggle").addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme");
     applyTheme(cur === "dark" ? "light" : "dark");
     Sound.toggleTheme();
   });
   bindSoundToggle();
 }
 
-/* ---------- subtle sounds (Web Audio, no files, offline) ---------- */
-var Sound = (function () {
-  var KEY = "moveinproof.sound", on = true, ctx = null;
-  try { if (window.localStorage.getItem(KEY) === "off") on = false; } catch (e) {}
+// ---------- subtle sounds (Web Audio, no files, offline) ----------
+const Sound = (() => {
+  const KEY = "packtrack.sound";
+  let on = true;
+  try { if (localStorage.getItem(KEY) === "off") on = false; } catch (e) {}
+  let ctx = null;
   function ac() {
     try {
       if (!ctx) {
-        var AC = window.AudioContext || window.webkitAudioContext;
+        const AC = window.AudioContext || window.webkitAudioContext;
         if (!AC) return null;
         ctx = new AC();
       }
@@ -610,10 +761,10 @@ var Sound = (function () {
     } catch (e) { return null; }
   }
   function tone(freq, dur, type, vol, delay) {
-    var c = ac(); if (!c) return;
+    const c = ac(); if (!c) return;
     try {
-      var t = c.currentTime + (delay || 0);
-      var o = c.createOscillator(), g = c.createGain();
+      const t = c.currentTime + (delay || 0);
+      const o = c.createOscillator(), g = c.createGain();
       o.type = type || "sine"; o.frequency.value = freq;
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
@@ -623,958 +774,807 @@ var Sound = (function () {
     } catch (e) {}
   }
   return {
-    isOn: function () { return on; },
-    toggle: function () {
+    isOn: () => on,
+    toggle: () => {
       on = !on;
-      try { window.localStorage.setItem(KEY, on ? "on" : "off"); } catch (e) {}
+      try { localStorage.setItem(KEY, on ? "on" : "off"); } catch (e) {}
       return on;
     },
-    click: function () { if (on) tone(520, 0.06, "sine", 0.045); },
-    select: function () { if (on) { tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
-    success: function () { if (on) { tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
-    error: function () { if (on) tone(170, 0.16, "sawtooth", 0.045); },
-    toggleTheme: function () { if (on) tone(440, 0.06, "triangle", 0.05); }
+    click: () => { if (on) tone(520, 0.06, "sine", 0.045); },
+    select: () => { if (on) { tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
+    success: () => { if (on) { tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
+    error: () => { if (on) tone(170, 0.16, "sawtooth", 0.045); },
+    toggleTheme: () => { if (on) tone(440, 0.06, "triangle", 0.05); }
   };
 })();
 function bindSoundToggle() {
-  var btn = document.getElementById("sound-toggle");
+  const btn = document.getElementById("sound-toggle");
   if (!btn) return;
-  function paint() {
-    var on = Sound.isOn();
+  const paint = () => {
+    const on = Sound.isOn();
     btn.textContent = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
     btn.setAttribute("aria-pressed", on ? "true" : "false");
     btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
     btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
-    /* Sound button stays white (var(--surface)) in all states per the 2026-09-21 header reference. */
-  }
-  btn.addEventListener("click", function () { Sound.toggle(); paint(); Sound.click(); });
+    /* Sound button stays white (var(--bg-elev)) in all states per the 2026-09-21 header reference. */
+  };
+  btn.addEventListener("click", () => { Sound.toggle(); paint(); Sound.click(); });
   paint();
 }
 
-/* ---------- photos ---------- */
-function readFile(f) {
-  return new Promise(function (resolve, reject) {
-    var r = new FileReader();
-    r.onload = function () { resolve(String(r.result)); };
-    r.onerror = function () { reject(new Error("read failed")); };
-    r.readAsDataURL(f);
-  });
+// ---------- Rooms ----------
+function allRooms() { return DEFAULT_ROOMS.concat(state.customRooms); }
+function refreshRoomSelect(keep) {
+  const sel = document.getElementById("nb-room");
+  while (sel.firstChild) sel.removeChild(sel.firstChild);
+  for (const r of allRooms()) {
+    const opt = document.createElement("option");
+    opt.value = r; opt.textContent = r;
+    sel.appendChild(opt);
+  }
+  if (keep && allRooms().includes(keep)) sel.value = keep;
 }
-function downscale(dataURL) {
-  return new Promise(function (resolve, reject) {
-    var img = new Image();
-    img.onload = function () {
-      try {
-        var max = 1200;
-        var s = Math.min(1, max / Math.max(img.width, img.height));
-        var cw = Math.max(1, Math.round(img.width * s));
-        var ch = Math.max(1, Math.round(img.height * s));
-        var c = document.createElement("canvas");
-        c.width = cw; c.height = ch;
-        c.getContext("2d").drawImage(img, 0, 0, cw, ch);
-        var out = c.toDataURL("image/jpeg", 0.7);
-        if (!isPhotoURL(out)) { reject(new Error("encode failed")); return; }
-        resolve(out);
-      } catch (e) { reject(e); }
+
+// ---------- Dashboard ----------
+function renderDashboard() {
+  const grid = document.getElementById("stat-grid");
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
+  const boxes = state.boxes;
+  const totalItems = boxes.reduce((a, b) => a + b.items.length, 0);
+  const packed = boxes.filter(b => b.packed).length;
+  const unpackedBoxes = boxes.filter(b => b.packed && b.items.length && b.items.every(i => i.unpacked)).length;
+  const statDefs = [
+    { lbl: "Boxes", n: boxes.length, f: null, jump: "boxes-h", hint: "Jump to the box list." },
+    { lbl: "Items", n: totalItems, f: null, jump: "search-h", hint: "Jump to item search." },
+    { lbl: "Packed", n: packed, f: "packed", jump: "boxes-h", hint: "Filter the box list to sealed boxes." },
+    { lbl: "Open", n: boxes.length - packed, f: "open", jump: "boxes-h", hint: "Filter the box list to open boxes." },
+    { lbl: "Fully unpacked", n: unpackedBoxes, f: "unpacked", jump: "boxes-h", hint: "Filter the box list to fully unpacked boxes." }
+  ];
+  for (const d of statDefs) {
+    const s = el("div", "stat");
+    s.setAttribute("role", "button");
+    s.setAttribute("tabindex", "0");
+    const active = !!d.f && boxFilter === d.f;
+    if (active) s.classList.add("stat-sel");
+    s.setAttribute("aria-pressed", active ? "true" : "false");
+    s.setAttribute("aria-label", d.lbl + ": " + d.n + ". Activate to " + (d.f ? (active ? "clear the filter. " : "filter the box list. ") : "") + d.hint);
+    const num = el("div", "num"); txt(num, String(d.n));
+    const lab = el("div", "lbl"); txt(lab, d.lbl);
+    s.appendChild(num); s.appendChild(lab);
+    const activate = () => {
+      boxFilter = (d.f && boxFilter !== d.f) ? d.f : null;
+      renderAll();
+      const t = document.getElementById(d.jump);
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+      Sound.select();
     };
-    img.onerror = function () { reject(new Error("decode failed")); };
-    img.src = dataURL;
-  });
-}
-function attachPhotos(files, getTarget, ctxLabel) {
-  var chain = Promise.resolve();
-  var okCount = 0;
-  files.forEach(function (f) {
-    chain = chain.then(function () { return readFile(f); })
-      .then(function (url) {
-        if (!isPhotoURL(url)) throw new Error("unsupported");
-        return downscale(url);
-      })
-      .then(function (small) {
-        getTarget().push(small);
-        okCount++;
-        if (saveState()) { renderRooms(); renderReport(); }
-      })
-      .catch(function () { /* counted below */ });
-  });
-  chain.then(function () {
-    if (okCount === files.length) say(okCount === 1 ? "Photo attached." : okCount + " photos attached.");
-    else if (okCount > 0) say(okCount + " of " + files.length + " photos attached; the rest were an unsupported format.", true);
-    else say("No photos attached — unsupported image format.", true);
-  });
-}
-function photoInput(labelText, getTarget, cls) {
-  var label = h("label", "filebtn" + (cls ? " " + cls : ""), labelText);
-  var input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/*";
-  input.multiple = true;
-  input.className = "visually-hidden";
-  input.setAttribute("aria-label", labelText);
-  input.addEventListener("change", function () {
-    var files = Array.prototype.slice.call(input.files || []);
-    if (files.length) attachPhotos(files, getTarget, labelText);
-    input.value = "";
-  });
-  label.appendChild(input);
-  return label;
-}
-function photoGrid(photos, onDelete) {
-  var wrap = h("div", "ph-grid");
-  photos.forEach(function (url, i) {
-    var fig = h("figure", "ph-thumb");
-    var img = document.createElement("img");
-    img.src = url;              /* allowlisted dataURL only — never innerHTML */
-    img.alt = "Attached photo " + (i + 1);
-    var del = h("button", "ph-del btn-sm", "Remove");
-    del.type = "button";
-    del.setAttribute("aria-label", "Delete photo " + (i + 1));
-    del.addEventListener("click", function () { onDelete(i); });
-    fig.appendChild(img);
-    fig.appendChild(del);
-    wrap.appendChild(fig);
-  });
-  return wrap;
-}
-
-/* ---------- rooms + defects rendering ---------- */
-function ratingFieldset(room) {
-  var fs = h("fieldset", "rating");
-  fs.appendChild(h("legend", null, "Overall condition"));
-  var opts = h("div", "rating-opts");
-  RATINGS.forEach(function (r) {
-    var lab = h("label");
-    var radio = document.createElement("input");
-    radio.type = "radio";
-    radio.name = "rating-" + room.id;
-    radio.value = r;
-    if (room.rating === r) radio.checked = true;
-    radio.setAttribute("aria-label", room.name + " condition: " + r);
-    radio.addEventListener("change", function () {
-      room.rating = r;
-      saveState();
-      renderReport();
+    s.addEventListener("click", activate);
+    s.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(); }
     });
-    lab.appendChild(radio);
-    lab.appendChild(document.createTextNode(r));
-    opts.appendChild(lab);
-  });
-  fs.appendChild(opts);
-  return fs;
-}
-
-function defectCard(room, d) {
-  if (editingDefectId === d.id) return defectEditCard(room, d);
-  var card = h("div", "defect");
-  card.setAttribute("data-defect", d.id);
-  var head = h("div", "defect-head");
-  head.appendChild(h("strong", null, d.item || "(untitled)"));
-  head.appendChild(h("span", "chip", esc2cap(d.type)));
-  head.appendChild(h("span", "chip sev-" + d.severity, d.severity));
-  card.appendChild(head);
-  if (d.ts) card.appendChild(h("div", "defect-meta", "Logged " + fmtTs(d.ts)));
-  if (d.desc) card.appendChild(h("p", "desc", d.desc));
-  if (d.photos.length) {
-    card.appendChild(h("div", "sec-label", "Photos"));
-    card.appendChild(photoGrid(d.photos, function (i) {
-      d.photos.splice(i, 1);
-      saveState(); renderRooms(); renderReport();
-      say("Photo deleted.");
-    }));
+    grid.appendChild(s);
   }
-  card.appendChild(photoInput("Add photo", function () { return d.photos; }));
-  var acts = h("div", "defect-actions");
-  var editBtn = h("button", "btn btn-secondary btn-sm def-edit", "Edit");
-  editBtn.type = "button";
-  editBtn.addEventListener("click", function () { editingDefectId = d.id; renderRooms(); });
-  var delBtn = h("button", "btn btn-danger btn-sm def-delete", "Delete");
-  delBtn.type = "button";
-  delBtn.addEventListener("click", function () {
-    var ix = room.defects.indexOf(d);
-    if (ix !== -1) room.defects.splice(ix, 1);
-    saveState(); renderRooms(); renderReport();
-    say("Defect deleted.");
-  });
-  acts.appendChild(editBtn);
-  acts.appendChild(delBtn);
-  card.appendChild(acts);
-  return card;
-}
-
-function defectEditCard(room, d) {
-  var card = h("div", "defect");
-  card.setAttribute("data-defect", d.id);
-  card.appendChild(h("div", "sec-label", "Edit defect"));
-  var grid = h("div", "form-grid");
-  var fItem = h("div", "field");
-  fItem.appendChild(h("label", "flabel", "Item / area"));
-  var iItem = document.createElement("input");
-  iItem.type = "text"; iItem.className = "de-item"; iItem.value = d.item;
-  fItem.appendChild(iItem); grid.appendChild(fItem);
-  var fType = h("div", "field");
-  fType.appendChild(h("label", "flabel", "Defect type"));
-  var sType = document.createElement("select"); sType.className = "de-type";
-  TYPES.forEach(function (t) {
-    var o = document.createElement("option"); o.value = t; o.textContent = esc2cap(t);
-    if (t === d.type) o.selected = true; sType.appendChild(o);
-  });
-  fType.appendChild(sType); grid.appendChild(fType);
-  var fSev = h("div", "field");
-  fSev.appendChild(h("label", "flabel", "Severity"));
-  var sSev = document.createElement("select"); sSev.className = "de-sev";
-  SEVS.forEach(function (s) {
-    var o = document.createElement("option"); o.value = s; o.textContent = esc2cap(s);
-    if (s === d.severity) o.selected = true; sSev.appendChild(o);
-  });
-  fSev.appendChild(sSev); grid.appendChild(fSev);
-  var fDesc = h("div", "field");
-  fDesc.appendChild(h("label", "flabel", "Description"));
-  var tDesc = document.createElement("textarea"); tDesc.className = "de-desc"; tDesc.value = d.desc;
-  fDesc.appendChild(tDesc); grid.appendChild(fDesc);
-  card.appendChild(grid);
-  var acts = h("div", "defect-actions");
-  var saveBtn = h("button", "btn btn-primary btn-sm de-save", "Save changes");
-  saveBtn.type = "button";
-  saveBtn.addEventListener("click", function () {
-    d.item = cap(iItem.value, 120);
-    d.type = enumPick(sType.value, TYPES, "other");
-    d.severity = enumPick(sSev.value, SEVS, "minor");
-    d.desc = cap(tDesc.value, 3000);
-    editingDefectId = null;
-    saveState(); renderRooms(); renderReport();
-    say("Defect updated.");
-  });
-  var cancelBtn = h("button", "btn btn-secondary btn-sm de-cancel", "Cancel");
-  cancelBtn.type = "button";
-  cancelBtn.addEventListener("click", function () { editingDefectId = null; renderRooms(); });
-  acts.appendChild(saveBtn);
-  acts.appendChild(cancelBtn);
-  card.appendChild(acts);
-  return card;
-}
-
-function addDefectForm(room) {
-  var box = h("div", "add-defect");
-  box.appendChild(h("h4", null, "Log a defect"));
-  var grid = h("div", "form-grid");
-  var fItem = h("div", "field");
-  fItem.appendChild(h("label", "flabel", "Item / area"));
-  var iItem = document.createElement("input");
-  iItem.type = "text"; iItem.className = "d-item"; iItem.placeholder = "e.g. South wall, Stove, Carpet";
-  fItem.appendChild(iItem); grid.appendChild(fItem);
-  var fType = h("div", "field");
-  fType.appendChild(h("label", "flabel", "Defect type"));
-  var sType = document.createElement("select"); sType.className = "d-type";
-  TYPES.forEach(function (t) {
-    var o = document.createElement("option"); o.value = t; o.textContent = esc2cap(t); sType.appendChild(o);
-  });
-  fType.appendChild(sType); grid.appendChild(fType);
-  var fSev = h("div", "field");
-  fSev.appendChild(h("label", "flabel", "Severity"));
-  var sSev = document.createElement("select"); sSev.className = "d-sev";
-  SEVS.forEach(function (s) {
-    var o = document.createElement("option"); o.value = s; o.textContent = esc2cap(s); sSev.appendChild(o);
-  });
-  fSev.appendChild(sSev); grid.appendChild(fSev);
-  var fDesc = h("div", "field");
-  fDesc.appendChild(h("label", "flabel", "Description"));
-  var tDesc = document.createElement("textarea"); tDesc.className = "d-desc";
-  tDesc.placeholder = "What do you see? Where exactly?";
-  fDesc.appendChild(tDesc); grid.appendChild(fDesc);
-  box.appendChild(grid);
-  var addBtn = h("button", "btn btn-secondary d-add", "Add defect");
-  addBtn.type = "button";
-  addBtn.addEventListener("click", function () {
-    var item = cap(iItem.value, 120).trim();
-    if (!item) { say("Give the defect an item or area first.", true); iItem.focus(); return; }
-    room.defects.push({
-      id: uid(),
-      item: item,
-      type: enumPick(sType.value, TYPES, "other"),
-      severity: enumPick(sSev.value, SEVS, "minor"),
-      desc: cap(tDesc.value, 3000),
-      ts: new Date().toISOString(),
-      photos: []
+  const rc = document.getElementById("room-counts");
+  while (rc.firstChild) rc.removeChild(rc.firstChild);
+  roomPills = {};
+  let rcDetail = document.getElementById("room-counts-detail");
+  if (!rcDetail) {
+    rcDetail = el("div", "ru-detail");
+    rcDetail.id = "room-counts-detail";
+    rcDetail.setAttribute("aria-live", "polite");
+    rc.parentNode.insertBefore(rcDetail, rc.nextSibling);
+  }
+  rcDetail.textContent = "";
+  for (const r of allRooms()) {
+    const roomBoxes = boxes.filter(b => b.room === r);
+    const c = roomBoxes.length;
+    if (!c) continue;
+    const pill = el("span", "room-pill");
+    pill.setAttribute("role", "button");
+    pill.setAttribute("tabindex", "0");
+    pill.setAttribute("aria-pressed", "false");
+    pill.setAttribute("aria-label", r + ": " + c + " boxes. Activate to list them.");
+    txt(pill, r + " ");
+    const b = el("b"); txt(b, String(c));
+    pill.appendChild(b);
+    pill.addEventListener("click", () => {
+      const was = pill.getAttribute("aria-pressed") === "true";
+      rc.querySelectorAll(".room-pill[role=button]").forEach(x => x.setAttribute("aria-pressed", "false"));
+      rcDetail.textContent = "";
+      if (!was) {
+        pill.setAttribute("aria-pressed", "true");
+        rcDetail.appendChild((() => { const st = el("strong"); txt(st, r + ": "); return st; })());
+        txt(rcDetail, roomBoxes.map(bb => "Box " + bb.number + (bb.label ? " '" + bb.label + "'" : "")).join(", ") + ".");
+        Sound.select();
+      } else {
+        Sound.click();
+      }
+      renderRoomDonut();
     });
-    saveState(); renderRooms(); renderReport();
-    say("Defect logged at " + fmtTs(new Date().toISOString()) + ".");
-  });
-  box.appendChild(addBtn);
-  return box;
-}
-
-function roomCard(room) {
-  var card = h("div", "room-card");
-  card.setAttribute("data-room", room.id);
-  var head = h("div", "room-head");
-  var nameInput = document.createElement("input");
-  nameInput.type = "text"; nameInput.className = "room-name"; nameInput.value = room.name;
-  nameInput.setAttribute("aria-label", "Room name");
-  nameInput.addEventListener("change", function () {
-    room.name = cap(nameInput.value, 80).trim() || "Room";
-    saveState(); renderReport();
-  });
-  head.appendChild(nameInput);
-  var delRoom = h("button", "btn btn-danger btn-sm room-del", "Delete room");
-  delRoom.type = "button";
-  delRoom.addEventListener("click", function () {
-    if (!window.confirm("Delete the room '" + room.name + "' and all its defects and photos?")) { Sound.click(); return; }
-    var ix = state.rooms.indexOf(room);
-    if (ix !== -1) state.rooms.splice(ix, 1);
-    saveState(); renderRooms(); renderReport();
-    say("Room deleted.");
-    Sound.success();
-  });
-  head.appendChild(delRoom);
-  card.appendChild(head);
-  card.appendChild(ratingFieldset(room));
-  var fNotes = h("div", "field");
-  fNotes.appendChild(h("label", "flabel", "Notes"));
-  var tNotes = document.createElement("textarea");
-  tNotes.className = "room-notes";
-  tNotes.value = room.notes;
-  tNotes.placeholder = "General condition of this room…";
-  tNotes.addEventListener("change", function () {
-    room.notes = cap(tNotes.value, 3000);
-    saveState(); renderReport();
-  });
-  fNotes.appendChild(tNotes);
-  card.appendChild(fNotes);
-  if (room.photos.length) {
-    card.appendChild(h("div", "sec-label", "Room photos"));
-    card.appendChild(photoGrid(room.photos, function (i) {
-      room.photos.splice(i, 1);
-      saveState(); renderRooms(); renderReport();
-      say("Photo deleted.");
-    }));
+    pill.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pill.click(); }
+    });
+    roomPills[r] = pill;
+    rc.appendChild(pill);
   }
-  card.appendChild(photoInput("Add room photo", function () { return room.photos; }));
-  card.appendChild(h("h3", null, "Damage / defects (" + room.defects.length + ")"));
-  room.defects.forEach(function (d) { card.appendChild(defectCard(room, d)); });
-  card.appendChild(addDefectForm(room));
-  return card;
-}
-
-function renderRooms() {
-  var list = document.getElementById("roomsList");
-  while (list.firstChild) list.removeChild(list.firstChild);
-  if (!state.rooms.length) {
-    var p = h("p", null, "No rooms yet. Add your first room below to start documenting.");
-    p.style.color = "var(--muted)";
-    list.appendChild(p);
-    return;
+  // unpack progress across packed boxes
+  let uTotal = 0, uDone = 0;
+  for (const b of boxes) { for (const i of b.items) { uTotal++; if (i.unpacked) uDone++; } }
+  const pct = uTotal ? Math.round((uDone / uTotal) * 100) : 0;
+  const bar = document.getElementById("unpack-progress");
+  bar.value = pct;
+  const lbl = document.getElementById("unpack-label");
+  lbl.textContent = "";
+  txt(lbl, uTotal ? `Unpacked ${uDone} of ${uTotal} items (${pct}%)` : "No items packed yet — add a box to get started.");
+  // per-room unpack bars (visual representation) — interactive: activate a row to spotlight it
+  const ru = document.getElementById("room-unpack");
+  while (ru.firstChild) ru.removeChild(ru.firstChild);
+  ru.setAttribute("role", "group");
+  let ruDetail = document.getElementById("room-unpack-detail");
+  if (!ruDetail) {
+    ruDetail = el("div", "ru-detail");
+    ruDetail.id = "room-unpack-detail";
+    ruDetail.setAttribute("aria-live", "polite");
+    ru.parentNode.insertBefore(ruDetail, ru.nextSibling);
   }
-  state.rooms.forEach(function (r) { list.appendChild(roomCard(r)); });
-}
-
-/* ---------- report ---------- */
-/* Condition-overview bar groups for the report (visual representation). */
-function ovBars(title, rows) {
-  var g = h("div", "ov-group");
-  g.appendChild(h("h4", null, title));
-  var max = 0;
-  rows.forEach(function (r) { if (r[1] > max) max = r[1]; });
-  var chart = h("div", "ov-bars");
-  var detail = h("div", "ov-detail");
-  detail.setAttribute("aria-live", "polite");
-  rows.forEach(function (r) {
-    var row = h("div", "ov-row");
+  ruDetail.textContent = "";
+  const ruAria = [];
+  for (const r of allRooms()) {
+    const rb = boxes.filter(b => b.room === r);
+    if (!rb.length) continue;
+    let t = 0, d = 0;
+    for (const b of rb) { for (const i of b.items) { t++; if (i.unpacked) d++; } }
+    const rp = t ? Math.round((d / t) * 100) : 0;
+    ruAria.push(r + ": " + d + " of " + t + " (" + rp + "%)");
+    const row = el("div", "ru-row");
     row.setAttribute("role", "button");
     row.setAttribute("tabindex", "0");
     row.setAttribute("aria-pressed", "false");
-    row.setAttribute("aria-label", r[0] + ": " + r[1] + ". Activate to spotlight.");
-    row.appendChild(h("div", "ov-name", r[0]));
-    row.appendChild(h("div", "ov-val", String(r[1])));
-    var track = h("div", "ov-track");
-    var fill = h("div", "ov-fill");
-    fill.style.width = (max > 0 ? (r[1] / max * 100) : 0).toFixed(1) + "%";
-    fill.style.background = r[2];
+    row.setAttribute("aria-label", r + ": " + d + " of " + t + " items unpacked. Activate to spotlight.");
+    const nm = el("div", "ru-name"); txt(nm, r);
+    const vl = el("div", "ru-val"); txt(vl, t ? d + "/" + t + " · " + rp + "%" : "no items");
+    const track = el("div", "ru-track");
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-label", r + " unpack progress");
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", "100");
+    track.setAttribute("aria-valuenow", String(rp));
+    const fill = el("div", "ru-fill");
+    fill.style.width = rp + "%";
     track.appendChild(fill);
-    row.appendChild(track);
-    (function (rr, rrrow) {
-      function act() {
-        var was = rrrow.classList.contains("sel");
-        var sels = chart.querySelectorAll(".ov-row.sel");
-        for (var k = 0; k < sels.length; k++) {
-          sels[k].classList.remove("sel");
-          sels[k].setAttribute("aria-pressed", "false");
-        }
-        if (!was) {
-          rrrow.classList.add("sel");
-          rrrow.setAttribute("aria-pressed", "true");
-          detail.innerHTML = "";
-          detail.appendChild(h("strong", null, rr[0] + ": "));
-          detail.appendChild(document.createTextNode(rr[3] || ""));
-          Sound.select();
-        } else {
-          detail.innerHTML = "";
-          Sound.click();
-        }
-      }
-      rrrow.addEventListener("click", act);
-      rrrow.addEventListener("keydown", function (ev) {
-        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(); }
-      });
-    })(r, row);
-    chart.appendChild(row);
-  });
-  g.appendChild(chart);
-  g.appendChild(detail);
-  return g;
-}
-/* Donut chart: defect severity mix (gallery vocabulary — part-to-whole).
-   Click/Enter/Space spotlights one severity and lists its items; again restores. */
-function defectDonut() {
-  var g = h("div", "ov-group");
-  g.appendChild(h("h4", null, "Defect severity mix"));
-  var counts = { minor: 0, moderate: 0, major: 0 };
-  var items = { minor: [], moderate: [], major: [] };
-  state.rooms.forEach(function (r) {
-    (r.defects || []).forEach(function (d) {
-      if (SEVS.indexOf(d.severity) >= 0) {
-        counts[d.severity]++;
-        items[d.severity].push(r.name + ": " + (d.item || "(untitled)"));
-      }
-    });
-  });
-  var total = counts.minor + counts.moderate + counts.major;
-  var segs = [
-    ["Minor", counts.minor, "var(--warn)"],
-    ["Moderate", counts.moderate, "var(--accent1)"],
-    ["Major", counts.major, "var(--bad)"]
-  ];
-  var wrap = h("div", "donut-wrap");
-  var NS = "http://www.w3.org/2000/svg";
-  var svg = document.createElementNS(NS, "svg");
-  svg.setAttribute("viewBox", "0 0 120 120");
-  svg.classList.add("donut-svg");
-  svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", "Defect severity: " + counts.minor + " minor, " +
-    counts.moderate + " moderate, " + counts.major + " major.");
-  var R = 46, C = 2 * Math.PI * R, acc = 0;
-  var detail = h("div", "ov-detail");
-  detail.setAttribute("aria-live", "polite");
-  detail.textContent = total ? "Tap a segment or legend row to see the items." : "No defects logged yet.";
-  var circles = [];
-  if (!total) {
-    var ring = document.createElementNS(NS, "circle");
-    ring.setAttribute("cx", "60"); ring.setAttribute("cy", "60"); ring.setAttribute("r", String(R));
-    ring.setAttribute("fill", "none"); ring.setAttribute("stroke-width", "18");
-    ring.style.stroke = "var(--border)";
-    svg.appendChild(ring);
-  }
-  segs.forEach(function (sg) {
-    var frac = total ? sg[1] / total : 0;
-    var c = document.createElementNS(NS, "circle");
-    c.setAttribute("cx", "60"); c.setAttribute("cy", "60"); c.setAttribute("r", String(R));
-    c.setAttribute("fill", "none"); c.setAttribute("stroke-width", "18");
-    c.style.stroke = sg[2];
-    c.setAttribute("stroke-dasharray", (frac * C).toFixed(2) + " " + C.toFixed(2));
-    c.setAttribute("stroke-dashoffset", (-acc * C).toFixed(2));
-    c.setAttribute("transform", "rotate(-90 60 60)");
-    c.classList.add("donut-seg");
-    c.setAttribute("tabindex", "0");
-    c.setAttribute("role", "button");
-    c.setAttribute("aria-pressed", "false");
-    c.setAttribute("aria-label", sg[0] + ": " + sg[1] + " of " + total + ". Activate to spotlight.");
-    circles.push(c);
-    svg.appendChild(c);
-    acc += frac;
-  });
-  var label = document.createElementNS(NS, "text");
-  label.setAttribute("x", "60"); label.setAttribute("y", "56");
-  label.setAttribute("text-anchor", "middle");
-  label.setAttribute("font-size", "22"); label.setAttribute("font-weight", "800");
-  label.style.fill = "var(--text)";
-  label.textContent = String(total);
-  var cap = document.createElementNS(NS, "text");
-  cap.setAttribute("x", "60"); cap.setAttribute("y", "76");
-  cap.setAttribute("text-anchor", "middle");
-  cap.setAttribute("font-size", "11");
-  cap.style.fill = "var(--muted)";
-  cap.textContent = total === 1 ? "defect" : "defects";
-  svg.appendChild(label); svg.appendChild(cap);
-  var sel = null;
-  function act(sg, c) {
-    var was = (sel === sg[0]);
-    circles.forEach(function (x) { x.classList.remove("dim"); x.setAttribute("aria-pressed", "false"); });
-    sel = null;
-    detail.innerHTML = "";
-    if (!was) {
-      sel = sg[0];
-      circles.forEach(function (x) { if (x !== c) x.classList.add("dim"); });
-      c.setAttribute("aria-pressed", "true");
-      label.textContent = String(sg[1]);
-      cap.textContent = sg[0].toLowerCase();
-      detail.appendChild(h("strong", null, sg[0] + " — " + sg[1] + (sg[1] === 1 ? " defect: " : " defects: ")));
-      detail.appendChild(document.createTextNode(items[sg[0].toLowerCase()].join("; ") || "(none)"));
-      Sound.select();
-    } else {
-      label.textContent = String(total);
-      cap.textContent = total === 1 ? "defect" : "defects";
-      detail.textContent = total ? "Tap a segment or legend row to see the items." : "No defects logged yet.";
-      Sound.click();
-    }
-  }
-  segs.forEach(function (sg, i) {
-    var c = circles[i];
-    c.addEventListener("click", function () { act(sg, c); });
-    c.addEventListener("keydown", function (ev) {
-      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); act(sg, c); }
-    });
-  });
-  wrap.appendChild(svg);
-  g.appendChild(wrap);
-  g.appendChild(detail);
-  return g;
-}
-/* Funnel: documentation completeness — conversion between inspection stages
-   (gallery vocabulary). Click a stage to see which rooms are missing that
-   step; click again to restore. */
-function docFunnel() {
-  var g = h("div", "ov-group");
-  g.appendChild(h("h4", null, "Documentation completeness"));
-  var rooms = state.rooms;
-  function missing(pred) {
-    return rooms.filter(function (r) { return !pred(r); }).map(function (r) { return r.name; });
-  }
-  var stages = [
-    ["Rooms documented", rooms.length, missing(function () { return true; }), "#6366f1"],
-    ["Condition rated", rooms.filter(function (r) { return RATINGS.indexOf(r.rating) >= 0; }).length,
-      missing(function (r) { return RATINGS.indexOf(r.rating) >= 0; }), "#818cf8"],
-    ["Evidence captured", rooms.filter(function (r) {
-        return (r.notes && r.notes.trim()) || (r.photos && r.photos.length) ||
-               (r.defects || []).some(function (d) { return d.photos && d.photos.length; });
-      }).length,
-      missing(function (r) {
-        return (r.notes && r.notes.trim()) || (r.photos && r.photos.length) ||
-               (r.defects || []).some(function (d) { return d.photos && d.photos.length; });
-      }), "#a78bfa"],
-    ["Report-ready", rooms.filter(function (r) {
-        return RATINGS.indexOf(r.rating) >= 0 &&
-          ((r.notes && r.notes.trim()) || (r.photos && r.photos.length) ||
-           (r.defects || []).some(function (d) { return d.photos && d.photos.length; }));
-      }).length, [], "#6d5df6"]
-  ];
-  var readyMissing = rooms.filter(function (r) {
-    return !(RATINGS.indexOf(r.rating) >= 0 &&
-      ((r.notes && r.notes.trim()) || (r.photos && r.photos.length) ||
-       (r.defects || []).some(function (d) { return d.photos && d.photos.length; })));
-  }).map(function (r) { return r.name; });
-  stages[3][2] = readyMissing;
-  var max = Math.max(1, stages[0][1]);
-  var funnel = h("div", "funnel");
-  var detail = h("div", "funnel-detail");
-  detail.setAttribute("aria-live", "polite");
-  detail.textContent = rooms.length ? "Tap a stage to see which rooms are missing that step." : "Add rooms to start the funnel.";
-  var sel = null;
-  stages.forEach(function (st) {
-    var b = h("button", "funnel-stage");
-    b.type = "button";
-    var w = st[1] > 0 ? Math.max(38, Math.round(st[1] / max * 100)) : 38;
-    b.style.width = w + "%";
-    b.style.background = st[3];
-    b.setAttribute("aria-pressed", "false");
-    b.setAttribute("aria-label", st[0] + ": " + st[1] + " of " + max + ". Activate to see missing rooms.");
-    b.appendChild(h("span", "fs-name", st[0]));
-    b.appendChild(h("span", "fs-val", String(st[1])));
-    b.addEventListener("click", function () {
-      var was = (sel === st[0]);
-      var sels = funnel.querySelectorAll(".funnel-stage.sel");
-      for (var k = 0; k < sels.length; k++) {
-        sels[k].classList.remove("sel");
-        sels[k].setAttribute("aria-pressed", "false");
-      }
-      sel = null;
-      detail.innerHTML = "";
+    row.appendChild(nm); row.appendChild(vl); row.appendChild(track);
+    row.addEventListener("click", () => {
+      const was = row.classList.contains("sel");
+      ru.querySelectorAll(".ru-row.sel").forEach(x => { x.classList.remove("sel"); x.setAttribute("aria-pressed", "false"); });
+      ruDetail.textContent = "";
       if (!was) {
-        sel = st[0];
-        b.classList.add("sel");
-        b.setAttribute("aria-pressed", "true");
-        detail.appendChild(h("strong", null, st[0] + ": "));
-        detail.appendChild(document.createTextNode(
-          st[2].length ? "missing for " + st[2].join(", ") : "all rooms complete this step."));
+        row.classList.add("sel");
+        row.setAttribute("aria-pressed", "true");
+        const perBox = rb.map(b => {
+          const bt = b.items.length, bd = b.items.filter(i => i.unpacked).length;
+          return "Box " + b.number + (b.label ? " '" + b.label + "'" : "") + " (" + bd + "/" + bt + " unpacked)";
+        });
+        ruDetail.appendChild((() => { const st = el("strong"); txt(st, r + ": "); return st; })());
+        txt(ruDetail, d + " of " + t + " items unpacked — " + (perBox.length ? perBox.join(", ") : "no boxes") + ".");
         Sound.select();
       } else {
-        detail.textContent = rooms.length ? "Tap a stage to see which rooms are missing that step." : "Add rooms to start the funnel.";
         Sound.click();
       }
     });
-    funnel.appendChild(b);
-  });
-  g.appendChild(funnel);
-  g.appendChild(detail);
-  return g;
-}
-function renderReport() {
-  var rep = document.getElementById("report");
-  while (rep.firstChild) rep.removeChild(rep.firstChild);
-  var block = h("div", "rep-block");
-  block.appendChild(h("h3", null, "Move-In Condition Report"));
-  block.appendChild(h("p", "defect-meta", "Generated " + new Date().toLocaleString()));
-  var dl = h("dl", "rep-head");
-  [["Property address", state.header.address], ["Landlord / manager", state.header.landlord],
-   ["Tenant name(s)", state.header.tenants], ["Lease start", state.header.leaseStart],
-   ["Move-in date", state.header.moveIn]].forEach(function (pair) {
-    dl.appendChild(h("dt", null, pair[0]));
-    dl.appendChild(h("dd", null, pair[1] || "—"));
-  });
-  block.appendChild(dl);
-  rep.appendChild(block);
-
-  /* Condition overview: rating distribution + defect severity bars. */
-  if (state.rooms.length) {
-  var ov = h("div", "rep-block");
-  ov.appendChild(h("h3", null, "Condition overview"));
-  var rCounts = { "Excellent": 0, "Good": 0, "Fair": 0, "Poor": 0, "Not rated": 0 };
-  var sevCounts = { "minor": 0, "moderate": 0, "major": 0 };
-  var rRooms = { "Excellent": [], "Good": [], "Fair": [], "Poor": [], "Not rated": [] };
-  var sevItems = { "minor": [], "moderate": [], "major": [] };
-  state.rooms.forEach(function (r) {
-    var key = RATINGS.indexOf(r.rating) >= 0 ? r.rating : "Not rated";
-    rCounts[key]++; rRooms[key].push(r.name);
-    (r.defects || []).forEach(function (d) {
-      if (SEVS.indexOf(d.severity) >= 0){
-        sevCounts[d.severity]++;
-        sevItems[d.severity].push(r.name + ": " + (d.item || "(untitled)"));
-      }
+    row.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); row.click(); }
     });
+    ru.appendChild(row);
+  }
+  ru.setAttribute("aria-label", "Unpack progress by room: " + ruAria.join(", "));
+  renderRoomDonut();
+}
+
+// ---------- Boxes-by-room donut (interactive: activate a segment to spotlight the room) ----------
+const ROOM_COLORS = ["#4f46e5", "#0d9488", "#15803d", "#b45309", "#7c3aed", "#be123c", "#0369a1", "#65a30d"];
+const SVGNS = "http://www.w3.org/2000/svg";
+function renderRoomDonut() {
+  const svg = document.getElementById("room-donut");
+  const legend = document.getElementById("room-donut-legend");
+  const empty = document.getElementById("room-donut-empty");
+  const wrap = document.getElementById("room-donut-wrap");
+  if (!svg || !legend) return;
+  // keep keyboard focus on the spotlight control across the re-render, so
+  // Enter/Space can toggle it back off without re-tabbing (segments + legend
+  // rows are rebuilt below, which would otherwise drop focus to <body>)
+  let fLabel = null;
+  try {
+    const ae = document.activeElement;
+    if (ae && ae !== document.body && (ae.closest("#room-donut") || ae.closest("#room-donut-legend"))) {
+      fLabel = ae.getAttribute("aria-label");
+    }
+  } catch (e) {}
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  while (legend.firstChild) legend.removeChild(legend.firstChild);
+  const rooms = [];
+  for (const r of allRooms()) {
+    const c = state.boxes.filter(b => b.room === r).length;
+    if (c) rooms.push({ room: r, count: c });
+  }
+  const total = rooms.reduce((a, x) => a + x.count, 0);
+  const has = rooms.length > 0;
+  wrap.hidden = !has;
+  empty.hidden = has;
+  if (!has) return;
+  svg.setAttribute("aria-label", "Boxes by room: " + rooms.map(x => x.room + " " + x.count).join(", "));
+  const R = 44, C = 2 * Math.PI * R;
+  const selRoom = Object.keys(roomPills).find(r => roomPills[r].getAttribute("aria-pressed") === "true") || null;
+  const bg = document.createElementNS(SVGNS, "circle");
+  bg.setAttribute("cx", 60); bg.setAttribute("cy", 60); bg.setAttribute("r", R);
+  bg.setAttribute("fill", "none"); bg.setAttribute("style", "stroke:var(--border)"); bg.setAttribute("stroke-width", 20);
+  svg.appendChild(bg);
+  let off = 0;
+  rooms.forEach((x, i) => {
+    const color = ROOM_COLORS[i % ROOM_COLORS.length];
+    const len = x.count / total * C;
+    const dash = len.toFixed(2) + " " + (C - len).toFixed(2);
+    const seg = document.createElementNS(SVGNS, "circle");
+    seg.setAttribute("cx", 60); seg.setAttribute("cy", 60); seg.setAttribute("r", R);
+    seg.setAttribute("fill", "none"); seg.setAttribute("stroke", color);
+    seg.setAttribute("stroke-width", 20);
+    seg.setAttribute("stroke-dasharray", dash);
+    seg.setAttribute("stroke-dashoffset", (-off).toFixed(2));
+    seg.setAttribute("transform", "rotate(-90 60 60)");
+    seg.setAttribute("class", "vseg");
+    seg.setAttribute("tabindex", "0");
+    seg.setAttribute("role", "button");
+    seg.setAttribute("aria-pressed", selRoom === x.room ? "true" : "false");
+    seg.setAttribute("aria-label", x.room + ": " + x.count + (x.count === 1 ? " box" : " boxes") + ". Activate to spotlight.");
+    if (selRoom && selRoom !== x.room) seg.setAttribute("opacity", "0.25");
+    if (selRoom === x.room) seg.setAttribute("style", "filter:drop-shadow(0 0 5px " + color + ")");
+    const go = () => { const p = roomPills[x.room]; if (p) p.click(); };
+    seg.addEventListener("click", go);
+    seg.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
+    svg.appendChild(seg);
+    /* fat invisible hit ring so thin slices stay easy to tap */
+    const h = document.createElementNS(SVGNS, "circle");
+    h.setAttribute("cx", 60); h.setAttribute("cy", 60); h.setAttribute("r", R);
+    h.setAttribute("fill", "none"); h.setAttribute("stroke", "rgba(0,0,0,0)");
+    h.setAttribute("stroke-width", 38);
+    h.setAttribute("stroke-dasharray", dash);
+    h.setAttribute("stroke-dashoffset", (-off).toFixed(2));
+    h.setAttribute("transform", "rotate(-90 60 60)");
+    h.setAttribute("pointer-events", "stroke");
+    h.setAttribute("aria-hidden", "true");
+    h.addEventListener("click", go);
+    svg.appendChild(h);
+    off += len;
+    const row = el("div", "leg-row");
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-pressed", selRoom === x.room ? "true" : "false");
+    row.setAttribute("aria-label", x.room + ": " + x.count + (x.count === 1 ? " box" : " boxes") + ". Activate to spotlight.");
+    if (selRoom === x.room) row.classList.add("leg-sel");
+    row.addEventListener("click", go);
+    row.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
+    const sw = el("span", "sw"); sw.style.background = color;
+    const nm = el("span"); txt(nm, x.room);
+    const am = el("span", "amt"); txt(am, String(x.count));
+    row.appendChild(sw); row.appendChild(nm); row.appendChild(am);
+    legend.appendChild(row);
   });
-  function nameList(arr){ return arr.length ? arr.join(", ") : "(none)"; }
-  ov.appendChild(ovBars("Room ratings", [
-    ["Excellent", rCounts["Excellent"], "var(--good)", nameList(rRooms["Excellent"])],
-    ["Good", rCounts["Good"], "var(--accent1)", nameList(rRooms["Good"])],
-    ["Fair", rCounts["Fair"], "var(--warn)", nameList(rRooms["Fair"])],
-    ["Poor", rCounts["Poor"], "var(--bad)", nameList(rRooms["Poor"])],
-    ["Not rated", rCounts["Not rated"], "var(--muted)", nameList(rRooms["Not rated"])]
-  ]));
-  ov.appendChild(ovBars("Defects by severity", [
-    ["Minor", sevCounts["minor"], "var(--warn)", nameList(sevItems["minor"])],
-    ["Moderate", sevCounts["moderate"], "var(--accent1)", nameList(sevItems["moderate"])],
-    ["Major", sevCounts["major"], "var(--bad)", nameList(sevItems["major"])]
-  ]));
-  ov.appendChild(defectDonut());
-  ov.appendChild(docFunnel());
-  rep.appendChild(ov);
+  const sel = rooms.find(x => x.room === selRoom);
+  const te = document.createElementNS(SVGNS, "text");
+  te.setAttribute("x", 60); te.setAttribute("y", 59);
+  te.setAttribute("text-anchor", "middle");
+  te.setAttribute("font-size", "17"); te.setAttribute("font-weight", "800");
+  te.setAttribute("style", "fill:var(--text);pointer-events:none");
+  te.textContent = String(sel ? sel.count : total);
+  svg.appendChild(te);
+  const cap = document.createElementNS(SVGNS, "text");
+  cap.setAttribute("x", 60); cap.setAttribute("y", 76);
+  cap.setAttribute("text-anchor", "middle");
+  cap.setAttribute("font-size", "9"); cap.setAttribute("style", "fill:var(--text-muted);pointer-events:none");
+  cap.textContent = sel ? sel.room : "boxes";
+  svg.appendChild(cap);
+  if (fLabel) {
+    const els = document.querySelectorAll('#room-donut [aria-label], #room-donut-legend [aria-label]');
+    for (let i = 0; i < els.length; i++) {
+      if (els[i].getAttribute("aria-label") === fLabel) { els[i].focus(); break; }
+    }
+  }
+}
+
+// ---------- Search ----------
+function highlightMatch(parent, text, query) {
+  const lower = text.toLowerCase(), q = query.toLowerCase();
+  let idx = 0, pos = lower.indexOf(q);
+  if (pos === -1) { txt(parent, text); return; }
+  while (pos !== -1) {
+    if (pos > idx) parent.appendChild(document.createTextNode(text.slice(idx, pos)));
+    const m = document.createElement("mark");
+    m.textContent = text.slice(pos, pos + q.length);
+    parent.appendChild(m);
+    idx = pos + q.length;
+    pos = lower.indexOf(q, idx);
+  }
+  if (idx < text.length) parent.appendChild(document.createTextNode(text.slice(idx)));
+}
+function runSearch() {
+  const q = document.getElementById("search").value.trim();
+  const out = document.getElementById("search-results");
+  while (out.firstChild) out.removeChild(out.firstChild);
+  if (!q) return;
+  const lower = q.toLowerCase();
+  let hits = 0;
+  for (const b of state.boxes) {
+    const matched = b.items.filter(i => i.text.toLowerCase().includes(lower));
+    const roomHit = b.room.toLowerCase().includes(lower) || (b.label && b.label.toLowerCase().includes(lower));
+    if (!matched.length && !roomHit) continue;
+    hits++;
+    const card = el("div", "card search-hit");
+    const head = el("div", "box-head");
+    const num = el("span", "box-number"); txt(num, "Box " + b.number);
+    const room = el("span", "box-room"); txt(room, b.room + (b.packed ? " · sealed" : " · open"));
+    head.appendChild(num); head.appendChild(room);
+    card.appendChild(head);
+    if (matched.length) {
+      const snip = el("div", "snip");
+      const show = matched.slice(0, 4);
+      show.forEach((i, k) => {
+        if (k) txt(snip, " · ");
+        highlightMatch(snip, i.text, q);
+      });
+      if (matched.length > 4) txt(snip, ` (+${matched.length - 4} more)`);
+      card.appendChild(snip);
+    } else {
+      const snip = el("div", "snip");
+      txt(snip, "Room/label match — no item matched.");
+      card.appendChild(snip);
+    }
+    out.appendChild(card);
+  }
+  if (!hits) {
+    const p = el("p", "empty"); txt(p, `No items found for "${q}".`);
+    out.appendChild(p);
+  }
+}
+
+// ---------- Box cards ----------
+function addItem(box, text) {
+  const t = cleanStr(text, LIMITS.itemLen);
+  if (!t || box.items.length >= LIMITS.maxItemsPerBox) return false;
+  box.items.push({ text: t, unpacked: false });
+  save();
+  return true;
+}
+function renderBoxes() {
+  const grid = document.getElementById("boxes-grid");
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
+  const note = document.getElementById("boxes-empty-note");
+  note.textContent = "";
+  if (!state.boxes.length) {
+    txt(note, "No boxes yet — add your first box above, or load the demo data below.");
+    return;
+  }
+  const sorted = state.boxes.slice().sort((a, b) => a.number - b.number);
+  let list = sorted;
+  if (boxFilter === "packed") list = sorted.filter(b => b.packed);
+  else if (boxFilter === "open") list = sorted.filter(b => !b.packed);
+  else if (boxFilter === "unpacked") list = sorted.filter(b => b.packed && b.items.length && b.items.every(i => i.unpacked));
+  if (boxFilter) {
+    const fname = boxFilter === "packed" ? "Packed" : boxFilter === "open" ? "Open" : "Fully unpacked";
+    txt(note, "Filter: " + fname.toLowerCase() + " boxes — click the " + fname + " stat again to clear. ");
+  }
+  if (!list.length) {
+    txt(note, "No boxes match this filter.");
+    return;
+  }
+  for (const b of list) renderBoxCard(grid, b);
+}
+function renderBoxCard(grid, box) {
+  const card = el("article", "card box-card");
+
+  const head = el("div", "box-head");
+  const num = el("span", "box-number"); txt(num, "Box " + box.number);
+  const room = el("span", "box-room"); txt(room, box.room);
+  head.appendChild(num); head.appendChild(room);
+  if (box.label) {
+    const tag = el("span", "box-tag");
+    if (box.color) tag.setAttribute("data-color", box.color);
+    txt(tag, box.label);
+    head.appendChild(tag);
+  }
+  if (box.fragile) {
+    const f = el("span", "box-fragile"); txt(f, "Fragile");
+    head.appendChild(f);
+  }
+  const st = el("span", "box-status " + (box.packed ? "packed" : "open"));
+  txt(st, box.packed ? "Sealed" : "Open");
+  head.appendChild(st);
+  card.appendChild(head);
+
+  const cnt = el("span", "item-count");
+  txt(cnt, `${box.items.length} item${box.items.length === 1 ? "" : "s"}`);
+  card.appendChild(cnt);
+
+  // items
+  const list = el("ul", "item-list");
+  box.items.forEach((item, idx) => {
+    const li = el("li");
+    if (item.unpacked) li.className += " unpacked";
+    if (unpackMode) {
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = item.unpacked;
+      cb.setAttribute("aria-label", "Mark unpacked: " + item.text);
+      cb.addEventListener("change", () => { item.unpacked = cb.checked; save(); renderAll(); if (cb.checked) Sound.success(); else Sound.click(); });
+      li.appendChild(cb);
+    }
+    const span = el("span", "item-text"); txt(span, item.text);
+    li.appendChild(span);
+    const rm = el("button", "item-remove small");
+    rm.type = "button";
+    txt(rm, "Remove");
+    rm.setAttribute("aria-label", "Remove item " + item.text);
+    rm.addEventListener("click", () => { box.items.splice(idx, 1); save(); renderAll(); runSearch(); Sound.click(); });
+    li.appendChild(rm);
+    list.appendChild(li);
+  });
+  card.appendChild(list);
+
+  // add item
+  const addRow = el("div", "add-item-row");
+  const inp = document.createElement("input");
+  inp.type = "text";
+  inp.placeholder = "Add an item (Enter to add)";
+  inp.maxLength = LIMITS.itemLen;
+  inp.setAttribute("aria-label", "Add item to box " + box.number);
+  const addBtn = el("button", "small");
+  addBtn.type = "button";
+  txt(addBtn, "Add");
+  const commit = () => {
+    if (addItem(box, inp.value)) {
+      const num = box.number;
+      renderAll(); runSearch();
+      Sound.success();
+      const fresh = document.querySelector('input[aria-label="Add item to box ' + num + '"]');
+      if (fresh) fresh.focus();
+    } else {
+      Sound.error();
+    }
+  };
+  addBtn.addEventListener("click", commit);
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); commit(); } });
+  addRow.appendChild(inp); addRow.appendChild(addBtn);
+  card.appendChild(addRow);
+
+  // actions
+  const actions = el("div", "box-actions");
+  const sealBtn = el("button", "small");
+  sealBtn.type = "button";
+  txt(sealBtn, box.packed ? "Unseal" : "Seal box");
+  sealBtn.addEventListener("click", () => { box.packed = !box.packed; save(); renderAll(); runSearch(); Sound.click(); });
+  actions.appendChild(sealBtn);
+
+  const printBtn = el("button", "small");
+  printBtn.type = "button";
+  txt(printBtn, "Print label");
+  printBtn.addEventListener("click", () => printLabel(box));
+  actions.appendChild(printBtn);
+
+  const delBtn = el("button", "small danger");
+  delBtn.type = "button";
+  txt(delBtn, "Delete box");
+  delBtn.addEventListener("click", () => {
+    if (window.confirm(`Delete Box ${box.number} and all its items?`)) {
+      state.boxes = state.boxes.filter(x => x !== box);
+      save(); renderAll(); runSearch();
+      Sound.success();
+    } else {
+      Sound.click();
+    }
+  });
+  actions.appendChild(delBtn);
+  card.appendChild(actions);
+
+  grid.appendChild(card);
+}
+
+// ---------- Print label ----------
+function buildLabel(labelHost, box) {
+  while (labelHost.firstChild) labelHost.removeChild(labelHost.firstChild);
+  const wrap = el("div", "pl-box");
+  const num = el("p", "pl-number"); txt(num, "Box " + box.number);
+  wrap.appendChild(num);
+  const room = el("p", "pl-room"); txt(room, box.room);
+  wrap.appendChild(room);
+  if (box.label) { const t = el("p", "pl-tag"); txt(t, box.label); wrap.appendChild(t); }
+  if (box.fragile) { const f = el("p", "pl-fragile"); txt(f, "Fragile"); wrap.appendChild(f); }
+  if (box.items.length) {
+    const ul = el("ul", "pl-items");
+    for (const i of box.items) { const li = el("li"); txt(li, i.text); ul.appendChild(li); }
+    wrap.appendChild(ul);
+  }
+  const c = el("p", "pl-count");
+  txt(c, box.items.length + " item" + (box.items.length === 1 ? "" : "s"));
+  wrap.appendChild(c);
+  labelHost.appendChild(wrap);
+}
+function printLabel(box) {
+  const host = document.getElementById("print-label");
+  buildLabel(host, box);
+  document.body.classList.add("printing-label");
+  window.print();
+  // remove class after print dialog closes so the app reappears
+  const done = () => {
+    document.body.classList.remove("printing-label");
+    window.removeEventListener("afterprint", done);
+  };
+  window.addEventListener("afterprint", done);
+  // fallback if afterprint never fires
+  setTimeout(() => document.body.classList.remove("printing-label"), 2000);
+}
+
+// ---------- Export / Import ----------
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "packtrack-backup.json";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  const st = document.getElementById("export-status");
+  st.textContent = "";
+  const n = state.boxes.length;
+  txt(st, `Exported ${n} box${n === 1 ? "" : "es"} — download started (packtrack-backup.json).`);
+}
+function importJSON(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = sanitizeState(JSON.parse(String(reader.result)));
+      state = parsed;
+      save();
+      refreshRoomSelect();
+      document.getElementById("nb-number").value = state.nextNumber;
+      renderAll(); runSearch();
+      alert("Import complete: " + state.boxes.length + " boxes loaded.");
+      Sound.success();
+    } catch (e) {
+      alert("Import failed: that file is not a valid PackTrack backup.");
+      Sound.error();
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ---------- Demo data ----------
+function loadDemo() {
+  if (state.boxes.length && !window.confirm("Replace current data with the demo set?")) { Sound.click(); return; }
+  state = sanitizeState({
+    nextNumber: 105,
+    boxes: [
+      { number: 101, room: "Kitchen", label: "Pots & pans", color: "red", fragile: false, packed: true,
+        items: ["Cast iron skillet", "Saucepan set", "Wooden spoons", "Measuring cups", "Colander"] },
+      { number: 102, room: "Kitchen", label: "Glassware", color: "red", fragile: true, packed: false,
+        items: ["Wine glasses (6)", "Coffee mugs (4)", "Mixing bowls", "Plates"] },
+      { number: 103, room: "Bedroom", label: "Bedding", color: "blue", fragile: false, packed: true,
+        items: ["Duvet", "2 pillow sets", "Throw blanket", "Mattress pad"] },
+      { number: 104, room: "Office", label: "Desk gear", color: "green", fragile: true, packed: false,
+        items: ["Monitor", "HDMI cable", "Power strip", "Laptop stand", "USB-C cables", "Notebook"] }
+    ]
+  });
+  save();
+  refreshRoomSelect();
+  document.getElementById("nb-number").value = state.nextNumber;
+  renderAll(); runSearch();
+  Sound.success();
+}
+
+// ---------- New box form ----------
+function initNewBoxForm() {
+  const form = document.getElementById("new-box-form");
+  const err = document.getElementById("nb-error");
+  document.getElementById("nb-number").value = state.nextNumber;
+
+  // color swatches
+  const row = document.getElementById("nb-colors");
+  const colors = { "": "No color", blue: "Blue", green: "Green", red: "Red", yellow: "Yellow", purple: "Purple" };
+  for (const c of COLOR_TAGS) {
+    const sw = el("button", "color-swatch" + (c === "" ? " none" : ""));
+    sw.type = "button";
+    sw.setAttribute("aria-pressed", c === selectedColor ? "true" : "false");
+    sw.setAttribute("aria-label", "Color tag: " + colors[c]);
+    sw.title = colors[c];
+    if (c) sw.style.background = { blue: "#3b82f6", green: "#22c55e", red: "#ef4444", yellow: "#eab308", purple: "#a855f7" }[c];
+    sw.addEventListener("click", () => {
+      selectedColor = c;
+      for (const s of row.children) s.setAttribute("aria-pressed", s === sw ? "true" : "false");
+      Sound.select();
+    });
+    row.appendChild(sw);
   }
 
-  state.rooms.forEach(function (r, ri) {
-    var rb = h("div", "rep-room");
-    rb.appendChild(h("h3", null, (ri + 1) + ". " + r.name));
-    rb.appendChild(h("p", "defect-meta", "Overall condition: " + (r.rating || "not rated")));
-    if (r.notes) rb.appendChild(h("p", null, "Notes: " + r.notes));
-    if (r.photos.length) {
-      var rt = h("div", "rep-thumbs");
-      r.photos.forEach(function (u, i) {
-        var img = document.createElement("img");
-        img.src = u; img.alt = r.name + " photo " + (i + 1);
-        rt.appendChild(img);
-      });
-      rb.appendChild(rt);
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    err.hidden = true;
+    const numInput = document.getElementById("nb-number");
+    const number = cleanNum(numInput.value, LIMITS.numberMin, LIMITS.numberMax, null);
+    if (number === null) {
+      err.textContent = "Enter a box number between 1 and 9999.";
+      err.hidden = false; numInput.focus(); Sound.error(); return;
     }
-    if (!r.defects.length) {
-      rb.appendChild(h("p", "defect-meta", "No defects logged."));
+    if (state.boxes.some(b => b.number === number)) {
+      err.textContent = "Box " + number + " already exists. Pick another number.";
+      err.hidden = false; numInput.focus(); Sound.error(); return;
     }
-    r.defects.forEach(function (d, di) {
-      var dd = h("div", "rep-defect");
-      var line = h("p", null, (di + 1) + ". " + (d.item || "(untitled)") + " — " +
-        esc2cap(d.type) + " (" + d.severity + ")" + (d.ts ? ", logged " + fmtTs(d.ts) : ""));
-      dd.appendChild(line);
-      if (d.desc) dd.appendChild(h("p", "desc", d.desc));
-      if (d.photos.length) {
-        var dt = h("div", "rep-thumbs");
-        d.photos.forEach(function (u, i) {
-          var img = document.createElement("img");
-          img.src = u; img.alt = "Defect photo " + (i + 1);
-          dt.appendChild(img);
-        });
-        dd.appendChild(dt);
+    if (state.boxes.length >= LIMITS.maxBoxes) {
+      err.textContent = "Box limit reached (500). Delete a box first.";
+      err.hidden = false; Sound.error(); return;
+    }
+    const newRoom = cleanStr(document.getElementById("nb-new-room").value, LIMITS.roomLen);
+    let room = document.getElementById("nb-room").value;
+    if (newRoom) {
+      room = newRoom;
+      if (!allRooms().includes(room)) {
+        if (state.customRooms.length >= LIMITS.maxRooms) {
+          err.textContent = "Too many custom rooms — pick an existing one.";
+          err.hidden = false; Sound.error(); return;
+        }
+        state.customRooms.push(room);
+        refreshRoomSelect(room);
       }
-      rb.appendChild(dd);
-    });
-    rep.appendChild(rb);
-  });
-
-  var sig = h("div", "rep-block");
-  sig.appendChild(h("h3", null, "Signatures"));
-  var grid = h("div", "sig-grid");
-  [["Tenant", state.header.tenants], ["Landlord / manager", state.header.landlord]].forEach(function (pair) {
-    var box = h("div", "sig-box");
-    box.appendChild(h("strong", null, pair[0]));
-    box.appendChild(h("div", "sig-cap", "Printed name"));
-    box.appendChild(h("div", "sig-line", pair[1] || ""));
-    box.appendChild(h("div", "sig-cap", "Signature"));
-    box.appendChild(h("div", "sig-line"));
-    box.appendChild(h("div", "sig-cap", "Date"));
-    box.appendChild(h("div", "sig-line"));
-    grid.appendChild(box);
-  });
-  sig.appendChild(grid);
-  rep.appendChild(sig);
-}
-
-/* ---------- header binding (once; no re-render needed) ---------- */
-function syncHeaderInputsToState() {
-  /* A prefilled value (browser autofill, prefill script) can sit in an input
-     without ever firing a change event. Pull the visible values into state so
-     the handover report renders them on load instead of waiting for re-type. */
-  var map = { "f-address": "address", "f-landlord": "landlord", "f-tenants": "tenants",
-              "f-lease": "leaseStart", "f-movein": "moveIn" };
-  var changed = false;
-  Object.keys(map).forEach(function (id) {
-    var v = cap(document.getElementById(id).value, 300);
-    if (v !== state.header[map[id]]) { state.header[map[id]] = v; changed = true; }
-  });
-  if (changed) saveState();
-}
-function bindHeader() {
-  var map = { "f-address": "address", "f-landlord": "landlord", "f-tenants": "tenants",
-              "f-lease": "leaseStart", "f-movein": "moveIn" };
-  Object.keys(map).forEach(function (id) {
-    var input = document.getElementById(id);
-    if (!input.value) input.value = state.header[map[id]] || "";
-    input.addEventListener("change", function () {
-      state.header[map[id]] = cap(input.value, 300);
-      saveState();
-      renderReport();
-    });
-  });
-}
-
-/* ---------- export / import ---------- */
-function doExport() {
-  try {
-    var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "moveinproof-export.json";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function () { try { URL.revokeObjectURL(a.href); } catch (e) {} a.remove(); }, 500);
-    say("Backup exported.");
-    Sound.success();
-  } catch (e) { say("Export failed.", true); Sound.error(); }
-}
-function bindImport() {
-  var file = document.getElementById("importFile");
-  document.getElementById("importBtn").addEventListener("click", function () { Sound.click(); file.click(); });
-  file.addEventListener("change", function () {
-    var f = file.files && file.files[0];
-    if (!f) return;
-    var r = new FileReader();
-    r.onload = function () {
-      try {
-        var obj = JSON.parse(String(r.result));
-        state = sanitizeState(obj);
-        editingDefectId = null;
-        saveState(); renderAll();
-        say("Import complete.");
-        Sound.success();
-      } catch (e) { say("Import failed: not a valid MoveInProof backup.", true); Sound.error(); }
+    }
+    const box = {
+      number,
+      room,
+      label: cleanStr(document.getElementById("nb-label").value, LIMITS.labelLen),
+      color: selectedColor,
+      fragile: document.getElementById("nb-fragile").checked,
+      packed: false,
+      items: []
     };
-    r.onerror = function () { say("Import failed: could not read the file.", true); Sound.error(); };
-    r.readAsText(f);
-    file.value = "";
-  });
-}
-
-/* ---------- demo / clear ---------- */
-function makeDefect(item, type, severity, desc) {
-  return { id: uid(), item: item, type: type, severity: severity, desc: desc,
-           ts: new Date().toISOString(), photos: [] };
-}
-function loadDemo() {
-  state = {
-    header: { address: "123 Example St, Apt 4B, Bloomington, IN", landlord: "Example Property Mgmt",
-              leaseStart: todayStr(), moveIn: todayStr(), tenants: "Demo Tenant" },
-    rooms: [
-      { id: uid(), name: "Living Room", rating: "Good", notes: "Fresh paint; carpet worn near entry.",
-        photos: [], defects: [
-          makeDefect("South wall", "scuff", "minor", "Scuff marks near the front door, about 2 ft long."),
-          makeDefect("Window sill", "crack", "moderate", "Hairline crack along the sill, east window.") ] },
-      { id: uid(), name: "Kitchen", rating: "Fair", notes: "Appliances older; grout discolored.",
-        photos: [], defects: [
-          makeDefect("Countertop", "stain", "moderate", "Dark ring stain near the sink, roughly 4 in across.") ] }
-    ]
-  };
-  editingDefectId = null;
-  saveState(); renderAll();
-  say("Demo data loaded: 2 rooms, 3 defects. Demo includes no photos.");
-  Sound.success();
-}
-function clearAll() {
-  if (!window.confirm("Delete ALL rooms, defects, photos and the property header? This cannot be undone.")) { Sound.click(); return; }
-  state = blankState();
-  editingDefectId = null;
-  saveState(); renderAll();
-  say("Everything cleared.");
-  Sound.success();
-}
-
-/* ---------- init ---------- */
-function renderAll() {
-  bindHeaderValues();
-  renderRooms();
-  renderReport();
-}
-function bindHeaderValues() {
-  var map = { "f-address": "address", "f-landlord": "landlord", "f-tenants": "tenants",
-              "f-lease": "leaseStart", "f-movein": "moveIn" };
-  Object.keys(map).forEach(function (id) {
-    document.getElementById(id).value = state.header[map[id]] || "";
-  });
-}
-document.addEventListener("DOMContentLoaded", function () {
-  initTheme();
-  bindHeader();
-  syncHeaderInputsToState();
-  renderRooms();
-  renderReport();
-  document.getElementById("addRoomBtn").addEventListener("click", function () {
-    var input = document.getElementById("addRoomName");
-    var name = cap(input.value, 80).trim();
-    if (!name) { say("Type a room name first.", true); Sound.error(); input.focus(); return; }
-    state.rooms.push({ id: uid(), name: name, rating: "", notes: "", photos: [], defects: [] });
-    input.value = "";
-    saveState(); renderRooms(); renderReport();
-    say("Room '" + name + "' added.");
+    state.boxes.push(box);
+    if (number >= state.nextNumber) state.nextNumber = number + 1;
+    save();
+    form.reset();
+    refreshRoomSelect(room);
+    document.getElementById("nb-number").value = state.nextNumber;
+    selectedColor = "";
+    for (const s of row.children) s.setAttribute("aria-pressed", s === row.children[0] ? "true" : "false");
+    renderAll(); runSearch();
     Sound.success();
   });
-  document.getElementById("addRoomName").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") { e.preventDefault(); document.getElementById("addRoomBtn").click(); }
+  form.addEventListener("reset", () => {
+    selectedColor = "";
+    for (const s of row.children) s.setAttribute("aria-pressed", s === row.children[0] ? "true" : "false");
   });
-  document.getElementById("printBtn").addEventListener("click", function () { Sound.click(); window.print(); });
-  document.getElementById("exportBtn").addEventListener("click", doExport);
-  bindImport();
-  document.getElementById("demoBtn").addEventListener("click", loadDemo);
-  document.getElementById("clearBtn").addEventListener("click", clearAll);
-});
+}
+
+// ---------- Toolbar ----------
+function initToolbar() {
+  const um = document.getElementById("unpack-mode");
+  um.addEventListener("click", () => {
+    unpackMode = !unpackMode;
+    um.setAttribute("aria-pressed", String(unpackMode));
+    um.textContent = "Unpack mode: " + (unpackMode ? "on" : "off");
+    renderAll();
+    Sound.click();
+  });
+  document.getElementById("print-all").addEventListener("click", () => {
+    if (!state.boxes.length) { alert("No boxes to print yet."); Sound.error(); return; }
+    const host = document.getElementById("print-label");
+    while (host.firstChild) host.removeChild(host.firstChild);
+    for (const b of state.boxes.slice().sort((a, x) => a.number - x.number)) buildLabel(host, b);
+    document.body.classList.add("printing-label");
+    window.print();
+    const done = () => { document.body.classList.remove("printing-label"); window.removeEventListener("afterprint", done); };
+    window.addEventListener("afterprint", done);
+    setTimeout(() => document.body.classList.remove("printing-label"), 2000);
+  });
+  document.getElementById("export-btn").addEventListener("click", () => { exportJSON(); Sound.success(); });
+  document.getElementById("import-btn").addEventListener("click", () => document.getElementById("import-file").click());
+  document.getElementById("import-file").addEventListener("change", e => {
+    if (e.target.files[0]) importJSON(e.target.files[0]);
+    e.target.value = "";
+  });
+  document.getElementById("demo-btn").addEventListener("click", loadDemo);
+  document.getElementById("clear-btn").addEventListener("click", () => {
+    if (!window.confirm("Delete ALL boxes and items? Export a backup first if you need it.")) return;
+    state = { boxes: [], customRooms: [], nextNumber: 101 };
+    save(); renderAll(); refreshRoomSelect(); runSearch();
+    document.getElementById("nb-number").value = state.nextNumber;
+  });
+  document.getElementById("search-clear").addEventListener("click", () => {
+    document.getElementById("search").value = "";
+    runSearch();
+    document.getElementById("search").focus();
+  });
+  let searchTimer = null;
+  document.getElementById("search").addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(runSearch, 120);
+  });
+}
+
+// ---------- Render all ----------
+function renderAll() {
+  renderDashboard();
+  renderBoxes();
+  const st = document.getElementById("export-status");
+  if (st) st.textContent = "";
+}
+
+// ---------- Init ----------
+load();
+initTheme();
+refreshRoomSelect();
+initNewBoxForm();
+initToolbar();
+document.getElementById("nb-number").value = state.nextNumber;
+renderAll();
+// keyboard focus for search (only when not on a small screen keyboard trap)
 
 /* ---------- sample-data toggle: snapshot user data, realistic demo, exact restore ---------- */
-(function () {
+(function(){
   var btn = document.getElementById("sample-toggle");
-  if (!btn) return;
-  var sampleOn = false, snap = null, snapLS = null, snapUI = null, LS_MISSING = {};
-  function paintSample() {
+  if(!btn) return;
+  var sampleOn = false, snap = null, snapLS = null, LS_MISSING = {}, snapNb = null;
+  function paintSample(){
     var lbl = sampleOn ? "Clear sample data" : "Try sample data";
     btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
     btn.setAttribute("aria-label", lbl);
     btn.title = lbl;
   }
-  /* Snapshot ALL transient UI state, not just persisted data: typed-but-
-     uncommitted input/select/textarea values (header fields, room names,
-     notes, add-room and defect forms), checked radios/checkboxes, the open
-     defect edit card, the #msg line, and interactive report selections. */
-  function snapshotUI() {
-    var ui = { fields: [], msg: null, editing: editingDefectId, clicks: [] };
-    try {
-      document.querySelectorAll("input, textarea, select").forEach(function (el) {
-        if (el.type === "file") return; /* unreadable by design; import resets it */
-        var key = null;
-        if (el.id) key = "#" + el.id;
-        else {
-          var room = el.closest ? el.closest("[data-room]") : null;
-          var cls = String(el.className || "").split(" ").filter(function (c) {
-            return c && (c.indexOf("de-") === 0 || c.indexOf("d-") === 0);
-          })[0];
-          if (room && room.getAttribute("data-room") && cls) key = room.getAttribute("data-room") + "|" + cls;
-        }
-        if (!key) return;
-        var isCheck = el.type === "checkbox" || el.type === "radio";
-        ui.fields.push({ key: key,
-          value: isCheck ? null : el.value,
-          checked: isCheck ? !!el.checked : null });
-      });
-      var m = document.getElementById("msg");
-      if (m) ui.msg = { text: m.textContent, alert: m.classList.contains("alert") };
-      /* interactive report selections: overview rows, donut segments, funnel
-         stages — re-clicked by deterministic aria-label after re-render */
-      document.querySelectorAll('#report [aria-pressed="true"]').forEach(function (el) {
-        var a = el.getAttribute("aria-label");
-        if (a) ui.clicks.push(a);
-      });
-    } catch (e) {}
-    return ui;
-  }
-  function restoreUI(ui) {
-    if (!ui) return;
-    try {
-      ui.fields.forEach(function (f) {
-        var el = null;
-        if (f.key.charAt(0) === "#") el = document.getElementById(f.key.slice(1));
-        else {
-          var parts = f.key.split("|");
-          el = document.querySelector('[data-room="' + parts[0] + '"] .' + parts[1]);
-        }
-        if (!el) return;
-        if (f.value !== null && f.value !== undefined) { try { el.value = f.value; } catch (e) {} }
-        if (f.checked !== null && f.checked !== undefined) el.checked = f.checked;
-      });
-      var m = document.getElementById("msg");
-      if (m && ui.msg) {
-        m.textContent = ui.msg.text;
-        m.classList.toggle("alert", !!ui.msg.alert);
-      }
-      (ui.clicks || []).forEach(function (a) {
-        var el = null;
-        document.querySelectorAll('#report [aria-pressed]').forEach(function (x) {
-          if (x.getAttribute("aria-label") === a) el = x;
-        });
-        if (el && el.getAttribute("aria-pressed") !== "true") el.click();
-      });
-    } catch (e) {}
-  }
-  function paintSample() {
-    var lbl = sampleOn ? "Clear sample data" : "Try sample data";
-    btn.setAttribute("aria-pressed", sampleOn ? "true" : "false");
-    btn.setAttribute("aria-label", lbl);
-    btn.title = lbl;
-  }
-  function snapshot() {
-    try { snap = JSON.parse(JSON.stringify(state)); } catch (e) { snap = blankState(); }
-    try {
+  function snapshot(){
+    try{ snap = JSON.parse(JSON.stringify(state)); }catch(e){ snap = { boxes: [], customRooms: [], nextNumber: 101 }; }
+    try{ snapNb = document.getElementById("nb-number").value; }catch(e){ snapNb = null; }
+    try{
       var raw = localStorage.getItem(LS_KEY);
       snapLS = (raw === null || raw === undefined) ? LS_MISSING : raw;
-    } catch (e) { snapLS = LS_MISSING; }
+    }catch(e){ snapLS = LS_MISSING; }
   }
-  function applySample() {
-    /* same demo content as loadDemo(), minus the demo-button say/sound */
-    state = {
-      header: { address: "123 Example St, Apt 4B, Bloomington, IN", landlord: "Example Property Mgmt",
-                leaseStart: todayStr(), moveIn: todayStr(), tenants: "Demo Tenant" },
-      rooms: [
-        { id: uid(), name: "Living Room", rating: "Good", notes: "Fresh paint; carpet worn near entry.",
-          photos: [], defects: [
-            makeDefect("South wall", "scuff", "minor", "Scuff marks near the front door, about 2 ft long."),
-            makeDefect("Window sill", "crack", "moderate", "Hairline crack along the sill, east window.") ] },
-        { id: uid(), name: "Kitchen", rating: "Fair", notes: "Appliances older; grout discolored.",
-          photos: [], defects: [
-            makeDefect("Countertop", "stain", "moderate", "Dark ring stain near the sink, roughly 4 in across.") ] }
+  function applySample(){
+    /* same demo content as loadDemo(), minus the replace-confirm and sounds */
+    state = sanitizeState({
+      nextNumber: 105,
+      boxes: [
+        { number: 101, room: "Kitchen", label: "Pots & pans", color: "red", fragile: false, packed: true,
+          items: ["Cast iron skillet", "Saucepan set", "Wooden spoons", "Measuring cups", "Colander"] },
+        { number: 102, room: "Kitchen", label: "Glassware", color: "red", fragile: true, packed: false,
+          items: ["Wine glasses (6)", "Coffee mugs (4)", "Mixing bowls", "Plates"] },
+        { number: 103, room: "Bedroom", label: "Bedding", color: "blue", fragile: false, packed: true,
+          items: ["Duvet", "2 pillow sets", "Throw blanket", "Mattress pad"] },
+        { number: 104, room: "Office", label: "Desk gear", color: "green", fragile: true, packed: false,
+          items: ["Monitor", "HDMI cable", "Power strip", "Laptop stand", "USB-C cables", "Notebook"] }
       ]
-    };
-    editingDefectId = null;
+    });
+    refreshRoomSelect();
+    document.getElementById("nb-number").value = state.nextNumber;
     renderAll();
+    runSearch();
   }
-  function restore() {
-    state = snap || blankState();
-    try {
-      if (snapLS === LS_MISSING) localStorage.removeItem(LS_KEY);
+  function restore(){
+    state = snap || { boxes: [], customRooms: [], nextNumber: 101 };
+    try{
+      if(snapLS === LS_MISSING) localStorage.removeItem(LS_KEY);
       else localStorage.setItem(LS_KEY, snapLS);
-    } catch (e) {}
+    }catch(e){}
     snap = null; snapLS = null;
-    var ui = snapUI; snapUI = null;
-    editingDefectId = (ui && ui.editing) || null;
+    refreshRoomSelect();
+    document.getElementById("nb-number").value = (snapNb !== null && snapNb !== undefined) ? snapNb : state.nextNumber;
+    snapNb = null;
     renderAll();
-    restoreUI(ui);
+    runSearch();
   }
-  btn.addEventListener("click", function () {
-    if (!sampleOn) {
+  btn.addEventListener("click", function(){
+    if(!sampleOn){
       snapshot();
-      snapUI = snapshotUI();
       window.__gSampleOn = true;
       sampleOn = true;
       applySample();
-    } else {
+    }else{
       window.__gSampleOn = false;
       sampleOn = false;
       restore();
@@ -1584,18 +1584,20 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   paintSample();
 })();
-/* Esc clears chart spotlights (click again / Esc restores default view) */
+/* Esc clears chart/stat spotlights (click again / Esc restores default view) */
 document.addEventListener("keydown", function (e) {
   if (e.key !== "Escape") return;
   var hit = false;
-  var segs = document.querySelectorAll('.donut-svg circle.donut-seg[aria-pressed="true"]');
-  var rows = document.querySelectorAll('.ov-row.sel');
-  var sts = document.querySelectorAll('.funnel-stage.sel');
-  var i, els = [];
-  for (i = 0; i < segs.length; i++) els.push(segs[i]);
-  for (i = 0; i < rows.length; i++) els.push(rows[i]);
-  for (i = 0; i < sts.length; i++) els.push(sts[i]);
-  els.forEach(function (el) { el.click(); hit = true; });
+  var seg = document.querySelector('#room-donut circle.vseg[aria-pressed="true"]');
+  if (seg) { seg.click(); hit = true; }
+  var leg = document.querySelector('#room-donut-legend .leg-row.leg-sel');
+  if (leg) { leg.click(); hit = true; }
+  var ur = document.querySelector('#room-unpack .ru-row.sel');
+  if (ur) { ur.click(); hit = true; }
+  var pill = document.querySelector('.room-pill[aria-pressed="true"]');
+  if (pill) { pill.click(); hit = true; }
+  var st = document.querySelector('#stat-grid .stat[aria-pressed="true"]');
+  if (st) { boxFilter = null; renderAll(); hit = true; }
   if (hit) Sound.click();
 });
 </script>
