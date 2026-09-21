@@ -1,5 +1,28 @@
 # ZoneSync — build log
 
+## 2026-09-21 — top-bar standard + sounds + clickable visuals (sweep baseline)
+1. **Top-bar cluster (Glen's permanent standard):** right-side `.g-header-actions`
+   wrapper with, left to right: More Apps pill, dark-mode icon button, sound
+   toggle at the far right. Dark-mode toggle is now icon-only (moon/sun SVG,
+   no "Dark mode" text); aria-label/title update per mode ("Switch to dark
+   mode" / "Switch to light mode").
+2. **Sound engine:** WebAudio oscillator tones only (no audio files, offline).
+   click/select/success/error/toggleTheme wired into: member add/edit/delete,
+   viewer-tz change, plan submit, export/import/demo/clear, theme toggle,
+   overlap-window expand, timeline spotlight. On by default; mute toggle
+   persists in localStorage under `zonesync.sound`. Toggle button is icon-only
+   (speaker / muted speaker), hidden in print CSS with the rest of the cluster.
+3. **Clickable overlap windows:** each window is now a button; activating it
+   expands a "Free: <names>" detail line and highlights the window's hours on
+   the 24-hour strip. Activating again (or another window) collapses. Works
+   with mouse, Enter, and Space (aria-expanded).
+4. **Clickable timeline strips:** each member's day strip is a keyboard-
+   focusable control; activating spotlights that member (other rows dim),
+   activating again restores. Works with mouse, Enter, and Space
+   (aria-pressed).
+5. Gallery re-shot (1-overview, 2-overlap, 4-dark-mode, 5-mobile) with the new
+   header; headless-tested in Chromium with zero JS errors.
+
 ## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
 1. **New "Team day timeline" card** between Overlap and Meeting planner: one row per
    member showing their working hours as a 24-segment day strip in viewer time,

@@ -90,15 +90,26 @@ header.top {
 header.top h1 { margin: 0; font-size: 1.55rem; letter-spacing: -0.01em; }
 header.top p { margin: 3px 0 0; color: rgba(255,255,255,.88); font-size: 0.92rem; }
 #theme-toggle {
-  flex: none; display: inline-flex; align-items: center; gap: 8px;
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
   background: rgba(255,255,255,.16); color: #fff;
   border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px;
-  font-weight: 600; box-shadow: none;
+  box-shadow: none;
 }
 #theme-toggle:hover { background: rgba(255,255,255,.26); filter: none; }
+#theme-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 #theme-toggle svg { width: 17px; height: 17px; }
 [data-theme="dark"] #theme-toggle .ic-moon { display: none; }
 [data-theme="light"] #theme-toggle .ic-sun { display: none; }
+#sound-toggle {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  background: rgba(255,255,255,.16); color: #fff; font-size: 1.05rem; line-height: 1;
+  border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px; box-shadow: none;
+  cursor: pointer;
+}
+#sound-toggle:hover { background: rgba(255,255,255,.26); filter: none; }
+#sound-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
 /* ---------- buttons ---------- */
 button, select, input { font: inherit; color: var(--fg); }
@@ -181,6 +192,14 @@ tbody tr:nth-child(even) { background: rgba(127,127,150,.06); }
 .overlap-seg.full { box-shadow: inset 0 0 0 2px var(--gold); }
 .overlap-scale { display: flex; margin-top: 4px; }
 .overlap-scale span { flex: 1 1 0; min-width: 0; font-size: 0.72rem; color: var(--muted); }
+/* ---------- clickable overlap windows ---------- */
+button.overlap-item { width: 100%; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+button.overlap-item:hover { border-color: var(--grad-1); }
+button.overlap-item:focus-visible { outline: 2px solid var(--grad-1); outline-offset: 2px; }
+button.overlap-item[aria-expanded="true"] { border-color: var(--grad-1); box-shadow: 0 0 0 1px var(--grad-1); }
+.overlap-detail { margin: 8px 0 0; padding: 8px 14px; font-size: 0.85rem; color: var(--muted); border-left: 3px solid var(--grad-1); }
+.overlap-detail strong { color: var(--fg); }
+.overlap-seg.hl { box-shadow: inset 0 0 0 2px var(--grad-1); }
 
 /* ---------- team day timeline ---------- */
 .tl-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
@@ -198,6 +217,11 @@ tbody tr:nth-child(even) { background: rgba(127,127,150,.06); }
 .tl-seg.work.meet { box-shadow: inset 0 0 0 2px var(--gold), inset 0 -5px 0 0 var(--gold); }
 .tl-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; font-size: 0.8rem; color: var(--muted); }
 .tl-legend .sw { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 6px; vertical-align: -2px; }
+/* ---------- clickable timeline strips ---------- */
+.tl-strip[role="button"] { cursor: pointer; border-radius: 6px; }
+.tl-strip[role="button"]:focus-visible { outline: 2px solid var(--grad-1); outline-offset: 2px; }
+.tl-row.dim { opacity: 0.3; }
+.tl-row.spot .tl-strip { box-shadow: 0 0 0 2px var(--grad-1); }
 .tl-legend .sw.work { background: rgba(var(--accent-rgb), .55); }
 .tl-legend .sw.gold { box-shadow: inset 0 0 0 2px var(--gold); background: rgba(127,127,150,.12); }
 .tl-legend .sw.now { box-shadow: inset 0 4px 0 0 var(--gold); background: rgba(127,127,150,.12); }
@@ -282,7 +306,7 @@ footer.site a { color: var(--muted); }
   .g-header-actions { gap: 6px; }
 }
 @media print {
-  .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
+  #theme-toggle, #sound-toggle, .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
 }
 </style>
 </head>
@@ -296,8 +320,11 @@ footer.site a { color: var(--muted); }
         <p>Remote team time-zone overlap, at a glance. Everything runs offline in this file.</p>
       </div>
     </div>
-    <button type="button" id="theme-toggle" aria-label="Toggle dark mode"><span class="ic-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 019.4 4 8.4 8.4 0 1020 14.6z"/></svg></span><span class="ic-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.8M12 18.7v2.8M2.5 12h2.8M18.7 12h2.8M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/></svg></span><span id="themeLabel">Dark mode</span></button>
-    <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+    <div class="g-header-actions">
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+      <button type="button" id="theme-toggle" aria-label="Switch to dark mode"><span class="ic-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.4 8.4 0 019.4 4 8.4 8.4 0 1020 14.6z"/></svg></span><span class="ic-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.4"/><path d="M12 2.5v2.8M12 18.7v2.8M2.5 12h2.8M18.7 12h2.8M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/></svg></span></button>
+      <button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
+    </div>
   </header>
 
   <main>
@@ -465,17 +492,77 @@ function currentTheme() {
   return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 }
 function paintThemeButton() {
-  document.getElementById('themeLabel').textContent = currentTheme() === 'dark' ? 'Light mode' : 'Dark mode';
+  var label = currentTheme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  themeBtn.setAttribute('aria-label', label);
+  themeBtn.title = label;
+  themeBtn.setAttribute('aria-pressed', currentTheme() === 'dark' ? 'true' : 'false');
 }
 themeBtn.addEventListener('click', function () {
   var next = currentTheme() === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
   paintThemeButton();
+  Sound.toggleTheme();
   renderOverlap();
   renderTimeline();
 });
 paintThemeButton();
+
+/* ---------------- subtle sounds (Web Audio, no files, offline) ---------------- */
+var Sound = (function () {
+  var KEY = 'zonesync.sound', on = true, ctx = null;
+  try { if (window.localStorage.getItem(KEY) === 'off') on = false; } catch (e) {}
+  function ac() {
+    try {
+      if (!ctx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        ctx = new AC();
+      }
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    } catch (e) { return null; }
+  }
+  function tone(freq, dur, type, vol, delay) {
+    var c = ac(); if (!c) return;
+    try {
+      var t = c.currentTime + (delay || 0);
+      var o = c.createOscillator(), g = c.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.05);
+    } catch (e) {}
+  }
+  return {
+    isOn: function () { return on; },
+    toggle: function () {
+      on = !on;
+      try { window.localStorage.setItem(KEY, on ? 'on' : 'off'); } catch (e) {}
+      return on;
+    },
+    click: function () { if (on) tone(520, 0.06, 'sine', 0.045); },
+    select: function () { if (on) { tone(660, 0.07, 'sine', 0.055); tone(880, 0.09, 'sine', 0.045, 0.06); } },
+    success: function () { if (on) { tone(660, 0.09, 'sine', 0.06); tone(990, 0.12, 'sine', 0.05, 0.08); } },
+    error: function () { if (on) tone(170, 0.16, 'sawtooth', 0.045); },
+    toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
+  };
+})();
+function bindSoundToggle() {
+  var btn = document.getElementById('sound-toggle');
+  if (!btn) return;
+  function paint() {
+    var on = Sound.isOn();
+    btn.textContent = on ? '\uD83D\uDD0A' : '\uD83D\uDD07';
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
+    btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
+  }
+  btn.addEventListener('click', function () { Sound.toggle(); paint(); Sound.click(); });
+  paint();
+}
 
 /* ---------------- state ---------------- */
 function toHourInt(v) {
@@ -631,6 +718,7 @@ viewerSel.addEventListener('change', function () {
     state.viewerTz = viewerSel.value;
     saveState();
     renderAll();
+    Sound.click();
   }
 });
 
@@ -664,7 +752,7 @@ function renderMembers() {
     var eb = el('button', 'Edit');
     eb.type = 'button';
     eb.setAttribute('aria-label', 'Edit ' + m.name);
-    eb.addEventListener('click', function () { startEdit(i); });
+    eb.addEventListener('click', function () { startEdit(i); Sound.click(); });
     var db = el('button', 'Delete');
     db.type = 'button';
     db.setAttribute('aria-label', 'Delete ' + m.name);
@@ -674,6 +762,7 @@ function renderMembers() {
       else if (editingIndex > i) editingIndex--;
       saveState();
       renderAll();
+      Sound.success();
     });
     act.appendChild(eb);
     act.appendChild(document.createTextNode(' '));
@@ -732,10 +821,48 @@ function renderOverlap() {
   });
   var shown = wins.slice(0, 8);
   shown.forEach(function (w) {
-    var li = el('li', null, 'overlap-item' + (w.count === n ? ' all' : ''));
+    var li = el('li');
     var endLabel = (w.end === 24) ? '12 AM (midnight)' : fmtHour(w.end);
-    li.appendChild(el('span', fmtHour(w.start) + ' \u2013 ' + endLabel, 'overlap-time'));
-    li.appendChild(el('span', w.count === n ? 'Everyone free' : w.count + ' of ' + n + ' free', 'overlap-count' + (w.count === n ? ' gold' : '')));
+    var countLabel = w.count === n ? 'Everyone free' : w.count + ' of ' + n + ' free';
+    var btn = el('button', null, 'overlap-item' + (w.count === n ? ' all' : ''));
+    btn.type = 'button';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', fmtHour(w.start) + ' to ' + endLabel + ': ' +
+      countLabel + '. Activate to see who is free.');
+    btn.appendChild(el('span', fmtHour(w.start) + ' \u2013 ' + endLabel, 'overlap-time'));
+    btn.appendChild(el('span', countLabel, 'overlap-count' + (w.count === n ? ' gold' : '')));
+    var detail = el('div', null, 'overlap-detail');
+    detail.hidden = true;
+    btn.addEventListener('click', function () {
+      var wasOpen = btn.getAttribute('aria-expanded') === 'true';
+      var btns = overlapList.querySelectorAll('button.overlap-item');
+      for (var i = 0; i < btns.length; i++) btns[i].setAttribute('aria-expanded', 'false');
+      var details = overlapList.querySelectorAll('.overlap-detail');
+      for (var j = 0; j < details.length; j++) details[j].hidden = true;
+      var segs = overlapStrip.querySelectorAll('.overlap-seg');
+      for (var k = 0; k < segs.length; k++) segs[k].classList.remove('hl');
+      if (!wasOpen) {
+        btn.setAttribute('aria-expanded', 'true');
+        var names = [];
+        state.members.forEach(function (m) {
+          if (workingAt(m, w.start, today)) names.push(m.name);
+        });
+        detail.textContent = '';
+        detail.appendChild(el('strong', 'Free: '));
+        detail.appendChild(document.createTextNode(
+          (names.length ? names.join(', ') : 'No one') +
+          ' \u2014 ' + fmtHour(w.start) + ' to ' + endLabel + ' ' + state.viewerTz));
+        detail.hidden = false;
+        for (var h = w.start; h < w.end && h < 24; h++) {
+          if (segs[h]) segs[h].classList.add('hl');
+        }
+        Sound.select();
+      } else {
+        Sound.click();
+      }
+    });
+    li.appendChild(btn);
+    li.appendChild(detail);
     overlapList.appendChild(li);
   });
   if (!shown.length) {
@@ -773,6 +900,28 @@ function fmtTime(h, min) {
 }
 /* One member's 24h day in viewer time. markerH (>=0) rings the meeting hour,
    nowH (>=0) flags the current hour. */
+/* Clicking a member's day strip spotlights that member (dims the rest);
+   clicking again (or another member) restores. Keyboard: Enter/Space. */
+function toggleSpot(row, strip) {
+  var wasOn = strip.getAttribute('aria-pressed') === 'true';
+  var rows = row.parentNode.querySelectorAll('.tl-row');
+  for (var i = 0; i < rows.length; i++) {
+    rows[i].classList.remove('spot');
+    rows[i].classList.remove('dim');
+    var s = rows[i].querySelector('.tl-strip');
+    if (s) s.setAttribute('aria-pressed', 'false');
+  }
+  if (!wasOn) {
+    row.classList.add('spot');
+    for (var j = 0; j < rows.length; j++) {
+      if (rows[j] !== row) rows[j].classList.add('dim');
+    }
+    strip.setAttribute('aria-pressed', 'true');
+    Sound.select();
+  } else {
+    Sound.click();
+  }
+}
 function buildMemberStrip(m, day, counts, n, markerH, nowH) {
   var row = el('div', null, 'tl-row');
   var name = el('div', null, 'tl-name');
@@ -792,9 +941,15 @@ function buildMemberStrip(m, day, counts, n, markerH, nowH) {
       (counts[h] === n && n > 1 ? ' (everyone free)' : '');
     strip.appendChild(seg);
   }
-  strip.setAttribute('role', 'img');
-  strip.setAttribute('aria-label', m.name + ': working hours ' + m.start + ':00 to ' +
-    m.end + ':00 ' + m.tz + ', shown in ' + state.viewerTz + ' time.');
+  strip.setAttribute('role', 'button');
+  strip.setAttribute('tabindex', '0');
+  strip.setAttribute('aria-pressed', 'false');
+  strip.setAttribute('aria-label', 'Spotlight ' + m.name + '\u2019s day: working hours ' + m.start + ':00 to ' +
+    m.end + ':00 ' + m.tz + ', shown in ' + state.viewerTz + ' time. Activate to toggle spotlight.');
+  strip.addEventListener('click', function () { toggleSpot(row, strip); });
+  strip.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggleSpot(row, strip); }
+  });
   row.appendChild(strip);
   return row;
 }
@@ -838,7 +993,7 @@ function cancelEdit() {
   submitBtn.textContent = 'Add member';
   cancelBtn.hidden = true;
 }
-cancelBtn.addEventListener('click', cancelEdit);
+cancelBtn.addEventListener('click', function () { cancelEdit(); Sound.click(); });
 form.addEventListener('submit', function (ev) {
   ev.preventDefault();
   var m = sanitizeMember({
@@ -847,22 +1002,26 @@ form.addEventListener('submit', function (ev) {
   });
   if (!m) {
     setDataStatus('Could not save: check the name, time zone, and hours (0\u201323).', 'err');
+    Sound.error();
     return;
   }
   if (m.start === m.end) {
     setDataStatus('Work start and end are both ' + pad2(m.start) + ':00 \u2014 that would be a zero-hour shift. ' +
       'Pick different hours (overnight shifts like 22 to 6 are fine).', 'err');
+    Sound.error();
     return;
   }
   var lower = m.name.toLowerCase();
   for (var di = 0; di < state.members.length; di++) {
     if (di !== editingIndex && state.members[di].name.toLowerCase() === lower) {
       setDataStatus('A team member named "' + m.name + '" already exists. Use a different name.', 'err');
+      Sound.error();
       return;
     }
   }
   if (editingIndex < 0 && state.members.length >= MAX_MEMBERS) {
     setDataStatus('The team is full (' + MAX_MEMBERS + ' members max). Delete someone before adding more.', 'err');
+    Sound.error();
     return;
   }
   if (editingIndex >= 0) state.members[editingIndex] = m;
@@ -871,6 +1030,7 @@ form.addEventListener('submit', function (ev) {
   cancelEdit();
   renderAll();
   setDataStatus('', '');
+  Sound.success();
 });
 
 /* ---------------- meeting planner ---------------- */
@@ -959,6 +1119,7 @@ function renderPlan() {
 planForm.addEventListener('submit', function (ev) {
   ev.preventDefault();
   renderPlan();
+  Sound.click();
 });
 
 /* ---------------- data: export / import / demo / clear ---------------- */
@@ -973,6 +1134,7 @@ document.getElementById('btn-export').addEventListener('click', function () {
   a.click();
   setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
   setDataStatus('Exported ' + state.members.length + ' member(s).', 'ok');
+  Sound.success();
 });
 document.getElementById('btn-import').addEventListener('click', function () { fileInput.click(); });
 fileInput.addEventListener('change', function () {
@@ -981,6 +1143,7 @@ fileInput.addEventListener('change', function () {
   /* Import DoS guard: parsing happens before any size validation otherwise. */
   if (f.size > 1000000) {
     setDataStatus('Import file is too large (max 1 MB).', 'err');
+    Sound.error();
     fileInput.value = '';
     return;
   }
@@ -997,6 +1160,7 @@ fileInput.addEventListener('change', function () {
           'Import ' + list.length + ' member(s) from this file? They will be ADDED to your ' +
           'current team \u2014 existing members are kept, duplicates skipped.')) {
         setDataStatus('Import cancelled.', '');
+        Sound.click();
         fileInput.value = '';
         return;
       }
@@ -1024,8 +1188,10 @@ fileInput.addEventListener('change', function () {
         'No members in file.';
       if (tzOk) msg += ' Viewer time zone set to ' + data.viewerTz + '.';
       setDataStatus(msg, bad ? 'err' : 'ok');
+      if (bad) Sound.error(); else Sound.success();
     } catch (e) {
       setDataStatus('Import failed: not a valid ZoneSync JSON file.', 'err');
+      Sound.error();
     }
     fileInput.value = '';
   };
@@ -1040,6 +1206,7 @@ document.getElementById('btn-demo').addEventListener('click', function () {
   cancelEdit();
   renderAll();
   setDataStatus('Demo team loaded (New York, London, Berlin, Tokyo).', 'ok');
+  Sound.success();
 });
 document.getElementById('btn-clear').addEventListener('click', function () {
   if (window.confirm('Remove all team members? This cannot be undone.')) {
@@ -1048,6 +1215,7 @@ document.getElementById('btn-clear').addEventListener('click', function () {
     cancelEdit();
     renderAll();
     setDataStatus('All members cleared.', 'ok');
+    Sound.success();
   }
 });
 
@@ -1061,6 +1229,7 @@ function renderAll() {
 fillZoneSelect(viewerSel, state.viewerTz);
 fillZoneSelect(tzInput, state.viewerTz);
 pDate.value = viewerTodayISO();
+bindSoundToggle();
 renderAll();
 
 })();
