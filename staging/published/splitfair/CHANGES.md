@@ -1,5 +1,14 @@
 # SplitFair — build log
 
+## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
+1. **New "Who owes what" bar chart** in Results, below the Totals table: per-person
+   total-owed bars sorted largest-first, accent-gradient fills, values in a
+   dedicated right column (no collisions), theme-aware via --accent/--accent-2,
+   aria-label summarizes every person's total. Names render via textContent.
+   Empty state unchanged (early return before totals). Verified headlessly:
+   sorted desc, widths proportional (100/79.1/59.9%), no page errors;
+   light + dark screenshots inspected.
+
 ## 2026-09-19 — Initial build (app #5, free loop)
 
 Built per `~/workspace/microtool-research/free-loop/app5-splitfair-SPEC.md` (v1, picked 2026-09-19).

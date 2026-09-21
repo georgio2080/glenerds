@@ -222,8 +222,15 @@
     -webkit-text-fill-color: transparent;
   }
   [data-theme="dark"] #results h3 { -webkit-text-fill-color: var(--accent); background: none; }
-  .settle-list { list-style: none; padding: 0; margin: 10px 0 0; }
-  .settle-list li {
+  /* ---------- balance bars (visual representation) ---------- */
+  .sf-bars { display: grid; gap: 8px; margin: 10px 0 4px; }
+  .sf-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; align-items: center; }
+  .sf-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sf-val { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; white-space: nowrap; }
+  .sf-track { grid-column: 1 / -1; height: 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); overflow: hidden; }
+  .sf-fill { height: 100%; border-radius: 999px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); min-width: 0; }
+  @media (max-width: 560px) { .sf-name { font-size: .92rem; } }
+  .settle-list { list-style: none; padding: 0; margin: 10px 0 0; }  .settle-list li {
     padding: 12px 14px;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -930,6 +937,27 @@ function renderResults() {
   tFoot.appendChild(gfr);
   tTable.appendChild(tFoot);
   resultsEl.appendChild(tTable);
+
+  /* Visual: who-owes-what bars, sorted largest share first. */
+  resultsEl.appendChild(el("h3", null, "Who owes what"));
+  var ranked = state.people.map(function (p) { return { name: p.name, total: totals[p.id] }; })
+    .sort(function (a, b) { return b.total - a.total; });
+  var maxTotal = ranked.length ? ranked[0].total : 0;
+  var bars = el("div", { "class": "sf-bars", role: "img",
+    "aria-label": "Bar chart of total owed per person: " +
+      ranked.map(function (r) { return r.name + " " + money(r.total); }).join(", ") });
+  ranked.forEach(function (r) {
+    var row = el("div", { "class": "sf-row" });
+    row.appendChild(el("div", { "class": "sf-name", title: r.name }, r.name));
+    row.appendChild(el("div", { "class": "sf-val" }, money(r.total)));
+    var track = el("div", { "class": "sf-track" });
+    var fill = el("div", { "class": "sf-fill" });
+    fill.style.width = (maxTotal > 0 ? (r.total / maxTotal * 100) : 0).toFixed(1) + "%";
+    track.appendChild(fill);
+    row.appendChild(track);
+    bars.appendChild(row);
+  });
+  resultsEl.appendChild(bars);
 
   /* Settle up */
   resultsEl.appendChild(el("h3", null, "Settle up"));
