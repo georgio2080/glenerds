@@ -972,7 +972,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
 
   <section class="g-card work" id="work-card" aria-labelledby="work-h">
     <h2 class="g-title" id="work-h"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-list"/></svg> Show your work</h2>
-    <p class="g-caption" style="margin-bottom:8px">No black box. Here is the exact formula and every number substituted, so you can check it yourself.</p>
+    <p class="g-caption" style="margin-bottom:8px">No black box. Step 1 shows the exact substituted values; later steps print rounded headlines — totals are computed at full precision.</p>
     <div id="work-steps"></div>
   </section>
 
@@ -1054,7 +1054,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     S.sex = id === 's-m' ? 'm' : 'f';
   });
   seg(['g-cut', 'g-main', 'g-bulk'], function () {
-    return S.goalPct === -20 ? 'g-cut' : (S.goalPct === 0 ? 'g-main' : (S.goalPct === 10 ? 'g-bulk' : 'g-cut'));
+    return S.goalPct === -20 ? 'g-cut' : (S.goalPct === 0 ? 'g-main' : (S.goalPct === 10 ? 'g-bulk' : null));
   }, function (id) {
     S.goalPct = id === 'g-cut' ? -20 : (id === 'g-main' ? 0 : 10);
     $('goal-slider').value = S.goalPct;
@@ -1076,25 +1076,26 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     if (imp) {
       var totalIn = S.heightCm / IN;
       var ft = Math.floor(totalIn / 12);
-      var inch = Math.round((totalIn - ft * 12) * 2) / 2;
+      var inch = Math.round((totalIn - ft * 12) * 10) / 10;
       if (inch === 12) { ft += 1; inch = 0; }
       $('h-ft').value = ft; $('h-in').value = inch;
-      $('w-lb').value = Math.round(S.weightKg / LB * 2) / 2;
+      $('w-lb').value = Math.round(S.weightKg / LB * 100) / 100;
     } else {
-      $('h-cm').value = Math.round(S.heightCm * 2) / 2;
-      $('w-kg').value = Math.round(S.weightKg * 2) / 2;
+      $('h-cm').value = Math.round(S.heightCm * 100) / 100;
+      $('w-kg').value = Math.round(S.weightKg * 100) / 100;
     }
   }
 
   function readInputs() {
     var ok = true;
+    var errFailed = {}; // one shared error element (e.g. h-err) stays shown until ALL its fields pass
     function num(id, errId, min, max, allowBlank) {
       var el = $(id), raw = el.value.trim();
       var err = $(errId);
       if (raw === '' && allowBlank) { err.classList.remove('show'); return null; }
       var v = parseFloat(raw);
-      if (!isFinite(v) || v < min || v > max) { err.classList.add('show'); ok = false; return NaN; }
-      err.classList.remove('show');
+      if (!isFinite(v) || v < min || v > max) { err.classList.add('show'); errFailed[errId] = true; ok = false; return NaN; }
+      if (!errFailed[errId]) err.classList.remove('show');
       return v;
     }
     var age = num('age', 'age-err', 10, 120);
@@ -1103,13 +1104,15 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     if (S.units === 'imp') {
       var ft = num('h-ft', 'h-err', 2, 8), inch = num('h-in', 'h-err', 0, 11.99);
       var lb = num('w-lb', 'w-err', 40, 1100);
-      if (isFinite(ft) && isFinite(inch)) hCm = (ft * 12 + inch) * IN;
+      if (isFinite(ft) && isFinite(inch)) hCm = Math.round((ft * 12 + inch) * IN * 100) / 100;
       else { hCm = NaN; }
       if (isFinite(ft) && isFinite(inch) && (ft * 12 + inch < 36 || ft * 12 + inch > 96)) { $('h-err').classList.add('show'); ok = false; }
-      wKg = isFinite(lb) ? lb * LB : NaN;
+      wKg = isFinite(lb) ? Math.round(lb * LB * 100) / 100 : NaN;
     } else {
       hCm = num('h-cm', 'h-cm-err', 90, 250);
       wKg = num('w-kg', 'w-kg-err', 18, 500);
+      if (isFinite(hCm)) hCm = Math.round(hCm * 100) / 100;
+      if (isFinite(wKg)) wKg = Math.round(wKg * 100) / 100;
     }
     return { ok: ok, age: age, bodyFat: bf, heightCm: hCm, weightKg: wKg };
   }
@@ -1186,27 +1189,27 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
   };
   var ACT_LABELS = { '1.2': 'Sedentary', '1.375': 'Lightly active', '1.55': 'Moderately active', '1.725': 'Very active', '1.9': 'Extra active' };
 
-  function r1(x) { return Math.round(x * 10) / 10; }
+  function r2(x) { return Math.round(x * 100) / 100; }
   function fmt(x) { return Math.round(x).toLocaleString('en-US'); }
 
   function bmrMifflin(w, h, a, sex) {
     // w kg, h cm, a years
     return sex === 'm'
-      ? { v: 10 * w + 6.25 * h - 5 * a + 5, expr: '10 × ' + r1(w) + ' + 6.25 × ' + r1(h) + ' − 5 × ' + a + ' + 5' }
-      : { v: 10 * w + 6.25 * h - 5 * a - 161, expr: '10 × ' + r1(w) + ' + 6.25 × ' + r1(h) + ' − 5 × ' + a + ' − 161' };
+      ? { v: 10 * w + 6.25 * h - 5 * a + 5, expr: '10 × ' + r2(w) + ' + 6.25 × ' + r2(h) + ' − 5 × ' + a + ' + 5' }
+      : { v: 10 * w + 6.25 * h - 5 * a - 161, expr: '10 × ' + r2(w) + ' + 6.25 × ' + r2(h) + ' − 5 × ' + a + ' − 161' };
   }
   function bmrHB(w, h, a, sex) {
     return sex === 'm'
       ? { v: 88.362 + 13.397 * w + 4.799 * h - 5.677 * a,
-          expr: '88.362 + 13.397 × ' + r1(w) + ' + 4.799 × ' + r1(h) + ' − 5.677 × ' + a }
+          expr: '88.362 + 13.397 × ' + r2(w) + ' + 4.799 × ' + r2(h) + ' − 5.677 × ' + a }
       : { v: 447.593 + 9.247 * w + 3.098 * h - 4.330 * a,
-          expr: '447.593 + 9.247 × ' + r1(w) + ' + 3.098 × ' + r1(h) + ' − 4.330 × ' + a };
+          expr: '447.593 + 9.247 × ' + r2(w) + ' + 3.098 × ' + r2(h) + ' − 4.330 × ' + a };
   }
   function bmrKatch(w, bf) {
     var lbm = w * (1 - bf / 100);
     return { v: 370 + 21.6 * lbm,
-      expr: '370 + 21.6 × ' + r1(lbm),
-      extra: 'Lean body mass = ' + r1(w) + ' kg × (1 − ' + bf + '%) = ' + r1(lbm) + ' kg' };
+      expr: '370 + 21.6 × ' + r2(lbm),
+      extra: 'Lean body mass = ' + r2(w) + ' kg × (1 − ' + bf + '%) = ' + r2(lbm) + ' kg' };
   }
 
   function compute() {
