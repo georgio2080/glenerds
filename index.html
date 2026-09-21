@@ -3,236 +3,246 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Should I Renew My Lease or Move? Free Cost Calculator</title>
-<meta name="description" content="Free lease renewal vs moving calculator: should I renew my lease or move? Compare the true cost of moving vs staying — movers, deposits, fees, overlap rent — and find your break-even month. Offline, private, no account.">
-<script>
-/* Pre-theme: set data-theme before first paint to avoid flash */
-(function(){try{
-  var t=localStorage.getItem("renewormove-theme");
-  if(!t){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
-  document.documentElement.setAttribute("data-theme",t);
-}catch(e){}})();
-</script>
+<meta name="description" content="Free offline home renovation budget tracker: set category budgets, log expenses, compare contractor quotes, and manage change orders with a contingency buffer. No account, no subscription — your data never leaves this device.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23b45309'/%3E%3Ctext x='32' y='44' font-size='28' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%92%3C/text%3E%3C/svg%3E">
+<title>Free Home Renovation Budget Tracker: Remodel Cost Planner & Quote Comparison (RenoTrack)</title>
 <style>
-:root,[data-theme="light"]{
-  --bg:#f3f1fa; --card:#ffffff; --text:#1e1b2e; --muted:#6b6584;
-  --border:#e4e0f3; --input-bg:#ffffff; --input-border:#d8d3ea;
-  --chip-bg:#f0edfb; --header-grad:linear-gradient(135deg,#4f46e5 0%,#7c3aed 55%,#9333ea 100%);
-  --primary:#6d28d9; --primary2:#8b5cf6; --btn-text:#ffffff;
-  --btn-bg:#ffffff; --btn-border:#d8d3ea;
-  --shadow:0 8px 24px rgba(109,40,217,.10);
-  --good:#15803d; --good-bg:#dcfce7; --warn:#b45309; --warn-bg:#fef3c7;
-  --table-head:#f0edfb; --zebra:#faf9fe; --bar:#e9e5f7;
-  --danger:#dc2626; --danger-bg:#fee2e2;
+:root{
+  --bg:#f4f6f9; --bg2:#eef1f5; --card:#ffffff; --ink:#1c2430; --ink2:#5b6b7d;
+  --line:#dde4ec; --accent:#0f7b6c; --accent-d:#0a5f53; --accent-soft:#e0f2ee;
+  --warn:#b45309; --warn-soft:#fef3e2; --danger:#c2410c; --danger-soft:#fdeee6;
+  --ok:#15803d; --ok-soft:#e7f6ec; --bar:#cbd5e1; --radius:12px;
+  --shadow:0 1px 3px rgba(20,35,55,.08),0 4px 14px rgba(20,35,55,.06);
 }
-[data-theme="dark"]{
-  --bg:#0e0c17; --card:#171425; --text:#f1eefc; --muted:#a49dc2;
-  --border:#2b2644; --input-bg:#1f1b31; --input-border:#3a3357;
-  --chip-bg:#221e38;
-  --primary:#a78bfa; --primary2:#8b5cf6; --btn-text:#1a1430;
-  --btn-bg:#262142; --btn-border:#4a4468;
-  --shadow:0 8px 24px rgba(0,0,0,.35);
-  --good:#4ade80; --good-bg:#14532d; --warn:#fbbf24; --warn-bg:#451a03;
-  --table-head:#221e38; --zebra:#1a1629; --bar:#2b2644;
-  --danger:#f87171; --danger-bg:#450a0a;
+html[data-theme="dark"]{
+  --bg:#12161c; --bg2:#171c24; --card:#1c222c; --ink:#e8edf3; --ink2:#9aa7b8;
+  --line:#2b3442; --accent:#2dd4a7; --accent-d:#7ce8c8; --accent-soft:#14332c;
+  --warn:#f59e0b; --warn-soft:#33260e; --danger:#f87171; --danger-soft:#3a1d16;
+  --ok:#4ade80; --ok-soft:#12301f; --bar:#334052;
+  --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.5}
-.hero{position:static;background:none;color:var(--text);
-  padding:14px 20px 6px;box-shadow:none}
-.hero-inner{max-width:1024px;margin:0 auto;display:flex;align-items:center;gap:14px}
-.logo-badge{width:48px;height:48px;flex:0 0 48px;border-radius:14px;background:var(--primary);
-  display:flex;align-items:center;justify-content:center;border:none}
-.logo-badge svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
-.hero .tagline{margin:2px 0 0;font-size:.85rem;color:var(--muted);opacity:1}
-.theme-pill{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);
-  border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.85rem}
-.theme-pill:hover{background:rgba(255,255,255,.24)}
-.theme-pill svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
-[data-theme="light"] .icon-sun{display:none}
-[data-theme="dark"] .icon-moon{display:none}
-/* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only on the hero gradient */
-.g-header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto}
-.g-round-btn{
-  flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%}
+header.top{position:sticky;top:0;z-index:20;background:var(--card);
+  border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.top-in{max-width:1060px;margin:0 auto;padding:10px 16px;display:flex;
+  align-items:center;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:20px;
+  letter-spacing:.2px}
+.logo svg{width:30px;height:30px}
+.tagline{font-size:12px;color:var(--ink2);margin-top:2px}
+.spacer{flex:1}
+button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);border-radius:9px;padding:8px 14px;
+  display:inline-flex;align-items:center;gap:7px}
+button:hover,.btn:hover{border-color:var(--accent)}
+button.primary,.btn.primary{background:var(--accent);border-color:var(--accent);
+  color:#fff;font-weight:600}
+html[data-theme="dark"] button.primary,html[data-theme="dark"] .btn.primary{color:#06231d}
+button.primary:hover{background:var(--accent-d)}
+button.danger{color:var(--danger);border-color:var(--danger)}
+button.small{padding:5px 10px;font-size:13px;border-radius:7px}
+button.icon{padding:6px;border-radius:8px;line-height:0}
+svg.ic{width:16px;height:16px;flex:none}
+/* Glenerds standard cluster: More Apps, flask, dark-mode, sound — circular 44x44 icon-only */
+.g-header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.g-round-btn{flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
   display:inline-flex;align-items:center;justify-content:center;
-  background:var(--btn-bg);border:1px solid var(--btn-border);color:var(--text);
+  background:var(--card);border:1px solid var(--line);color:var(--ink);
   border-radius:999px;cursor:pointer;font-size:1.1rem;
   box-shadow:0 2px 8px rgba(0,0,0,.10);
-  transition:border-color .18s ease, transform .18s ease;
-}
+  transition:border-color .18s ease, transform .18s ease}
 .g-round-btn svg{width:26px;height:26px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .g-round-btn.theme-toggle,.g-round-btn.sound-toggle{font-size:1.65rem;line-height:1}
-.g-round-btn:hover{border-color:var(--primary)}
-.g-round-btn:active{transform:scale(.92);border-color:var(--primary)}
+.g-round-btn:hover{border-color:var(--accent)}.g-round-btn:active{transform:scale(.92);border-color:var(--accent)}
+
 .g-round-btn:focus{outline:none}
-.g-round-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-.g-round-btn.sample-toggle[aria-pressed="true"]{color:var(--primary);border-color:var(--primary);
-  background:color-mix(in srgb, var(--primary) 12%, var(--card))}
+.g-round-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.g-round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);
+  background:var(--accent-soft)}
 @media(max-width:480px){.g-header-actions{gap:6px}}
-@media(max-width:520px){
-  .hero-inner{flex-wrap:wrap;row-gap:8px}
-  .g-header-actions{width:100%;justify-content:flex-end;margin-left:0}
-}
-main{max-width:1024px;margin:0 auto;padding:20px 16px 60px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;
-  box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
-.card-head{display:flex;align-items:center;gap:10px;margin:0 0 14px}
-.icon-chip{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:var(--chip-bg);
-  display:flex;align-items:center;justify-content:center}
-.icon-chip svg{width:19px;height:19px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.card-head h2{margin:0;font-size:1.12rem}
+main{max-width:1060px;margin:0 auto;padding:18px 16px 60px}
+select,input,textarea{font:inherit;color:var(--ink);background:var(--card);
+  border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+input[type="number"]{text-align:right}
+label.lbl{display:block;font-size:12.5px;font-weight:600;color:var(--ink2);
+  margin:0 0 4px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:16px}
+.card h2{margin:0 0 12px;font-size:17px}
+.card h3{margin:14px 0 8px;font-size:15px}
+.stat{background:var(--bg2);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px}
+.stat[role="button"]{cursor:pointer;transition:border-color .18s ease}
+.stat[role="button"]:hover{border-color:var(--accent)}
+.stat[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--accent))}
+.stat[role="button"][aria-pressed="true"]{border-color:var(--accent)}
+.stat .k{font-size:12px;color:var(--ink2);font-weight:600;text-transform:uppercase;
+  letter-spacing:.5px}
+.stat .v{font-size:22px;font-weight:800;margin-top:3px}
+.stat .v small{font-size:13px;font-weight:600;color:var(--ink2)}
+.v-ok{color:var(--ok)} .v-warn{color:var(--warn)} .v-bad{color:var(--danger)}
+.bar{height:10px;border-radius:6px;background:var(--bar);overflow:hidden;margin-top:8px}
+.bar>i{display:block;height:100%;border-radius:6px;background:var(--accent);
+  transition:width .3s}
+.bar>i.over{background:var(--danger)}
+.bar>i.near{background:var(--warn)}
+.rowline{display:flex;align-items:center;gap:10px;padding:10px 0;
+  border-bottom:1px solid var(--line)}
+.rowline:last-child{border-bottom:0}
+.catname{font-weight:600}
+.sub{font-size:13px;color:var(--ink2)}
+.money{font-variant-numeric:tabular-nums;white-space:nowrap}
+.over-tag{font-size:11px;font-weight:700;color:#fff;background:var(--danger);
+  border-radius:6px;padding:2px 7px;text-transform:uppercase;letter-spacing:.4px}
+.near-tag{font-size:11px;font-weight:700;color:#fff;background:var(--warn);
+  border-radius:6px;padding:2px 7px;text-transform:uppercase;letter-spacing:.4px}
+nav.tabs{display:flex;gap:6px;margin:16px 0;flex-wrap:wrap}
+nav.tabs button{border-radius:999px;padding:8px 16px;font-weight:600;
+  background:transparent;border:1px solid transparent;color:var(--ink2)}
+nav.tabs button.active{background:var(--accent-soft);color:var(--accent-d);
+  border-color:var(--accent)}
+html[data-theme="dark"] nav.tabs button.active{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink2);
+  text-align:left;padding:8px;border-bottom:2px solid var(--line)}
+td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.over td{background:var(--danger-soft)}
+td.num,th.num{text-align:right}
+.empty{padding:26px;text-align:center;color:var(--ink2);font-size:14px}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);
+  color:var(--ink);padding:0;max-width:520px;width:calc(100% - 32px);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(10,18,28,.5)}
+.dlg-in{padding:20px}
+.dlg-in h2{margin:0 0 14px;font-size:18px}
+.dlg-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
 .field{margin-bottom:12px}
-.field label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
-input[type=text],input[type=number],select{width:100%;padding:10px 12px;border:1px solid var(--input-border);
-  border-radius:10px;background:var(--input-bg);color:var(--text);font-size:.95rem}
-input:focus,select:focus{outline:2px solid var(--primary2);border-color:var(--primary2)}
-.hint{font-size:.78rem;color:var(--muted);margin-top:4px}
-.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;cursor:pointer;
-  font-size:.92rem;font-weight:600;padding:10px 16px}
-.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
-  box-shadow:0 4px 14px rgba(109,40,217,.35)}
-[data-theme="dark"] .btn-primary{color:#fff}
-.btn-primary:hover{filter:brightness(1.08)}
-.btn-secondary{background:transparent;border:1px solid var(--input-border);color:var(--text)}
-.btn-secondary:hover{border-color:var(--primary)}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-[hidden]{display:none!important}
-.tabs{display:flex;background:var(--chip-bg);border-radius:12px;padding:4px;gap:4px;margin-bottom:14px;max-width:420px}
-.tab{flex:1;border:none;background:transparent;color:var(--muted);border-radius:9px;padding:10px;cursor:pointer;
-  font-weight:600;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:8px}
-.tab.active{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 3px 10px rgba(109,40,217,.35)}
-[data-theme="dark"] .tab.active{color:#fff}
-.err{display:none;color:var(--danger);font-weight:600;font-size:.88rem;margin-top:10px}
-.err.show{display:block}
-/* Verdict */
-.verdict{border-radius:12px;padding:22px 20px;text-align:center;margin-bottom:18px;
-  border:1px solid var(--border);background:var(--card)}
-.verdict[role="button"]{cursor:pointer;transition:box-shadow .18s ease}
-.verdict[role="button"]:focus{outline:none;filter:drop-shadow(0 0 6px var(--primary2))}
-.verdict[role="button"]:focus-visible{outline:none;filter:drop-shadow(0 0 6px var(--primary2))}
-.verdict[role="button"][aria-pressed="true"]{box-shadow:0 0 0 2px var(--primary2)}
-.verdict .v-icon{font-size:2rem}
-.verdict .v-title{font-size:1.5rem;font-weight:800;margin:8px 0 4px}
-.verdict .v-sub{color:var(--muted);font-size:.92rem}
-.verdict.win{background:var(--good-bg);border-color:var(--good)}
-.verdict.win .v-title{color:var(--good)}
-/* Bars */
-.cmp{margin:18px 0 6px}
-.cmp-row{margin-bottom:14px}
-.cmp-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
-.cmp-label{font-weight:700;font-size:.95rem}
-.cmp-label .tag{display:inline-block;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
-  background:var(--good-bg);color:var(--good);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
-.cmp-val{font-weight:800;font-variant-numeric:tabular-nums;font-size:1.05rem}
-.cmp-bar{height:26px;background:var(--bar);border-radius:999px;overflow:hidden}
-.cmp-bar>div{height:100%;border-radius:999px;transition:width .45s ease;
-  background:linear-gradient(90deg,var(--primary),var(--primary2))}
-.cmp-bar.winner>div{background:linear-gradient(90deg,#059669,#34d399)}
-.cmp-sub{font-size:.8rem;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums}
-/* Break-even */
-.breakeven{border-left:4px solid var(--primary);background:var(--chip-bg);border-radius:0 10px 10px 0;
-  padding:14px 18px;margin:16px 0}
-.breakeven p{margin:0;font-size:.95rem}
-.breakeven strong{color:var(--primary)}
-/* Clickable breakdown table rows: hover + drop-shadow focus, no rectangles */
-.trow[role="button"]{cursor:pointer}
-.trow[role="button"]:hover td{background:var(--chip-bg)}
-.trow[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--primary2))}
-.trow[role="button"][aria-pressed="true"] td{color:var(--primary);font-weight:700}
-.trow.dim{opacity:.45}
-/* Clickable break-even box: jumps the chart to the break-even month */
-.breakeven[role="button"]{cursor:pointer;transition:box-shadow .18s ease}
-.breakeven[role="button"]:hover{box-shadow:0 0 0 1px var(--primary2)}
-.breakeven[role="button"]:focus{outline:none;filter:drop-shadow(0 0 6px var(--primary2))}
-/* Table */
-.table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px;margin-top:6px}
-table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
-thead th{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;text-align:left;
-  padding:10px 12px;font-size:.78rem;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
-[data-theme="dark"] thead th{color:#fff}
-tbody td{padding:9px 12px;border-top:1px solid var(--border)}
-tbody tr:nth-child(even){background:var(--zebra)}
-.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.total-row td{font-weight:800;border-top:2px solid var(--primary)}
-/* Promo (matches rent-receipt-generator house style) */
-.promo{border-left:4px solid var(--primary);padding:14px 18px}
-.promo p{margin:0;font-size:.95rem}
-.promo a{color:var(--primary);font-weight:700}
-/* Explainer */
-.prose p{margin:0 0 12px;font-size:.95rem}
-.prose p:last-child{margin-bottom:0}
-.prose ul{margin:8px 0 12px;padding-left:20px;font-size:.95rem}
-.prose li{margin-bottom:6px}
-.prose h2{font-size:1.12rem;margin:0 0 10px}
-footer{max-width:1024px;margin:0 auto;padding:24px 16px 40px;color:var(--muted);font-size:.82rem;text-align:center}
-footer a{color:var(--primary);font-weight:600}
-footer .disclaimer{margin-top:10px;font-size:.75rem}
-@media(max-width:640px){
-  .grid2,.grid3{grid-template-columns:1fr}
-  .hero h1{font-size:1.15rem}
-  .logo-badge{display:none}
-  .theme-pill span{display:none}
-  .verdict .v-title{font-size:1.25rem}
+.quote-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.bid{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg2)}
+.bid.accepted{border:2px solid var(--accent);background:var(--accent-soft)}
+.bid .who{font-weight:700}
+.bid .amt{font-size:20px;font-weight:800;margin:4px 0}
+.badge{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;
+  padding:2px 8px;text-transform:uppercase;letter-spacing:.4px}
+.b-proposed{background:var(--warn-soft);color:var(--warn)}
+.b-approved{background:var(--ok-soft);color:var(--ok)}
+.b-rejected{background:var(--danger-soft);color:var(--danger)}
+.pill{font-size:12px;background:var(--accent-soft);color:var(--accent-d);
+  font-weight:700;border-radius:999px;padding:3px 10px}
+html[data-theme="dark"] .pill{color:var(--accent)}
+.alert{border-radius:10px;padding:12px 14px;margin:12px 0;font-size:14px;
+  display:flex;gap:10px;align-items:flex-start}
+.alert.warn{background:var(--warn-soft);border:1px solid var(--warn);color:inherit}
+.alert.bad{background:var(--danger-soft);border:1px solid var(--danger);color:inherit}
+.alert.ok{background:var(--ok-soft);border:1px solid var(--ok);color:inherit}
+footer{border-top:1px solid var(--line);padding:18px 16px 30px;text-align:center;
+  color:var(--ink2);font-size:13px}
+footer a{color:var(--accent);text-decoration:none;font-weight:600}
+.projbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.projbar select{width:auto;min-width:200px;font-weight:700}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}
+.right{margin-left:auto}
+.muted{color:var(--ink2);font-size:13px}
+.neg{color:var(--danger)} .pos{color:var(--ok)}
+.q-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+@media (max-width:700px){
+  .grid2,.grid3,.grid4{grid-template-columns:1fr}
+  .top-in{padding:8px 12px}
   main{padding:14px 12px 50px}
+  .stat .v{font-size:19px}
+  table.resp thead{display:none}
+  table.resp tr{display:block;border:1px solid var(--line);border-radius:10px;
+    margin-bottom:10px;padding:6px 10px}
+  table.resp td{display:flex;justify-content:space-between;align-items:center;
+    border:0;padding:6px 0}
+  table.resp td::before{content:attr(data-l);font-size:12px;font-weight:700;
+    color:var(--ink2);text-transform:uppercase;letter-spacing:.4px;margin-right:12px}
+  table.resp td.num{justify-content:space-between}
+  .toolbar .right{margin-left:0}
 }
-/* ---- comparison-row spotlight ---- */
-.cmp-row{cursor:pointer;border-radius:10px;padding:8px;margin:0 -8px 14px}
-.cmp-row:hover{background:var(--zebra)}
-.cmp-row.dim{opacity:.4}
-.cmp-row:focus{outline:none}
-.cmp-row:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
-.spot-note{font-size:.88rem;background:var(--chip-bg);border:1px solid var(--border);
-  border-radius:10px;padding:10px 14px;margin:0 0 14px}
-.spot-note strong{color:var(--primary)}
-/* ---- unified chart detail panel (spotlight breakdown) ---- */
-.chart-detail{margin:0 0 14px;border:1px solid var(--border);border-radius:12px;padding:14px 16px;background:var(--card)}
-.cd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
-.cd-title{font-weight:800;font-size:1.02rem}
-.cd-sub{color:var(--muted);font-size:.85rem;margin-top:2px}
-.cd-x{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:1.25rem;line-height:1;cursor:pointer}
-.cd-rows{display:grid;gap:6px;max-height:260px;overflow:auto}
-.cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--zebra)}
-.cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.88rem}
-.cd-meta{color:var(--muted);font-size:.8rem;white-space:nowrap}
-.cd-val{font-weight:700;font-size:.88rem;white-space:nowrap;color:var(--primary)}
-/* ---- cost curve (multi-series line) ---- */
-.chart-kicker{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;
-  color:var(--muted);margin-bottom:6px}
-#costCurve{cursor:crosshair;border-radius:10px}
-#costCurve:focus{outline:none}
-#costCurve:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
-#costCurve svg{width:100%;height:auto;display:block;touch-action:manipulation}
-.ax{stroke:var(--border);stroke-width:1}
-.axlbl{fill:var(--muted);font-size:11px;font-family:inherit}
-.curve-hit{fill:transparent;cursor:pointer}
-.curve-sel{stroke:var(--primary);stroke-width:1.5;stroke-dasharray:4 3}
-.chart-legend{display:flex;gap:8px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin:2px 0 8px}
-.chart-legend .sw{display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
-.lg-btn{display:inline-flex;align-items:center;background:none;border:1px solid var(--border);border-radius:999px;
-  padding:5px 12px;font-size:.82rem;color:var(--muted);cursor:pointer}
-.lg-btn:hover{border-color:var(--primary)}
-.lg-btn[aria-pressed="false"]{opacity:.55}
-.lg-btn:focus{outline:none}
-.lg-btn:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
-.chart-readout{font-size:.88rem;margin-top:8px;min-height:1.6em}
-.chart-readout .muted{color:var(--muted)}
-/* ---- moving-cost breakdown bars ---- */
-.bkd-row{cursor:pointer;border:1px solid transparent;border-radius:10px;padding:8px 10px;margin:0 -10px 4px}
-.bkd-row:hover{background:var(--zebra)}
-.bkd-row.dim{opacity:.4}
-.bkd-row:focus{outline:none}
-.bkd-row:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
-.bkd-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:5px;font-size:.88rem}
-.bkd-name{font-weight:600}
-.bkd-amt{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
-.bkd-bar{height:20px;background:var(--bar);border-radius:999px;overflow:hidden}
-.bkd-bar>div{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--primary2));transition:width .45s ease}
-.bkd-pct{font-size:.78rem;color:var(--muted);margin-top:3px}
+@media print{
+  header.top,nav.tabs,.toolbar,.no-print,footer,.dlg-actions{display:none!important}
+  body{background:#fff;color:#111;font-size:12px}
+  main{max-width:none;padding:0}
+  .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;margin-bottom:12px}
+  .stat .v{font-size:18px}
+  table.resp thead{display:table-header-group}
+  table.resp tr{display:table-row;border:0;margin:0;padding:0}
+  table.resp td{display:table-cell;border-bottom:1px solid #ccc;padding:6px}
+  table.resp td::before{content:none}
+  :root{--card:#fff;--ink:#111;--ink2:#555;--line:#ccc;--bg:#fff;--bg2:#f5f5f5;
+    --bar:#ddd;--accent:#0f7b6c;--accent-d:#0a5f53;--accent-soft:#e0f2ee}
+}
+/* ---- donut chart (spend mix) ---- */
+.donut-flex{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.donut-svg{width:170px;max-width:46vw;height:auto;flex:none}
+.donut-seg{cursor:pointer;transition:opacity .2s}
+.donut-seg.dim{opacity:.22}
+.donut-seg:focus{outline:none;filter:drop-shadow(0 0 4px var(--accent))}
+.donut-c1{font-size:17px;font-weight:800;fill:var(--ink);pointer-events:none}
+.donut-c2{font-size:11px;fill:var(--ink2);pointer-events:none}
+.donut-legend{display:flex;flex-direction:column;gap:4px;flex:1;min-width:150px}
+.leg-btn{display:flex;align-items:center;gap:8px;background:none;border:1px solid transparent;
+  border-radius:8px;padding:5px 8px;font-size:13px;color:var(--ink);text-align:left;width:100%;cursor:pointer}
+.leg-btn:hover{border-color:var(--line);background:var(--bg2)}
+.leg-btn .sw{width:12px;height:12px;border-radius:4px;flex:none}
+.leg-btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+/* ---- spending-pace sparkline ---- */
+.chart-kicker{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--ink2);margin-bottom:6px}
+.pace-svg{width:100%;height:auto;display:block}
+.pace-dot{fill:#2dd4a7;stroke:var(--card);stroke-width:2;cursor:pointer}
+.pace-dot.sel{stroke:#0f7b6c;stroke-width:3}
+.pace-dot:focus{outline:none;filter:drop-shadow(0 0 4px var(--accent))}
+#paceWrap{border-radius:8px;cursor:crosshair}
+#paceWrap:focus{outline:none}
+#paceWrap:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chart-readout{font-size:13px;margin-top:8px;min-height:1.5em}
+.chart-readout .muted{color:var(--ink2)}
+.axlbl{fill:var(--ink2);font-size:11px}
+/* ---- category-row spotlight + clickable expense rows ---- */
+.cat-row{cursor:pointer;border-radius:8px}
+.cat-row:hover{background:var(--bg2)}
+.cat-row.dim{opacity:.4}
+.cat-row:focus{outline:none}
+.cat-row:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.exp-row{cursor:pointer}
+.exp-row:hover td{background:var(--bg2)}
+.exp-row:focus{outline:none}
+.exp-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.quote-card{cursor:pointer}
+.bid-card{cursor:pointer}
+.bid-card:focus{outline:none}
+.bid-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+tr.co-row{cursor:pointer}
+tr.co-row:hover td{background:var(--bg2)}
+tr.co-row:focus{outline:none}
+tr.co-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.spot-note{font-size:13px;background:var(--bg2);border:1px solid var(--line);
+  border-radius:10px;padding:10px 14px;margin-bottom:10px}
+.spot-note strong{color:var(--accent-d)}
+html[data-theme="dark"] .spot-note strong{color:var(--accent)}
+/* donut spotlight breakdown panel (chart-detail pattern) */
+#donutDetail{margin-top:12px;margin-bottom:0}
+#statDetail{margin-bottom:14px}
+#donutDetail .cd-head,#statDetail .cd-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+#donutDetail .cd-head strong,#statDetail .cd-head strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#donutDetail .cd-title,#statDetail .cd-title{font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#donutDetail .cd-sub,#statDetail .cd-sub{font-size:12px;color:var(--ink2)}
+#donutDetail .cd-count,#statDetail .cd-count{font-size:12px;color:var(--ink2);white-space:nowrap}
+#donutDetail .cd-x,#statDetail .cd-x{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font-size:16px;line-height:1;cursor:pointer}
+#donutDetail .cd-rows,#statDetail .cd-rows{display:grid;gap:6px;max-height:240px;overflow:auto}
+#donutDetail .cd-row,#statDetail .cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--bg)}
+#donutDetail .cd-name,#statDetail .cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#donutDetail .cd-val,#statDetail .cd-val{font-weight:700;white-space:nowrap}
+#donutDetail .cd-val{font-weight:700;white-space:nowrap}
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .g-store-btn {
@@ -247,7 +257,7 @@ footer .disclaimer{margin-top:10px;font-size:.75rem}
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
 .g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
-[data-theme="dark"] .g-store-btn, [data-theme="dark"] .g-store-btn:hover { color: #fff; }
+html[data-theme="dark"] .g-store-btn, html[data-theme="dark"] .g-store-btn:hover { color: #fff; }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .g-cta-strip {
@@ -276,16 +286,23 @@ footer .disclaimer{margin-top:10px;font-size:.75rem}
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="hero-inner">
-    <div class="logo-badge" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>
+<header class="top no-print">
+  <div class="top-in">
+    <div class="logo">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="14" width="28" height="14" rx="2" fill="#0f7b6c"/><rect x="2" y="14" width="28" height="5" rx="2" fill="#2dd4a7"/><path d="M7 8l4-4 4 4M9 4v6" stroke="#0f7b6c" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="4" width="9" height="6" rx="1" fill="#f4b942"/></svg>
+      <div>RenoTrack<div class="tagline">Home Renovation Budget Tracker</div></div>
     </div>
-    <div>
-      <h1>RenewOrMove</h1>
-      <p class="tagline">Lease renewal vs moving cost calculator — the true math on staying or going.</p>
-    </div>
-    <div class="g-header-actions no-print">
+    <div class="spacer"></div>
+    <button id="exportBtn" class="small" title="Download all data as JSON">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>
+      Export
+    </button>
+    <button id="importBtn" class="small" title="Restore data from a JSON file">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5M4 21h16"/></svg>
+      Import
+    </button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+    <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
       <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data" onclick="setSample(!sampleOn);Sound.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
       <button class="g-round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
@@ -294,265 +311,228 @@ footer .disclaimer{margin-top:10px;font-size:.75rem}
   </div>
 </header>
 <main>
-
-  <section class="card prose" aria-labelledby="why-h">
-    <h2 id="why-h">Your landlord raised the rent. Should you stay?</h2>
-    <p>A renewal offer is never just the new rent number. Moving has a real price tag — movers, a new security deposit, application fees, days of double rent, utility setups, cleaning the old place — and staying has a hidden one: every extra dollar of rent, times every month you're locked in.</p>
-    <p>Most tenants compare <strong>monthly rent vs monthly rent</strong> and stop there. That's the wrong comparison. The right one is <strong>total cost over the lease term</strong>, including every one-time moving cost:</p>
-    <ul>
-      <li><strong>Staying:</strong> horizon × your renewal rent.</li>
-      <li><strong>Moving:</strong> horizon × the rent at a new place <em>plus</em> everything you pay once to move.</li>
-    </ul>
-    <p>Enter your numbers below and get a clear verdict: which option is cheaper over your comparison period, a line-by-line breakdown, and the break-even month — the point where moving's upfront costs finally pay off (if they ever do).</p>
-  </section>
-
-  <section class="card" aria-labelledby="rent-h">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></svg></div>
-      <h2 id="rent-h">Your rent</h2>
-    </div>
-    <div class="grid2">
-      <div class="field">
-        <label for="curRent">Current monthly rent ($)</label>
-        <input type="number" id="curRent" min="0" step="0.01" placeholder="1,500" inputmode="decimal">
-      </div>
-      <div class="field">
-        <label for="horizon">Comparison horizon (months)</label>
-        <input type="number" id="horizon" min="1" max="60" step="1" placeholder="12" inputmode="numeric">
-        <div class="hint">Usually your lease length: 1–60 months.</div>
-      </div>
-    </div>
-    <div class="field">
-      <label>Renewal offer</label>
-      <div class="tabs" role="tablist" aria-label="Renewal offer format">
-        <button class="tab active" id="tabAmt" role="tab" aria-selected="true">New rent ($)</button>
-        <button class="tab" id="tabPct" role="tab" aria-selected="false">Increase (%)</button>
-      </div>
-    </div>
-    <div class="grid2">
-      <div class="field" id="wrapAmt">
-        <label for="renewRentAmt">New monthly rent if you renew ($)</label>
-        <input type="number" id="renewRentAmt" min="0" step="0.01" placeholder="1,650" inputmode="decimal">
-      </div>
-      <div class="field" id="wrapPct" hidden>
-        <label for="renewPct">Rent increase (%)</label>
-        <input type="number" id="renewPct" min="-50" max="200" step="0.1" placeholder="5" inputmode="decimal">
-        <div class="hint" id="pctComputed"></div>
-      </div>
-      <div class="field">
-        <label for="newPlaceRent">Expected rent at a new place ($/mo)</label>
-        <input type="number" id="newPlaceRent" min="0" step="0.01" placeholder="1,450" inputmode="decimal">
-        <div class="hint">What you'd realistically pay elsewhere.</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="card" aria-labelledby="costs-h">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><rect x="1" y="6" width="14" height="11" rx="1"/><path d="M15 10h4l4 4v3h-8z"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg></div>
-      <h2 id="costs-h">One-time moving costs</h2>
-    </div>
-    <div class="grid2">
-      <div class="field"><label for="cMovers">Movers / truck rental ($)</label><input type="number" id="cMovers" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
-      <div class="field"><label for="cDeposit">New security deposit ($)</label><input type="number" id="cDeposit" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
-      <div class="field"><label for="cFees">Application / admin fees ($)</label><input type="number" id="cFees" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
-      <div class="field"><label for="cOverlapDays">Overlap rent (days double-paying)</label><input type="number" id="cOverlapDays" min="0" max="365" step="1" placeholder="0" inputmode="numeric">
-        <div class="hint" id="overlapComputed"></div></div>
-      <div class="field"><label for="cUtilities">Utility setup / transfer fees ($)</label><input type="number" id="cUtilities" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
-      <div class="field"><label for="cCleaning">Cleaning / repairs at old place ($)</label><input type="number" id="cCleaning" min="0" step="0.01" placeholder="0" inputmode="decimal"></div>
-      <div class="field"><label for="cMisc">Misc moving costs ($)</label><input type="number" id="cMisc" min="0" step="0.01" placeholder="0" inputmode="decimal">
-        <div class="hint">Packing supplies, pet fees, time off work…</div></div>
-    </div>
-  </section>
-
-  <section class="card" aria-labelledby="results-h">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
-      <h2 id="results-h">Your verdict</h2>
-    </div>
-    <div class="err" id="inputErr" role="alert"></div>
-    <div id="resultsBody" hidden>
-      <div class="verdict" id="verdictBox" role="button" tabindex="0" aria-pressed="false" aria-label="Verdict — activate to see how it was computed">
-        <div class="v-icon" id="vIcon">🏠</div>
-        <div class="v-title" id="vTitle"></div>
-        <div class="v-sub" id="vSub"></div>
-      </div>
-      <div class="cmp">
-        <div class="cmp-row" id="stayRow" role="button" tabindex="0" aria-pressed="false" aria-label="Spotlight staying costs">
-          <div class="cmp-top"><span class="cmp-label" id="stayLabel">Staying<span class="tag" id="stayTag" hidden>Cheaper</span></span><span class="cmp-val" id="stayTotal"></span></div>
-          <div class="cmp-bar" id="stayBarWrap"><div id="stayBar"></div></div>
-          <div class="cmp-sub" id="staySub"></div>
-        </div>
-        <div class="cmp-row" id="moveRow" role="button" tabindex="0" aria-pressed="false" aria-label="Spotlight moving costs">
-          <div class="cmp-top"><span class="cmp-label" id="moveLabel">Moving<span class="tag" id="moveTag" hidden>Cheaper</span></span><span class="cmp-val" id="moveTotal"></span></div>
-          <div class="cmp-bar" id="moveBarWrap"><div id="moveBar"></div></div>
-          <div class="cmp-sub" id="moveSub"></div>
-        </div>
-      </div>
-      <div class="spot-note" id="cmpNote" hidden></div>
-      <div class="chart-detail" id="chartDetail" aria-live="polite" hidden></div>
-      <div class="breakeven" id="breakevenBox" role="button" tabindex="0" aria-pressed="false" aria-label="Break-even — activate to see this month on the cost chart"><p id="breakevenText"></p></div>
-      <h3 style="font-size:1rem;margin:18px 0 8px">Cost over time</h3>
-      <div class="chart-kicker">Cumulative cost · month by month</div>
-      <div class="chart-legend" id="curveLegend">
-        <button type="button" class="lg-btn" data-series="stay" aria-pressed="true"><span class="sw" style="background:#8b5cf6"></span>Staying</button>
-        <button type="button" class="lg-btn" data-series="move" aria-pressed="true"><span class="sw" style="background:#10b981"></span>Moving</button>
-      </div>
-      <div id="costCurve" tabindex="0" role="img" aria-label="Cumulative cost comparison chart. Tab to a month and press Enter to inspect it, press again to release, or use left and right arrows."></div>
-      <div class="chart-readout" id="curveReadout"></div>
-      <h3 style="font-size:1rem;margin:18px 0 8px">Line-by-line breakdown</h3>
-      <div class="table-scroll">
-        <table aria-label="Cost breakdown">
-          <thead><tr><th scope="col">Item</th><th scope="col" style="text-align:right">Staying</th><th scope="col" style="text-align:right">Moving</th></tr></thead>
-          <tbody id="breakdownBody"></tbody>
-        </table>
-      </div>
-      <h3 style="font-size:1rem;margin:18px 0 8px">Where the moving money goes</h3>
-      <div class="chart-kicker">One-time moving costs</div>
-      <div id="bkdBody"></div>
-      <div class="spot-note" id="bkdNote" hidden></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" id="calcBtn">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h3"/></svg>
-        <span>Calculate</span>
-      </button>
-      <button class="btn btn-secondary" id="resetBtn">
-        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-        <span>Start over</span>
-      </button>
-    </div>
-  </section>
-
-  <section class="card promo" aria-label="Related tool">
-    <p>Moving out? Make sure you get your deposit back — <a href="https://glenerds.gumroad.com/l/depositcheck">DepositCheck</a> — $9 one-time.</p>
-  </section>
-
+  <div class="projbar no-print">
+    <label class="lbl" for="projectSel" style="margin:0">Project</label>
+    <select id="projectSel"></select>
+    <button id="newProjBtn" class="small">+ New</button>
+    <button id="renameProjBtn" class="small" title="Rename project">Rename</button>
+    <button id="delProjBtn" class="small danger" title="Delete project">Delete</button>
+  </div>
+  <nav class="tabs no-print" id="tabs" role="tablist"></nav>
+  <div id="view"></div>
 </main>
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
   <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
 <footer>
-  <div>RenewOrMove — your data never leaves this device.</div>
-  <div>by <a href="https://glenerds.gumroad.com">Glenerds</a></div>
-  <div class="disclaimer">Educational estimates only — not financial advice. Overlap rent is estimated as days × (current rent ÷ 30). Deposit assumes no refund within the horizon.</div>
+  <div>RenoTrack — works fully offline. Your data never leaves this device.</div>
+  <div style="margin-top:4px">by <a href="https://glenerds.gumroad.com">Glenerds</a></div>
 </footer>
+<dialog id="dlg"><div class="dlg-in" id="dlgBody"></div></dialog>
 <script>
 "use strict";
-/* ============ RenewOrMove ============ */
-var LS_STATE = "renewormove-state-v1";
-var LS_THEME = "renewormove-theme";
+/* ============ RenoTrack core ============ */
+const LS_KEY = "renotrack-v1";
+const CATEGORIES_PRESET = ["Demolition","Structural","Plumbing","Electrical","Kitchen",
+  "Bathrooms","Flooring","Paint & Drywall","Fixtures & Finishes","Appliances",
+  "Permits & Fees","Labor","Contingency"];
+const CONTINGENCY_NAME = "Contingency";
 
-function $(id){ return document.getElementById(id); }
-function esc(s){
-  return String(s==null?"":s).replace(/[&<>"']/g,function(c){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
-  });
+/* ---------- money: exact cents ---------- */
+/* ---------- money: exact cents (string-parsed, no float drift) ---------- */
+function toCents(v){
+  if(v===null||v===undefined) return 0;
+  let s=String(v).trim().replace(/[$,\s]/g,"");
+  if(s==="") return 0;
+  let neg=false;
+  if(s[0]==="-"){ neg=true; s=s.slice(1); }
+  else if(s[0]==="+"){ s=s.slice(1); }
+  if(!/^\d*(\.\d*)?$/.test(s)) return 0;
+  const parts=s.split(".");
+  const dollars=parts[0]===""?0:parseInt(parts[0],10);
+  let frac=(parts[1]||"").replace(/\D/g,"");
+  while(frac.length<3) frac+="0";          // keep 3rd decimal for rounding
+  let cents=dollars*100+parseInt(frac.slice(0,2),10);
+  if(parseInt(frac[2],10)>=5) cents+=1;    // round half up
+  return neg?-cents:cents;
 }
-function money(n){
-  return n.toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+function fmt(cents){
+  const neg = cents<0, a = Math.abs(Math.round(cents));
+  return (neg?"-$":"$") + Math.floor(a/100).toLocaleString("en-US") +
+    "." + String(a%100).padStart(2,"0");
 }
-function money2(n){
-  return n.toLocaleString("en-US",{style:"currency",currency:"USD",minimumFractionDigits:2,maximumFractionDigits:2});
+function fmtSigned(cents){ return (cents<0?"-":"+") + fmt(Math.abs(cents)); }
+function pct(part,whole){
+  part=Number(part); whole=Number(whole);
+  if(!isFinite(part)) part=0;
+  if(!isFinite(whole)||whole<=0) return part>0?100:0;
+  return (part/whole)*100;
 }
-function num(id){
-  var v = parseFloat($(id).value);
-  return isFinite(v) ? v : NaN;
-}
-function numOr(id, dflt){
-  var v = num(id);
-  return isNaN(v) ? dflt : v;
-}
+function esc(s){ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+function todayStr(){ const d=new Date(); return d.toISOString().slice(0,10); }
 
-/* ---- theme (spec reference: emoji icon, white round button adapts via vars) ---- */
+/* ---------- state ---------- */
+let S = null;           // whole app state
+let activeTab = "dashboard";
+let coFilter = "all";   // change-order status filter
+
+function blankState(){ return {version:1, theme:null, activeProjectId:null, projects:[]}; }
+function blankProject(name){
+  return { id:uid(), name:name||"New project", createdAt:Date.now(),
+    contingencyPct:10,
+    categories: CATEGORIES_PRESET.map(n=>({id:uid(), name:n, budgetCents: n===CONTINGENCY_NAME?0:0})),
+    expenses: [], quotes: [], changeOrders: [] };
+}
+let quotaWarned=false;
+function save(){
+  if(window.__gSampleOn || sampleOn) return; /* sample data is transient — never persisted */
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }
+  catch(e){
+    if(!quotaWarned && e && e.name==="QuotaExceededError"){
+      quotaWarned=true;
+      dlgAlert("Browser storage is full — changes are NOT being saved. Export your data now so you don't lose work.");
+    }
+  }
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return null;
+    const s = JSON.parse(raw);
+    if(!s || typeof s!=="object" || !Array.isArray(s.projects)) return null;
+    return s;
+  }catch(e){ return null; }
+}
+function P(){ return S.projects.find(p=>p.id===S.activeProjectId) || null; }
+function catById(p,id){ return p.categories.find(c=>c.id===id) || null; }
+function catName(p,id){ const c=catById(p,id); return c?c.name:"—"; }
+function isContingencyCat(p,id){ const c=catById(p,id); return !!c && c.name===CONTINGENCY_NAME; }
+
+/* ---------- math (all in cents) ---------- */
+function catExpensesCents(p,catId){
+  return p.expenses.filter(e=>e.categoryId===catId).reduce((t,e)=>t+e.cents,0);
+}
+function catChangeCents(p,catId){ // approved change-order deltas in this category
+  return p.changeOrders.filter(c=>c.categoryId===catId && c.status==="approved")
+    .reduce((t,c)=>t+c.deltaCents,0);
+}
+function catActualCents(p,catId){ return catExpensesCents(p,catId)+catChangeCents(p,catId); }
+function baseBudgetCents(p){ // sum of non-contingency category budgets
+  return p.categories.filter(c=>c.name!==CONTINGENCY_NAME)
+    .reduce((t,c)=>t+c.budgetCents,0);
+}
+function contingencyAllocCents(p){ return Math.round(baseBudgetCents(p)*p.contingencyPct/100); }
+function totalBudgetCents(p){ return baseBudgetCents(p)+contingencyAllocCents(p); }
+function actualSpentCents(p){ // everything actually spent incl. approved change orders
+  const e = p.expenses.reduce((t,x)=>t+x.cents,0);
+  const c = p.changeOrders.filter(x=>x.status==="approved").reduce((t,x)=>t+x.deltaCents,0);
+  return e+c;
+}
+function acceptedQuotesCents(p){
+  return p.quotes.reduce((t,q)=>t+q.bids.filter(b=>b.accepted).reduce((a,b)=>a+b.cents,0),0);
+}
+function committedCents(p){ return actualSpentCents(p)+acceptedQuotesCents(p); }
+function remainingCents(p){ return totalBudgetCents(p)-committedCents(p); }
+function contingencyConsumedCents(p){ // NET approved change-order cost draws on contingency
+  return p.changeOrders.filter(x=>x.status==="approved").reduce((t,x)=>t+x.deltaCents,0);
+}
+function contingencyRemainingCents(p){ return contingencyAllocCents(p)-contingencyConsumedCents(p); }
+
+/* ---------- theme (spec reference: emoji icon, white round button adapts via vars) ---------- */
 function paintTheme(){
-  var dark = document.documentElement.getAttribute("data-theme") === "dark";
-  var b = $("themeToggle"); if (!b) return;
+  const dark = document.documentElement.getAttribute("data-theme")==="dark";
+  const b = document.getElementById("themeToggle"); if(!b) return;
   b.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19";
-  var l = dark ? "Switch to light mode" : "Switch to dark mode";
-  b.setAttribute("aria-pressed", dark ? "true" : "false");
+  const l = dark ? "Switch to light mode" : "Switch to dark mode";
+  b.setAttribute("aria-pressed", dark?"true":"false");
   b.setAttribute("aria-label", l); b.title = l;
 }
-function setTheme(t){
+function applyTheme(t){
   document.documentElement.setAttribute("data-theme", t);
-  try{ localStorage.setItem(LS_THEME, t); }catch(e){}
   paintTheme();
+  if(S){ S.theme=t; save(); }
 }
-$("themeToggle").addEventListener("click", function(){
-  var cur = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  setTheme(cur); Sound.toggleTheme(); Sound.click();
-});
+function initTheme(){
+  let t = S && S.theme ? S.theme :
+    (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light");
+  document.documentElement.setAttribute("data-theme", t);
+  paintTheme();
+  if(S && !S.theme){ S.theme=t; }
+}
 
-/* ---- sample data toggle (transient: snapshot user data, never persisted) ---- */
-var sampleOn = false, sampleSnap = null;
+/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
+let sampleOn = false, sampleSnap = null;
+const PAL = ["#4f8ef7","#f06f52","#2dd4a7","#f5b942","#e77eb5","#a78bfa","#38bdf8","#84cc16"];
+let donutSegs = [], donutSel = -1, pacePtsArr = [], paceSel = -1, catSpotId = null;
 function paintSample(){
-  var b = $("sampleToggle"); if (!b) return;
+  const b = document.getElementById("sampleToggle"); if(!b) return;
   /* ON tint comes from .sample-toggle[aria-pressed="true"] CSS — white button per spec */
-  var l = sampleOn ? "Clear sample data" : "Try sample data";
-  b.setAttribute("aria-pressed", sampleOn ? "true" : "false");
+  const l = sampleOn ? "Clear sample data" : "Try sample data";
+  b.setAttribute("aria-pressed", sampleOn?"true":"false");
   b.setAttribute("aria-label", l); b.title = l;
 }
 function fillSample(){
-  var vals = {curRent:"1500",renewRentAmt:"1575",renewPct:"5",horizon:"12",newPlaceRent:"1450",
-    cMovers:"900",cDeposit:"1450",cFees:"150",cOverlapDays:"7",cUtilities:"120",cCleaning:"200",cMisc:"100"};
-  FIELDS.forEach(function(id){ $(id).value = vals[id] || ""; });
-  setMode("amt", true);
-  calculate(false);
+  S = blankState();
+  seedDemo();
+  activeTab = "dashboard";
+  renderProjectSel(); renderTabs(); render();
 }
 function setSample(on){
   window.__gSampleOn = !!on; /* global save-guard for the whole sample cycle */
-  if (on && !sampleOn){
-    sampleSnap = { mode: renewMode, vals: {} };
-    FIELDS.forEach(function(id){ sampleSnap.vals[id] = $(id).value; });
+  if(on && !sampleOn){
+    sampleSnap = { json: JSON.stringify(S), activeTab };
     sampleOn = true;
     fillSample();
-  } else if (!on && sampleOn){
+  } else if(!on && sampleOn){
     sampleOn = false;
-    var snap = sampleSnap; sampleSnap = null;
-    if (snap){
-      FIELDS.forEach(function(id){ $(id).value = snap.vals[id] || ""; });
-      setMode(snap.mode === "pct" ? "pct" : "amt", true);
+    const snap = sampleSnap; sampleSnap = null;
+    if(snap){
+      S = JSON.parse(snap.json);
+      activeTab = snap.activeTab || "dashboard";
     }
-    updateHints();
-    var has = FIELDS.some(function(id){ return $(id).value !== ""; });
-    if (has) calculate(true); else $("resultsBody").hidden = true;
+    /* repaint theme from the restored state (sample-off reverts any theme toggle made while sampling) */
+    document.documentElement.setAttribute("data-theme", (S && S.theme) || "light");
+    paintTheme();
+    renderProjectSel(); renderTabs(); render();
   }
   paintSample();
 }
 
-/* ---- subtle sounds (Web Audio oscillator, no files, offline) ---- */
+/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
 var Sound = (function(){
-  var K = "renewormove.sound", on = true, ctx = null;
-  try { if (window.localStorage.getItem(K) === "off") on = false; } catch(e){}
+  const K = "renotrack.sound"; let on = true, ctx = null;
+  try { if(window.localStorage.getItem(K)==="off") on=false; } catch(e){}
   function ac(){ try {
-    if (!ctx){ var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; ctx = new AC(); }
+    if(!ctx){ const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return null; ctx = new AC(); }
     return ctx; } catch(e){ return null; } }
   function tone(freq, dur, type, vol, delay){
-    var c = ac(); if (!c) return;
+    const c = ac(); if(!c) return;
     function play(){ try {
-      var t = c.currentTime + (delay || 0), o = c.createOscillator(), g = c.createGain();
-      o.type = type || "sine"; o.frequency.value = freq;
-      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.05); } catch(e){} }
-    if (c.state === "suspended"){ c.resume().then(play, play); } else { play(); }
+      const t = c.currentTime + (delay||0), o = c.createOscillator(), g = c.createGain();
+      o.type = type||"sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol||0.06, t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05); } catch(e){} }
+    if(c.state==="suspended"){ c.resume().then(play, play); } else { play(); }
   }
   return {
-    isOn: function(){ return on; },
-    toggle: function(){ on = !on; try{ window.localStorage.setItem(K, on ? "on" : "off"); }catch(e){} return on; },
-    click: function(){ if (on) tone(520, 0.06, "sine", 0.045); },
-    success: function(){ if (on){ tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
-    error: function(){ if (on) tone(170, 0.16, "sawtooth", 0.045); },
-    toggleTheme: function(){ if (on) tone(440, 0.06, "triangle", 0.05); }
+    isOn(){ return on; },
+    toggle(){ on=!on; try{ window.localStorage.setItem(K, on?"on":"off"); }catch(e){} return on; },
+    click(){ if(on) tone(520,0.06,"sine",0.045); },
+    select(){ if(on){ tone(660,0.07,"sine",0.055); tone(880,0.09,"sine",0.045,0.06); } },
+    success(){ if(on){ tone(660,0.09,"sine",0.06); tone(990,0.12,"sine",0.05,0.08); } },
+    error(){ if(on) tone(170,0.16,"sawtooth",0.045); },
+    toggleTheme(){ if(on) tone(440,0.06,"triangle",0.05); }
   };
 })();
 function paintSoundBtn(btn){
   /* spec reference: emoji icon, button stays white in all states */
-  var on = Sound.isOn();
+  const on = Sound.isOn();
   btn.textContent = on ? "🔊" : "🔇";
-  btn.setAttribute("aria-pressed", on ? "true" : "false");
-  btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
-  btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+  btn.setAttribute("aria-pressed", on?"true":"false");
+  btn.setAttribute("aria-label", "Sound: "+(on?"on":"off"));
+  btn.title = "Toggle sounds ("+(on?"on":"off")+")";
 }
 function toggleSound(btn){
   Sound.toggle();
@@ -560,591 +540,858 @@ function toggleSound(btn){
   Sound.click();
 }
 
-/* ---- renewal mode tabs ---- */
-var renewMode = "amt";
-function setMode(m, skipSave){
-  renewMode = m;
-  var isAmt = (m === "amt");
-  $("tabAmt").classList.toggle("active", isAmt);
-  $("tabPct").classList.toggle("active", !isAmt);
-  $("tabAmt").setAttribute("aria-selected", isAmt ? "true" : "false");
-  $("tabPct").setAttribute("aria-selected", !isAmt ? "true" : "false");
-  $("wrapAmt").hidden = !isAmt;
-  $("wrapPct").hidden = isAmt;
-  if (!skipSave) saveState();
-  updateHints();
-  calculate(true);
+/* ---------- tabs ---------- */
+const TABS=[["dashboard","Dashboard"],["budget","Budget & Expenses"],["quotes","Contractor Quotes"],["changes","Change Orders"]];
+function renderTabs(){
+  document.getElementById("tabs").innerHTML = TABS.map(([id,lbl])=>
+    `<button role="tab" data-tab="${id}" class="${id===activeTab?"active":""}">${lbl}</button>`).join("");
+  document.querySelectorAll("#tabs button").forEach(b=>
+    b.onclick=()=>{activeTab=b.dataset.tab; renderTabs(); render(); Sound.click();});
 }
-$("tabAmt").addEventListener("click", function(){ setMode("amt"); Sound.click(); });
-$("tabPct").addEventListener("click", function(){ setMode("pct"); Sound.click(); });
-/* keyboard: arrow keys move between renewal-mode tabs */
-[$("tabAmt"), $("tabPct")].forEach(function(btn, idx, arr){
-  btn.addEventListener("keydown", function(e){
-    if (e.key === "ArrowRight" || e.key === "ArrowLeft"){
-      var next = (idx + (e.key === "ArrowRight" ? 1 : arr.length - 1)) % arr.length;
-      arr[next].focus();
-      arr[next].click();
-      e.preventDefault();
+
+/* ---------- projects ---------- */
+function renderProjectSel(){
+  const sel=document.getElementById("projectSel");
+  sel.innerHTML = S.projects.map(p=>
+    `<option value="${p.id}" ${p.id===S.activeProjectId?"selected":""}>${esc(p.name)}</option>`).join("");
+  sel.onchange=()=>{ S.activeProjectId=sel.value; save(); render(); };
+}
+function newProject(){
+  const p=blankProject("Project "+(S.projects.length+1));
+  S.projects.push(p); S.activeProjectId=p.id; save();
+  renderProjectSel(); render();
+  dlgForm("Rename project",[{k:"name",lbl:"Project name",val:p.name,req:true}],(vals)=>{
+    p.name=vals.name.trim().slice(0,120)||p.name; save(); renderProjectSel(); render();
+  });
+}
+function renameProject(){
+  const p=P(); if(!p) return;
+  dlgForm("Rename project",[{k:"name",lbl:"Project name",val:p.name,req:true}],(vals)=>{
+    p.name=vals.name.trim().slice(0,120)||p.name; save(); renderProjectSel(); render();
+  });
+}
+function deleteProject(){
+  const p=P(); if(!p) return;
+  if(S.projects.length===1){
+    dlgAlert("You can't delete your only project. Rename it instead."); return;
+  }
+  dlgConfirm(`Delete "${esc(p.name)}"? This removes its budgets, expenses, quotes and change orders.`,
+    ()=>{
+      S.projects=S.projects.filter(x=>x.id!==p.id);
+      S.activeProjectId=S.projects[0].id; save(); renderProjectSel(); render();
+    });
+}
+
+/* ---------- dialogs ---------- */
+function openDlg(html){ const b=document.getElementById("dlgBody"); b.innerHTML=html; document.getElementById("dlg").showModal(); }
+function closeDlg(){ document.getElementById("dlg").close(); }
+function dlgAlert(msg){
+  openDlg(`<h2>Heads up</h2><p>${msg}</p>
+    <div class="dlg-actions"><button class="primary" onclick="closeDlg()">OK</button></div>`);
+}
+function dlgConfirm(msg,onYes){
+  window._dlgYes=onYes;
+  openDlg(`<h2>Confirm</h2><p>${msg}</p>
+    <div class="dlg-actions"><button onclick="closeDlg()">Cancel</button>
+    <button class="primary" onclick="closeDlg();window._dlgYes()">Delete</button></div>`);
+}
+// fields: [{k,lbl,type,val,req,step,opts,min,max,ph,ta}]
+function dlgForm(title,fields,onSave,opts){
+  opts=opts||{};
+  const body=fields.map(f=>{
+    let input="";
+    if(f.type==="select"){
+      input=`<select id="f_${f.k}">${f.opts.map(o=>`<option value="${esc(o[0])}" ${String(o[0])===String(f.val)?"selected":""}>${esc(o[1])}</option>`).join("")}</select>`;
+    }else if(f.ta){
+      input=`<textarea id="f_${f.k}" rows="3" placeholder="${esc(f.ph||"")}">${esc(f.val??"")}</textarea>`;
+    }else{
+      input=`<input id="f_${f.k}" type="${f.type||"text"}" value="${esc(f.val??"")}"
+        ${f.req?"required":""} ${f.min!==undefined?`min="${f.min}"`:""} ${f.max!==undefined?`max="${f.max}"`:""}
+        ${f.step?`step="${f.step}"`:""} placeholder="${esc(f.ph||"")}">`;
     }
+    return `<div class="field"><label class="lbl" for="f_${f.k}">${f.lbl}</label>${input}</div>`;
+  }).join("");
+  window._dlgSave=onSave;
+  openDlg(`<h2>${esc(title)}</h2><form id="dlgFormEl">${body}
+    ${opts.note?`<p class="muted">${opts.note}</p>`:""}
+    <div class="dlg-actions"><button type="button" onclick="closeDlg()">Cancel</button>
+    <button type="submit" class="primary">${esc(opts.saveLabel||"Save")}</button></div></form>`);
+  document.getElementById("dlgFormEl").onsubmit=e=>{
+    e.preventDefault();
+    const vals={};
+    for(const f of fields){ const el=document.getElementById("f_"+f.k); vals[f.k]=el.value; }
+    if(fields.some(f=>f.req && !String(vals[f.k]).trim())) return;
+    closeDlg(); window._dlgSave(vals);
+  };
+}
+
+/* ---------- dashboard ---------- */
+function barHTML(actual,budget){
+  const p=pct(actual,budget);
+  const cls=actual>budget?"over":(p>=90?"near":"");
+  const tag=actual>budget?`<span class="over-tag">Over</span>`:(p>=90?`<span class="near-tag">Near</span>`:"");
+  return `<div class="bar"><i class="${cls}" style="width:${Math.min(100,p)}%"></i></div>
+    <div style="margin-top:5px">${tag}</div>`;
+}
+/* ---------- spend-mix donut + spending-pace sparkline (clickable) ---------- */
+function renderDonut(p){
+  const segs=p.categories.map(c=>({id:c.id,name:c.name,actual:catActualCents(p,c.id)}))
+    .filter(s=>s.actual>0).sort((a,b)=>b.actual-a.actual);
+  donutSegs=segs; donutSel=-1;
+  const total=segs.reduce((t,s)=>t+s.actual,0);
+  if(!total) return `<div class="empty">Log expenses to see your spend mix.</div><div id="donutWrap"></div>`;
+  const C=2*Math.PI*54; let acc=0;
+  const arcs=segs.map((s,i)=>{
+    const frac=s.actual/total, len=Math.max(frac*C,0.6);
+    const a=`<circle cx="70" cy="70" r="54" fill="none" stroke="${PAL[i%PAL.length]}" stroke-width="22" `+
+      `stroke-dasharray="${len.toFixed(2)} ${(C-len).toFixed(2)}" stroke-dashoffset="${(-acc).toFixed(2)}" `+
+      `transform="rotate(-90 70 70)" data-seg="${i}" class="donut-seg" tabindex="0" role="button" `+
+      `aria-pressed="false" aria-label="${esc(s.name)}: ${fmt(s.actual)}, ${Math.round(frac*100)} percent of spend">`+
+      `<title>${esc(s.name)} — ${fmt(s.actual)}</title></circle>`;
+    acc+=len; return a;
+  }).join("");
+  /* names only — amounts live in the budget card; no redundant legend */
+  const legend=segs.map((s,i)=>
+    `<button type="button" class="leg-btn" data-seg="${i}" aria-pressed="false" title="Spotlight ${esc(s.name)}">`+
+    `<span class="sw" style="background:${PAL[i%PAL.length]}"></span><span>${esc(s.name)}</span></button>`).join("");
+  return `<div id="donutWrap"><div class="donut-flex">`+
+    `<svg class="donut-svg" viewBox="0 0 140 140" role="img" aria-label="Actual spend by category, donut chart">${arcs}`+
+    `<text x="70" y="66" text-anchor="middle" class="donut-c1" id="donutC1">${fmt(total)}</text>`+
+    `<text x="70" y="84" text-anchor="middle" class="donut-c2" id="donutC2">spent</text></svg>`+
+    `<div class="donut-legend">${legend}</div></div>`+
+    `<div class="spot-note" id="donutDetail" aria-live="polite" hidden></div></div>`;
+}
+function donutSpot(i){
+  const segs=donutSegs; if(!segs.length) return;
+  const wrap=document.getElementById("donutWrap"); if(!wrap) return;
+  donutSel=(donutSel===i)?-1:i;
+  const total=segs.reduce((t,s)=>t+s.actual,0);
+  wrap.querySelectorAll(".donut-seg").forEach(c=>{
+    const on=parseInt(c.dataset.seg,10)===donutSel;
+    c.classList.toggle("dim",donutSel>=0&&!on);
+    c.setAttribute("aria-pressed",on?"true":"false");
   });
-});
-
-function effectiveRenewRent(){
-  var cur = num("curRent");
-  if (renewMode === "pct"){
-    var pct = num("renewPct");
-    if (isNaN(cur) || isNaN(pct)) return NaN;
-    return cur * (1 + pct/100);
-  }
-  return num("renewRentAmt");
-}
-function overlapCost(){
-  var days = numOr("cOverlapDays", 0);
-  var cur = num("curRent");
-  if (isNaN(cur) || cur <= 0 || days <= 0) return 0;
-  return days * cur / 30;
-}
-function updateHints(){
-  var cur = num("curRent");
-  if (renewMode === "pct"){
-    var pct = num("renewPct");
-    if (!isNaN(cur) && cur > 0 && !isNaN(pct)){
-      $("pctComputed").textContent = "New rent: " + money2(cur * (1 + pct/100)) + "/mo";
-    } else { $("pctComputed").textContent = ""; }
-  }
-  var days = numOr("cOverlapDays", 0);
-  if (!isNaN(cur) && cur > 0 && days > 0){
-    $("overlapComputed").textContent = "≈ " + money2(overlapCost()) + " at " + days + " day" + (days === 1 ? "" : "s") + " × (" + money2(cur) + " ÷ 30)";
-  } else { $("overlapComputed").textContent = ""; }
-}
-
-/* ---- persistence ---- */
-var FIELDS = ["curRent","renewRentAmt","renewPct","horizon","newPlaceRent",
-  "cMovers","cDeposit","cFees","cOverlapDays","cUtilities","cCleaning","cMisc"];
-function saveState(){
-  if (window.__gSampleOn || sampleOn) return; /* sample data is transient — never persisted */
-  try{
-    var s = {mode: renewMode};
-    FIELDS.forEach(function(id){ s[id] = $(id).value; });
-    localStorage.setItem(LS_STATE, JSON.stringify(s));
-  }catch(e){}
-}
-function loadState(){
-  try{
-    var raw = localStorage.getItem(LS_STATE);
-    if (!raw) return false;
-    var s = JSON.parse(raw);
-    if (!s || typeof s !== "object") return false;
-    FIELDS.forEach(function(id){ if (typeof s[id] === "string") $(id).value = s[id]; });
-    setMode(s.mode === "pct" ? "pct" : "amt");
-    return true;
-  }catch(e){ return false; }
-}
-
-/* ---- validation + calculation ---- */
-function validate(){
-  var cur = num("curRent");
-  var horizon = num("horizon");
-  var newPlace = num("newPlaceRent");
-  var renewRent = effectiveRenewRent();
-  if (isNaN(cur) || cur <= 0) return "Enter a current monthly rent greater than $0.";
-  if (renewMode === "amt"){
-    if (isNaN(renewRent) || renewRent <= 0) return "Enter the new monthly rent if you renew (must be greater than $0).";
-  } else {
-    var pct = num("renewPct");
-    if (isNaN(pct)) return "Enter the rent increase as a percentage.";
-    if (pct < -50 || pct > 200) return "Rent increase must be between −50% and 200%.";
-    if (isNaN(renewRent) || renewRent <= 0) return "That increase makes the renewal rent $0 or less — check your numbers.";
-  }
-  if (isNaN(horizon) || horizon < 1 || horizon > 60 || Math.floor(horizon) !== horizon)
-    return "Horizon must be a whole number of months from 1 to 60.";
-  if (isNaN(newPlace) || newPlace <= 0) return "Enter the expected rent at a new place (must be greater than $0).";
-  var costs = [["cMovers","Movers"],["cDeposit","Security deposit"],["cFees","Application/admin fees"],
-    ["cOverlapDays","Overlap days"],["cUtilities","Utility fees"],["cCleaning","Cleaning/repairs"],["cMisc","Misc costs"]];
-  for (var i = 0; i < costs.length; i++){
-    var v = numOr(costs[i][0], 0); /* empty = $0 */
-    if (v < 0) return costs[i][1] + " must be $0 or more.";
-  }
-  var days = num("cOverlapDays");
-  if (days > 365) return "Overlap days can't exceed 365.";
-  return null;
-}
-
-function breakEvenMonth(movingCosts, monthlySave, horizon){
-  /* smallest whole month m where moving becomes strictly cheaper than staying */
-  if (movingCosts <= 0) return monthlySave > 0 ? 1 : null;
-  if (monthlySave <= 0) return null;
-  var m = Math.floor(movingCosts / monthlySave) + 1;
-  return (m <= horizon) ? m : null;
-}
-
-function calculate(silent){
-  updateHints();
-  var err = validate();
-  if (err){
-    $("inputErr").textContent = err;
-    $("inputErr").classList.add("show");
-    $("resultsBody").hidden = true; /* never show stale numbers next to an error */
-    return null;
-  }
-  $("inputErr").classList.remove("show");
-  var cur = num("curRent");
-  var renewRent = effectiveRenewRent();
-  var horizon = num("horizon");
-  var newPlace = num("newPlaceRent");
-  var overlap = overlapCost();
-  var moveItems = [
-    ["Movers / truck rental", numOr("cMovers", 0)],
-    ["New security deposit", numOr("cDeposit", 0)],
-    ["Application / admin fees", numOr("cFees", 0)],
-    ["Overlap rent", overlap],
-    ["Utility setup / transfer fees", numOr("cUtilities", 0)],
-    ["Cleaning / repairs at old place", numOr("cCleaning", 0)],
-    ["Misc moving costs", numOr("cMisc", 0)]
-  ];
-  var movingCosts = moveItems.reduce(function(a, r){ return a + r[1]; }, 0);
-  var stayTotal = horizon * renewRent;
-  var moveTotal = horizon * newPlace + movingCosts;
-  var diff = stayTotal - moveTotal; /* >0 => moving cheaper */
-  var stayCheaper = diff < 0;
-  var savings = Math.abs(diff);
-
-  /* verdict */
-  var vb = $("verdictBox");
-  vb.classList.add("win");
-  if (diff === 0){
-    $("vIcon").textContent = "⚖️";
-    $("vTitle").textContent = "It's a wash";
-    $("vSub").textContent = "Both options cost " + money(stayTotal) + " over " + horizon + " months. Pick the one you like better.";
-  } else if (stayCheaper){
-    $("vIcon").textContent = "🏠";
-    $("vTitle").textContent = "Staying saves you " + money(savings);
-    $("vSub").textContent = "over " + horizon + " months — renewing at " + money2(renewRent) + "/mo beats moving at " + money2(newPlace) + "/mo plus " + money(movingCosts) + " in one-time costs.";
-  } else {
-    $("vIcon").textContent = "🚚";
-    $("vTitle").textContent = "Moving saves you " + money(savings);
-    $("vSub").textContent = "over " + horizon + " months — a new place at " + money2(newPlace) + "/mo beats renewing at " + money2(renewRent) + "/mo, even after " + money(movingCosts) + " in one-time moving costs.";
-  }
-
-  /* bars */
-  var max = Math.max(stayTotal, moveTotal, 1);
-  $("stayTotal").textContent = money(stayTotal);
-  $("moveTotal").textContent = money(moveTotal);
-  $("stayBar").style.width = (stayTotal / max * 100).toFixed(2) + "%";
-  $("moveBar").style.width = (moveTotal / max * 100).toFixed(2) + "%";
-  var tie = (diff === 0);
-  $("stayBarWrap").classList.toggle("winner", stayCheaper || tie);
-  $("moveBarWrap").classList.toggle("winner", !stayCheaper || tie);
-  $("stayTag").hidden = !stayCheaper || tie;
-  $("moveTag").hidden = stayCheaper || tie;
-  $("staySub").textContent = horizon + " months × " + money2(renewRent) + "/mo renewal rent";
-  $("moveSub").textContent = horizon + " months × " + money2(newPlace) + "/mo + " + money(movingCosts) + " one-time moving costs";
-
-  /* break-even */
-  var monthlySave = renewRent - newPlace;
-  var be = breakEvenMonth(movingCosts, monthlySave, horizon);
-  var bt = $("breakevenText");
-  if (be === null){
-    if (monthlySave <= 0){
-      bt.innerHTML = "Break-even: <strong>never within " + horizon + " months</strong>. " +
-        "The new place (" + money2(newPlace) + "/mo) doesn't save anything monthly versus renewing (" +
-        money2(renewRent) + "/mo), so the " + money(movingCosts) + " in one-time costs never pays off.";
-    } else {
-      bt.innerHTML = "Break-even: <strong>never within " + horizon + " months</strong>. " +
-        "You'd save " + money2(monthlySave) + "/mo at the new place, but it takes longer than your horizon to recover the " +
-        money(movingCosts) + " in one-time moving costs.";
-    }
-  } else if (be === 1){
-    bt.innerHTML = "Break-even: <strong>month 1</strong>. " +
-      "With " + money(movingCosts) + " in one-time moving costs and a lower monthly rent, moving is cheaper from the very first month.";
-  } else {
-    bt.innerHTML = "Break-even: <strong>month " + be + "</strong>. " +
-      "Staying is cheaper for the first " + (be - 1) + " month" + (be - 1 === 1 ? "" : "s") +
-      "; from month " + be + " on, moving is the cheaper option.";
-  }
-
-  /* breakdown table */
-  var html = "";
-  html += row("Rent — " + horizon + " mo × " + money2(renewRent) + "/mo (renewal)", stayTotal, "", "staying", stayTotal);
-  html += row("Rent — " + horizon + " mo × " + money2(newPlace) + "/mo (new place)", "", horizon * newPlace, "moving", horizon * newPlace);
-  moveItems.forEach(function(r){
-    html += row(r[0] + " (one-time)", "", r[1], "moving", r[1]);
+  wrap.querySelectorAll(".leg-btn").forEach(b=>{
+    b.setAttribute("aria-pressed",(parseInt(b.dataset.seg,10)===donutSel)?"true":"false");
   });
-  html += '<tr class="total-row"><td>Total</td><td class="num">' + money(stayTotal) + '</td><td class="num">' + money(moveTotal) + '</td></tr>';
-  $("breakdownBody").innerHTML = html;
-
-  /* visuals: reset spotlights, then render */
-  ["stayRow", "moveRow"].forEach(function(id){
-    var el = $(id); el.classList.remove("dim"); el.setAttribute("aria-pressed", "false");
-  });
-  var vb0 = $("verdictBox"); if (vb0) vb0.setAttribute("aria-pressed", "false");
-  $("cmpNote").hidden = true;
-  $("chartDetail").hidden = true; $("chartDetail").innerHTML = "";
-  renderCostCurve(renewRent, newPlace, movingCosts, horizon, be);
-  renderBkd(moveItems, movingCosts);
-
-  $("resultsBody").hidden = false;
-  lastCalc = {stayTotal: stayTotal, moveTotal: moveTotal, renewRent: renewRent,
-    newPlace: newPlace, movingCosts: movingCosts, moveItems: moveItems, horizon: horizon, be: be};
-  return {stayTotal: stayTotal, moveTotal: moveTotal, diff: diff, be: be};
+  const c1=document.getElementById("donutC1"), c2=document.getElementById("donutC2");
+  if(c1){
+    if(donutSel>=0){ const s=segs[donutSel];
+      c1.textContent=fmt(s.actual); c2.textContent=s.name+" · "+Math.round(s.actual/total*100)+"%";
+    }else{ c1.textContent=fmt(total); c2.textContent="spent"; }
+  }
+  /* breakdown panel: the actual expenses + approved change orders behind the segment */
+  const det=document.getElementById("donutDetail");
+  if(det){
+    if(donutSel>=0){
+      const s=segs[donutSel], p=P();
+      const items=p?p.expenses.filter(e=>e.categoryId===s.id)
+        .map(e=>({t:(e.vendor||"Expense")+" · "+e.date,v:e.cents}))
+        .concat(p.changeOrders.filter(c=>c.categoryId===s.id&&c.status==="approved")
+          .map(c=>({t:"Change order · "+c.date,v:c.deltaCents}))):[];
+      items.sort((a,b)=>b.v-a.v);
+      det.innerHTML=`<div class="cd-head"><strong>${esc(s.name)}</strong>`+
+        `<span class="cd-count">${items.length} item${items.length===1?"":"s"} · <span class="money">${fmt(s.actual)}</span></span>`+
+        `<button type="button" class="cd-x" id="donutDetailX" aria-label="Clear selection and show totals">×</button></div>`+
+        `<div class="cd-rows">`+items.map(it=>
+          `<div class="cd-row"><span class="cd-name">${esc(it.t)}</span><span class="cd-val money">${fmt(it.v)}</span></div>`
+        ).join("")+`</div>`;
+      det.hidden=false;
+      const x=document.getElementById("donutDetailX");
+      if(x) x.addEventListener("click",ev=>{ev.stopPropagation();donutSpot(donutSel);});
+    }else{ det.hidden=true; det.innerHTML=""; }
+  }
+  Sound.click();
 }
-function row(label, stay, move, side, amt){
-  return '<tr class="trow" role="button" tabindex="0" aria-pressed="false" data-side="' + side + '" data-amt="' + amt + '"' +
-    ' aria-label="' + esc(label) + ' — activate for share of the ' + side + ' total">' +
-    "<td>" + esc(label) + "</td><td class=\"num\">" +
-    (stay === "" ? "—" : money(stay)) + "</td><td class=\"num\">" +
-    (move === "" ? "—" : money(move)) + "</td></tr>";
+function renderPace(p){
+  const ev=[];
+  p.expenses.forEach(e=>ev.push({d:e.date,c:e.cents,lbl:e.vendor||catName(p,e.categoryId)}));
+  p.changeOrders.filter(c=>c.status==="approved").forEach(c=>ev.push({d:c.date,c:c.deltaCents,lbl:"Change order"}));
+  ev.sort((a,b)=>a.d.localeCompare(b.d));
+  paceSel=-1;
+  if(!ev.length){ pacePtsArr=[]; return `<div class="empty">No dated spend yet — add expenses to see your spending pace.</div><div id="paceWrap"></div>`; }
+  let cum=0;
+  pacePtsArr=ev.map(e=>{ cum+=e.c; return {d:e.d,cum:cum,delta:e.c,lbl:e.lbl}; });
+  const pts=pacePtsArr;
+  const W=560,H=150,padL=8,padR=8,padT=10,padB=22;
+  const t0=Date.parse(pts[0].d), t1=Date.parse(pts[pts.length-1].d);
+  const X=dt=>padL+(t1===t0?(W-padL-padR)/2:(dt-t0)/(t1-t0)*(W-padL-padR));
+  const max=Math.max(1,...pts.map(q=>q.cum));
+  const Y=v=>padT+(H-padT-padB)-(v/max)*(H-padT-padB);
+  const line=pts.map((q,i)=>(i?"L":"M")+X(Date.parse(q.d)).toFixed(1)+" "+Y(q.cum).toFixed(1)).join(" ");
+  const base=(H-padB).toFixed(1);
+  const area=line+` L${X(t1).toFixed(1)} ${base} L${X(t0).toFixed(1)} ${base} Z`;
+  const dots=pts.map((q,i)=>`<circle class="pace-dot" data-i="${i}" cx="${X(Date.parse(q.d)).toFixed(1)}" cy="${Y(q.cum).toFixed(1)}" r="4.5" tabindex="0" role="button" aria-label="${esc(q.d)}: cumulative ${fmt(q.cum)}"><title>${esc(q.d)} — ${fmt(q.cum)}</title></circle>`).join("");
+  return `<div class="chart-kicker">Cumulative spend over time</div>`+
+    `<div id="paceWrap" tabindex="0" role="img" aria-label="Cumulative spending sparkline. Use left and right arrows to step through dated spend.">`+
+    `<svg class="pace-svg" viewBox="0 0 ${W} ${H}" aria-hidden="true">`+
+    `<path d="${area}" fill="rgba(45,212,167,.18)"/>`+
+    `<path d="${line}" fill="none" stroke="#2dd4a7" stroke-width="2.5" stroke-linecap="round"/>`+
+    `<text class="axlbl" x="${padL}" y="${H-6}">${esc(pts[0].d)}</text>`+
+    `<text class="axlbl" x="${W-padR}" y="${H-6}" text-anchor="end">${esc(pts[pts.length-1].d)}</text>`+
+    `${dots}</svg></div>`+
+    `<div class="chart-readout" id="paceReadout"><span class="muted">Latest: <b class="money">${fmt(pts[pts.length-1].cum)}</b> cumulative.</span></div>`;
 }
-
-/* ---- cost curve: cumulative stay vs move by month (multi-series line) ---- */
-var curveData = null, curveSel = -1;
-var curveHidden = {stay:false, move:false}; /* legend series toggles */
-var CURVE_STAY = "#8b5cf6", CURVE_MOVE = "#10b981";
-function renderCostCurve(renewRent, newPlace, movingCosts, horizon, be){
-  var W = 560, H = 270, padL = 58, padR = 12, padT = 12, padB = 30;
-  var iw = W - padL - padR, ih = H - padT - padB;
-  var max = Math.max(horizon * renewRent, horizon * newPlace + movingCosts, 1);
-  function X(m){ return padL + (horizon === 1 ? iw / 2 : (m - 1) / (horizon - 1) * iw); }
-  function Y(v){ return padT + ih - (v / max) * ih; }
-  var s = "", g;
-  for (g = 0; g <= 4; g++){
-    var gv = max * g / 4, gy = Y(gv);
-    s += '<line class="ax" x1="' + padL + '" y1="' + gy.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + gy.toFixed(1) + '"/>' +
-      '<text class="axlbl" x="' + (padL - 6) + '" y="' + (gy + 4).toFixed(1) + '" text-anchor="end">' + money(gv) + '</text>';
+function paceSelFn(i){
+  const pts=pacePtsArr; if(!pts.length) return;
+  /* clicking the selected point again restores the default latest-cumulative view */
+  const wasSel = (paceSel===i);
+  paceSel = wasSel ? pts.length-1 : Math.max(0,Math.min(pts.length-1,i));
+  document.querySelectorAll(".pace-dot").forEach(d=>
+    d.classList.toggle("sel",!wasSel&&parseInt(d.dataset.i,10)===paceSel));
+  const r=document.getElementById("paceReadout");
+  if(r){ const q=pts[paceSel];
+    r.innerHTML=wasSel?`<span class="muted">Latest: <b class="money">${fmt(q.cum)}</b> cumulative.</span>`
+      :`${esc(q.d)} · ${fmtSigned(q.delta)} ${esc(q.lbl)} · cumulative <b class="money">${fmt(q.cum)}</b>`;
   }
-  if (be !== null){
-    var bx = X(be);
-    s += '<line class="curve-sel" x1="' + bx.toFixed(1) + '" y1="' + padT + '" x2="' + bx.toFixed(1) + '" y2="' + (padT + ih) + '"/>' +
-      '<text class="axlbl" x="' + bx.toFixed(1) + '" y="' + (padT + ih + 18) + '" text-anchor="middle">break-even</text>';
-  }
-  function path(fn, stroke, cls){
-    var d = "";
-    for (var m = 1; m <= horizon; m++){ d += (m === 1 ? "M" : "L") + X(m).toFixed(1) + " " + Y(fn(m)).toFixed(1); }
-    return '<path class="curve-line ' + cls + '" d="' + d + '" fill="none" stroke="' + stroke + '" stroke-width="2.5" stroke-linecap="round"/>';
-  }
-  s += path(function(m){ return m * renewRent; }, CURVE_STAY, "curve-stay");
-  s += path(function(m){ return m * newPlace + movingCosts; }, CURVE_MOVE, "curve-move");
-  var tickEvery = Math.max(1, Math.ceil(horizon / 6));
-  for (var t = 1; t <= horizon; t += tickEvery){
-    s += '<text class="axlbl" x="' + X(t).toFixed(1) + '" y="' + (padT + ih + 18) + '" text-anchor="middle">' + t + '</text>';
-  }
-  s += '<text class="axlbl" x="' + (padL + iw / 2).toFixed(1) + '" y="' + (H - 2) + '" text-anchor="middle">month</text>';
-  for (var m2 = 1; m2 <= horizon; m2++){
-    var hw = iw / Math.max(horizon, 1);
-    var hx = (horizon === 1) ? padL + iw / 2 - hw / 2 : padL + (m2 - 1) / (horizon - 1) * iw - hw / 2;
-    s += '<rect class="curve-hit" data-m="' + m2 + '" tabindex="0" role="button" aria-label="Month ' + m2 + ' — activate to compare staying versus moving costs" x="' + hx.toFixed(1) + '" y="' + padT +
-      '" width="' + hw.toFixed(1) + '" height="' + ih + '"><title>Month ' + m2 + '</title></rect>';
-  }
-  $("costCurve").innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Cumulative cost by month for staying versus moving">' +
-    s + '<g id="curveSelDot"></g></svg>';
-  (function(){ /* honor legend series toggles after re-render */
-    var svg = $("costCurve").querySelector("svg"); if (!svg) return;
-    if (curveHidden.stay) svg.querySelectorAll(".curve-stay").forEach(function(p){ p.style.display = "none"; });
-    if (curveHidden.move) svg.querySelectorAll(".curve-move").forEach(function(p){ p.style.display = "none"; });
-  })();
-  curveData = {renewRent: renewRent, newPlace: newPlace, movingCosts: movingCosts, horizon: horizon, be: be};
-  curveSel = -1;
-  $("curveReadout").innerHTML = curveHint();
+  Sound.click();
 }
-function curveHint(){
-  return '<span class="muted">Click a month (or focus the chart and use ← →) to compare.</span>';
-}
-function selectCurveMonth(m){
-  if (!curveData || m < 1 || m > curveData.horizon) return;
-  if (curveSel === m){ /* second click releases back to the default view */
-    curveSel = -1;
-    $("curveReadout").innerHTML = curveHint();
-    var g = $("costCurve").querySelector("#curveSelDot"); if (g) g.innerHTML = "";
+/* ---------- category-row spotlight ---------- */
+function catSpot(id){
+  const p=P(); if(!p) return;
+  const card=document.getElementById("catDetail");
+  const rows=[...document.querySelectorAll(".cat-row")];
+  if(catSpotId===id){
+    catSpotId=null;
+    rows.forEach(r=>{ r.classList.remove("dim"); r.setAttribute("aria-pressed","false"); });
+    if(card) card.hidden=true;
     Sound.click(); return;
   }
-  curveSel = m;
-  var d = curveData;
-  var sv = m * d.renewRent, mv = m * d.newPlace + d.movingCosts;
-  var diff = sv - mv, note;
-  if (diff === 0) note = "— dead even.";
-  else if (diff > 0) note = "— <strong>moving cheaper by " + money(diff) + "</strong>.";
-  else note = "— <strong>staying cheaper by " + money(-diff) + "</strong>.";
-  $("curveReadout").innerHTML = "Month " + m + ": Staying <strong>" + money(sv) + "</strong> · Moving <strong>" +
-    money(mv) + "</strong> " + note;
-  var g = $("costCurve").querySelector("#curveSelDot"); if (!g) return;
-  var W = 560, padL = 58, padR = 12, padT = 12, padB = 30;
-  var iw = W - padL - padR, ih = 270 - padT - padB;
-  var max = Math.max(d.horizon * d.renewRent, d.horizon * d.newPlace + d.movingCosts, 1);
-  var x = padL + (d.horizon === 1 ? iw / 2 : (m - 1) / (d.horizon - 1) * iw);
-  var ys = padT + ih - (sv / max) * ih, ym = padT + ih - (mv / max) * ih;
-  g.innerHTML = '<circle cx="' + x.toFixed(1) + '" cy="' + ys.toFixed(1) + '" r="5" fill="' + CURVE_STAY + '" stroke="#fff" stroke-width="2"/>' +
-    '<circle cx="' + x.toFixed(1) + '" cy="' + ym.toFixed(1) + '" r="5" fill="' + CURVE_MOVE + '" stroke="#fff" stroke-width="2"/>';
+  catSpotId=id;
+  rows.forEach(r=>{ const on=r.dataset.cat===id;
+    r.classList.toggle("dim",!on); r.setAttribute("aria-pressed",on?"true":"false"); });
+  const c=catById(p,id); if(!c) return;
+  const a=catActualCents(p,id);
+  const isCont=c.name===CONTINGENCY_NAME;
+  const b=isCont?contingencyAllocCents(p):c.budgetCents;
+  const nExp=p.expenses.filter(e=>e.categoryId===id).length;
+  const nCO=p.changeOrders.filter(x=>x.categoryId===id&&x.status==="approved").length;
+  if(card){
+    card.innerHTML=`<strong>${esc(c.name)}</strong>: <span class="money">${fmt(a)}</span> spent of `+
+      `<span class="money">${fmt(b)}</span>${b>0?` (${Math.round(pct(a,b))}%)`:""} · `+
+      `<span class="money">${fmt(b-a)}</span> left · ${nExp} expense${nExp===1?"":"s"}`+
+      (nCO?` · ${nCO} approved change order${nCO===1?"":"s"}`:"");
+    card.hidden=false;
+  }
+  Sound.click();
 }
-/* ---- moving-cost breakdown bars (clickable spotlight) ---- */
-function renderBkd(moveItems, movingCosts){
-  var host = $("bkdBody");
-  var items = moveItems.filter(function(r){ return r[1] > 0; });
-  if (!items.length){
-    host.innerHTML = '<p class="hint" style="margin:0">No one-time moving costs entered — add some above to see the breakdown.</p>';
-    $("bkdNote").hidden = true;
+
+/* ---------- stat-box detail: tap a stat for its real breakdown ---------- */
+function statDetailHTML(kind){
+  const p=P(); if(!p) return "";
+  const tb=totalBudgetCents(p), act=actualSpentCents(p), com=committedCents(p), rem=remainingCents(p);
+  const base=baseBudgetCents(p), coAlloc=contingencyAllocCents(p), coRem=contingencyRemainingCents(p);
+  const acc=acceptedQuotesCents(p);
+  const appr=p.changeOrders.filter(x=>x.status==="approved");
+  const apprCents=appr.reduce((t,x)=>t+x.deltaCents,0);
+  const expCents=p.expenses.reduce((t,x)=>t+x.cents,0);
+  const rows=[];
+  const row=(n,v)=>rows.push(`<div class="cd-row"><span class="cd-name">${esc(n)}</span><span class="cd-val money">${fmt(v)}</span></div>`);
+  let title="", sub="";
+  if(kind==="total"){
+    title="Total budget — composition";
+    sub=`Base ${fmt(base)} + contingency ${fmt(coAlloc)} (${p.contingencyPct}% of base)`;
+    row("Base budget (category budgets)", base);
+    row(`Contingency set-aside (${p.contingencyPct}% of base)`, coAlloc);
+    row("Total budget", tb);
+  }else if(kind==="spent"){
+    title="Spent (actual) — composition";
+    sub=`${p.expenses.length} expense${p.expenses.length===1?"":"s"} + net approved change orders`;
+    row("Expenses", expCents);
+    row("Net approved change orders", apprCents);
+    row("Spent (actual)", act);
+  }else if(kind==="committed"){
+    title="Committed — composition";
+    sub=`${com>tb?"Over budget by ":""}${fmt(Math.abs(tb-com))} vs total budget`;
+    row("Spent (actual)", act);
+    row("Accepted contractor quotes", acc);
+    row("Committed", com);
+  }else if(kind==="remaining"){
+    title="Remaining — composition";
+    sub=`Total ${fmt(tb)} − committed ${fmt(com)}`;
+    row("Total budget", tb);
+    row("Committed", com);
+    row("Remaining", rem);
+  }else if(kind==="cont-set"){
+    title="Contingency set — composition";
+    sub=`${p.contingencyPct}% of base budget ${fmt(base)}`;
+    row("Base budget", base);
+    row(`Contingency set-aside (${p.contingencyPct}%)`, coAlloc);
+    row("Net approved change-order draw", apprCents);
+  }else if(kind==="co-approved"){
+    title="Approved change orders";
+    sub=`${appr.length} approved · net ${fmtSigned(apprCents)}`;
+    appr.slice().sort((a,b)=>Math.abs(b.deltaCents)-Math.abs(a.deltaCents)).slice(0,6)
+      .forEach(c=>row((c.desc||"Change order")+" · "+c.date, c.deltaCents));
+    if(appr.length>6) row(`…and ${appr.length-6} more`, 0);
+  }else if(kind==="co-rem"){
+    title="Contingency remaining — composition";
+    const avg=appr.length?Math.round(Math.abs(apprCents)/appr.length):0;
+    sub=avg>0&&coRem>0?`Would cover ~${Math.floor(coRem/avg)} more change orders at the average approved size of ${fmt(avg)}`:"No approved change orders yet";
+    row("Contingency set-aside", coAlloc);
+    row("Net approved change-order draw", apprCents);
+    row("Contingency remaining", coRem);
+  }else return "";
+  return `<div class="cd-head"><div><div class="cd-title">${esc(title)}</div>`+
+    `<div class="cd-sub">${sub}</div></div>`+
+    `<button type="button" class="cd-x" id="statDetailX" aria-label="Close detail">×</button></div>`+
+    `<div class="cd-rows">${rows.join("")}</div>`;
+}
+function statToggle(el){
+  const was=el.getAttribute("aria-pressed")==="true";
+  const card=document.getElementById("statDetail");
+  document.querySelectorAll(".stat[role=\"button\"]").forEach(s=>s.setAttribute("aria-pressed","false"));
+  if(was||!card){ if(card){ card.hidden=true; card.innerHTML=""; } Sound.click(); return; }
+  const html=statDetailHTML(el.dataset.stat);
+  if(!html){ Sound.click(); return; }
+  el.setAttribute("aria-pressed","true");
+  card.innerHTML=html; card.hidden=false;
+  const x=document.getElementById("statDetailX");
+  if(x) x.addEventListener("click",ev=>{ ev.stopPropagation(); statToggle(el); });
+  Sound.click();
+}
+
+function renderDashboard(p){
+  const tb=totalBudgetCents(p), act=actualSpentCents(p), com=committedCents(p),
+        rem=remainingCents(p), usedPct=pct(com,tb);
+  const coAlloc=contingencyAllocCents(p), coUsed=contingencyConsumedCents(p),
+        coRem=contingencyRemainingCents(p);
+  const coPct=coAlloc>0?pct(coUsed,coAlloc):0;
+  let coAlert="";
+  if(coAlloc>0 && coRem<0){
+    coAlert=`<div class="alert bad"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+      <div><b>Contingency exceeded.</b> Approved change orders total <b class="money">${fmt(coUsed)}</b> against a <b class="money">${fmt(coAlloc)}</b> contingency — you are <b class="money neg">${fmt(-coRem)}</b> over.</div></div>`;
+  }else if(coAlloc>0 && coPct>=75){
+    coAlert=`<div class="alert warn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <div><b>Contingency running low.</b> ${Math.round(coPct)}% of your <b class="money">${fmt(coAlloc)}</b> contingency is committed to approved change orders (<b class="money">${fmt(coRem)}</b> left).</div></div>`;
+  }
+  const cats=p.categories.map(c=>{
+    const a=catActualCents(p,c.id);
+    const isCont=c.name===CONTINGENCY_NAME;
+    const b=isCont?coAlloc:c.budgetCents;
+    const pctv=b>0?Math.round(pct(a,b)):0;
+    return `<div class="rowline cat-row" data-cat="${c.id}" tabindex="0" role="button" aria-pressed="false" title="Click to spotlight this category" aria-label="${esc(c.name)} category — click for details"><div style="flex:1;min-width:0">
+      <div class="catname">${esc(c.name)}</div>
+      <div class="sub"><span class="money">${fmt(a)}</span> of <span class="money">${fmt(b)}</span>${isCont?' <span class="pill">auto</span>':""} · ${pctv}%</div>
+      ${barHTML(a,b)}</div>
+      <div class="sub money" style="min-width:86px;text-align:right">${fmt(b-a)} left</div></div>`;
+  }).join("");
+  const recent=[...p.expenses].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
+  const recentHTML=recent.length?`<table><thead><tr><th>Date</th><th>Category</th><th>Payee</th><th class="num">Amount</th></tr></thead><tbody>${
+    recent.map(e=>`<tr class="exp-row" data-exp="${e.id}" tabindex="0" title="Click to edit this expense" aria-label="Edit expense ${fmt(e.cents)}${e.vendor?" to "+esc(e.vendor):""}"><td>${esc(e.date)}</td><td>${esc(catName(p,e.categoryId))}</td><td>${esc(e.vendor||"—")}</td><td class="num money">${fmt(e.cents)}</td></tr>`).join("")
+  }</tbody></table>`:`<div class="empty">No expenses yet — add them under Budget &amp; Expenses.</div>`;
+  return `
+  ${coAlert}
+  <div class="grid4" style="margin-bottom:14px">
+    <div class="stat" data-stat="total" role="button" tabindex="0" aria-pressed="false" aria-label="Total budget — activate for composition"><div class="k">Total budget</div><div class="v money">${fmt(tb)}</div>
+      <div class="sub">base ${fmt(baseBudgetCents(p))} + contingency ${fmt(coAlloc)}</div></div>
+    <div class="stat" data-stat="spent" role="button" tabindex="0" aria-pressed="false" aria-label="Spent actual — activate for breakdown"><div class="k">Spent (actual)</div><div class="v money">${fmt(act)}</div>
+      <div class="sub">accepted quotes add <span class="money">${fmt(acceptedQuotesCents(p))}</span></div></div>
+    <div class="stat" data-stat="committed" role="button" tabindex="0" aria-pressed="false" aria-label="Committed — activate for breakdown"><div class="k">Committed</div><div class="v money">${fmt(com)}</div>
+      <div class="sub">${usedPct.toFixed(1)}% of budget used</div>
+      <div class="bar"><i class="${com>tb?"over":(usedPct>=90?"near":"")}" style="width:${Math.min(100,usedPct)}%"></i></div></div>
+    <div class="stat" data-stat="remaining" role="button" tabindex="0" aria-pressed="false" aria-label="Remaining — activate for breakdown"><div class="k">Remaining</div><div class="v money ${rem<0?"v-bad":"v-ok"}">${fmt(rem)}</div>
+      <div class="sub">contingency left: <span class="money ${coRem<0?"neg":""}">${fmt(coRem)}</span></div></div>
+  </div>
+  <div class="spot-note" id="statDetail" aria-live="polite" hidden></div>
+  <div class="grid2" style="margin-bottom:14px">
+    <div class="card"><h2>Spend mix</h2><div class="chart-kicker">Actual spend by category</div>${renderDonut(p)}</div>
+    <div class="card"><h2>Spending pace</h2>${renderPace(p)}</div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2>Budget by category</h2><div class="spot-note" id="catDetail" hidden></div>${cats}</div>
+    <div class="card"><h2>Recent expenses</h2>${recentHTML}
+      <div class="toolbar no-print"><button class="small primary" onclick="expenseForm()">+ Add expense</button></div></div>
+  </div>`;
+}
+
+/* ---------- budget & expenses ---------- */
+function categoryForm(editId){
+  const p=P(); if(!p) return;
+  const c=editId?catById(p,editId):null;
+  dlgForm(c?"Rename category":"Add category",[
+    {k:"name",lbl:"Category name",val:c?c.name:"",req:true}
+  ],(vals)=>{
+    const name=vals.name.trim(); if(!name) return;
+    if(p.categories.some(x=>x.id!==editId&&x.name.toLowerCase()===name.toLowerCase())){
+      dlgAlert("A category with that name already exists."); return;
+    }
+    if(c){ c.name=name; } else { p.categories.push({id:uid(),name,budgetCents:0}); }
+    save(); render();
+  });
+}
+function deleteCategory(id){
+  const p=P(); if(!p) return;
+  const c=catById(p,id); if(!c) return;
+  if(p.categories.length<=1){ dlgAlert("You need at least one category."); return; }
+  const used=p.expenses.some(e=>e.categoryId===id)||p.quotes.some(q=>q.categoryId===id)||
+             p.changeOrders.some(x=>x.categoryId===id);
+  if(used){ dlgAlert("This category has expenses, quotes or change orders on it — move or delete those first."); return; }
+  dlgConfirm(`Delete the "${esc(c.name)}" category?`,()=>{ p.categories=p.categories.filter(x=>x.id!==id); save(); render(); });
+}
+function expenseForm(editId){
+  const p=P(); if(!p) return;
+  const e=editId?p.expenses.find(x=>x.id===editId):null;
+  const nonCont=p.categories.filter(c=>c.name!==CONTINGENCY_NAME);
+  const opts=nonCont.map(c=>[c.id,c.name]);
+  if(!opts.length){ dlgAlert("Add a category first."); return; }
+  dlgForm(e?"Edit expense":"Add expense",[
+    {k:"date",lbl:"Date",type:"date",val:e?e.date:todayStr(),req:true},
+    {k:"categoryId",lbl:"Category",type:"select",val:e?e.categoryId:opts[0][0],opts},
+    {k:"vendor",lbl:"Vendor / payee",val:e?e.vendor:"",ph:"Home Depot, ABC Plumbing…"},
+    {k:"amount",lbl:"Amount ($)",type:"number",step:"0.01",min:"0",val:e?(e.cents/100).toFixed(2):"",req:true,ph:"0.00"},
+    {k:"note",lbl:"Note",ta:true,val:e?e.note:"",ph:"What was this for?"}
+  ],(vals)=>{
+    const cents=toCents(vals.amount);
+    if(cents<=0){ dlgAlert("Enter an amount greater than $0."); return; }
+    if(e){ Object.assign(e,{date:vals.date,categoryId:vals.categoryId,vendor:vals.vendor.trim(),cents,note:vals.note.trim()}); }
+    else{ p.expenses.push({id:uid(),date:vals.date,categoryId:vals.categoryId,vendor:vals.vendor.trim(),cents,note:vals.note.trim()}); }
+    save(); render();
+  },{saveLabel:e?"Save":"Add expense"});
+}
+function deleteExpense(id){
+  const p=P(); const e=p.expenses.find(x=>x.id===id); if(!e) return;
+  dlgConfirm(`Delete this ${fmt(e.cents)} expense${e.vendor?` to ${esc(e.vendor)}`:""}?`,
+    ()=>{ p.expenses=p.expenses.filter(x=>x.id!==id); save(); render(); });
+}
+function renderBudget(p){
+  const catRows=p.categories.map(c=>{
+    const a=catActualCents(p,c.id);
+    const isCont=c.name===CONTINGENCY_NAME;
+    const b=isCont?contingencyAllocCents(p):c.budgetCents;
+    const over=a>b;
+    return `<tr class="${over?"over":""}">
+      <td data-l="Category"><b>${esc(c.name)}</b>${isCont?' <span class="pill">auto</span>':""}</td>
+      <td data-l="Budget" class="num money">${isCont?`<span class="muted">${fmt(b)}</span> <span class="muted">(${p.contingencyPct}%)</span>`:
+        `<input type="number" step="0.01" min="0" data-budget="${c.id}" value="${(c.budgetCents/100).toFixed(2)}" style="width:110px" aria-label="Budget for ${esc(c.name)}">`}</td>
+      <td data-l="Actual" class="num money">${fmt(a)}</td>
+      <td data-l="Left" class="num money ${over?"neg":""}">${fmt(b-a)}</td>
+      <td data-l="Used" class="num">${a>b?'<span class="neg"><b>Over</b></span>':(b>0?Math.round(pct(a,b))+"%":"—")}</td>
+      <td data-l="Actions" class="no-print"><div class="q-actions">
+        ${isCont?"":`<button class="small icon" onclick="categoryForm('${c.id}')" title="Rename">✎</button>
+        <button class="small icon danger" onclick="deleteCategory('${c.id}')" title="Delete">🗑</button>`}
+      </div></td></tr>`;
+  }).join("");
+  const exRows=[...p.expenses].sort((a,b)=>b.date.localeCompare(a.date)||b.cents-a.cents).map(e=>
+    `<tr><td data-l="Date">${esc(e.date)}</td><td data-l="Category">${esc(catName(p,e.categoryId))}</td>
+     <td data-l="Payee">${esc(e.vendor||"—")}</td><td data-l="Note" class="muted">${esc(e.note||"")}</td>
+     <td data-l="Amount" class="num money">${fmt(e.cents)}</td>
+     <td data-l="Actions" class="no-print"><div class="q-actions">
+       <button class="small icon" onclick="expenseForm('${e.id}')" title="Edit">✎</button>
+       <button class="small icon danger" onclick="deleteExpense('${e.id}')" title="Delete">🗑</button></div></td></tr>`).join("");
+  return `
+  <div class="card" style="margin-bottom:14px"><h2>Category budgets</h2>
+    <div class="toolbar no-print">
+      <button class="small" onclick="categoryForm()">+ Add category</button>
+      <span class="muted">Edit a budget amount, then press Enter or click out — totals update instantly.</span>
+      <span class="right"></span>
+      <label class="lbl" style="margin:0" for="coPct">Contingency %</label>
+      <input id="coPct" type="number" min="0" max="50" step="1" value="${p.contingencyPct}" style="width:70px" aria-label="Contingency percent">
+    </div>
+    <div style="overflow-x:auto"><table class="resp"><thead><tr><th>Category</th><th class="num">Budget</th><th class="num">Actual</th><th class="num">Left</th><th class="num">Used</th><th class="no-print">Actions</th></tr></thead>
+    <tbody>${catRows}</tbody></table></div></div>
+  <div class="card"><h2>Expense log</h2>
+    <div class="toolbar no-print"><button class="small primary" onclick="expenseForm()">+ Add expense</button></div>
+    ${p.expenses.length?`<div style="overflow-x:auto"><table class="resp"><thead><tr><th>Date</th><th>Category</th><th>Payee</th><th>Note</th><th class="num">Amount</th><th class="no-print">Actions</th></tr></thead>
+    <tbody>${exRows}</tbody></table></div>`:`<div class="empty">No expenses logged yet.</div>`}</div>`;
+}
+
+/* ---------- contractor quotes ---------- */
+function quoteForm(editId){
+  const p=P(); if(!p) return;
+  const q=editId?p.quotes.find(x=>x.id===editId):null;
+  const opts=p.categories.filter(c=>c.name!==CONTINGENCY_NAME).map(c=>[c.id,c.name]);
+  dlgForm(q?"Edit quote request":"New quote request",[
+    {k:"jobTitle",lbl:"Job / scope",val:q?q.jobTitle:"",req:true,ph:"e.g. Kitchen rewire"},
+    {k:"categoryId",lbl:"Category",type:"select",val:q?q.categoryId:(opts[0]?opts[0][0]:""),opts},
+    {k:"date",lbl:"Date requested",type:"date",val:q?q.date:todayStr()}
+  ],(vals)=>{
+    if(q){ Object.assign(q,{jobTitle:vals.jobTitle.trim(),categoryId:vals.categoryId,date:vals.date}); }
+    else{ p.quotes.push({id:uid(),jobTitle:vals.jobTitle.trim(),categoryId:vals.categoryId,date:vals.date,bids:[]}); }
+    save(); render();
+  },{saveLabel:q?"Save":"Add request"});
+}
+function deleteQuote(id){
+  const p=P(); const q=p.quotes.find(x=>x.id===id); if(!q) return;
+  dlgConfirm(`Delete the quote request "${esc(q.jobTitle)}" and its ${q.bids.length} bid(s)?`,
+    ()=>{ p.quotes=p.quotes.filter(x=>x.id!==id); save(); render(); });
+}
+function bidForm(quoteId,editIdx){
+  const p=P(); if(!p) return;
+  const q=p.quotes.find(x=>x.id===quoteId); if(!q) return;
+  const b=editIdx!==undefined?q.bids[editIdx]:null;
+  if(!b && q.bids.length>=4){ dlgAlert("Only 4 quotes per job — remove one first."); return; }
+  dlgForm(b?"Edit bid":"Add bid",[
+    {k:"contractor",lbl:"Contractor name",val:b?b.contractor:"",req:true,ph:"ABC Plumbing Co."},
+    {k:"amount",lbl:"Quoted amount ($)",type:"number",step:"0.01",min:"0",val:b?(b.cents/100).toFixed(2):"",req:true,ph:"0.00"},
+    {k:"notes",lbl:"Notes",ta:true,val:b?b.notes:"",ph:"Timeline, what's included…"}
+  ],(vals)=>{
+    const cents=toCents(vals.amount);
+    if(cents<=0){ dlgAlert("Enter an amount greater than $0."); return; }
+    const nb={contractor:vals.contractor.trim(),cents,notes:vals.notes.trim(),accepted:b?b.accepted:false};
+    if(b){ q.bids[editIdx]=nb; } else { q.bids.push(nb); }
+    save(); render();
+  },{saveLabel:b?"Save":"Add bid"});
+}
+function deleteBid(quoteId,idx){
+  const p=P(); const q=p.quotes.find(x=>x.id===quoteId); if(!q||!q.bids[idx]) return;
+  dlgConfirm(`Remove the ${fmt(q.bids[idx].cents)} bid from ${esc(q.bids[idx].contractor)}?`,
+    ()=>{ q.bids.splice(idx,1); save(); render(); });
+}
+function acceptBid(quoteId,idx){
+  const p=P(); const q=p.quotes.find(x=>x.id===quoteId); if(!q||!q.bids[idx]) return;
+  q.bids.forEach((b,i)=>{ b.accepted = (i===idx) ? !b.accepted : false; });
+  save(); render();
+}
+function renderQuotes(p){
+  const cards=p.quotes.map(q=>{
+    const sorted=q.bids.map((b,i)=>({b,i})).sort((x,y)=>x.b.cents-y.b.cents);
+    const low=sorted.length?sorted[0].b.cents:null;
+    const high=sorted.length?sorted[sorted.length-1].b.cents:null;
+    const bidsHTML=q.bids.length?q.bids.map((b,i)=>`
+      <div class="bid bid-card ${b.accepted?"accepted":""}" data-qid="${q.id}" data-i="${i}" role="button" tabindex="0" title="Click to edit this bid" aria-label="Bid from ${esc(b.contractor)} — activate to edit">
+        <div class="who">${esc(b.contractor)}</div>
+        <div class="amt money ${b.accepted?"v-ok":""}">${fmt(b.cents)}</div>
+        <div class="sub">${esc(b.notes||"—")}</div>
+        <div class="q-actions no-print">
+          <button class="small ${b.accepted?"":"primary"}" onclick="acceptBid('${q.id}',${i})">${b.accepted?"✓ Accepted":"Accept"}</button>
+          <button class="small icon" onclick="bidForm('${q.id}',${i})" title="Edit">✎</button>
+          <button class="small icon danger" onclick="deleteBid('${q.id}',${i})" title="Remove">🗑</button>
+        </div></div>`).join(""):`<div class="empty">No bids yet.</div>`;
+    return `<div class="card quote-card" style="margin-bottom:12px" data-qid="${q.id}" role="button" tabindex="0" title="Click to edit this quote request" aria-label="Quote request ${esc(q.jobTitle)} — activate to edit">
+      <div class="rowline" style="border:0;padding-top:0"><div style="flex:1">
+        <div class="catname">${esc(q.jobTitle)}</div>
+        <div class="sub">${esc(catName(p,q.categoryId))} · requested ${esc(q.date)} · ${q.bids.length}/4 bids
+        ${low!==null?` · range <span class="money">${fmt(low)}–${fmt(high)}</span>`:""}</div></div>
+        <div class="q-actions no-print">
+          <button class="small primary" onclick="bidForm('${q.id}')">+ Add bid</button>
+          <button class="small icon" onclick="quoteForm('${q.id}')" title="Edit">✎</button>
+          <button class="small icon danger" onclick="deleteQuote('${q.id}')" title="Delete">🗑</button>
+        </div></div>
+      <div class="quote-grid">${bidsHTML}</div></div>`;
+  }).join("");
+  return `<div class="toolbar no-print"><button class="small primary" onclick="quoteForm()">+ New quote request</button>
+    <span class="muted">Store up to 4 bids per job, compare side by side, mark the winner.</span></div>
+    ${p.quotes.length?cards:`<div class="card"><div class="empty">No quote requests yet — e.g. “Kitchen rewire”, then collect bids.</div></div>`}`;
+}
+
+/* ---------- change orders ---------- */
+function coForm(editId){
+  const p=P(); if(!p) return;
+  const c=editId?p.changeOrders.find(x=>x.id===editId):null;
+  const opts=p.categories.filter(x=>x.name!==CONTINGENCY_NAME).map(x=>[x.id,x.name]);
+  dlgForm(c?"Edit change order":"New change order",[
+    {k:"description",lbl:"Description",val:c?c.description:"",req:true,ta:true,ph:"Added under-cabinet lighting…"},
+    {k:"categoryId",lbl:"Category",type:"select",val:c?c.categoryId:(opts[0]?opts[0][0]:""),opts},
+    {k:"impact",lbl:"Cost impact ($) — use negative for a credit",type:"number",step:"0.01",val:c?(c.deltaCents/100).toFixed(2):"",req:true,ph:"0.00"},
+    {k:"date",lbl:"Date",type:"date",val:c?c.date:todayStr()},
+    {k:"status",lbl:"Status",type:"select",val:c?c.status:"proposed",opts:[["proposed","Proposed"],["approved","Approved"],["rejected","Rejected"]]}
+  ],(vals)=>{
+    const dc=toCents(vals.impact);
+    if(c){ Object.assign(c,{description:vals.description.trim(),categoryId:vals.categoryId,deltaCents:dc,date:vals.date,status:vals.status}); }
+    else{ p.changeOrders.push({id:uid(),description:vals.description.trim(),categoryId:vals.categoryId,deltaCents:dc,date:vals.date,status:vals.status}); coFilter="all"; }
+    save(); render();
+  },{saveLabel:c?"Save":"Add change order",
+      note:"Approved change orders roll into that category's actuals and draw on your contingency guard."});
+}
+function deleteCO(id){
+  const p=P(); const c=p.changeOrders.find(x=>x.id===id); if(!c) return;
+  dlgConfirm(`Delete this change order (${fmtSigned(c.deltaCents)})?`,
+    ()=>{ p.changeOrders=p.changeOrders.filter(x=>x.id!==id); save(); render(); });
+}
+function setCOStatus(id,st){
+  const p=P(); const c=p.changeOrders.find(x=>x.id===id); if(!c) return;
+  c.status=st; save(); render();
+}
+function renderChanges(p){
+  const list=p.changeOrders.filter(c=>coFilter==="all"||c.status===coFilter)
+    .sort((a,b)=>b.date.localeCompare(a.date));
+  const appr=p.changeOrders.filter(c=>c.status==="approved");
+  const apprCents=appr.reduce((t,c)=>t+c.deltaCents,0);
+  const coAlloc=contingencyAllocCents(p), coRem=contingencyRemainingCents(p);
+  const rows=list.map(c=>`<tr class="co-row" data-co="${c.id}" role="button" tabindex="0" title="Click to edit this change order" aria-label="Change order ${esc(c.description)} — activate to edit">
+    <td data-l="Date">${esc(c.date)}</td>
+    <td data-l="Description">${esc(c.description)}<div class="sub">${esc(catName(p,c.categoryId))}</div></td>
+    <td data-l="Impact" class="num money ${c.deltaCents<0?"pos":""}">${fmtSigned(c.deltaCents)}</td>
+    <td data-l="Status"><span class="badge b-${c.status}">${c.status}</span></td>
+    <td data-l="Actions" class="no-print"><div class="q-actions">
+      ${c.status!=="approved"?`<button class="small" onclick="setCOStatus('${c.id}','approved')">Approve</button>`:""}
+      ${c.status!=="rejected"?`<button class="small" onclick="setCOStatus('${c.id}','rejected')">Reject</button>`:""}
+      ${c.status!=="proposed"?`<button class="small" onclick="setCOStatus('${c.id}','proposed')">Reopen</button>`:""}
+      <button class="small icon" onclick="coForm('${c.id}')" title="Edit">✎</button>
+      <button class="small icon danger" onclick="deleteCO('${c.id}')" title="Delete">🗑</button>
+    </div></td></tr>`).join("");
+  const filterBtns=["all","proposed","approved","rejected"].map(f=>
+    `<button class="small ${coFilter===f?"primary":""}" onclick="coFilter='${f}';Sound.click();render()">${f[0].toUpperCase()+f.slice(1)}</button>`).join("");
+  return `
+  <div class="grid3" style="margin-bottom:14px">
+    <div class="stat" data-stat="cont-set" role="button" tabindex="0" aria-pressed="false" aria-label="Contingency set — activate for breakdown"><div class="k">Contingency set</div><div class="v money">${fmt(coAlloc)}</div><div class="sub">${p.contingencyPct}% of base budget</div></div>
+    <div class="stat" data-stat="co-approved" role="button" tabindex="0" aria-pressed="false" aria-label="Approved change orders — activate for breakdown"><div class="k">Approved change orders</div><div class="v money">${fmt(apprCents)}</div><div class="sub">${appr.length} approved</div></div>
+    <div class="stat" data-stat="co-rem" role="button" tabindex="0" aria-pressed="false" aria-label="Contingency remaining — activate for breakdown"><div class="k">Contingency remaining</div><div class="v money ${coRem<0?"v-bad":(coRem<coAlloc*0.25?"v-warn":"v-ok")}">${fmt(coRem)}</div>
+      <div class="sub">net approved change orders draw on it</div></div>
+  </div>
+  <div class="spot-note" id="statDetail" aria-live="polite" hidden></div>
+  <div class="card"><div class="toolbar no-print">
+      <button class="small primary" onclick="coForm()">+ New change order</button>
+      <span class="right"></span><div class="q-actions">${filterBtns}</div></div>
+    ${list.length?`<div style="overflow-x:auto"><table class="resp"><thead><tr><th>Date</th><th>Description</th><th class="num">Impact</th><th>Status</th><th class="no-print">Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`
+    :`<div class="empty">No change orders${coFilter==="all"?" yet":" with this status"}.</div>`}</div>`;
+}
+
+/* ---------- export / import ---------- */
+function asStr(v,fb){ return typeof v==="string"?v:(v===null||v===undefined?fb:String(v)); }
+function asCents(v){ v=Number(v); return isFinite(v)?Math.round(v):0; }
+function asDate(v,fb){ return /^\d{4}-\d{2}-\d{2}$/.test(asStr(v,""))?asStr(v,""):fb; }
+function sanitizeState(s){
+  const clean={version:1,theme:(s.theme==="dark"||s.theme==="light")?s.theme:null,
+    activeProjectId:asStr(s.activeProjectId,null),projects:[]};
+  for(const p of s.projects){
+    const cp={id:asStr(p.id,uid()),name:asStr(p.name,"Project").slice(0,120),
+      createdAt:asCents(p.createdAt)||Date.now(),
+      contingencyPct:Math.min(50,Math.max(0,parseInt(p.contingencyPct,10)||0)),
+      categories:[],expenses:[],quotes:[],changeOrders:[]};
+    const catIds=new Set();
+    for(const c of p.categories){
+      const cc={id:asStr(c.id,uid()),name:asStr(c.name,"Category").slice(0,80),budgetCents:Math.max(0,asCents(c.budgetCents))};
+      if(catIds.has(cc.id)) cc.id=uid();
+      catIds.add(cc.id); cp.categories.push(cc);
+    }
+    if(!cp.categories.length) cp.categories.push({id:uid(),name:"General",budgetCents:0});
+    const okCat=id=>catIds.has(id)?id:cp.categories[0].id;
+    for(const e of p.expenses) cp.expenses.push({id:asStr(e.id,uid()),date:asDate(e.date,todayStr()),
+      categoryId:okCat(e.categoryId),vendor:asStr(e.vendor,"").slice(0,120),
+      cents:Math.max(0,asCents(e.cents)),note:asStr(e.note,"").slice(0,500)});
+    for(const q of p.quotes){
+      const cq={id:asStr(q.id,uid()),jobTitle:asStr(q.jobTitle,"Job").slice(0,120),
+        categoryId:okCat(q.categoryId),date:asDate(q.date,todayStr()),bids:[]};
+      for(const b of (Array.isArray(q.bids)?q.bids:[]).slice(0,4))
+        cq.bids.push({contractor:asStr(b.contractor,"").slice(0,120),cents:Math.max(0,asCents(b.cents)),
+          notes:asStr(b.notes,"").slice(0,500),accepted:b.accepted===true});
+      // at most one accepted bid survives
+      let seen=false;
+      for(const b of cq.bids){ if(b.accepted){ if(seen) b.accepted=false; else seen=true; } }
+      cp.quotes.push(cq);
+    }
+    const STATUSES=["proposed","approved","rejected"];
+    for(const c of p.changeOrders)
+      cp.changeOrders.push({id:asStr(c.id,uid()),description:asStr(c.description,"").slice(0,500),
+        categoryId:okCat(c.categoryId),deltaCents:asCents(c.deltaCents),
+        date:asDate(c.date,todayStr()),status:STATUSES.includes(c.status)?c.status:"proposed"});
+    clean.projects.push(cp);
+  }
+  if(!clean.projects.some(p=>p.id===clean.activeProjectId))
+    clean.activeProjectId=clean.projects[0].id;
+  return clean;
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="renotrack-backup-"+todayStr()+".json";
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500);
+}
+function importData(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const s=JSON.parse(r.result);
+      if(!s||typeof s!=="object"||!Array.isArray(s.projects)) throw new Error("bad shape");
+      for(const p of s.projects){
+        if(typeof p.id!=="string"||typeof p.name!=="string"||!Array.isArray(p.categories)||
+           !Array.isArray(p.expenses)||!Array.isArray(p.quotes)||!Array.isArray(p.changeOrders)) throw new Error("bad project");
+      }
+      dlgConfirm("Import will REPLACE all current data. Continue?",()=>{
+        S=sanitizeState(s);
+        save(); initTheme(); renderProjectSel(); render(); Sound.success();
+      });
+    }catch(e){ dlgAlert("That file isn't a valid RenoTrack backup."); Sound.error(); }
+  };
+  r.readAsText(file);
+}
+
+/* ---------- render ---------- */
+function render(){
+  const p=P();
+  if(!p){
+    document.getElementById("view").innerHTML=`<div class="card"><div class="empty">No project yet.</div></div>`;
     return;
   }
-  var maxI = items.reduce(function(a, r){ return Math.max(a, r[1]); }, 1);
-  host.innerHTML = items.map(function(r){
-    var pc = (r[1] / movingCosts * 100);
-    return '<div class="bkd-row" role="button" tabindex="0" aria-pressed="false" data-amt="' + r[1] + '" data-name="' + esc(r[0]) + '"' +
-      ' aria-label="' + esc(r[0]) + ', ' + money(r[1]) + ', ' + pc.toFixed(1) + ' percent of moving costs">' +
-      '<div class="bkd-top"><span class="bkd-name">' + esc(r[0]) + '</span><span class="bkd-amt">' + money(r[1]) + '</span></div>' +
-      '<div class="bkd-bar"><div style="width:' + (r[1] / maxI * 100).toFixed(1) + '%"></div></div>' +
-      '<div class="bkd-pct">' + pc.toFixed(1) + '% of one-time moving costs</div></div>';
-  }).join("");
-  $("bkdNote").hidden = true;
-}
-function bkdToggle(row){
-  var rows = $("bkdBody").querySelectorAll(".bkd-row");
-  var was = row.getAttribute("aria-pressed") === "true";
-  rows.forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
-  var note = $("bkdNote");
-  if (was){ note.hidden = true; Sound.click(); return; }
-  rows.forEach(function(r){ if (r !== row) r.classList.add("dim"); });
-  row.setAttribute("aria-pressed", "true");
-  var amt = parseFloat(row.getAttribute("data-amt")), name = row.getAttribute("data-name");
-  var total = curveData ? curveData.movingCosts : 0;
-  note.innerHTML = "<strong>" + esc(name) + "</strong>: " + money(amt) +
-    (total > 0 ? " — " + (amt / total * 100).toFixed(1) + "% of your " + money(total) + " one-time moving costs." : "");
-  note.hidden = false;
-  Sound.click();
-}
-/* ---- comparison-row spotlight ---- */
-var lastCalc = null; /* last calculate() inputs, for the breakdown panel */
-function cmpToggle(which){
-  var stay = $("stayRow"), move = $("moveRow"), note = $("cmpNote");
-  var target = (which === "stay") ? stay : move, other = (which === "stay") ? move : stay;
-  var was = target.getAttribute("aria-pressed") === "true";
-  [stay, move].forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
-  $("chartDetail").hidden = true; $("chartDetail").innerHTML = "";
-  if (was){ note.hidden = true; Sound.click(); return; }
-  target.setAttribute("aria-pressed", "true");
-  other.classList.add("dim");
-  var sv = $("stayTotal").textContent, mv = $("moveTotal").textContent;
-  note.innerHTML = "<strong>" + (which === "stay" ? "Staying" : "Moving") + " spotlight:</strong> " +
-    (which === "stay" ? sv : mv) + " total vs " + (which === "stay" ? mv : sv) + ".";
-  note.hidden = false;
-  renderCmpDetail(which);
-  Sound.click();
-}
-/* Real breakdown behind the spotlighted comparison total: every cost component. */
-function renderCmpDetail(which){
-  var box = $("chartDetail");
-  if (!box || !lastCalc) return;
-  var d = lastCalc, title = "", sub = "", rows = [];
-  if (which === "stay"){
-    title = "Staying — cost breakdown";
-    sub = money(d.stayTotal) + " over " + d.horizon + " months · vs " + money(d.moveTotal) + " moving";
-    rows.push({name: "Rent — " + d.horizon + " mo × " + money2(d.renewRent) + "/mo (renewal)",
-      meta: "recurring rent", val: d.stayTotal});
-  } else {
-    title = "Moving — cost breakdown";
-    sub = money(d.moveTotal) + " over " + d.horizon + " months · vs " + money(d.stayTotal) + " staying";
-    rows.push({name: "Rent — " + d.horizon + " mo × " + money2(d.newPlace) + "/mo (new place)",
-      meta: "recurring rent", val: d.horizon * d.newPlace});
-    d.moveItems.forEach(function(r){
-      if (r[1] > 0) rows.push({name: r[0] + " (one-time)", meta: "one-time", val: r[1]});
+  catSpotId=null; donutSel=-1; paceSel=-1; /* DOM rebuilt — drop stale spotlight state */
+  const el=document.getElementById("view");
+  if(activeTab==="dashboard") el.innerHTML=renderDashboard(p);
+  else if(activeTab==="budget") el.innerHTML=renderBudget(p);
+  else if(activeTab==="quotes") el.innerHTML=renderQuotes(p);
+  else if(activeTab==="changes") el.innerHTML=renderChanges(p);
+  // live budget inputs
+  el.querySelectorAll("input[data-budget]").forEach(inp=>{
+    inp.addEventListener("change",()=>{
+      const c=catById(p,inp.dataset.budget); if(!c) return;
+      const v=toCents(inp.value);
+      if(v<0){ dlgAlert("Budget can't be negative."); inp.value=(c.budgetCents/100).toFixed(2); return; }
+      c.budgetCents=v; save(); render();
+    });
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); inp.blur(); } });
+  });
+  const coPct=document.getElementById("coPct");
+  if(coPct) coPct.addEventListener("change",()=>{
+    let v=parseInt(coPct.value,10);
+    if(!isFinite(v)||v<0) v=0; if(v>50) v=50;
+    p.contingencyPct=v; save(); render();
+  });
+  /* stat boxes: click/Enter/Space shows the real breakdown */
+  el.querySelectorAll(".stat[role=\"button\"]").forEach(st=>{
+    st.addEventListener("click",()=>statToggle(st));
+    st.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); statToggle(st); } });
+  });
+  /* clickable category rows (spotlight detail) */
+  el.querySelectorAll(".cat-row").forEach(row=>{
+    row.addEventListener("click",()=>catSpot(row.dataset.cat));
+    row.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); catSpot(row.dataset.cat); } });
+  });
+  /* recent-expense rows open the editor (clicks on the row's own buttons stay local) */
+  el.querySelectorAll(".exp-row").forEach(tr=>{
+    tr.addEventListener("click",e=>{ if(e.target&&e.target.closest&&e.target.closest("button")) return; expenseForm(tr.dataset.exp); });
+    tr.addEventListener("keydown",e=>{
+      if((e.key==="Enter"||e.key===" ")&&!(e.target&&e.target.closest&&e.target.closest("button"))){
+        e.preventDefault(); expenseForm(tr.dataset.exp);
+      }
+    });
+  });
+  /* donut segment / legend clicks */
+  const dw=el.querySelector("#donutWrap");
+  if(dw){
+    dw.addEventListener("click",e=>{
+      const s=e.target&&e.target.closest?e.target.closest("[data-seg]"):null;
+      if(s) donutSpot(parseInt(s.dataset.seg,10));
+    });
+    dw.addEventListener("keydown",e=>{
+      if(e.key==="Enter"||e.key===" "){
+        const s=e.target&&e.target.closest?e.target.closest("[data-seg]"):null;
+        if(s){ e.preventDefault(); donutSpot(parseInt(s.dataset.seg,10)); }
+      }
     });
   }
-  var html = '<div class="cd-head"><div><div class="cd-title">' + esc(title) + '</div>' +
-    '<div class="cd-sub">' + esc(sub) + '</div></div>' +
-    '<button type="button" class="cd-x" id="chartDetailX" aria-label="Clear selection and show totals">×</button></div>' +
-    '<div class="cd-rows">' + rows.map(function(r){
-      return '<div class="cd-row"><span class="cd-name">' + esc(r.name) + '</span>' +
-        '<span class="cd-meta">' + esc(r.meta) + '</span>' +
-        '<span class="cd-val">' + money(r.val) + '</span></div>';
-    }).join("") + '</div>';
-  box.innerHTML = html; box.hidden = false;
-  var x = $("chartDetailX");
-  if (x) x.addEventListener("click", function(){ cmpToggle(which); });
-}
-function wireSpotRow(id, which){
-  var el = $(id); if (!el) return;
-  el.addEventListener("click", function(){ cmpToggle(which); });
-  el.addEventListener("keydown", function(e){
-    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); cmpToggle(which); }
-  });
-}
-/* ---- verdict box: tap to see exactly how the verdict was computed ---- */
-function verdictToggle(){
-  var box = $("verdictBox"), det = $("chartDetail");
-  var was = box.getAttribute("aria-pressed") === "true";
-  if (was || !lastCalc){
-    box.setAttribute("aria-pressed", "false");
-    det.hidden = true; det.innerHTML = "";
-    Sound.click(); return;
+  /* pace-sparkline clicks + arrow-key stepping */
+  const pw=el.querySelector("#paceWrap");
+  if(pw){
+    pw.addEventListener("click",e=>{
+      const d=e.target&&e.target.closest?e.target.closest(".pace-dot"):null;
+      if(d) paceSelFn(parseInt(d.dataset.i,10));
+    });
+    pw.addEventListener("keydown",e=>{
+      if(e.target&&e.target.classList&&e.target.classList.contains("pace-dot")&&(e.key==="Enter"||e.key===" ")){
+        e.preventDefault(); paceSelFn(parseInt(e.target.dataset.i,10)); return;
+      }
+      if((e.key==="ArrowRight"||e.key==="ArrowLeft")&&pacePtsArr.length){
+        e.preventDefault();
+        let i=paceSel<0?(e.key==="ArrowRight"?0:pacePtsArr.length-1):paceSel+(e.key==="ArrowRight"?1:-1);
+        paceSelFn(Math.max(0,Math.min(pacePtsArr.length-1,i)));
+      }
+    });
   }
-  box.setAttribute("aria-pressed", "true");
-  var d = lastCalc, diff = d.stayTotal - d.moveTotal;
-  var diffTxt = diff === 0 ? "dead even" : (diff > 0 ? "moving saves " + money(diff) : "staying saves " + money(-diff));
-  det.innerHTML = '<div class="cd-head"><div><div class="cd-title">How the verdict was computed</div>' +
-    '<div class="cd-sub">Staying ' + money(d.stayTotal) + ' vs moving ' + money(d.moveTotal) +
-    ' over ' + d.horizon + ' months — ' + esc(diffTxt) + '.</div></div>' +
-    '<button type="button" class="cd-x" id="verdictX" aria-label="Close verdict detail">×</button></div>' +
-    '<div class="cd-rows">' +
-    '<div class="cd-row"><span class="cd-name">Staying: ' + d.horizon + ' mo × ' + money2(d.renewRent) + '/mo (renewal)</span>' +
-    '<span class="cd-val">' + money(d.stayTotal) + '</span></div>' +
-    '<div class="cd-row"><span class="cd-name">Moving: ' + d.horizon + ' mo × ' + money2(d.newPlace) + '/mo + ' +
-    money(d.movingCosts) + ' one-time</span><span class="cd-val">' + money(d.moveTotal) + '</span></div></div>';
-  det.hidden = false;
-  var x = $("verdictX");
-  if (x) x.addEventListener("click", function(e){ e.stopPropagation(); verdictToggle(); });
-  Sound.click();
-}
-/* ---- chart legend: toggle a series on/off ---- */
-function legendToggle(btn){
-  var series = btn.getAttribute("data-series");
-  var on = btn.getAttribute("aria-pressed") === "true";
-  btn.setAttribute("aria-pressed", on ? "false" : "true");
-  curveHidden[series] = on;
-  var svg = $("costCurve").querySelector("svg");
-  if (svg) svg.querySelectorAll(".curve-" + series).forEach(function(p){ p.style.display = on ? "none" : ""; });
-  Sound.click();
-}
-/* ---- breakdown table rows: click to see the item's share of its side's total ---- */
-function trowToggle(tr){
-  var rows = $("breakdownBody").querySelectorAll(".trow"), det = $("chartDetail");
-  var was = tr.getAttribute("aria-pressed") === "true";
-  rows.forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
-  if (was){ det.hidden = true; det.innerHTML = ""; Sound.click(); return; }
-  tr.setAttribute("aria-pressed", "true");
-  rows.forEach(function(r){ if (r !== tr) r.classList.add("dim"); });
-  var side = tr.getAttribute("data-side"), amt = parseFloat(tr.getAttribute("data-amt"));
-  var label = tr.querySelector("td").textContent;
-  var total = lastCalc ? (side === "staying" ? lastCalc.stayTotal : lastCalc.moveTotal) : 0;
-  var pct = total > 0 ? (amt / total * 100).toFixed(1) + "%" : "—";
-  det.innerHTML = '<div class="cd-head"><div><div class="cd-title">' + esc(label) + '</div>' +
-    '<div class="cd-sub">' + money(amt) + ' — ' + pct + ' of the ' + esc(side) + ' total (' + money(total) + ')</div></div>' +
-    '<button type="button" class="cd-x" id="trowX" aria-label="Clear selection">×</button></div>';
-  det.hidden = false;
-  var x = $("trowX");
-  if (x) x.addEventListener("click", function(e){ e.stopPropagation(); trowToggle(tr); });
-  Sound.click();
-}
-/* ---- break-even box: jump the cost curve to the break-even month ---- */
-function breakevenToggle(){
-  var box = $("breakevenBox");
-  if (!curveData || !lastCalc) return;
-  var m = lastCalc.be || curveData.horizon; /* never breaks even: show the final month's gap */
-  if (curveSel === m){ selectCurveMonth(m); box.setAttribute("aria-pressed", "false"); return; }
-  if (curveSel !== -1) selectCurveMonth(curveSel); /* release the current month first */
-  selectCurveMonth(m);
-  box.setAttribute("aria-pressed", "true");
-  var cv = $("costCurve");
-  if (cv && cv.scrollIntoView) cv.scrollIntoView({block: "center", behavior: "smooth"});
-  Sound.click();
-}
-/* ---- Escape releases every spotlight back to the default view ---- */
-function releaseAll(){
-  ["stayRow", "moveRow"].forEach(function(id){
-    var r = $(id); if (r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); }
-  });
-  var v = $("verdictBox"); if (v) v.setAttribute("aria-pressed", "false");
-  var bk = $("bkdBody");
-  if (bk) bk.querySelectorAll(".bkd-row").forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
-  var det = $("chartDetail"); if (det){ det.hidden = true; det.innerHTML = ""; }
-  var note = $("cmpNote"); if (note) note.hidden = true;
-  var bn = $("bkdNote"); if (bn) bn.hidden = true;
-  var bd = $("breakdownBody");
-  if (bd) bd.querySelectorAll(".trow").forEach(function(r){ r.classList.remove("dim"); r.setAttribute("aria-pressed", "false"); });
-  var be0 = $("breakevenBox"); if (be0) be0.setAttribute("aria-pressed", "false");
-  if (curveSel !== -1){
-    curveSel = -1;
-    var ro = $("curveReadout"); if (ro) ro.innerHTML = curveHint();
-    var g = $("costCurve").querySelector("#curveSelDot"); if (g) g.innerHTML = "";
-  }
-  Sound.click();
 }
 
-$("calcBtn").addEventListener("click", function(){
-  saveState();
-  var r = calculate(false);
-  if (r) Sound.success(); else Sound.error();
-});
-$("resetBtn").addEventListener("click", function(){
-  Sound.click();
-  FIELDS.forEach(function(id){ $(id).value = ""; });
-  $("horizon").value = "12";
-  setMode("amt", true);
-  try{ localStorage.removeItem(LS_STATE); }catch(e){}
-  $("inputErr").classList.remove("show");
-  $("resultsBody").hidden = true;
-});
-FIELDS.forEach(function(id){
-  $(id).addEventListener("input", function(){ saveState(); calculate(true); });
-});
+/* ---------- demo data (first run) ---------- */
+function seedDemo(){
+  const p=blankProject("Kitchen remodel");
+  const byName=n=>p.categories.find(c=>c.name===n).id;
+  const set=(n,amt)=>{ byName(n); p.categories.find(c=>c.name===n).budgetCents=toCents(amt); };
+  set("Demolition","1800"); set("Structural","2500"); set("Plumbing","3200");
+  set("Electrical","2800"); set("Kitchen","9500"); set("Flooring","4100");
+  set("Paint & Drywall","2600"); set("Fixtures & Finishes","2200");
+  set("Appliances","5200"); set("Permits & Fees","900"); set("Labor","8000");
+  set("Bathrooms","0");
+  p.contingencyPct=10;
+  const E=(date,cat,vendor,amt,note)=>p.expenses.push({id:uid(),date,categoryId:byName(cat),vendor,note,cents:toCents(amt)});
+  E("2026-09-02","Permits & Fees","City of Bloomington","950.00","Building + electrical permits");
+  E("2026-09-05","Demolition","Dumpster Pros","625.40","20yd dumpster, 7-day rental");
+  E("2026-09-06","Demolition","Self","0.01","placeholder — replaced below");
+  p.expenses=p.expenses.filter(e=>e.note!=="placeholder — replaced below");
+  E("2026-09-08","Plumbing","ABC Plumbing Co.","1480.00","Rough-in deposit");
+  E("2026-09-10","Electrical","Bright Spark Electric","900.00","Panel upgrade labor deposit");
+  E("2026-09-12","Kitchen","Cabinet World","3200.00","Cabinets 50% deposit");
+  E("2026-09-14","Flooring","Floor & More","2150.00","White oak, 600 sq ft");
+  E("2026-09-15","Appliances","Appliance Direct","2899.00","Range + dishwasher");
+  E("2026-09-16","Paint & Drywall","Self","312.75","Primer, paint, mud, tape");
+  E("2026-09-18","Labor","Mike's Crew","1500.00","Demo labor week 1");
+  E("2026-09-19","Fixtures & Finishes","Build Supply","486.20","Faucet, pulls, hinges");
+  const Q=(job,cat,bids)=>p.quotes.push({id:uid(),jobTitle:job,categoryId:byName(cat),date:"2026-09-04",
+    bids:bids.map(([who,amt,notes,acc])=>({contractor:who,cents:toCents(amt),notes,accepted:!!acc}))});
+  Q("Kitchen rewire","Electrical",[
+    ["Bright Spark Electric","2650.00","Panel + full rewire, 3-day job",true],
+    ["VoltEdge","2980.00","Rewire only, panel extra",false],
+    ["HandyPro Remodeling","2340.00","No license number provided",false]]);
+  Q("Quartz countertops","Kitchen",[
+    ["StoneCraft","3875.00","Quartz, templated + installed",false],
+    ["TopChoice Surfaces","3590.00","Quartz, 2-week lead",true]]);
+  const CO=(desc,cat,impact,date,status)=>p.changeOrders.push({id:uid(),description:desc,
+    categoryId:byName(cat),deltaCents:toCents(impact),date,status});
+  CO("Add under-cabinet lighting + extra outlets on island","Electrical","640.00","2026-09-11","approved");
+  CO("Upgrade to soft-close hinges throughout","Kitchen","215.00","2026-09-13","approved");
+  CO("Move sink to island (plumbing reroute)","Plumbing","980.00","2026-09-15","proposed");
+  CO("Heated bathroom floor","Bathrooms","1400.00","2026-09-16","rejected");
+  CO("Credit: reuse existing pantry shelving","Kitchen","-180.00","2026-09-14","approved");
+  S.projects.push(p); S.activeProjectId=p.id;
+}
 
-/* ---- init ---- */
-(function(){
-  if (!loadState()){ $("horizon").value = "12"; }
-  updateHints();
-  paintTheme(); paintSample();
-  var sb = $("soundToggle"); if (sb) paintSoundBtn(sb);
-  /* chart + spotlight wiring (delegated, survives re-renders) */
-  wireSpotRow("stayRow", "stay");
-  wireSpotRow("moveRow", "move");
-  /* verdict box + legend wiring */
-  var vb = $("verdictBox");
-  vb.addEventListener("click", verdictToggle);
-  vb.addEventListener("keydown", function(e){
-    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); verdictToggle(); }
+/* ---------- init ---------- */
+function init(){
+  S=load();
+  if(!S){ S=blankState(); S.projects.push(blankProject("Project 1")); S.activeProjectId=S.projects[0].id; save(); }
+  else if(!S.projects.length){ S.projects.push(blankProject("Project 1")); S.activeProjectId=S.projects[0].id; save(); }
+  else if(!P()){ S.activeProjectId=S.projects[0].id; save(); }
+  initTheme();
+  document.getElementById("themeToggle").onclick=()=>{
+    const t=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+    applyTheme(t); Sound.toggleTheme(); Sound.click();
+  };
+  document.getElementById("exportBtn").onclick=()=>{ exportData(); Sound.success(); };
+  document.getElementById("importBtn").onclick=()=>document.getElementById("importFile").click();
+  document.getElementById("importFile").addEventListener("change",e=>{
+    if(e.target.files[0]) importData(e.target.files[0]);
+    e.target.value="";
   });
-  var lg = $("curveLegend");
-  if (lg) lg.addEventListener("click", function(e){
-    var b = e.target.closest ? e.target.closest(".lg-btn") : null;
-    if (b) legendToggle(b);
+  document.getElementById("newProjBtn").onclick=newProject;
+  document.getElementById("renameProjBtn").onclick=renameProject;
+  document.getElementById("delProjBtn").onclick=deleteProject;
+  /* tap-to-edit: quote cards, bid cards, change-order rows (inner action buttons stay isolated) */
+  document.addEventListener("click",e=>{
+    const bid=e.target.closest?e.target.closest(".bid-card"):null;
+    if(bid){ if(e.target.closest("button"))return; bidForm(bid.dataset.qid,+bid.dataset.i); Sound.click(); return; }
+    const qc=e.target.closest?e.target.closest(".quote-card"):null;
+    if(qc){ if(e.target.closest("button"))return; quoteForm(qc.dataset.qid); Sound.click(); return; }
+    const cor=e.target.closest?e.target.closest("tr.co-row"):null;
+    if(cor){ if(e.target.closest("button"))return; coForm(cor.dataset.co); Sound.click(); return; }
   });
-  document.addEventListener("keydown", function(e){ if (e.key === "Escape") releaseAll(); });
-  $("costCurve").addEventListener("click", function(e){
-    var r = e.target.closest ? e.target.closest(".curve-hit") : null;
-    if (r) selectCurveMonth(parseInt(r.getAttribute("data-m"), 10));
+  document.addEventListener("keydown",e=>{
+    if(e.key!=="Enter"&&e.key!==" ")return;
+    const t=e.target.closest?e.target.closest(".bid-card,.quote-card,tr.co-row"):null;
+    if(!t)return;
+    e.preventDefault();
+    if(t.classList.contains("bid-card")) bidForm(t.dataset.qid,+t.dataset.i);
+    else if(t.classList.contains("quote-card")) quoteForm(t.dataset.qid);
+    else coForm(t.dataset.co);
+    Sound.click();
   });
-  $("costCurve").addEventListener("keydown", function(e){
-    if ((e.key === "Enter" || e.key === " ") && curveData){
-      var r = e.target.closest ? e.target.closest(".curve-hit") : null;
-      if (r){ e.preventDefault(); selectCurveMonth(parseInt(r.getAttribute("data-m"), 10)); }
-      return;
+  /* Escape releases every spotlight back to the default view */
+  document.addEventListener("keydown",e=>{
+    if(e.key!=="Escape") return;
+    const card=document.getElementById("statDetail");
+    if(card&&!card.hidden){
+      card.hidden=true; card.innerHTML="";
+      document.querySelectorAll(".stat[role=\"button\"]").forEach(s=>s.setAttribute("aria-pressed","false"));
+      Sound.click();
     }
-    if ((e.key === "ArrowRight" || e.key === "ArrowLeft") && curveData){
-      e.preventDefault();
-      var m = curveSel < 1 ? (e.key === "ArrowRight" ? 1 : curveData.horizon)
-                           : curveSel + (e.key === "ArrowRight" ? 1 : -1);
-      selectCurveMonth(Math.max(1, Math.min(curveData.horizon, m)));
-    }
+    if(donutSel>=0) donutSpot(donutSel);     /* toggle releases */
+    if(paceSel>=0) paceSelFn(paceSel);         /* back to latest-cumulative view */
+    if(catSpotId) catSpot(catSpotId);          /* toggle releases */
   });
-  $("bkdBody").addEventListener("click", function(e){
-    var row = e.target.closest ? e.target.closest(".bkd-row") : null;
-    if (row) bkdToggle(row);
-  });
-  $("bkdBody").addEventListener("keydown", function(e){
-    if (e.key === "Enter" || e.key === " "){
-      var row = e.target.closest ? e.target.closest(".bkd-row") : null;
-      if (row){ e.preventDefault(); bkdToggle(row); }
-    }
-  });
-  /* breakdown table rows + break-even box wiring (delegated, survives re-renders) */
-  var bd = $("breakdownBody");
-  bd.addEventListener("click", function(e){
-    var tr = e.target.closest ? e.target.closest(".trow") : null;
-    if (tr) trowToggle(tr);
-  });
-  bd.addEventListener("keydown", function(e){
-    if (e.key === "Enter" || e.key === " "){
-      var tr = e.target.closest ? e.target.closest(".trow") : null;
-      if (tr){ e.preventDefault(); trowToggle(tr); }
-    }
-  });
-  var beBox = $("breakevenBox");
-  beBox.addEventListener("click", breakevenToggle);
-  beBox.addEventListener("keydown", function(e){
-    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); breakevenToggle(); }
-  });
-  if (loadStateHadValues()){ calculate(true); }
-  function loadStateHadValues(){
-    return FIELDS.some(function(id){ return $(id).value !== "" && $(id).value !== null; });
-  }
-})();
+  renderProjectSel(); renderTabs(); render();
+  paintSample();
+  const sb=document.getElementById("soundToggle"); if(sb) paintSoundBtn(sb);
+}
+document.addEventListener("DOMContentLoaded",init);
 </script>
 </body>
 </html>
