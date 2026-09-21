@@ -196,7 +196,7 @@ function gToggleTheme() {
 .g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
 .g-theme-toggle:active { transform: scale(0.97); }
 
-/* Glenerds Store button — permanent top-bar element on every app */
+/* "More Apps" button — permanent top-bar element on every app (Glen's pick 2026-09-21) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .g-store-btn {
   display: inline-flex; align-items: center; gap: 7px;
@@ -214,7 +214,6 @@ function gToggleTheme() {
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
 @media (max-width: 440px) {
-  .g-store-btn .sb-long { display: none; }
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
 }
@@ -898,7 +897,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       <h1 class="g-brand-name">MacroTrack</h1>
     </div>
     <div class="g-header-actions">
-      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Glenerds Store — all our tools on Gumroad"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-cart"/></svg><span class="sb-long">Glenerds&nbsp;</span><span>Store</span></a>
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="More Apps — browse all Glenerds tools on Gumroad">More Apps <span aria-hidden="true">→</span></a>
       <button class="g-theme-toggle" id="theme-btn" type="button" aria-label="Toggle dark mode"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon"/></svg><span>Dark</span></button>
     </div>
   </header>
