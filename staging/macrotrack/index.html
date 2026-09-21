@@ -196,6 +196,71 @@ function gToggleTheme() {
 .g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
 .g-theme-toggle:active { transform: scale(0.97); }
 
+/* Glenerds Store button — permanent top-bar element on every app */
+.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.g-store-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--g-accent);
+  color: var(--g-accent-ink);
+  border-radius: var(--g-radius-pill);
+  padding: 8px 15px;
+  font-family: var(--g-font);
+  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
+  text-decoration: none; white-space: nowrap;
+  box-shadow: var(--g-shadow-sm);
+  transition: background var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
+}
+.g-store-btn:hover { background: var(--g-accent-hover); box-shadow: var(--g-shadow-md); color: var(--g-accent-ink); }
+.g-store-btn:active { transform: scale(0.97); }
+.g-store-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+@media (max-width: 440px) {
+  .g-store-btn .sb-long { display: none; }
+  .g-store-btn { padding: 8px 12px; }
+  .g-header-actions { gap: 6px; }
+}
+
+/* Macro calorie-split donut chart */
+.macro-pie-wrap {
+  display: flex; align-items: center; justify-content: center; gap: 26px;
+  flex-wrap: wrap;
+  margin: 20px 0 6px;
+}
+.macro-pie-box { position: relative; width: min(230px, 62vw); flex: 0 0 auto; }
+.macro-pie { display: block; width: 100%; height: auto; }
+.macro-pie-track { stroke: var(--g-surface-2); }
+.pie-seg { transition: stroke-dasharray 300ms ease, stroke-dashoffset 300ms ease; }
+.pie-protein { stroke: #2563eb; }
+.pie-carbs   { stroke: #d97706; }
+.pie-fat     { stroke: #9333ea; }
+[data-theme="dark"] .pie-protein { stroke: #7aa8ff; }
+[data-theme="dark"] .pie-carbs   { stroke: #fbbf24; }
+[data-theme="dark"] .pie-fat     { stroke: #c084fc; }
+.pie-center {
+  position: absolute; inset: 0; margin: auto;
+  width: 62%; height: 62%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; pointer-events: none;
+  overflow: hidden;
+}
+.pie-center .v {
+  font-size: clamp(1.25rem, 5.2vw, 1.7rem); font-weight: 800; letter-spacing: -0.02em;
+  color: var(--g-text); line-height: 1.1;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pie-center .l { font-size: 0.72rem; color: var(--g-muted); margin-top: 2px; }
+.pie-legend { display: flex; flex-direction: column; gap: 10px; min-width: 168px; }
+.pie-legend .row { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; }
+.pie-legend .dot { width: 12px; height: 12px; border-radius: 4px; flex: 0 0 auto; }
+.pie-legend .dot.d-protein { background: #2563eb; }
+.pie-legend .dot.d-carbs { background: #d97706; }
+.pie-legend .dot.d-fat { background: #9333ea; }
+[data-theme="dark"] .pie-legend .dot.d-protein { background: #7aa8ff; }
+[data-theme="dark"] .pie-legend .dot.d-carbs { background: #fbbf24; }
+[data-theme="dark"] .pie-legend .dot.d-fat { background: #c084fc; }
+.pie-legend .name { color: var(--g-text-soft); font-weight: 600; }
+.pie-legend .vals { margin-left: auto; color: var(--g-muted); font-variant-numeric: tabular-nums; }
+.pie-legend .vals b { color: var(--g-text); font-weight: 700; }
+
 /* ---------- 5. TABS (segmented control) ---------- */
 .g-tabs {
   display: flex; gap: 4px; flex-wrap: wrap;
@@ -660,7 +725,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
 .disclaimer { color: var(--g-muted); font-size: 0.85rem; margin: 16px 0 0; }
 #print-head { display: none; }
 @media print {
-  header.g-header .g-theme-toggle, .actions, .g-footer, #inputs-card, .no-print { display: none !important; }
+  header.g-header .g-theme-toggle, header.g-header .g-store-btn, .actions, .g-footer, #inputs-card, .no-print { display: none !important; }
   #print-head { display: block; margin-bottom: 12px; }
   body { background: #fff; color: #000; }
   .g-card { break-inside: avoid; background: #fff; border-color: #999; }
@@ -806,6 +871,11 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
     <circle cx="17.5" cy="14.8" r="1.1"/>
   </symbol>
+  <symbol id="g-i-cart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 4h2.2l2.3 11.2a1.6 1.6 0 001.6 1.3h8.6a1.6 1.6 0 001.6-1.3L21 8H6"/>
+    <circle cx="10" cy="20" r="1.4"/>
+    <circle cx="17.5" cy="20" r="1.4"/>
+  </symbol>
   <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
     <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
@@ -827,7 +897,10 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       </span>
       <h1 class="g-brand-name">MacroTrack</h1>
     </div>
-    <button class="g-theme-toggle" id="theme-btn" type="button" aria-label="Toggle dark mode"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon"/></svg><span>Dark</span></button>
+    <div class="g-header-actions">
+      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Glenerds Store — all our tools on Gumroad"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-cart"/></svg><span class="sb-long">Glenerds&nbsp;</span><span>Store</span></a>
+      <button class="g-theme-toggle" id="theme-btn" type="button" aria-label="Toggle dark mode"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-moon"/></svg><span>Dark</span></button>
+    </div>
   </header>
   <p class="g-tagline">Free TDEE &amp; macro calculator. Every formula shown, every step visible — your data never leaves this page.</p>
 
@@ -962,6 +1035,27 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       <div class="macro">
         <div class="top"><span class="name macro-fat">Fat</span><span><span class="grams" id="o-f-g">–</span> <span class="pct" id="o-f-p"></span></span></div>
         <div class="bar"><div id="o-f-bar" class="bar-fill bar-fat" style="width:0%"></div></div>
+      </div>
+
+      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Calorie split</p>
+      <div class="macro-pie-wrap" id="pie-wrap">
+        <div class="macro-pie-box">
+          <svg class="macro-pie" viewBox="0 0 220 220" role="img" aria-labelledby="pie-title">
+            <title id="pie-title">Macro calorie split donut chart</title>
+            <circle class="macro-pie-track" cx="110" cy="110" r="95" fill="none" stroke-width="34"/>
+            <g transform="rotate(-90 110 110)">
+              <circle id="pie-p" class="pie-seg pie-protein" cx="110" cy="110" r="95" fill="none" stroke-width="34" stroke-dasharray="0 596.9" stroke-dashoffset="0"/>
+              <circle id="pie-c" class="pie-seg pie-carbs" cx="110" cy="110" r="95" fill="none" stroke-width="34" stroke-dasharray="0 596.9" stroke-dashoffset="0"/>
+              <circle id="pie-f" class="pie-seg pie-fat" cx="110" cy="110" r="95" fill="none" stroke-width="34" stroke-dasharray="0 596.9" stroke-dashoffset="0"/>
+            </g>
+          </svg>
+          <div class="pie-center"><div class="v" id="pie-total">–</div><div class="l">target kcal/day</div></div>
+        </div>
+        <div class="pie-legend">
+          <div class="row"><span class="dot d-protein"></span><span class="name">Protein</span><span class="vals"><b id="pie-p-kcal">–</b> kcal · <span id="pie-p-g">–</span></span></div>
+          <div class="row"><span class="dot d-carbs"></span><span class="name">Carbs</span><span class="vals"><b id="pie-c-kcal">–</b> kcal · <span id="pie-c-g">–</span></span></div>
+          <div class="row"><span class="dot d-fat"></span><span class="name">Fat</span><span class="vals"><b id="pie-f-kcal">–</b> kcal · <span id="pie-f-g">–</span></span></div>
+        </div>
       </div>
 
       <div class="actions">
@@ -1218,6 +1312,28 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       extra: 'Lean body mass = ' + r2(w) + ' kg × (1 − ' + bf + '%) = ' + r2(lbm) + ' kg' };
   }
 
+  // ---- macro calorie-split donut chart ----
+  var PIE_C = 2 * Math.PI * 95;
+  function paintPie(pp, cp, fp, target) {
+    var gap = PIE_C * 0.012; // small visual gap between segments
+    var off = 0;
+    [['pie-p', pp], ['pie-c', cp], ['pie-f', fp]].forEach(function (pair) {
+      var el = $(pair[0]);
+      var len = Math.max(0, PIE_C * pair[1] / 100 - gap);
+      el.setAttribute('stroke-dasharray', len.toFixed(1) + ' ' + PIE_C.toFixed(1));
+      el.setAttribute('stroke-dashoffset', (-off).toFixed(1));
+      off += PIE_C * pair[1] / 100;
+    });
+    var ok = isFinite(target) && target > 0;
+    $('pie-total').textContent = ok ? fmt(target) : '–';
+    [['p', pp], ['c', cp], ['f', fp]].forEach(function (pair) {
+      var kcal = ok ? target * pair[1] / 100 : NaN;
+      var g = pair[0] === 'f' ? kcal / 9 : kcal / 4;
+      $('pie-' + pair[0] + '-kcal').textContent = ok ? fmt(kcal) : '–';
+      $('pie-' + pair[0] + '-g').textContent = ok ? fmt(g) + ' g' : '–';
+    });
+  }
+
   function compute() {
     var r = readInputs();
     var stepsEl = $('work-steps');
@@ -1233,6 +1349,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       $('pace').hidden = true;
       $('km-notice').hidden = true;
       stepsEl.innerHTML = '<div class="notice">Fix the highlighted fields above to see your numbers.</div>';
+      paintPie(0, 0, 0, null);
       return;
     }
     var b;
@@ -1248,6 +1365,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
         });
         $('pace').hidden = true;
         stepsEl.innerHTML = '<div class="notice">Katch-McArdle needs body fat % — enter it above or choose another formula.</div>';
+        paintPie(0, 0, 0, null);
         return;
       }
       b = bmrKatch(wKg, r.bodyFat);
@@ -1273,6 +1391,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
     $('o-p-bar').style.width = mp.p + '%';
     $('o-c-bar').style.width = mp.c + '%';
     $('o-f-bar').style.width = mp.f + '%';
+    paintPie(mp.p, mp.c, mp.f, target);
 
     // weekly pace estimate: ~7700 kcal per kg of body weight change
     var paceEl = $('pace');
