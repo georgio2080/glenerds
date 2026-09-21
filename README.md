@@ -1,63 +1,47 @@
-# RenoTrack — Home Renovation Budget Tracker
+# TripBudget — Trip Budget Planner
 
-A single-file, fully offline web app for tracking home renovation budgets:
-per-category budgets vs. actuals, an expense log, contractor quote comparison
-(up to 4 bids per job), a change-order log, and a contingency guard that warns
-you before surprise costs eat your buffer.
-
-## Run it
-
-No install, no server, no internet needed.
-
-1. Download or copy `index.html` anywhere (desktop, phone, USB stick).
-2. Double-click it — it opens in any modern browser from `file://`.
-3. Your data is saved automatically in the browser's localStorage on that
-   device. Nothing is ever sent anywhere.
+A fully **offline, single-file** web app for planning a trip budget before you go and tracking expenses while you're there. No account, no subscription, no internet needed — open `index.html` in any browser (works from `file://`) and your data stays on your device.
 
 ## Features
 
-- **Multiple projects** — create, rename, delete (e.g. "Kitchen remodel", "Bath flip").
-- **13 preset budget categories** (Demolition, Structural, Plumbing, Electrical,
-  Kitchen, Bathrooms, Flooring, Paint & Drywall, Fixtures & Finishes, Appliances,
-  Permits & Fees, Labor, Contingency) — rename them, add your own, delete ones
-  you don't need. Edit any budget inline; totals update instantly.
-- **Expense log** — date, category, vendor/payee, amount, note. Per-category
-  progress bars with over-budget highlighting.
-- **Contractor quotes** — up to 4 bids per job with side-by-side comparison,
-  price range, and one-click "accepted" marking. Accepted bids count as
-  committed spend on the dashboard.
-- **Change-order log** — description, cost impact (+/-), category, and
-  proposed / approved / rejected status. Approved change orders roll into that
-  category's actuals automatically.
-- **Contingency guard** — set contingency as a % of your base budget. The
-  dashboard shows contingency remaining and warns you when approved change
-  orders eat into it (amber at 75% used, red when exceeded).
-- **Dashboard** — total budget, actual spent, committed, remaining, % used,
-  per-category bars, recent expenses.
-- **Exact money math** — all amounts are stored and computed as integer cents;
-  no floating-point rounding drift.
-- **Export / Import** — one-click JSON backup download and restore (validated
-  and sanitized on import).
-- **Dark mode** — toggle in the header; honors your OS preference on first
-  load; remembered afterwards.
-- **Print stylesheet** — `Ctrl/Cmd+P` prints a clean budget summary.
-- **Mobile friendly** — usable at 360px wide; works on-site with no signal.
+- **Multiple trips** — create, rename, delete. Each trip has a destination, start/end dates, a home currency, a trip currency, and your own exchange rate (offline — no live rates; you enter it from your bank or a receipt).
+- **Pre-trip budget allocation** — total trip budget plus per-category targets across 8 categories: Flights, Lodging, Food & Drink, Local Transport, Activities & Tours, Shopping, Travel Insurance, Other. Per-day allowance is computed automatically from your trip dates.
+- **Savings target** — enter a departure date and a target amount; TripBudget tells you exactly how much to save per month and per week to hit it.
+- **In-trip expense log** — date, category, amount in trip currency (auto-converted to home currency at your rate), optional note. Running totals vs. budget per category with progress bars and over-budget warnings.
+- **Daily view** — spending per day against your daily allowance, with per-day category breakdowns.
+- **Dashboard** — total budget, spent, remaining, % used, days until departure / days remaining, daily allowance.
+- **Dark mode** — toggle button, follows your OS preference on first load, remembered afterwards.
+- **Export / Import** — full backup as a JSON file; restore on any device.
+- **Print** — a "Print trip summary" button produces a clean, printer-friendly budget sheet.
+- **Exact money math** — all home-currency amounts are stored as integer cents, so totals are never off by a penny. Conversions round to the nearest cent (e.g. a €85 dinner at a 1.08 rate = $91.80).
 
-## Data & privacy
+## Use
 
-- Storage key: `renotrack-v1` in localStorage. Use Export regularly for backups.
-- 100% offline: zero external requests (no CDNs, fonts, analytics, or images).
-  Verified with network blocking in automated QA.
+Open `index.html` in Chrome, Edge, Firefox, or Safari — desktop or mobile. Everything runs locally; there are zero network requests.
+
+Typical flow:
+
+1. **+ New trip** — destination, dates, home/trip currency, your exchange rate, total budget.
+2. **Planner tab** — split the budget across categories; set a savings target and departure date.
+3. **Expenses tab** — log spending in the local currency as you go; watch each category's bar.
+4. **Daily view tab** — check each day against your daily allowance.
+5. **Dashboard** — the at-a-glance totals. Export JSON before you fly as a backup.
+
+## Files
+
+- `index.html` — the entire app (HTML + CSS + JS, no dependencies)
+- `README.md` — this file
+- `gumroad-listing.md` — product listing copy
+- `gallery/` — screenshots
+
+## Privacy
+
+No analytics, no CDNs, no webfonts, no cookies, no servers. Data lives in your browser's `localStorage` under the key `tripbudget-v1`. Export JSON any time for a portable backup.
 
 ## QA
 
-`qa/test_qa.py` — 29 Playwright checks (Chromium): project CRUD, budgets,
-expenses, quotes (4-bid cap, accept toggle), change orders, hand-verified
-dashboard math, export/import round-trip, invalid-import rejection, theme
-persistence, mobile 360px overflow on all four tabs, zero console errors with
-all network traffic blocked. Plus `toCents`/currency edge cases and a
-malicious-import sanitization probe. Two rounds of Gemini code review;
-all findings fixed.
+Automated Playwright/Chromium suite (`qa-tripbudget.py`, 40 checks): trip CRUD, allocation math, savings computation, expense logging in trip currency with conversion, export/import round-trip, theme persistence, 360px mobile layout, zero console/page errors, zero external network requests. Plus two rounds of Gemini API code review (logic, security/XSS, edge cases) with all valid findings fixed.
 
 ---
+
 by [Glenerds](https://glenerds.gumroad.com)

@@ -1,56 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Free offline home renovation budget tracker: set category budgets, log expenses, compare contractor quotes, and manage change orders with a contingency buffer. No account, no subscription — your data never leaves this device.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23b45309'/%3E%3Ctext x='32' y='44' font-size='28' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%92%3C/text%3E%3C/svg%3E">
-<title>Free Home Renovation Budget Tracker: Remodel Cost Planner & Quote Comparison (RenoTrack)</title>
+<meta name="description" content="Free offline trip budget planner: set a travel budget, track expenses in any currency with exact exchange-rate conversion, and see daily spend at a glance. No account, no fees — your data never leaves this device.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e7490'/%3E%3Ctext x='32' y='44' font-size='28' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9C%88%3C/text%3E%3C/svg%3E">
+<title>Free Trip Budget Planner: Travel Expense Tracker with Currency Conversion (TripBudget)</title>
 <style>
 :root{
-  --bg:#f4f6f9; --bg2:#eef1f5; --card:#ffffff; --ink:#1c2430; --ink2:#5b6b7d;
-  --line:#dde4ec; --accent:#0f7b6c; --accent-d:#0a5f53; --accent-soft:#e0f2ee;
-  --warn:#b45309; --warn-soft:#fef3e2; --danger:#c2410c; --danger-soft:#fdeee6;
-  --ok:#15803d; --ok-soft:#e7f6ec; --bar:#cbd5e1; --radius:12px;
-  --shadow:0 1px 3px rgba(20,35,55,.08),0 4px 14px rgba(20,35,55,.06);
+  --bg:#f6f7f9; --surface:#ffffff; --surface2:#eef0f4; --text:#1c2230; --muted:#64707f;
+  --border:#dde2e9; --accent:#2563eb; --accent-ink:#ffffff; --accent-soft:#e3ecff;
+  --good:#16803c; --good-soft:#e2f4e8; --warn:#b45309; --warn-soft:#fdf0dd;
+  --bad:#c0392b; --bad-soft:#fbe7e4; --bar:#2563eb; --bar-bg:#e6eaf1;
+  --radius:12px; --shadow:0 1px 4px rgba(20,30,50,.08);
+  --ch1:#197b63; --ch2:#f06f52; --ch3:#c98f14; --ch4:#3478d4; --ch5:#c45e93; --ch6:#0e7490; --ch7:#8b5cf6; --ch8:#6b7280;
 }
 html[data-theme="dark"]{
-  --bg:#12161c; --bg2:#171c24; --card:#1c222c; --ink:#e8edf3; --ink2:#9aa7b8;
-  --line:#2b3442; --accent:#2dd4a7; --accent-d:#7ce8c8; --accent-soft:#14332c;
-  --warn:#f59e0b; --warn-soft:#33260e; --danger:#f87171; --danger-soft:#3a1d16;
-  --ok:#4ade80; --ok-soft:#12301f; --bar:#334052;
-  --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+  --bg:#11151d; --surface:#1a2030; --surface2:#232b40; --text:#eef1f6; --muted:#9aa6b8;
+  --border:#2c3550; --accent:#5b8def; --accent-ink:#0b1220; --accent-soft:#22324f;
+  --good:#4ade80; --good-soft:#173b28; --warn:#fbbf24; --warn-soft:#3d2f14;
+  --bad:#f87171; --bad-soft:#3d1d1a; --bar:#5b8def; --bar-bg:#2c3550;
+  --shadow:0 1px 4px rgba(0,0,0,.35);
+  --ch1:#58c9a7; --ch2:#ff8468; --ch3:#f5c555; --ch4:#68a5f2; --ch5:#e77eb5; --ch6:#22d3ee; --ch7:#a78bfa; --ch8:#9ca3af;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%}
-header.top{position:sticky;top:0;z-index:20;background:var(--card);
-  border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
-.top-in{max-width:1060px;margin:0 auto;padding:10px 16px;display:flex;
-  align-items:center;gap:12px;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:20px;
-  letter-spacing:.2px}
-.logo svg{width:30px;height:30px}
-.tagline{font-size:12px;color:var(--ink2);margin-top:2px}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+header.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+header.top h1{font-size:1.15rem;margin:0;display:flex;align-items:center;gap:.45rem}
+header.top h1 svg{width:24px;height:24px}
+.top-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;width:100%}
 .spacer{flex:1}
-button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);
-  background:var(--card);color:var(--ink);border-radius:9px;padding:8px 14px;
-  display:inline-flex;align-items:center;gap:7px}
-button:hover,.btn:hover{border-color:var(--accent)}
-button.primary,.btn.primary{background:var(--accent);border-color:var(--accent);
-  color:#fff;font-weight:600}
-html[data-theme="dark"] button.primary,html[data-theme="dark"] .btn.primary{color:#06231d}
-button.primary:hover{background:var(--accent-d)}
-button.danger{color:var(--danger);border-color:var(--danger)}
-button.small{padding:5px 10px;font-size:13px;border-radius:7px}
-button.icon{padding:6px;border-radius:8px;line-height:0}
-svg.ic{width:16px;height:16px;flex:none}
-/* Glenerds standard cluster: More Apps, flask, dark-mode, sound — circular 44x44 icon-only */
-.g-header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+button{font:inherit;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:8px;padding:.45rem .8rem}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent;font-weight:600}
+button.danger{color:var(--bad);border-color:var(--bad)}
+button.icon{padding:.4rem;line-height:0}
+button.icon svg{width:18px;height:18px;vertical-align:middle}
+/* Glenerds standard cluster: flask, dark-mode, sound — circular 44x44 icon-only */
 .g-round-btn{flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;
   display:inline-flex;align-items:center;justify-content:center;
-  background:var(--card);border:1px solid var(--line);color:var(--ink);
+  background:var(--surface);border:1px solid var(--border);color:var(--text);
   border-radius:999px;cursor:pointer;font-size:1.1rem;
   box-shadow:0 2px 8px rgba(0,0,0,.10);
   transition:border-color .18s ease, transform .18s ease}
@@ -63,186 +51,95 @@ svg.ic{width:16px;height:16px;flex:none}
 .g-round-btn.sample-toggle[aria-pressed="true"]{color:var(--accent);border-color:var(--accent);
   background:var(--accent-soft)}
 @media(max-width:480px){.g-header-actions{gap:6px}}
-main{max-width:1060px;margin:0 auto;padding:18px 16px 60px}
-select,input,textarea{font:inherit;color:var(--ink);background:var(--card);
-  border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
-select:focus,input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
-input[type="number"]{text-align:right}
-label.lbl{display:block;font-size:12.5px;font-weight:600;color:var(--ink2);
-  margin:0 0 4px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  box-shadow:var(--shadow);padding:16px}
-.card h2{margin:0 0 12px;font-size:17px}
-.card h3{margin:14px 0 8px;font-size:15px}
-.stat{background:var(--bg2);border:1px solid var(--line);border-radius:10px;
-  padding:12px 14px}
-.stat[role="button"]{cursor:pointer;transition:border-color .18s ease}
+/* ---- charts (inline SVG, dependency-free) ---- */
+.ch-legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.ch-leg{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text);border-radius:999px;padding:5px 12px;
+  font-size:.8rem;cursor:pointer;font-weight:600}
+.ch-leg .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.ch-leg[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.ch-leg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ch-det{margin-top:10px;font-size:.92rem;background:var(--surface2);border-radius:10px;padding:10px 14px;min-height:2.6em}
+.ch-panel svg{width:100%;height:auto;display:block}
+svg .seg,svg .ch-bar{cursor:pointer}
+svg .seg:focus,svg .ch-bar:focus{outline:none;filter:drop-shadow(0 0 5px rgba(91,141,239,.9))}
+input,select,textarea{font:inherit;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.45rem .6rem;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.25rem}
+.field{margin-bottom:.7rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+main{max-width:960px;margin:0 auto;padding:1rem}
+nav.tabs{display:flex;gap:.4rem;margin:0 0 1rem;flex-wrap:wrap}
+nav.tabs button{border-radius:999px;border:1px solid var(--border);background:var(--surface);padding:.5rem 1rem;font-weight:600}
+nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;margin-bottom:1rem}
+.card h2{margin:.1rem 0 .8rem;font-size:1.05rem}
+.grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem}
+.stat{background:var(--surface2);border-radius:10px;padding:.7rem .9rem}
+.stat[role="button"]{cursor:pointer;border:1px solid transparent;transition:border-color .18s ease}
 .stat[role="button"]:hover{border-color:var(--accent)}
 .stat[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--accent))}
 .stat[role="button"][aria-pressed="true"]{border-color:var(--accent)}
-.stat .k{font-size:12px;color:var(--ink2);font-weight:600;text-transform:uppercase;
-  letter-spacing:.5px}
-.stat .v{font-size:22px;font-weight:800;margin-top:3px}
-.stat .v small{font-size:13px;font-weight:600;color:var(--ink2)}
-.v-ok{color:var(--ok)} .v-warn{color:var(--warn)} .v-bad{color:var(--danger)}
-.bar{height:10px;border-radius:6px;background:var(--bar);overflow:hidden;margin-top:8px}
-.bar>i{display:block;height:100%;border-radius:6px;background:var(--accent);
-  transition:width .3s}
-.bar>i.over{background:var(--danger)}
-.bar>i.near{background:var(--warn)}
-.rowline{display:flex;align-items:center;gap:10px;padding:10px 0;
-  border-bottom:1px solid var(--line)}
-.rowline:last-child{border-bottom:0}
-.catname{font-weight:600}
-.sub{font-size:13px;color:var(--ink2)}
-.money{font-variant-numeric:tabular-nums;white-space:nowrap}
-.over-tag{font-size:11px;font-weight:700;color:#fff;background:var(--danger);
-  border-radius:6px;padding:2px 7px;text-transform:uppercase;letter-spacing:.4px}
-.near-tag{font-size:11px;font-weight:700;color:#fff;background:var(--warn);
-  border-radius:6px;padding:2px 7px;text-transform:uppercase;letter-spacing:.4px}
-nav.tabs{display:flex;gap:6px;margin:16px 0;flex-wrap:wrap}
-nav.tabs button{border-radius:999px;padding:8px 16px;font-weight:600;
-  background:transparent;border:1px solid transparent;color:var(--ink2)}
-nav.tabs button.active{background:var(--accent-soft);color:var(--accent-d);
-  border-color:var(--accent)}
-html[data-theme="dark"] nav.tabs button.active{color:var(--accent)}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink2);
-  text-align:left;padding:8px;border-bottom:2px solid var(--line)}
-td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-tr.over td{background:var(--danger-soft)}
-td.num,th.num{text-align:right}
-.empty{padding:26px;text-align:center;color:var(--ink2);font-size:14px}
-dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);
-  color:var(--ink);padding:0;max-width:520px;width:calc(100% - 32px);box-shadow:var(--shadow)}
-dialog::backdrop{background:rgba(10,18,28,.5)}
-.dlg-in{padding:20px}
-.dlg-in h2{margin:0 0 14px;font-size:18px}
-.dlg-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
-.field{margin-bottom:12px}
-.quote-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
-.bid{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg2)}
-.bid.accepted{border:2px solid var(--accent);background:var(--accent-soft)}
-.bid .who{font-weight:700}
-.bid .amt{font-size:20px;font-weight:800;margin:4px 0}
-.badge{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;
-  padding:2px 8px;text-transform:uppercase;letter-spacing:.4px}
-.b-proposed{background:var(--warn-soft);color:var(--warn)}
-.b-approved{background:var(--ok-soft);color:var(--ok)}
-.b-rejected{background:var(--danger-soft);color:var(--danger)}
-.pill{font-size:12px;background:var(--accent-soft);color:var(--accent-d);
-  font-weight:700;border-radius:999px;padding:3px 10px}
-html[data-theme="dark"] .pill{color:var(--accent)}
-.alert{border-radius:10px;padding:12px 14px;margin:12px 0;font-size:14px;
-  display:flex;gap:10px;align-items:flex-start}
-.alert.warn{background:var(--warn-soft);border:1px solid var(--warn);color:inherit}
-.alert.bad{background:var(--danger-soft);border:1px solid var(--danger);color:inherit}
-.alert.ok{background:var(--ok-soft);border:1px solid var(--ok);color:inherit}
-footer{border-top:1px solid var(--line);padding:18px 16px 30px;text-align:center;
-  color:var(--ink2);font-size:13px}
-footer a{color:var(--accent);text-decoration:none;font-weight:600}
-.projbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
-.projbar select{width:auto;min-width:200px;font-weight:700}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}
-.right{margin-left:auto}
-.muted{color:var(--ink2);font-size:13px}
-.neg{color:var(--danger)} .pos{color:var(--ok)}
-.q-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-@media (max-width:700px){
-  .grid2,.grid3,.grid4{grid-template-columns:1fr}
-  .top-in{padding:8px 12px}
-  main{padding:14px 12px 50px}
-  .stat .v{font-size:19px}
-  table.resp thead{display:none}
-  table.resp tr{display:block;border:1px solid var(--line);border-radius:10px;
-    margin-bottom:10px;padding:6px 10px}
-  table.resp td{display:flex;justify-content:space-between;align-items:center;
-    border:0;padding:6px 0}
-  table.resp td::before{content:attr(data-l);font-size:12px;font-weight:700;
-    color:var(--ink2);text-transform:uppercase;letter-spacing:.4px;margin-right:12px}
-  table.resp td.num{justify-content:space-between}
-  .toolbar .right{margin-left:0}
+#statDet{margin-top:10px}
+.day-row[role="button"]{cursor:pointer;border-radius:8px}
+.day-row[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--accent))}
+.day-row[role="button"][aria-pressed="true"] .hd .d{color:var(--accent)}
+tr.exp-tr[role="button"]{cursor:pointer}
+tr.exp-tr[role="button"]:hover td{background:var(--surface2)}
+tr.exp-tr[role="button"]:focus{outline:none;filter:drop-shadow(0 0 5px var(--accent))}
+.stat .k{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.stat .v{font-size:1.35rem;font-weight:700;margin-top:.15rem}
+.stat .v.bad{color:var(--bad)} .stat .v.warn{color:var(--warn)} .stat .v.good{color:var(--good)}
+.progress{height:10px;background:var(--bar-bg);border-radius:999px;overflow:hidden;margin:.4rem 0}
+.progress>i{display:block;height:100%;background:var(--bar);border-radius:999px;transition:width .2s}
+.progress.over>i{background:var(--bad)}
+.cat-row{display:grid;grid-template-columns:1.2fr .9fr 1fr auto;gap:.6rem;align-items:center;padding:.55rem 0;border-top:1px solid var(--border)}
+.cat-row .nm{display:flex;align-items:center;gap:.5rem;font-weight:600}
+.cat-row .nm svg{width:20px;height:20px;flex:none}
+.cat-row input{width:100%}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:.5rem .4rem;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge{display:inline-block;font-size:.75rem;font-weight:700;border-radius:999px;padding:.15rem .55rem}
+.badge.over{background:var(--bad-soft);color:var(--bad)}
+.badge.ok{background:var(--good-soft);color:var(--good)}
+.badge.soon{background:var(--warn-soft);color:var(--warn)}
+.day-row{border-top:1px solid var(--border);padding:.6rem 0}
+.day-row .hd .d svg{width:20px;height:20px;flex:none;vertical-align:-4px}
+.day-row details svg{width:16px;height:16px;vertical-align:-3px}
+.day-row .hd{display:flex;justify-content:space-between;gap:.5rem;align-items:baseline;margin-bottom:.35rem}
+.day-row .hd .d{font-weight:700}
+.empty{color:var(--muted);text-align:center;padding:2rem 1rem}
+footer.app{max-width:960px;margin:1.5rem auto 2.5rem;padding:0 1rem;color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+footer.app a{color:var(--accent)}
+.tripbar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.tripbar select{width:auto;min-width:180px;font-weight:600}
+.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.toolbar .spacer{flex:1}
+details summary{cursor:pointer;font-weight:600;padding:.4rem 0}
+.note{font-size:.85rem;color:var(--muted)}
+.savings-out{background:var(--accent-soft);border-radius:10px;padding:.9rem 1rem;font-size:1.05rem;font-weight:600;margin-top:.7rem}
+#print-only{display:none}
+@media (max-width:560px){
+  .form-grid{grid-template-columns:1fr}
+  .cat-row{grid-template-columns:1fr;gap:.3rem}
+  .cat-row .bar-cell{order:3}
+  header.top h1{font-size:1rem}
+  main{padding:.7rem}
+  table{font-size:.85rem}
 }
 @media print{
-  header.top,nav.tabs,.toolbar,.no-print,footer,.dlg-actions{display:none!important}
-  body{background:#fff;color:#111;font-size:12px}
+  header.top,nav.tabs,.toolbar,footer.app,.no-print{display:none!important}
+  body{background:#fff;color:#000}
+  .card{box-shadow:none;border:1px solid #999;break-inside:avoid}
+  #print-only{display:block}
+  #print-only h1{font-size:1.4rem;margin:0 0 .3rem}
+  #print-only .sub{color:#333;margin-bottom:1rem}
   main{max-width:none;padding:0}
-  .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;margin-bottom:12px}
-  .stat .v{font-size:18px}
-  table.resp thead{display:table-header-group}
-  table.resp tr{display:table-row;border:0;margin:0;padding:0}
-  table.resp td{display:table-cell;border-bottom:1px solid #ccc;padding:6px}
-  table.resp td::before{content:none}
-  :root{--card:#fff;--ink:#111;--ink2:#555;--line:#ccc;--bg:#fff;--bg2:#f5f5f5;
-    --bar:#ddd;--accent:#0f7b6c;--accent-d:#0a5f53;--accent-soft:#e0f2ee}
+  .progress{background:#ddd}
+  .progress>i{background:#333}
 }
-/* ---- donut chart (spend mix) ---- */
-.donut-flex{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.donut-svg{width:170px;max-width:46vw;height:auto;flex:none}
-.donut-seg{cursor:pointer;transition:opacity .2s}
-.donut-seg.dim{opacity:.22}
-.donut-seg:focus{outline:none;filter:drop-shadow(0 0 4px var(--accent))}
-.donut-c1{font-size:17px;font-weight:800;fill:var(--ink);pointer-events:none}
-.donut-c2{font-size:11px;fill:var(--ink2);pointer-events:none}
-.donut-legend{display:flex;flex-direction:column;gap:4px;flex:1;min-width:150px}
-.leg-btn{display:flex;align-items:center;gap:8px;background:none;border:1px solid transparent;
-  border-radius:8px;padding:5px 8px;font-size:13px;color:var(--ink);text-align:left;width:100%;cursor:pointer}
-.leg-btn:hover{border-color:var(--line);background:var(--bg2)}
-.leg-btn .sw{width:12px;height:12px;border-radius:4px;flex:none}
-.leg-btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-/* ---- spending-pace sparkline ---- */
-.chart-kicker{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
-  color:var(--ink2);margin-bottom:6px}
-.pace-svg{width:100%;height:auto;display:block}
-.pace-dot{fill:#2dd4a7;stroke:var(--card);stroke-width:2;cursor:pointer}
-.pace-dot.sel{stroke:#0f7b6c;stroke-width:3}
-.pace-dot:focus{outline:none;filter:drop-shadow(0 0 4px var(--accent))}
-#paceWrap{border-radius:8px;cursor:crosshair}
-#paceWrap:focus{outline:none}
-#paceWrap:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.chart-readout{font-size:13px;margin-top:8px;min-height:1.5em}
-.chart-readout .muted{color:var(--ink2)}
-.axlbl{fill:var(--ink2);font-size:11px}
-/* ---- category-row spotlight + clickable expense rows ---- */
-.cat-row{cursor:pointer;border-radius:8px}
-.cat-row:hover{background:var(--bg2)}
-.cat-row.dim{opacity:.4}
-.cat-row:focus{outline:none}
-.cat-row:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.exp-row{cursor:pointer}
-.exp-row:hover td{background:var(--bg2)}
-.exp-row:focus{outline:none}
-.exp-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.quote-card{cursor:pointer}
-.bid-card{cursor:pointer}
-.bid-card:focus{outline:none}
-.bid-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-tr.co-row{cursor:pointer}
-tr.co-row:hover td{background:var(--bg2)}
-tr.co-row:focus{outline:none}
-tr.co-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.spot-note{font-size:13px;background:var(--bg2);border:1px solid var(--line);
-  border-radius:10px;padding:10px 14px;margin-bottom:10px}
-.spot-note strong{color:var(--accent-d)}
-html[data-theme="dark"] .spot-note strong{color:var(--accent)}
-/* donut spotlight breakdown panel (chart-detail pattern) */
-#donutDetail{margin-top:12px;margin-bottom:0}
-#statDetail{margin-bottom:14px}
-#donutDetail .cd-head,#statDetail .cd-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-#donutDetail .cd-head strong,#statDetail .cd-head strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#donutDetail .cd-title,#statDetail .cd-title{font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#donutDetail .cd-sub,#statDetail .cd-sub{font-size:12px;color:var(--ink2)}
-#donutDetail .cd-count,#statDetail .cd-count{font-size:12px;color:var(--ink2);white-space:nowrap}
-#donutDetail .cd-x,#statDetail .cd-x{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);
-  background:var(--bg);color:var(--ink);font-size:16px;line-height:1;cursor:pointer}
-#donutDetail .cd-rows,#statDetail .cd-rows{display:grid;gap:6px;max-height:240px;overflow:auto}
-#donutDetail .cd-row,#statDetail .cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--bg)}
-#donutDetail .cd-name,#statDetail .cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#donutDetail .cd-val,#statDetail .cd-val{font-weight:700;white-space:nowrap}
-#donutDetail .cd-val{font-weight:700;white-space:nowrap}
 /* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .g-store-btn {
@@ -257,7 +154,7 @@ html[data-theme="dark"] .spot-note strong{color:var(--accent)}
   transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
 .g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
-html[data-theme="dark"] .g-store-btn, html[data-theme="dark"] .g-store-btn:hover { color: #fff; }
+[data-theme="dark"] .g-store-btn, [data-theme="dark"] .g-store-btn:hover { color: #fff; }
 .g-store-btn:active { transform: scale(0.97); }
 .g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
 .g-cta-strip {
@@ -286,158 +183,236 @@ html[data-theme="dark"] .g-store-btn, html[data-theme="dark"] .g-store-btn:hover
 </style>
 </head>
 <body>
-<header class="top no-print">
-  <div class="top-in">
-    <div class="logo">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="14" width="28" height="14" rx="2" fill="#0f7b6c"/><rect x="2" y="14" width="28" height="5" rx="2" fill="#2dd4a7"/><path d="M7 8l4-4 4 4M9 4v6" stroke="#0f7b6c" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="4" width="9" height="6" rx="1" fill="#f4b942"/></svg>
-      <div>RenoTrack<div class="tagline">Home Renovation Budget Tracker</div></div>
-    </div>
-    <div class="spacer"></div>
-    <button id="exportBtn" class="small" title="Download all data as JSON">
-      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>
-      Export
-    </button>
-    <button id="importBtn" class="small" title="Restore data from a JSON file">
-      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5M4 21h16"/></svg>
-      Import
-    </button>
-    <input type="file" id="importFile" accept="application/json,.json" hidden>
-    <div class="g-header-actions">
+<header class="top">
+  <div class="top-row">
+    <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>TripBudget</h1>
+    <span class="spacer"></span>
+    <div class="g-header-actions no-print">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data" onclick="setSample(!sampleOn);Sound.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button class="g-round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
       <button class="g-round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
-      <button class="g-round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)" onclick="toggleSound(this)">🔊</button>
+      <button class="g-round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">🔊</button>
     </div>
+  </div>
+  <div class="top-row tripbar">
+    <select id="tripSelect" aria-label="Select trip"></select>
+    <button id="newTripBtn" class="primary">+ New trip</button>
+    <button id="editTripBtn">Trip settings</button>
+    <button id="deleteTripBtn" class="danger">Delete</button>
+    <span class="spacer"></span>
+    <button id="exportBtn">Export JSON</button>
+    <button id="importBtn">Import JSON</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none">
   </div>
 </header>
-<main>
-  <div class="projbar no-print">
-    <label class="lbl" for="projectSel" style="margin:0">Project</label>
-    <select id="projectSel"></select>
-    <button id="newProjBtn" class="small">+ New</button>
-    <button id="renameProjBtn" class="small" title="Rename project">Rename</button>
-    <button id="delProjBtn" class="small danger" title="Delete project">Delete</button>
+<main id="app">
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="dashboard" aria-selected="true">Dashboard</button>
+    <button role="tab" data-tab="planner" aria-selected="false">Planner</button>
+    <button role="tab" data-tab="expenses" aria-selected="false">Expenses</button>
+    <button role="tab" data-tab="daily" aria-selected="false">Daily view</button>
+  </nav>
+  <div id="emptyState" class="card empty" style="display:none">
+    <h2>No trips yet</h2>
+    <p>Create your first trip to start planning a budget, tracking savings, and logging expenses.</p>
+    <button class="primary" id="emptyNewBtn">+ Create my first trip</button>
   </div>
-  <nav class="tabs no-print" id="tabs" role="tablist"></nav>
-  <div id="view"></div>
+  <section id="tab-dashboard" class="tabpane"></section>
+  <section id="tab-planner" class="tabpane" style="display:none"></section>
+  <section id="tab-expenses" class="tabpane" style="display:none"></section>
+  <section id="tab-daily" class="tabpane" style="display:none"></section>
 </main>
 <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
   <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
 </a>
-<footer>
-  <div>RenoTrack — works fully offline. Your data never leaves this device.</div>
-  <div style="margin-top:4px">by <a href="https://glenerds.gumroad.com">Glenerds</a></div>
+<footer class="app">
+  <span>TripBudget — plan before you go, track while you're there. All data stays on this device.</span>
+  <span>by <a href="https://glenerds.gumroad.com" rel="noopener">Glenerds</a></span>
 </footer>
-<dialog id="dlg"><div class="dlg-in" id="dlgBody"></div></dialog>
+<div id="print-only"></div>
+
+<div id="tripModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;padding:1rem">
+  <div class="card" style="max-width:520px;width:100%;margin:0;max-height:90vh;overflow:auto">
+    <h2 id="tripModalTitle">New trip</h2>
+    <div class="field"><label for="fDest">Destination</label><input id="fDest" placeholder="e.g. Japan"></div>
+    <div class="form-grid">
+      <div class="field"><label for="fStart">Start date</label><input id="fStart" type="date"></div>
+      <div class="field"><label for="fEnd">End date</label><input id="fEnd" type="date"></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label for="fHomeCur">Home currency</label><select id="fHomeCur"></select></div>
+      <div class="field"><label for="fTripCur">Trip currency</label><select id="fTripCur"></select></div>
+    </div>
+    <div class="field"><label for="fRate">Exchange rate <span class="note" id="rateHint"></span></label>
+      <input id="fRate" type="number" min="0" step="any" placeholder="e.g. 1.08">
+      <div class="note">You enter the rate yourself — no internet needed. Check your bank or a recent receipt.</div>
+    </div>
+    <div class="field"><label for="fBudget">Total trip budget (home currency)</label><input id="fBudget" type="number" min="0" step="0.01" placeholder="e.g. 3500"></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end">
+      <button id="tripCancel">Cancel</button>
+      <button id="tripSave" class="primary">Save trip</button>
+    </div>
+  </div>
+</div>
+
+<div id="expenseModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;padding:1rem">
+  <div class="card" style="max-width:520px;width:100%;margin:0;max-height:90vh;overflow:auto">
+    <h2 id="expenseModalTitle">Log expense</h2>
+    <div class="form-grid">
+      <div class="field"><label for="eDate">Date</label><input id="eDate" type="date"></div>
+      <div class="field"><label for="eCat">Category</label><select id="eCat"></select></div>
+    </div>
+    <div class="field"><label for="eAmount">Amount <span class="note" id="eCurHint"></span></label><input id="eAmount" type="number" min="0" step="0.01" placeholder="0.00"></div>
+    <div class="field"><label for="eNote">Note (optional)</label><input id="eNote" placeholder="e.g. Ramen in Osaka"></div>
+    <div class="field no-print"><label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" id="eHomeCur" style="width:auto"> Amount is in home currency instead</label></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end">
+      <button id="expenseCancel">Cancel</button>
+      <button id="expenseSave" class="primary">Save expense</button>
+    </div>
+  </div>
+</div>
+
 <script>
 "use strict";
-/* ============ RenoTrack core ============ */
-const LS_KEY = "renotrack-v1";
-const CATEGORIES_PRESET = ["Demolition","Structural","Plumbing","Electrical","Kitchen",
-  "Bathrooms","Flooring","Paint & Drywall","Fixtures & Finishes","Appliances",
-  "Permits & Fees","Labor","Contingency"];
-const CONTINGENCY_NAME = "Contingency";
+/* TripBudget — fully offline trip budget planner. All state in localStorage. */
+/* Money is stored as integer cents in the HOME currency for exact math. */
 
-/* ---------- money: exact cents ---------- */
-/* ---------- money: exact cents (string-parsed, no float drift) ---------- */
-function toCents(v){
-  if(v===null||v===undefined) return 0;
-  let s=String(v).trim().replace(/[$,\s]/g,"");
-  if(s==="") return 0;
-  let neg=false;
-  if(s[0]==="-"){ neg=true; s=s.slice(1); }
-  else if(s[0]==="+"){ s=s.slice(1); }
-  if(!/^\d*(\.\d*)?$/.test(s)) return 0;
-  const parts=s.split(".");
-  const dollars=parts[0]===""?0:parseInt(parts[0],10);
-  let frac=(parts[1]||"").replace(/\D/g,"");
-  while(frac.length<3) frac+="0";          // keep 3rd decimal for rounding
-  let cents=dollars*100+parseInt(frac.slice(0,2),10);
-  if(parseInt(frac[2],10)>=5) cents+=1;    // round half up
-  return neg?-cents:cents;
+const STORE_KEY = "tripbudget-v1";
+const THEME_KEY = "tripbudget-theme";
+
+const CATEGORIES = [
+  {id:"flights",   name:"Flights",            icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5L3 11l1.5-4.5L11 8l3.5-5.5c.6-1 2-1.2 2.8-.4l1.1 1.1c.8.8.6 2.2-.4 2.8L12.5 9l1.5 6.5L9.5 14l-2 5-2.5-.5 3-6z" transform="rotate(15 12 12)"/></svg>'},
+  {id:"lodging",   name:"Lodging",            icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>'},
+  {id:"food",      name:"Food & Drink",       icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2"/><path d="M8 2v20M17 2c-2 0-3 2.5-3 6 0 2.5 1 4 3 4v10"/><path d="M17 2v10"/></svg>'},
+  {id:"transport", name:"Local Transport",    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="13" rx="2"/><path d="M4 10h16M8 20l-2 2M16 20l2 2"/><circle cx="8.5" cy="13.5" r=".8" fill="currentColor"/><circle cx="15.5" cy="13.5" r=".8" fill="currentColor"/></svg>'},
+  {id:"activities",name:"Activities & Tours", icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>'},
+  {id:"shopping",  name:"Shopping",           icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h15l-1.7 7.5a2 2 0 0 1-2 1.5H8.7a2 2 0 0 1-2-1.5L4 4H2"/><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/></svg>'},
+  {id:"insurance", name:"Travel Insurance",   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>'},
+  {id:"other",     name:"Other",              icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.8.3-.9 1-.9 1.7"/><circle cx="12" cy="17" r=".8" fill="currentColor"/></svg>'}
+];
+const CURR_SYMBOLS = {USD:"$",EUR:"€",GBP:"£",JPY:"¥",CAD:"$",AUD:"$",NZD:"$",CHF:"CHF ",CNY:"¥",HKD:"HK$",SGD:"S$",KRW:"₩",INR:"₹",MXN:"MX$",BRL:"R$",SEK:"kr ",NOK:"kr ",DKK:"kr ",PLN:"zł ",CZK:"Kč ",THB:"฿",VND:"₫",PHP:"₱",MYR:"RM ",IDR:"Rp ",ZAR:"R ",AED:"د.إ ",TRY:"₺ ",ILS:"₪ ",RUB:"₽ ",UAH:"₴ "};
+const CURR_LIST = ["USD","EUR","GBP","JPY","CAD","AUD","NZD","CHF","CNY","HKD","SGD","KRW","INR","MXN","BRL","SEK","NOK","DKK","PLN","CZK","THB","VND","PHP","MYR","IDR","ZAR","AED","TRY","ILS","RUB","UAH"];
+
+/* ---------- money helpers (integer cents, exact) ---------- */
+function toCents(amount){ // number|string -> integer cents, exact for 2dp input
+  const n = Number(amount);
+  if(!isFinite(n)) return 0;
+  return Math.round(n * 100);
 }
-function fmt(cents){
-  const neg = cents<0, a = Math.abs(Math.round(cents));
-  return (neg?"-$":"$") + Math.floor(a/100).toLocaleString("en-US") +
-    "." + String(a%100).padStart(2,"0");
+function fmtCents(cents, code){
+  if(!isFinite(Number(cents))) return "0.00";
+  const neg = cents < 0;
+  const a = Math.abs(Math.round(cents));
+  const whole = Math.floor(a/100).toLocaleString("en-US");
+  const frac = String(a%100).padStart(2,"0");
+  const sym = CURR_SYMBOLS[code] !== undefined ? CURR_SYMBOLS[code] : (code ? code+" " : "");
+  return (neg?"-":"") + sym + whole + "." + frac;
 }
-function fmtSigned(cents){ return (cents<0?"-":"+") + fmt(Math.abs(cents)); }
-function pct(part,whole){
-  part=Number(part); whole=Number(whole);
-  if(!isFinite(part)) part=0;
-  if(!isFinite(whole)||whole<=0) return part>0?100:0;
-  return (part/whole)*100;
+/* convert trip-currency amount (string/number, up to 2dp) -> home cents.
+   rate = home-currency units per 1 trip-currency unit (e.g. 1 EUR = 1.08 USD).
+   Decimal-exact: rates are finite user-entered decimals, so multiply on the
+   rate's decimal string form and round half-up — plain float math drifts
+   below exact .5-cent boundaries (e.g. 6.67*1.5 -> 1000 instead of 1001). */
+function rateParts(rate){
+  let rs = String(rate);
+  if(/e/i.test(rs)){
+    rs = Number(rate).toFixed(12);
+    if(/e/i.test(rs)) return {int: BigInt(Math.round(Number(rate))), dp: 0};
+    rs = rs.replace(/0+$/,"").replace(/\.$/,"");
+  }
+  const dot = rs.indexOf(".");
+  const dp = dot < 0 ? 0 : rs.length - dot - 1;
+  return {int: BigInt((rs.replace(".","") || "0").replace("-","")), dp};
 }
-function esc(s){ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
-function todayStr(){ const d=new Date(); return d.toISOString().slice(0,10); }
+function tripToHomeCents(tripAmount, rate){
+  const r = Number(rate), a = Number(tripAmount);
+  if(!isFinite(r) || !isFinite(a) || r < 0 || a < 0) return 0;
+  const aCents = Math.round(a*100); // exact integer for 2dp input
+  const rp = rateParts(r);
+  const prod = BigInt(aCents) * rp.int;
+  const div = 10n ** BigInt(rp.dp);
+  const q = prod / div, rem = prod % div;
+  const out = q + (rem*2n >= div ? 1n : 0n);
+  return out <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(out) : Math.round(a*r*100);
+}
+function homeCentsToTrip(cents, rate){
+  const r = Number(rate);
+  if(!isFinite(r) || r <= 0) return 0;
+  const rp = rateParts(r);
+  if(rp.int === 0n) return 0;
+  // want round-half-up of cents/r, expressed in hundredths of the trip unit
+  const num = BigInt(Math.round(cents)) * (10n ** BigInt(rp.dp));
+  const q = num / rp.int, rem = num % rp.int;
+  return Number(q + (rem*2n >= rp.int ? 1n : 0n)) / 100;
+}
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
 /* ---------- state ---------- */
-let S = null;           // whole app state
-let activeTab = "dashboard";
-let coFilter = "all";   // change-order status filter
-
-function blankState(){ return {version:1, theme:null, activeProjectId:null, projects:[]}; }
-function blankProject(name){
-  return { id:uid(), name:name||"New project", createdAt:Date.now(),
-    contingencyPct:10,
-    categories: CATEGORIES_PRESET.map(n=>({id:uid(), name:n, budgetCents: n===CONTINGENCY_NAME?0:0})),
-    expenses: [], quotes: [], changeOrders: [] };
-}
-let quotaWarned=false;
-function save(){
-  if(window.__gSampleOn || sampleOn) return; /* sample data is transient — never persisted */
-  try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }
-  catch(e){
-    if(!quotaWarned && e && e.name==="QuotaExceededError"){
-      quotaWarned=true;
-      dlgAlert("Browser storage is full — changes are NOT being saved. Export your data now so you don't lose work.");
-    }
-  }
-}
+function blankState(){ return {version:1, trips:[], activeTripId:null}; }
+let state = blankState();
+function save(){ if(window.__gSampleOn || sampleOn) return; /* sample data is transient — never persisted */
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
 function load(){
   try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return null;
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return;
     const s = JSON.parse(raw);
-    if(!s || typeof s!=="object" || !Array.isArray(s.projects)) return null;
-    return s;
-  }catch(e){ return null; }
+    if(!s || !Array.isArray(s.trips)) return;
+    state = s;
+  }catch(e){ console.warn("TripBudget: stored data was unreadable, starting fresh.", e); }
 }
-function P(){ return S.projects.find(p=>p.id===S.activeProjectId) || null; }
-function catById(p,id){ return p.categories.find(c=>c.id===id) || null; }
-function catName(p,id){ const c=catById(p,id); return c?c.name:"—"; }
-function isContingencyCat(p,id){ const c=catById(p,id); return !!c && c.name===CONTINGENCY_NAME; }
+/* harden imported data: coerce types, validate numbers, keep esc() as the render-time XSS guard */
+function isValidDateStr(s){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s||"")) return false;
+  const p = s.split("-"), y = +p[0], m = +p[1], d = +p[2];
+  const dt = new Date(y, m-1, d);
+  return dt.getFullYear()===y && dt.getMonth()===m-1 && dt.getDate()===d;
+}
+function sanitizeTrip(t){
+  if(!t || typeof t !== "object") return null;
+  const s = (v)=> String(v==null?"":v).slice(0,500);
+  const num = (v)=> { const n = Number(v); return isFinite(n) ? n : 0; };
+  const out = {
+    id: s(t.id) || uid(),
+    destination: s(t.destination) || "Untitled trip",
+    start: isValidDateStr(t.start) ? t.start : "",
+    end: isValidDateStr(t.end) ? t.end : "",
+    homeCur: /^[A-Z]{3}$/.test(t.homeCur||"") ? t.homeCur : "USD",
+    tripCur: /^[A-Z]{3}$/.test(t.tripCur||"") ? t.tripCur : "EUR",
+    rate: (num(t.rate) > 0) ? num(t.rate) : 1,
+    totalBudgetCents: Math.max(0, Math.round(num(t.totalBudgetCents))),
+    allocations: {}, savings: {targetCents:0}, expenses: []
+  };
+  if(out.start && out.end && daysBetween(out.start,out.end) < 0){ const tmp=out.start; out.start=out.end; out.end=tmp; }
+  CATEGORIES.forEach(c=>{
+    out.allocations[c.id] = Math.max(0, Math.round(num(t.allocations && t.allocations[c.id])));
+  });
+  out.savings.targetCents = Math.max(0, Math.round(num(t.savings && t.savings.targetCents)));
+  if(Array.isArray(t.expenses)) t.expenses.forEach(e=>{
+    if(!e || typeof e !== "object") return;
+    const hc = Math.max(0, Math.round(num(e.homeCents)));
+    out.expenses.push({
+      id: s(e.id) || uid(),
+      date: isValidDateStr(e.date) ? e.date : todayStr(),
+      cat: CATEGORIES.some(c=>c.id===e.cat) ? e.cat : "other",
+      tripAmount: Math.max(0, Math.round(num(e.tripAmount)*100)/100),
+      homeCents: hc,
+      note: s(e.note).slice(0,500)
+    });
+  });
+  return out;
+}
+function uid(){ return "t"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36); }
+function activeTrip(){ return state.trips.find(t=>t.id===state.activeTripId) || null; }
+function tripById(id){ return state.trips.find(t=>t.id===id) || null; }
 
-/* ---------- math (all in cents) ---------- */
-function catExpensesCents(p,catId){
-  return p.expenses.filter(e=>e.categoryId===catId).reduce((t,e)=>t+e.cents,0);
-}
-function catChangeCents(p,catId){ // approved change-order deltas in this category
-  return p.changeOrders.filter(c=>c.categoryId===catId && c.status==="approved")
-    .reduce((t,c)=>t+c.deltaCents,0);
-}
-function catActualCents(p,catId){ return catExpensesCents(p,catId)+catChangeCents(p,catId); }
-function baseBudgetCents(p){ // sum of non-contingency category budgets
-  return p.categories.filter(c=>c.name!==CONTINGENCY_NAME)
-    .reduce((t,c)=>t+c.budgetCents,0);
-}
-function contingencyAllocCents(p){ return Math.round(baseBudgetCents(p)*p.contingencyPct/100); }
-function totalBudgetCents(p){ return baseBudgetCents(p)+contingencyAllocCents(p); }
-function actualSpentCents(p){ // everything actually spent incl. approved change orders
-  const e = p.expenses.reduce((t,x)=>t+x.cents,0);
-  const c = p.changeOrders.filter(x=>x.status==="approved").reduce((t,x)=>t+x.deltaCents,0);
-  return e+c;
-}
-function acceptedQuotesCents(p){
-  return p.quotes.reduce((t,q)=>t+q.bids.filter(b=>b.accepted).reduce((a,b)=>a+b.cents,0),0);
-}
-function committedCents(p){ return actualSpentCents(p)+acceptedQuotesCents(p); }
-function remainingCents(p){ return totalBudgetCents(p)-committedCents(p); }
-function contingencyConsumedCents(p){ // NET approved change-order cost draws on contingency
-  return p.changeOrders.filter(x=>x.status==="approved").reduce((t,x)=>t+x.deltaCents,0);
-}
-function contingencyRemainingCents(p){ return contingencyAllocCents(p)-contingencyConsumedCents(p); }
+/* date helpers — parse YYYY-MM-DD as LOCAL dates (no UTC shift) */
+function parseLocal(d){ if(!d) return null; const p=d.split("-"); if(p.length<3) return null; const dt=new Date(+p[0],+p[1]-1,+p[2]); return isNaN(dt)?null:dt; }
+function fmtDate(d){ const dt=parseLocal(d); return dt?dt.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"—"; }
+function todayStr(){ const n=new Date(); return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0"); }
+function daysBetween(a,b){ const da=parseLocal(a), db=parseLocal(b); if(!da||!db) return 0; return Math.round((db-da)/86400000); }
+function tripDays(t){ if(!t.start||!t.end) return 0; return Math.max(0, daysBetween(t.start,t.end)+1); }
+function catById(id){ return CATEGORIES.find(c=>c.id===id) || CATEGORIES[CATEGORIES.length-1]; }
 
 /* ---------- theme (spec reference: emoji icon, white round button adapts via vars) ---------- */
 function paintTheme(){
@@ -448,75 +423,125 @@ function paintTheme(){
   b.setAttribute("aria-pressed", dark?"true":"false");
   b.setAttribute("aria-label", l); b.title = l;
 }
-function applyTheme(t){
-  document.documentElement.setAttribute("data-theme", t);
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
   paintTheme();
-  if(S){ S.theme=t; save(); }
+  /* muted gray follows the mode; paint funcs may not exist yet at first init — guards absorb that */
+  try{ paintSoundBtn(document.getElementById("soundToggle")); }catch(e){}
+  try{ paintSample(); }catch(e){}
+  try{ localStorage.setItem(THEME_KEY, theme); }catch(e){}
 }
-function initTheme(){
-  let t = S && S.theme ? S.theme :
-    (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light");
-  document.documentElement.setAttribute("data-theme", t);
-  paintTheme();
-  if(S && !S.theme){ S.theme=t; }
-}
+(function initTheme(){
+  let t = null;
+  try{ t = localStorage.getItem(THEME_KEY); }catch(e){}
+  if(t!=="dark" && t!=="light"){
+    t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  applyTheme(t);
+})();
+document.getElementById("themeToggle").addEventListener("click", ()=>{
+  const cur = document.documentElement.getAttribute("data-theme");
+  applyTheme(cur==="dark" ? "light" : "dark");
+  Sound.toggleTheme(); Sound.click();
+});
+document.getElementById("sampleToggle").addEventListener("click", ()=>{ setSample(!sampleOn); Sound.click(); });
+document.getElementById("soundToggle").addEventListener("click", function(){ toggleSound(this); });
 
 /* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
-let sampleOn = false, sampleSnap = null;
-const PAL = ["#4f8ef7","#f06f52","#2dd4a7","#f5b942","#e77eb5","#a78bfa","#38bdf8","#84cc16"];
-let donutSegs = [], donutSel = -1, pacePtsArr = [], paceSel = -1, catSpotId = null;
+let sampleOn = false, sampleSnap = null, sampleForm = null, sampleTab = null, sampleModals = null;
 function paintSample(){
   const b = document.getElementById("sampleToggle"); if(!b) return;
-  /* ON tint comes from .sample-toggle[aria-pressed="true"] CSS — white button per spec */
   const l = sampleOn ? "Clear sample data" : "Try sample data";
   b.setAttribute("aria-pressed", sampleOn?"true":"false");
   b.setAttribute("aria-label", l); b.title = l;
+  /* ON tint comes from .sample-toggle[aria-pressed="true"] CSS — white button per spec */
 }
 function fillSample(){
-  S = blankState();
-  seedDemo();
-  activeTab = "dashboard";
-  renderProjectSel(); renderTabs(); render();
+  const E = (date,cat,tripAmount,homeCents,note)=>({id:uid(),date,cat,tripAmount,homeCents,note});
+  const t = {
+    id: uid(), destination:"Lisbon, Portugal", start:"2026-10-10", end:"2026-10-17",
+    homeCur:"USD", tripCur:"EUR", rate:1.08, totalBudgetCents:240000,
+    allocations:{flights:52000,lodging:70000,food:42000,transport:14000,activities:30000,shopping:12000,insurance:6000,other:14000},
+    savings:{targetCents:60000},
+    expenses:[
+      E("2026-10-02","flights",480,51840,"Round-trip JFK–LIS"),
+      E("2026-10-05","lodging",650,70200,"Airbnb deposit"),
+      E("2026-10-10","food",42.50,4590,"Welcome dinner in Alfama"),
+      E("2026-10-11","transport",18.75,2025,"Metro day pass"),
+      E("2026-10-12","food",61.20,6610,"Time Out Market lunch"),
+      E("2026-10-12","activities",80,8640,"Fado show tickets"),
+      E("2026-10-13","activities",35,3780,"Castelo de São Jorge"),
+      E("2026-10-14","shopping",54.99,5939,"Ceramics in Chiado"),
+      E("2026-10-15","food",47.80,5162,"Seafood dinner"),
+      E("2026-10-16","transport",22.10,2387,"Day trip to Sintra"),
+      E("2026-10-17","food",38.45,4153,"Pastéis before departure")
+    ]
+  };
+  state = {version:1, trips:[t], activeTripId:t.id};
+  renderAll();
+}
+/* transient (uncommitted) form values live only in the DOM — snapshot by id so
+   sample-off restores the exact pre-sample form state even across re-renders */
+function snapForm() {
+  var o = {}, els = document.querySelectorAll('input[id],select[id],textarea[id]');
+  for (var i = 0; i < els.length; i++) { var e = els[i];
+    o[e.id] = (e.type === 'checkbox' || e.type === 'radio') ? (e.checked ? '1' : '0') : e.value; }
+  return o;
+}
+function restoreForm(snap) {
+  if (!snap) return;
+  for (var id in snap) { if (!Object.prototype.hasOwnProperty.call(snap, id)) continue;
+    var e = document.getElementById(id); if (!e) continue; var v = snap[id];
+    if (e.type === 'checkbox' || e.type === 'radio') e.checked = (v === '1'); else e.value = v; }
 }
 function setSample(on){
-  window.__gSampleOn = !!on; /* global save-guard for the whole sample cycle */
   if(on && !sampleOn){
-    sampleSnap = { json: JSON.stringify(S), activeTab };
-    sampleOn = true;
+    sampleSnap = JSON.stringify(state);
+    sampleForm = snapForm();
+    const selTab = document.querySelector('nav.tabs button[aria-selected="true"]');
+    sampleTab = selTab ? selTab.dataset.tab : "dashboard";
+    sampleModals = {trip:document.getElementById("tripModal").style.display,
+                    expense:document.getElementById("expenseModal").style.display};
+    sampleOn = true; window.__gSampleOn = true;
     fillSample();
   } else if(!on && sampleOn){
-    sampleOn = false;
-    const snap = sampleSnap; sampleSnap = null;
-    if(snap){
-      S = JSON.parse(snap.json);
-      activeTab = snap.activeTab || "dashboard";
+    sampleOn = false; window.__gSampleOn = false;
+    try{ const s = JSON.parse(sampleSnap); if(s && Array.isArray(s.trips)) state = s; }catch(e){}
+    sampleSnap = null;
+    renderAll();
+    restoreForm(sampleForm); sampleForm = null;
+    if(sampleTab){
+      const btn = document.querySelector('nav.tabs button[data-tab="'+sampleTab+'"]');
+      if(btn) btn.click();
+      sampleTab = null;
     }
-    /* repaint theme from the restored state (sample-off reverts any theme toggle made while sampling) */
-    document.documentElement.setAttribute("data-theme", (S && S.theme) || "light");
-    paintTheme();
-    renderProjectSel(); renderTabs(); render();
+    if(sampleModals){
+      document.getElementById("tripModal").style.display = sampleModals.trip || "none";
+      document.getElementById("expenseModal").style.display = sampleModals.expense || "none";
+      sampleModals = null;
+    }
   }
   paintSample();
 }
 
 /* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
-var Sound = (function(){
-  const K = "renotrack.sound"; let on = true, ctx = null;
-  try { if(window.localStorage.getItem(K)==="off") on=false; } catch(e){}
-  function ac(){ try {
+const Sound = (function(){
+  const K = "tripbudget.sound"; let on = true, ctx = null;
+  try{ if(window.localStorage.getItem(K)==="off") on=false; }catch(e){}
+  function ac(){ try{
     if(!ctx){ const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return null; ctx = new AC(); }
-    return ctx; } catch(e){ return null; } }
-  function tone(freq, dur, type, vol, delay){
+    return ctx; }catch(e){ return null; } }
+  function tone(freq,dur,type,vol,delay){
     const c = ac(); if(!c) return;
-    function play(){ try {
-      const t = c.currentTime + (delay||0), o = c.createOscillator(), g = c.createGain();
+    function play(){ try{
+      const t = c.currentTime+(delay||0), o = c.createOscillator(), g = c.createGain();
       o.type = type||"sine"; o.frequency.value = freq;
-      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol||0.06, t+0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
-      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05); } catch(e){} }
-    if(c.state==="suspended"){ c.resume().then(play, play); } else { play(); }
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05); }catch(e){} }
+    if(c.state==="suspended"){ c.resume().then(play,play); } else { play(); }
   }
-  return {
+  return{
     isOn(){ return on; },
     toggle(){ on=!on; try{ window.localStorage.setItem(K, on?"on":"off"); }catch(e){} return on; },
     click(){ if(on) tone(520,0.06,"sine",0.045); },
@@ -540,858 +565,651 @@ function toggleSound(btn){
   Sound.click();
 }
 
-/* ---------- tabs ---------- */
-const TABS=[["dashboard","Dashboard"],["budget","Budget & Expenses"],["quotes","Contractor Quotes"],["changes","Change Orders"]];
-function renderTabs(){
-  document.getElementById("tabs").innerHTML = TABS.map(([id,lbl])=>
-    `<button role="tab" data-tab="${id}" class="${id===activeTab?"active":""}">${lbl}</button>`).join("");
-  document.querySelectorAll("#tabs button").forEach(b=>
-    b.onclick=()=>{activeTab=b.dataset.tab; renderTabs(); render(); Sound.click();});
+/* ---------- trips ---------- */
+function openTripModal(editing){
+  const t = editing ? activeTrip() : null;
+  document.getElementById("tripModalTitle").textContent = editing ? "Trip settings" : "New trip";
+  document.getElementById("fDest").value = t ? t.destination : "";
+  document.getElementById("fStart").value = t ? (t.start||"") : "";
+  document.getElementById("fEnd").value = t ? (t.end||"") : "";
+  document.getElementById("fHomeCur").value = t ? t.homeCur : "USD";
+  document.getElementById("fTripCur").value = t ? t.tripCur : "EUR";
+  document.getElementById("fRate").value = t ? t.rate : "";
+  document.getElementById("fBudget").value = t ? (t.totalBudgetCents/100) : "";
+  updateRateHint();
+  document.getElementById("tripModal").style.display = "flex";
+  editingTrip = editing ? t.id : null;
 }
-
-/* ---------- projects ---------- */
-function renderProjectSel(){
-  const sel=document.getElementById("projectSel");
-  sel.innerHTML = S.projects.map(p=>
-    `<option value="${p.id}" ${p.id===S.activeProjectId?"selected":""}>${esc(p.name)}</option>`).join("");
-  sel.onchange=()=>{ S.activeProjectId=sel.value; save(); render(); };
+let editingTrip = null;
+function updateRateHint(){
+  const hc = document.getElementById("fHomeCur").value, tc = document.getElementById("fTripCur").value;
+  document.getElementById("rateHint").textContent = "(1 "+tc+" = ? "+hc+")";
 }
-function newProject(){
-  const p=blankProject("Project "+(S.projects.length+1));
-  S.projects.push(p); S.activeProjectId=p.id; save();
-  renderProjectSel(); render();
-  dlgForm("Rename project",[{k:"name",lbl:"Project name",val:p.name,req:true}],(vals)=>{
-    p.name=vals.name.trim().slice(0,120)||p.name; save(); renderProjectSel(); render();
-  });
-}
-function renameProject(){
-  const p=P(); if(!p) return;
-  dlgForm("Rename project",[{k:"name",lbl:"Project name",val:p.name,req:true}],(vals)=>{
-    p.name=vals.name.trim().slice(0,120)||p.name; save(); renderProjectSel(); render();
-  });
-}
-function deleteProject(){
-  const p=P(); if(!p) return;
-  if(S.projects.length===1){
-    dlgAlert("You can't delete your only project. Rename it instead."); return;
+document.getElementById("tripSave").addEventListener("click", ()=>{
+  const dest = document.getElementById("fDest").value.trim();
+  const start = document.getElementById("fStart").value, end = document.getElementById("fEnd").value;
+  const homeCur = document.getElementById("fHomeCur").value, tripCur = document.getElementById("fTripCur").value;
+  const rate = Number(document.getElementById("fRate").value);
+  const budgetCents = Math.max(0, toCents(document.getElementById("fBudget").value || 0));
+  if(!dest){ alert("Please enter a destination."); Sound.error(); return; }
+  if(!start || !end){ alert("Please pick start and end dates."); Sound.error(); return; }
+  if(daysBetween(start,end) < 0){ alert("End date must be on or after the start date."); Sound.error(); return; }
+  if(!(rate > 0)){ alert("Please enter a valid exchange rate greater than 0."); Sound.error(); return; }
+  if(editingTrip){
+    const t = tripById(editingTrip); if(!t) return;
+    Object.assign(t,{destination:dest,start,end,homeCur,tripCur,rate,totalBudgetCents:budgetCents});
+  } else {
+    const t = {id:uid(), destination:dest, start, end, homeCur, tripCur, rate,
+      totalBudgetCents:budgetCents, allocations:{}, savings:{targetCents:0}, expenses:[]};
+    CATEGORIES.forEach(c=>{ t.allocations[c.id]=0; });
+    state.trips.push(t);
+    state.activeTripId = t.id;
   }
-  dlgConfirm(`Delete "${esc(p.name)}"? This removes its budgets, expenses, quotes and change orders.`,
-    ()=>{
-      S.projects=S.projects.filter(x=>x.id!==p.id);
-      S.activeProjectId=S.projects[0].id; save(); renderProjectSel(); render();
+  save(); closeModal("tripModal"); renderAll(); Sound.success();
+});
+function closeModal(id){ document.getElementById(id).style.display = "none"; }
+document.getElementById("tripCancel").addEventListener("click", ()=>closeModal("tripModal"));
+document.getElementById("newTripBtn").addEventListener("click", ()=>openTripModal(false));
+document.getElementById("emptyNewBtn").addEventListener("click", ()=>openTripModal(false));
+document.getElementById("editTripBtn").addEventListener("click", ()=>{ if(activeTrip()) openTripModal(true); });
+document.getElementById("deleteTripBtn").addEventListener("click", ()=>{
+  const t = activeTrip(); if(!t) return;
+  if(!confirm('Delete the trip "'+t.destination+'"? All its budget data will be removed.')) return;
+  state.trips = state.trips.filter(x=>x.id!==t.id);
+  state.activeTripId = state.trips.length ? state.trips[0].id : null;
+  save(); renderAll(); Sound.click();
+});
+document.getElementById("tripSelect").addEventListener("change", e=>{
+  state.activeTripId = e.target.value; save(); renderAll(); Sound.select();
+});
+document.getElementById("fHomeCur").addEventListener("change", updateRateHint);
+document.getElementById("fTripCur").addEventListener("change", updateRateHint);
+
+/* ---------- export / import ---------- */
+function downloadFile(name, text){
+  const blob = new Blob([text], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+document.getElementById("exportBtn").addEventListener("click", ()=>{
+  const stamp = todayStr();
+  downloadFile("tripbudget-export-"+stamp+".json", JSON.stringify(state,null,2));
+  Sound.success();
+});
+document.getElementById("importBtn").addEventListener("click", ()=>document.getElementById("importFile").click());
+document.getElementById("importFile").addEventListener("change", e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const s = JSON.parse(r.result);
+      if(!s || !Array.isArray(s.trips)) throw new Error("bad file");
+      const clean = [];
+      s.trips.forEach(t=>{ const c = sanitizeTrip(t); if(c) clean.push(c); });
+      if(!clean.length) throw new Error("no valid trips");
+      state = {version:1, trips:clean, activeTripId:null};
+      if(!tripById(state.activeTripId)) state.activeTripId = state.trips.length?state.trips[0].id:null;
+      save(); renderAll();
+      alert("Import complete: "+state.trips.length+" trip(s) loaded.");
+      Sound.success();
+    }catch(err){ alert("Could not import that file — it isn't a valid TripBudget export."); Sound.error(); }
+    e.target.value = "";
+  };
+  r.readAsText(f);
+});
+
+/* ---------- tabs ---------- */
+document.querySelectorAll("nav.tabs button").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected","false"));
+    b.setAttribute("aria-selected","true");
+    document.querySelectorAll(".tabpane").forEach(p=>p.style.display="none");
+    document.getElementById("tab-"+b.dataset.tab).style.display = "";
+    Sound.click();
+  });
+});
+
+/* ---------- inline SVG charts (dependency-free, gallery-style) ---------- */
+const CH_COLORS=["var(--ch1)","var(--ch2)","var(--ch3)","var(--ch4)","var(--ch5)","var(--ch6)","var(--ch7)","var(--ch8)"];
+/* dashed-circle donut with center readout */
+function donutSVG(uidp,segs,total,topText,subText){
+  const C=345.6; let acc=0,g="";
+  segs.forEach((s,i)=>{
+    const frac=total>0?s.value/total:0;
+    const len=segs.length>1?Math.max(frac*C-1.4,0.6):C;
+    g+='<g class="seg" tabindex="0" role="button" data-i="'+i+'" aria-pressed="false" aria-label="'+esc(s.name+": "+s.hint)+'">'
+      +'<circle cx="80" cy="80" r="55" fill="none" stroke="'+s.color+'" stroke-width="24"'
+      +' stroke-dasharray="'+len.toFixed(1)+" "+C.toFixed(1)+'" stroke-dashoffset="'+(-acc).toFixed(1)+'"/></g>';
+    acc+=frac*C;
+  });
+  return '<svg viewBox="0 0 160 160" role="img" aria-label="Spending by category donut chart">'
+    +'<circle cx="80" cy="80" r="55" fill="none" stroke="var(--border)" stroke-width="24"/>'
+    +'<g fill="none" transform="rotate(-90 80 80)">'+g+'</g>'
+    +'<text x="80" y="78" text-anchor="middle" pointer-events="none" style="font-size:19px;font-weight:700;fill:var(--text)" id="'+uidp+'-top">'+esc(topText)+'</text>'
+    +'<text x="80" y="98" text-anchor="middle" pointer-events="none" style="font-size:10.5px;letter-spacing:1.2px;fill:var(--muted)" id="'+uidp+'-sub">'+esc(subText)+'</text></svg>';
+}
+function legendHTML(segs){
+  return '<div class="ch-legend">'+segs.map((s,i)=>
+    '<button type="button" class="ch-leg" data-i="'+i+'" aria-pressed="false">'
+    +'<span class="sw" style="background:'+s.color+'"></span><span>'+esc(s.name)+'</span>'
+    +'<span style="color:var(--muted)">'+esc(s.hint)+'</span></button>').join("")+'</div>';
+}
+/* select-to-spotlight: click/Enter/Space spotlights an item and swaps the detail
+   readout; clicking again restores the default view */
+function wireSelectable(scope,segs,fmtDetail,fmtDefault,detId,onPick){
+  const det=document.getElementById(detId); let sel=-1;
+  const items=scope.querySelectorAll(".seg,.ch-bar");
+  function pick(i){
+    sel=(sel===i?-1:i);
+    items.forEach((g,gi)=>{
+      g.style.opacity=(sel===-1||sel===gi)?"1":"0.25";
+      g.setAttribute("aria-pressed",sel===gi?"true":"false");
+    });
+    scope.querySelectorAll(".ch-leg").forEach((l,li)=>l.setAttribute("aria-pressed",sel===li?"true":"false"));
+    det.innerHTML=sel===-1?fmtDefault():fmtDetail(segs[sel]);
+    if(onPick)onPick(sel);
+  }
+  items.forEach((g,i)=>{
+    g.addEventListener("click",()=>{pick(i);Sound.click();});
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(i);Sound.click();}});
+  });
+  scope.querySelectorAll(".ch-leg").forEach((l,i)=>l.addEventListener("click",()=>{pick(i);Sound.click();}));
+  /* Escape restores the default view for this chart's spotlight */
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&sel!==-1){pick(sel);Sound.click();}});
+  det.innerHTML=fmtDefault();
+}
+/* category spend segments (positive spend only), in CATEGORIES order */
+function mixSegs(t,d){
+  return CATEGORIES.map((c,i)=>({id:c.id,name:c.name,color:CH_COLORS[i%CH_COLORS.length],
+      value:d.perCat[c.id]||0,alloc:t.allocations[c.id]||0}))
+    .filter(s=>s.value>0)
+    .map(s=>(s.hint=(d.spent>0?Math.round(s.value/d.spent*1000)/10:0)+"%",s));
+}
+function wireMixCard(t,d){
+  const wrap=document.getElementById("mixWrap"); if(!wrap) return;
+  const segs=mixSegs(t,d);
+  wireSelectable(wrap,segs,
+    s=>{
+      const left=s.alloc-s.value;
+      return "<strong>"+esc(s.name)+"</strong> &mdash; "+esc(fmtCents(s.value,t.homeCur))+" ("+esc(s.hint)+")"
+        +" &middot; allocated "+esc(fmtCents(s.alloc,t.homeCur))
+        +(s.alloc>0?(left<0?" &middot; <strong>over by "+esc(fmtCents(-left,t.homeCur))+"</strong>"
+                        :" &middot; "+esc(fmtCents(left,t.homeCur))+" left"):"");
+    },
+    ()=>"<strong>"+esc(fmtCents(d.spent,t.homeCur))+"</strong> spent across "+segs.length+" categor"+(segs.length===1?"y":"ies")
+        +". Tap a slice or a legend chip for the breakdown.",
+    "mixDet",
+    i=>{
+      document.getElementById("mixDonut-top").textContent=i===-1?fmtCents(d.spent,t.homeCur):fmtCents(segs[i].value,t.homeCur);
+      document.getElementById("mixDonut-sub").textContent=i===-1?"TOTAL":segs[i].name.toUpperCase();
     });
 }
 
-/* ---------- dialogs ---------- */
-function openDlg(html){ const b=document.getElementById("dlgBody"); b.innerHTML=html; document.getElementById("dlg").showModal(); }
-function closeDlg(){ document.getElementById("dlg").close(); }
-function dlgAlert(msg){
-  openDlg(`<h2>Heads up</h2><p>${msg}</p>
-    <div class="dlg-actions"><button class="primary" onclick="closeDlg()">OK</button></div>`);
+/* ---------- tap-for-detail: stats + category rows ---------- */
+function statToggle(el){
+  const t=activeTrip(); if(!t) return;
+  const d=tripTotals(t), days=tripDays(t);
+  const det=document.getElementById("statDet");
+  const was=el.getAttribute("aria-pressed")==="true";
+  document.querySelectorAll('.stat[role="button"]').forEach(s=>s.setAttribute("aria-pressed","false"));
+  if(was||!det){ if(det){det.hidden=true;det.innerHTML="";} Sound.click(); return; }
+  const kind=el.dataset.stat;
+  const dailyAllow=days>0&&d.budget>0?Math.floor(d.budget/days):0;
+  let html="";
+  if(kind==="total"){
+    const top=CATEGORIES.map(c=>({c,a:t.allocations[c.id]||0})).filter(x=>x.a>0).sort((a,b)=>b.a-a.a).slice(0,3);
+    html="<strong>"+esc(fmtCents(d.budget,t.homeCur))+" total budget</strong> &mdash; "+esc(fmtCents(d.allocated,t.homeCur))+
+      " allocated across "+CATEGORIES.filter(c=>(t.allocations[c.id]||0)>0).length+" categories"+
+      (d.budget>d.allocated?" &middot; "+esc(fmtCents(d.budget-d.allocated,t.homeCur))+" unallocated":"")+
+      ". Top: "+top.map(x=>esc(x.c.name)+" "+esc(fmtCents(x.a,t.homeCur))).join(" &middot; ")+".";
+  }else if(kind==="spent"){
+    const top=CATEGORIES.map(c=>({c,s:d.perCat[c.id]||0})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,3);
+    html="<strong>"+esc(fmtCents(d.spent,t.homeCur))+" spent</strong> &mdash; "+t.expenses.length+" expense"+
+      (t.expenses.length===1?"":"s")+". Top categories: "+
+      (top.length?top.map(x=>esc(x.c.name)+" "+esc(fmtCents(x.s,t.homeCur))).join(" &middot; "):"none yet")+".";
+  }else if(kind==="remaining"){
+    const moreDays=dailyAllow>0&&d.remaining>0?Math.floor(d.remaining/dailyAllow):0;
+    html="<strong>"+esc(fmtCents(d.remaining,t.homeCur))+" remaining</strong> &mdash; budget "+
+      esc(fmtCents(d.budget,t.homeCur))+" &minus; spent "+esc(fmtCents(d.spent,t.homeCur))+
+      (moreDays>0?" &middot; covers ~"+moreDays+" more day"+(moreDays===1?"":"s")+
+       " at the "+esc(fmtCents(dailyAllow,t.homeCur))+"/day allowance":"")+".";
+  }else if(kind==="pct"){
+    html="<strong>"+d.pct+"% of budget used</strong> &mdash; "+esc(fmtCents(d.spent,t.homeCur))+
+      " of "+esc(fmtCents(d.budget,t.homeCur))+".";
+  }else if(kind==="timing"){
+    html="<strong>"+esc(t.destination)+"</strong> &mdash; "+esc(fmtDate(t.start))+" to "+esc(fmtDate(t.end))+
+      " ("+days+" day"+(days===1?"":"s")+").";
+  }else if(kind==="daily"){
+    html="<strong>"+esc(fmtCents(dailyAllow,t.homeCur))+"/day</strong> &mdash; budget "+
+      esc(fmtCents(d.budget,t.homeCur))+" &divide; "+days+" day"+(days===1?"":"s")+".";
+  }
+  if(!html){Sound.click();return;}
+  el.setAttribute("aria-pressed","true");
+  det.innerHTML=html; det.hidden=false;
+  Sound.click();
 }
-function dlgConfirm(msg,onYes){
-  window._dlgYes=onYes;
-  openDlg(`<h2>Confirm</h2><p>${msg}</p>
-    <div class="dlg-actions"><button onclick="closeDlg()">Cancel</button>
-    <button class="primary" onclick="closeDlg();window._dlgYes()">Delete</button></div>`);
+function catToggle(el){
+  const t=activeTrip(); if(!t) return;
+  const id=el.dataset.cat, det=document.getElementById(el.dataset.det);
+  const was=el.getAttribute("aria-pressed")==="true";
+  document.querySelectorAll('.day-row[role="button"]').forEach(r=>r.setAttribute("aria-pressed","false"));
+  if(was||!det){ if(det){det.hidden=true;det.innerHTML="";} Sound.click(); return; }
+  const d=tripTotals(t), c=catById(id);
+  const alloc=t.allocations[id]||0, spent=d.perCat[id]||0, left=alloc-spent;
+  const ex=t.expenses.filter(x=>catById(x.cat).id===id).sort((a,b)=>b.homeCents-a.homeCents).slice(0,5);
+  let html="<strong>"+esc(c.name)+"</strong> &mdash; "+esc(fmtCents(spent,t.homeCur))+" of "+
+    esc(fmtCents(alloc,t.homeCur))+(left<0?" (over by "+esc(fmtCents(-left,t.homeCur))+")":
+    " ("+esc(fmtCents(left,t.homeCur))+" left)")+".";
+  if(ex.length) html+="<br>"+ex.map(x=>esc(fmtDate(x.date))+" "+esc(x.note||"—")+" "+
+    esc(fmtCents(x.homeCents,t.homeCur))).join(" &middot; ")+".";
+  else html+=" No expenses logged in this category yet.";
+  el.setAttribute("aria-pressed","true");
+  det.innerHTML=html; det.hidden=false;
+  Sound.click();
 }
-// fields: [{k,lbl,type,val,req,step,opts,min,max,ph,ta}]
-function dlgForm(title,fields,onSave,opts){
-  opts=opts||{};
-  const body=fields.map(f=>{
-    let input="";
-    if(f.type==="select"){
-      input=`<select id="f_${f.k}">${f.opts.map(o=>`<option value="${esc(o[0])}" ${String(o[0])===String(f.val)?"selected":""}>${esc(o[1])}</option>`).join("")}</select>`;
-    }else if(f.ta){
-      input=`<textarea id="f_${f.k}" rows="3" placeholder="${esc(f.ph||"")}">${esc(f.val??"")}</textarea>`;
-    }else{
-      input=`<input id="f_${f.k}" type="${f.type||"text"}" value="${esc(f.val??"")}"
-        ${f.req?"required":""} ${f.min!==undefined?`min="${f.min}"`:""} ${f.max!==undefined?`max="${f.max}"`:""}
-        ${f.step?`step="${f.step}"`:""} placeholder="${esc(f.ph||"")}">`;
-    }
-    return `<div class="field"><label class="lbl" for="f_${f.k}">${f.lbl}</label>${input}</div>`;
-  }).join("");
-  window._dlgSave=onSave;
-  openDlg(`<h2>${esc(title)}</h2><form id="dlgFormEl">${body}
-    ${opts.note?`<p class="muted">${opts.note}</p>`:""}
-    <div class="dlg-actions"><button type="button" onclick="closeDlg()">Cancel</button>
-    <button type="submit" class="primary">${esc(opts.saveLabel||"Save")}</button></div></form>`);
-  document.getElementById("dlgFormEl").onsubmit=e=>{
-    e.preventDefault();
-    const vals={};
-    for(const f of fields){ const el=document.getElementById("f_"+f.k); vals[f.k]=el.value; }
-    if(fields.some(f=>f.req && !String(vals[f.k]).trim())) return;
-    closeDlg(); window._dlgSave(vals);
-  };
+function releaseToggles(){
+  let open=false;
+  const det=document.getElementById("statDet"); if(det&&!det.hidden){det.hidden=true;det.innerHTML="";open=true;}
+  ["catDetDash","catDetExp"].forEach(id=>{const c=document.getElementById(id); if(c&&!c.hidden){c.hidden=true;c.innerHTML="";open=true;}});
+  document.querySelectorAll('.stat[role="button"][aria-pressed="true"],.day-row[role="button"][aria-pressed="true"]')
+    .forEach(s=>{s.setAttribute("aria-pressed","false");open=true;});
+  return open;
+}
+function wireToggles(scope){
+  scope.querySelectorAll('.stat[role="button"]').forEach(st=>{
+    st.addEventListener("click",()=>statToggle(st));
+    st.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();statToggle(st);} });
+  });
+  scope.querySelectorAll('.day-row[role="button"]').forEach(r=>{
+    r.addEventListener("click",()=>catToggle(r));
+    r.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();catToggle(r);} });
+  });
+  scope.querySelectorAll('tr.exp-tr[role="button"]').forEach(tr=>{
+    const open=()=>openExpenseModal(tr.dataset.id);
+    tr.addEventListener("click",e=>{ if(e.target&&e.target.closest&&e.target.closest("button"))return; open(); });
+    tr.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();open();} });
+  });
 }
 
 /* ---------- dashboard ---------- */
-function barHTML(actual,budget){
-  const p=pct(actual,budget);
-  const cls=actual>budget?"over":(p>=90?"near":"");
-  const tag=actual>budget?`<span class="over-tag">Over</span>`:(p>=90?`<span class="near-tag">Near</span>`:"");
-  return `<div class="bar"><i class="${cls}" style="width:${Math.min(100,p)}%"></i></div>
-    <div style="margin-top:5px">${tag}</div>`;
+function tripTotals(t){
+  const perCat = {}; CATEGORIES.forEach(c=>perCat[c.id]=0);
+  t.expenses.forEach(x=>{ const c = catById(x.cat).id; perCat[c]+= x.homeCents; });
+  const spent = Object.values(perCat).reduce((a,b)=>a+b,0);
+  const allocated = CATEGORIES.reduce((a,c)=>a+(t.allocations[c.id]||0),0);
+  const budget = t.totalBudgetCents || allocated;
+  return {perCat, spent, allocated, budget, remaining: budget-spent,
+          pct: budget>0 ? Math.round(spent/budget*1000)/10 : 0};
 }
-/* ---------- spend-mix donut + spending-pace sparkline (clickable) ---------- */
-function renderDonut(p){
-  const segs=p.categories.map(c=>({id:c.id,name:c.name,actual:catActualCents(p,c.id)}))
-    .filter(s=>s.actual>0).sort((a,b)=>b.actual-a.actual);
-  donutSegs=segs; donutSel=-1;
-  const total=segs.reduce((t,s)=>t+s.actual,0);
-  if(!total) return `<div class="empty">Log expenses to see your spend mix.</div><div id="donutWrap"></div>`;
-  const C=2*Math.PI*54; let acc=0;
-  const arcs=segs.map((s,i)=>{
-    const frac=s.actual/total, len=Math.max(frac*C,0.6);
-    const a=`<circle cx="70" cy="70" r="54" fill="none" stroke="${PAL[i%PAL.length]}" stroke-width="22" `+
-      `stroke-dasharray="${len.toFixed(2)} ${(C-len).toFixed(2)}" stroke-dashoffset="${(-acc).toFixed(2)}" `+
-      `transform="rotate(-90 70 70)" data-seg="${i}" class="donut-seg" tabindex="0" role="button" `+
-      `aria-pressed="false" aria-label="${esc(s.name)}: ${fmt(s.actual)}, ${Math.round(frac*100)} percent of spend">`+
-      `<title>${esc(s.name)} — ${fmt(s.actual)}</title></circle>`;
-    acc+=len; return a;
-  }).join("");
-  /* names only — amounts live in the budget card; no redundant legend */
-  const legend=segs.map((s,i)=>
-    `<button type="button" class="leg-btn" data-seg="${i}" aria-pressed="false" title="Spotlight ${esc(s.name)}">`+
-    `<span class="sw" style="background:${PAL[i%PAL.length]}"></span><span>${esc(s.name)}</span></button>`).join("");
-  return `<div id="donutWrap"><div class="donut-flex">`+
-    `<svg class="donut-svg" viewBox="0 0 140 140" role="img" aria-label="Actual spend by category, donut chart">${arcs}`+
-    `<text x="70" y="66" text-anchor="middle" class="donut-c1" id="donutC1">${fmt(total)}</text>`+
-    `<text x="70" y="84" text-anchor="middle" class="donut-c2" id="donutC2">spent</text></svg>`+
-    `<div class="donut-legend">${legend}</div></div>`+
-    `<div class="spot-note" id="donutDetail" aria-live="polite" hidden></div></div>`;
-}
-function donutSpot(i){
-  const segs=donutSegs; if(!segs.length) return;
-  const wrap=document.getElementById("donutWrap"); if(!wrap) return;
-  donutSel=(donutSel===i)?-1:i;
-  const total=segs.reduce((t,s)=>t+s.actual,0);
-  wrap.querySelectorAll(".donut-seg").forEach(c=>{
-    const on=parseInt(c.dataset.seg,10)===donutSel;
-    c.classList.toggle("dim",donutSel>=0&&!on);
-    c.setAttribute("aria-pressed",on?"true":"false");
-  });
-  wrap.querySelectorAll(".leg-btn").forEach(b=>{
-    b.setAttribute("aria-pressed",(parseInt(b.dataset.seg,10)===donutSel)?"true":"false");
-  });
-  const c1=document.getElementById("donutC1"), c2=document.getElementById("donutC2");
-  if(c1){
-    if(donutSel>=0){ const s=segs[donutSel];
-      c1.textContent=fmt(s.actual); c2.textContent=s.name+" · "+Math.round(s.actual/total*100)+"%";
-    }else{ c1.textContent=fmt(total); c2.textContent="spent"; }
-  }
-  /* breakdown panel: the actual expenses + approved change orders behind the segment */
-  const det=document.getElementById("donutDetail");
-  if(det){
-    if(donutSel>=0){
-      const s=segs[donutSel], p=P();
-      const items=p?p.expenses.filter(e=>e.categoryId===s.id)
-        .map(e=>({t:(e.vendor||"Expense")+" · "+e.date,v:e.cents}))
-        .concat(p.changeOrders.filter(c=>c.categoryId===s.id&&c.status==="approved")
-          .map(c=>({t:"Change order · "+c.date,v:c.deltaCents}))):[];
-      items.sort((a,b)=>b.v-a.v);
-      det.innerHTML=`<div class="cd-head"><strong>${esc(s.name)}</strong>`+
-        `<span class="cd-count">${items.length} item${items.length===1?"":"s"} · <span class="money">${fmt(s.actual)}</span></span>`+
-        `<button type="button" class="cd-x" id="donutDetailX" aria-label="Clear selection and show totals">×</button></div>`+
-        `<div class="cd-rows">`+items.map(it=>
-          `<div class="cd-row"><span class="cd-name">${esc(it.t)}</span><span class="cd-val money">${fmt(it.v)}</span></div>`
-        ).join("")+`</div>`;
-      det.hidden=false;
-      const x=document.getElementById("donutDetailX");
-      if(x) x.addEventListener("click",ev=>{ev.stopPropagation();donutSpot(donutSel);});
-    }else{ det.hidden=true; det.innerHTML=""; }
-  }
-  Sound.click();
-}
-function renderPace(p){
-  const ev=[];
-  p.expenses.forEach(e=>ev.push({d:e.date,c:e.cents,lbl:e.vendor||catName(p,e.categoryId)}));
-  p.changeOrders.filter(c=>c.status==="approved").forEach(c=>ev.push({d:c.date,c:c.deltaCents,lbl:"Change order"}));
-  ev.sort((a,b)=>a.d.localeCompare(b.d));
-  paceSel=-1;
-  if(!ev.length){ pacePtsArr=[]; return `<div class="empty">No dated spend yet — add expenses to see your spending pace.</div><div id="paceWrap"></div>`; }
-  let cum=0;
-  pacePtsArr=ev.map(e=>{ cum+=e.c; return {d:e.d,cum:cum,delta:e.c,lbl:e.lbl}; });
-  const pts=pacePtsArr;
-  const W=560,H=150,padL=8,padR=8,padT=10,padB=22;
-  const t0=Date.parse(pts[0].d), t1=Date.parse(pts[pts.length-1].d);
-  const X=dt=>padL+(t1===t0?(W-padL-padR)/2:(dt-t0)/(t1-t0)*(W-padL-padR));
-  const max=Math.max(1,...pts.map(q=>q.cum));
-  const Y=v=>padT+(H-padT-padB)-(v/max)*(H-padT-padB);
-  const line=pts.map((q,i)=>(i?"L":"M")+X(Date.parse(q.d)).toFixed(1)+" "+Y(q.cum).toFixed(1)).join(" ");
-  const base=(H-padB).toFixed(1);
-  const area=line+` L${X(t1).toFixed(1)} ${base} L${X(t0).toFixed(1)} ${base} Z`;
-  const dots=pts.map((q,i)=>`<circle class="pace-dot" data-i="${i}" cx="${X(Date.parse(q.d)).toFixed(1)}" cy="${Y(q.cum).toFixed(1)}" r="4.5" tabindex="0" role="button" aria-label="${esc(q.d)}: cumulative ${fmt(q.cum)}"><title>${esc(q.d)} — ${fmt(q.cum)}</title></circle>`).join("");
-  return `<div class="chart-kicker">Cumulative spend over time</div>`+
-    `<div id="paceWrap" tabindex="0" role="img" aria-label="Cumulative spending sparkline. Use left and right arrows to step through dated spend.">`+
-    `<svg class="pace-svg" viewBox="0 0 ${W} ${H}" aria-hidden="true">`+
-    `<path d="${area}" fill="rgba(45,212,167,.18)"/>`+
-    `<path d="${line}" fill="none" stroke="#2dd4a7" stroke-width="2.5" stroke-linecap="round"/>`+
-    `<text class="axlbl" x="${padL}" y="${H-6}">${esc(pts[0].d)}</text>`+
-    `<text class="axlbl" x="${W-padR}" y="${H-6}" text-anchor="end">${esc(pts[pts.length-1].d)}</text>`+
-    `${dots}</svg></div>`+
-    `<div class="chart-readout" id="paceReadout"><span class="muted">Latest: <b class="money">${fmt(pts[pts.length-1].cum)}</b> cumulative.</span></div>`;
-}
-function paceSelFn(i){
-  const pts=pacePtsArr; if(!pts.length) return;
-  /* clicking the selected point again restores the default latest-cumulative view */
-  const wasSel = (paceSel===i);
-  paceSel = wasSel ? pts.length-1 : Math.max(0,Math.min(pts.length-1,i));
-  document.querySelectorAll(".pace-dot").forEach(d=>
-    d.classList.toggle("sel",!wasSel&&parseInt(d.dataset.i,10)===paceSel));
-  const r=document.getElementById("paceReadout");
-  if(r){ const q=pts[paceSel];
-    r.innerHTML=wasSel?`<span class="muted">Latest: <b class="money">${fmt(q.cum)}</b> cumulative.</span>`
-      :`${esc(q.d)} · ${fmtSigned(q.delta)} ${esc(q.lbl)} · cumulative <b class="money">${fmt(q.cum)}</b>`;
-  }
-  Sound.click();
-}
-/* ---------- category-row spotlight ---------- */
-function catSpot(id){
-  const p=P(); if(!p) return;
-  const card=document.getElementById("catDetail");
-  const rows=[...document.querySelectorAll(".cat-row")];
-  if(catSpotId===id){
-    catSpotId=null;
-    rows.forEach(r=>{ r.classList.remove("dim"); r.setAttribute("aria-pressed","false"); });
-    if(card) card.hidden=true;
-    Sound.click(); return;
-  }
-  catSpotId=id;
-  rows.forEach(r=>{ const on=r.dataset.cat===id;
-    r.classList.toggle("dim",!on); r.setAttribute("aria-pressed",on?"true":"false"); });
-  const c=catById(p,id); if(!c) return;
-  const a=catActualCents(p,id);
-  const isCont=c.name===CONTINGENCY_NAME;
-  const b=isCont?contingencyAllocCents(p):c.budgetCents;
-  const nExp=p.expenses.filter(e=>e.categoryId===id).length;
-  const nCO=p.changeOrders.filter(x=>x.categoryId===id&&x.status==="approved").length;
-  if(card){
-    card.innerHTML=`<strong>${esc(c.name)}</strong>: <span class="money">${fmt(a)}</span> spent of `+
-      `<span class="money">${fmt(b)}</span>${b>0?` (${Math.round(pct(a,b))}%)`:""} · `+
-      `<span class="money">${fmt(b-a)}</span> left · ${nExp} expense${nExp===1?"":"s"}`+
-      (nCO?` · ${nCO} approved change order${nCO===1?"":"s"}`:"");
-    card.hidden=false;
-  }
-  Sound.click();
+function renderDashboard(t){
+  const el = document.getElementById("tab-dashboard");
+  const d = tripTotals(t), days = tripDays(t);
+  const today = todayStr();
+  const toDep = daysBetween(today, t.start);
+  const daysLeft = Math.max(0, daysBetween(today, t.end));
+  let timing;
+  if(toDep > 0) timing = '<div class="stat" data-stat="timing" role="button" tabindex="0" aria-pressed="false" aria-label="Departure — activate for trip dates"><div class="k">Departure</div><div class="v">'+toDep+' day'+(toDep===1?"":"s")+'</div></div>';
+  else if(toDep === 0) timing = '<div class="stat" data-stat="timing" role="button" tabindex="0" aria-pressed="false" aria-label="Departure — activate for trip dates"><div class="k">Departure</div><div class="v">Today!</div></div>';
+  else timing = '<div class="stat" data-stat="timing" role="button" tabindex="0" aria-pressed="false" aria-label="Trip status — activate for trip dates"><div class="k">Trip status</div><div class="v">'+(daysLeft>0?daysLeft+' day'+(daysLeft===1?"":"s")+' left':'Finished')+'</div></div>';
+  const dailyAllow = days>0 && d.budget>0 ? Math.floor(d.budget/days) : 0;
+  el.innerHTML =
+    '<div class="toolbar no-print"><span class="spacer"></span><button id="printBtn">🖨 Print trip summary</button></div>'+
+    '<div class="card"><h2>'+esc(t.destination)+' <span class="note">'+esc(fmtDate(t.start))+' → '+esc(fmtDate(t.end))+' · '+esc(t.homeCur)+' / '+esc(t.tripCur)+' · 1 '+esc(t.tripCur)+' = '+esc(String(t.rate))+' '+esc(t.homeCur)+'</span></h2>'+
+    '<div class="grid-stats">'+
+      '<div class="stat" data-stat="total" role="button" tabindex="0" aria-pressed="false" aria-label="Total budget — activate for the allocation breakdown"><div class="k">Total budget</div><div class="v">'+esc(fmtCents(d.budget,t.homeCur))+'</div></div>'+
+      '<div class="stat" data-stat="spent" role="button" tabindex="0" aria-pressed="false" aria-label="Spent — activate for the top spending categories"><div class="k">Spent</div><div class="v '+(d.spent>d.budget?'bad':'')+'">'+esc(fmtCents(d.spent,t.homeCur))+'</div></div>'+
+      '<div class="stat" data-stat="remaining" role="button" tabindex="0" aria-pressed="false" aria-label="Remaining — activate for the math"><div class="k">Remaining</div><div class="v '+(d.remaining<0?'bad':'good')+'">'+esc(fmtCents(d.remaining,t.homeCur))+'</div></div>'+
+      '<div class="stat" data-stat="pct" role="button" tabindex="0" aria-pressed="false" aria-label="Budget used — activate for the math"><div class="k">Used</div><div class="v '+(d.pct>100?'bad':d.pct>85?'warn':'')+'">'+d.pct+'%</div></div>'+
+      timing+
+      '<div class="stat" data-stat="daily" role="button" tabindex="0" aria-pressed="false" aria-label="Daily allowance — activate for the math"><div class="k">Daily allowance</div><div class="v">'+esc(fmtCents(dailyAllow,t.homeCur))+'</div></div>'+
+    '</div>'+
+    '<div class="ch-det" id="statDet" hidden></div>'+
+    '<div class="progress'+(d.pct>100?' over':'')+'"><i style="width:'+Math.min(100,d.pct)+'%"></i></div>'+
+    (d.pct>100?'<p><span class="badge over">OVER BUDGET by '+esc(fmtCents(d.spent-d.budget,t.homeCur))+'</span></p>':'')+
+    '</div>'+
+    mixCardHTML(t,d)+
+    '<div class="card"><h2>Spending by category</h2>'+
+      CATEGORIES.map(c=>{
+        const alloc = t.allocations[c.id]||0, spent = d.perCat[c.id];
+        const pct = alloc>0 ? Math.round(spent/alloc*1000)/10 : (spent>0?100:0);
+        return '<div class="day-row" data-cat="'+c.id+'" data-det="catDetDash" role="button" tabindex="0" aria-pressed="false" aria-label="'+esc(c.name)+' — activate to see the expenses in this category"><div class="hd"><div class="d">'+c.icon+' '+esc(c.name)+'</div>'+
+          '<div><strong>'+esc(fmtCents(spent,t.homeCur))+'</strong> <span class="note">of '+esc(fmtCents(alloc,t.homeCur))+'</span> '+
+          (alloc>0 && spent>alloc ? '<span class="badge over">over</span>' : '<span class="badge ok">'+pct+'%</span>')+'</div></div>'+
+          '<div class="progress'+(alloc>0&&spent>alloc?' over':'')+'"><i style="width:'+Math.min(100,pct)+'%"></i></div></div>';
+      }).join("")+
+      '<div class="ch-det" id="catDetDash" hidden></div>'+
+    '</div>';
+  document.getElementById("printBtn").addEventListener("click", printSummary);
+  wireMixCard(t,d);
+  wireToggles(el);
 }
 
-/* ---------- stat-box detail: tap a stat for its real breakdown ---------- */
-function statDetailHTML(kind){
-  const p=P(); if(!p) return "";
-  const tb=totalBudgetCents(p), act=actualSpentCents(p), com=committedCents(p), rem=remainingCents(p);
-  const base=baseBudgetCents(p), coAlloc=contingencyAllocCents(p), coRem=contingencyRemainingCents(p);
-  const acc=acceptedQuotesCents(p);
-  const appr=p.changeOrders.filter(x=>x.status==="approved");
-  const apprCents=appr.reduce((t,x)=>t+x.deltaCents,0);
-  const expCents=p.expenses.reduce((t,x)=>t+x.cents,0);
-  const rows=[];
-  const row=(n,v)=>rows.push(`<div class="cd-row"><span class="cd-name">${esc(n)}</span><span class="cd-val money">${fmt(v)}</span></div>`);
-  let title="", sub="";
-  if(kind==="total"){
-    title="Total budget — composition";
-    sub=`Base ${fmt(base)} + contingency ${fmt(coAlloc)} (${p.contingencyPct}% of base)`;
-    row("Base budget (category budgets)", base);
-    row(`Contingency set-aside (${p.contingencyPct}% of base)`, coAlloc);
-    row("Total budget", tb);
-  }else if(kind==="spent"){
-    title="Spent (actual) — composition";
-    sub=`${p.expenses.length} expense${p.expenses.length===1?"":"s"} + net approved change orders`;
-    row("Expenses", expCents);
-    row("Net approved change orders", apprCents);
-    row("Spent (actual)", act);
-  }else if(kind==="committed"){
-    title="Committed — composition";
-    sub=`${com>tb?"Over budget by ":""}${fmt(Math.abs(tb-com))} vs total budget`;
-    row("Spent (actual)", act);
-    row("Accepted contractor quotes", acc);
-    row("Committed", com);
-  }else if(kind==="remaining"){
-    title="Remaining — composition";
-    sub=`Total ${fmt(tb)} − committed ${fmt(com)}`;
-    row("Total budget", tb);
-    row("Committed", com);
-    row("Remaining", rem);
-  }else if(kind==="cont-set"){
-    title="Contingency set — composition";
-    sub=`${p.contingencyPct}% of base budget ${fmt(base)}`;
-    row("Base budget", base);
-    row(`Contingency set-aside (${p.contingencyPct}%)`, coAlloc);
-    row("Net approved change-order draw", apprCents);
-  }else if(kind==="co-approved"){
-    title="Approved change orders";
-    sub=`${appr.length} approved · net ${fmtSigned(apprCents)}`;
-    appr.slice().sort((a,b)=>Math.abs(b.deltaCents)-Math.abs(a.deltaCents)).slice(0,6)
-      .forEach(c=>row((c.desc||"Change order")+" · "+c.date, c.deltaCents));
-    if(appr.length>6) row(`…and ${appr.length-6} more`, 0);
-  }else if(kind==="co-rem"){
-    title="Contingency remaining — composition";
-    const avg=appr.length?Math.round(Math.abs(apprCents)/appr.length):0;
-    sub=avg>0&&coRem>0?`Would cover ~${Math.floor(coRem/avg)} more change orders at the average approved size of ${fmt(avg)}`:"No approved change orders yet";
-    row("Contingency set-aside", coAlloc);
-    row("Net approved change-order draw", apprCents);
-    row("Contingency remaining", coRem);
-  }else return "";
-  return `<div class="cd-head"><div><div class="cd-title">${esc(title)}</div>`+
-    `<div class="cd-sub">${sub}</div></div>`+
-    `<button type="button" class="cd-x" id="statDetailX" aria-label="Close detail">×</button></div>`+
-    `<div class="cd-rows">${rows.join("")}</div>`;
-}
-function statToggle(el){
-  const was=el.getAttribute("aria-pressed")==="true";
-  const card=document.getElementById("statDetail");
-  document.querySelectorAll(".stat[role=\"button\"]").forEach(s=>s.setAttribute("aria-pressed","false"));
-  if(was||!card){ if(card){ card.hidden=true; card.innerHTML=""; } Sound.click(); return; }
-  const html=statDetailHTML(el.dataset.stat);
-  if(!html){ Sound.click(); return; }
-  el.setAttribute("aria-pressed","true");
-  card.innerHTML=html; card.hidden=false;
-  const x=document.getElementById("statDetailX");
-  if(x) x.addEventListener("click",ev=>{ ev.stopPropagation(); statToggle(el); });
-  Sound.click();
+/* spend-mix donut card; empty-state when nothing is logged yet */
+function mixCardHTML(t,d){
+  const segs=mixSegs(t,d);
+  if(!segs.length) return '<div class="card no-print"><h2>Spend mix</h2><p class="note">Log expenses and the category mix will appear here.</p></div>';
+  return '<div class="card no-print"><h2>Spend mix <span class="note">(by category)</span></h2>'
+    +'<div id="mixWrap" style="max-width:230px;margin:0 auto">'
+    +donutSVG("mixDonut",segs,d.spent,fmtCents(d.spent,t.homeCur),"TOTAL")+legendHTML(segs)+'</div>'
+    +'<div class="ch-det" id="mixDet"></div></div>';
 }
 
-function renderDashboard(p){
-  const tb=totalBudgetCents(p), act=actualSpentCents(p), com=committedCents(p),
-        rem=remainingCents(p), usedPct=pct(com,tb);
-  const coAlloc=contingencyAllocCents(p), coUsed=contingencyConsumedCents(p),
-        coRem=contingencyRemainingCents(p);
-  const coPct=coAlloc>0?pct(coUsed,coAlloc):0;
-  let coAlert="";
-  if(coAlloc>0 && coRem<0){
-    coAlert=`<div class="alert bad"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
-      <div><b>Contingency exceeded.</b> Approved change orders total <b class="money">${fmt(coUsed)}</b> against a <b class="money">${fmt(coAlloc)}</b> contingency — you are <b class="money neg">${fmt(-coRem)}</b> over.</div></div>`;
-  }else if(coAlloc>0 && coPct>=75){
-    coAlert=`<div class="alert warn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      <div><b>Contingency running low.</b> ${Math.round(coPct)}% of your <b class="money">${fmt(coAlloc)}</b> contingency is committed to approved change orders (<b class="money">${fmt(coRem)}</b> left).</div></div>`;
-  }
-  const cats=p.categories.map(c=>{
-    const a=catActualCents(p,c.id);
-    const isCont=c.name===CONTINGENCY_NAME;
-    const b=isCont?coAlloc:c.budgetCents;
-    const pctv=b>0?Math.round(pct(a,b)):0;
-    return `<div class="rowline cat-row" data-cat="${c.id}" tabindex="0" role="button" aria-pressed="false" title="Click to spotlight this category" aria-label="${esc(c.name)} category — click for details"><div style="flex:1;min-width:0">
-      <div class="catname">${esc(c.name)}</div>
-      <div class="sub"><span class="money">${fmt(a)}</span> of <span class="money">${fmt(b)}</span>${isCont?' <span class="pill">auto</span>':""} · ${pctv}%</div>
-      ${barHTML(a,b)}</div>
-      <div class="sub money" style="min-width:86px;text-align:right">${fmt(b-a)} left</div></div>`;
-  }).join("");
-  const recent=[...p.expenses].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
-  const recentHTML=recent.length?`<table><thead><tr><th>Date</th><th>Category</th><th>Payee</th><th class="num">Amount</th></tr></thead><tbody>${
-    recent.map(e=>`<tr class="exp-row" data-exp="${e.id}" tabindex="0" title="Click to edit this expense" aria-label="Edit expense ${fmt(e.cents)}${e.vendor?" to "+esc(e.vendor):""}"><td>${esc(e.date)}</td><td>${esc(catName(p,e.categoryId))}</td><td>${esc(e.vendor||"—")}</td><td class="num money">${fmt(e.cents)}</td></tr>`).join("")
-  }</tbody></table>`:`<div class="empty">No expenses yet — add them under Budget &amp; Expenses.</div>`;
-  return `
-  ${coAlert}
-  <div class="grid4" style="margin-bottom:14px">
-    <div class="stat" data-stat="total" role="button" tabindex="0" aria-pressed="false" aria-label="Total budget — activate for composition"><div class="k">Total budget</div><div class="v money">${fmt(tb)}</div>
-      <div class="sub">base ${fmt(baseBudgetCents(p))} + contingency ${fmt(coAlloc)}</div></div>
-    <div class="stat" data-stat="spent" role="button" tabindex="0" aria-pressed="false" aria-label="Spent actual — activate for breakdown"><div class="k">Spent (actual)</div><div class="v money">${fmt(act)}</div>
-      <div class="sub">accepted quotes add <span class="money">${fmt(acceptedQuotesCents(p))}</span></div></div>
-    <div class="stat" data-stat="committed" role="button" tabindex="0" aria-pressed="false" aria-label="Committed — activate for breakdown"><div class="k">Committed</div><div class="v money">${fmt(com)}</div>
-      <div class="sub">${usedPct.toFixed(1)}% of budget used</div>
-      <div class="bar"><i class="${com>tb?"over":(usedPct>=90?"near":"")}" style="width:${Math.min(100,usedPct)}%"></i></div></div>
-    <div class="stat" data-stat="remaining" role="button" tabindex="0" aria-pressed="false" aria-label="Remaining — activate for breakdown"><div class="k">Remaining</div><div class="v money ${rem<0?"v-bad":"v-ok"}">${fmt(rem)}</div>
-      <div class="sub">contingency left: <span class="money ${coRem<0?"neg":""}">${fmt(coRem)}</span></div></div>
-  </div>
-  <div class="spot-note" id="statDetail" aria-live="polite" hidden></div>
-  <div class="grid2" style="margin-bottom:14px">
-    <div class="card"><h2>Spend mix</h2><div class="chart-kicker">Actual spend by category</div>${renderDonut(p)}</div>
-    <div class="card"><h2>Spending pace</h2>${renderPace(p)}</div>
-  </div>
-  <div class="grid2">
-    <div class="card"><h2>Budget by category</h2><div class="spot-note" id="catDetail" hidden></div>${cats}</div>
-    <div class="card"><h2>Recent expenses</h2>${recentHTML}
-      <div class="toolbar no-print"><button class="small primary" onclick="expenseForm()">+ Add expense</button></div></div>
-  </div>`;
-}
-
-/* ---------- budget & expenses ---------- */
-function categoryForm(editId){
-  const p=P(); if(!p) return;
-  const c=editId?catById(p,editId):null;
-  dlgForm(c?"Rename category":"Add category",[
-    {k:"name",lbl:"Category name",val:c?c.name:"",req:true}
-  ],(vals)=>{
-    const name=vals.name.trim(); if(!name) return;
-    if(p.categories.some(x=>x.id!==editId&&x.name.toLowerCase()===name.toLowerCase())){
-      dlgAlert("A category with that name already exists."); return;
-    }
-    if(c){ c.name=name; } else { p.categories.push({id:uid(),name,budgetCents:0}); }
-    save(); render();
-  });
-}
-function deleteCategory(id){
-  const p=P(); if(!p) return;
-  const c=catById(p,id); if(!c) return;
-  if(p.categories.length<=1){ dlgAlert("You need at least one category."); return; }
-  const used=p.expenses.some(e=>e.categoryId===id)||p.quotes.some(q=>q.categoryId===id)||
-             p.changeOrders.some(x=>x.categoryId===id);
-  if(used){ dlgAlert("This category has expenses, quotes or change orders on it — move or delete those first."); return; }
-  dlgConfirm(`Delete the "${esc(c.name)}" category?`,()=>{ p.categories=p.categories.filter(x=>x.id!==id); save(); render(); });
-}
-function expenseForm(editId){
-  const p=P(); if(!p) return;
-  const e=editId?p.expenses.find(x=>x.id===editId):null;
-  const nonCont=p.categories.filter(c=>c.name!==CONTINGENCY_NAME);
-  const opts=nonCont.map(c=>[c.id,c.name]);
-  if(!opts.length){ dlgAlert("Add a category first."); return; }
-  dlgForm(e?"Edit expense":"Add expense",[
-    {k:"date",lbl:"Date",type:"date",val:e?e.date:todayStr(),req:true},
-    {k:"categoryId",lbl:"Category",type:"select",val:e?e.categoryId:opts[0][0],opts},
-    {k:"vendor",lbl:"Vendor / payee",val:e?e.vendor:"",ph:"Home Depot, ABC Plumbing…"},
-    {k:"amount",lbl:"Amount ($)",type:"number",step:"0.01",min:"0",val:e?(e.cents/100).toFixed(2):"",req:true,ph:"0.00"},
-    {k:"note",lbl:"Note",ta:true,val:e?e.note:"",ph:"What was this for?"}
-  ],(vals)=>{
-    const cents=toCents(vals.amount);
-    if(cents<=0){ dlgAlert("Enter an amount greater than $0."); return; }
-    if(e){ Object.assign(e,{date:vals.date,categoryId:vals.categoryId,vendor:vals.vendor.trim(),cents,note:vals.note.trim()}); }
-    else{ p.expenses.push({id:uid(),date:vals.date,categoryId:vals.categoryId,vendor:vals.vendor.trim(),cents,note:vals.note.trim()}); }
-    save(); render();
-  },{saveLabel:e?"Save":"Add expense"});
-}
-function deleteExpense(id){
-  const p=P(); const e=p.expenses.find(x=>x.id===id); if(!e) return;
-  dlgConfirm(`Delete this ${fmt(e.cents)} expense${e.vendor?` to ${esc(e.vendor)}`:""}?`,
-    ()=>{ p.expenses=p.expenses.filter(x=>x.id!==id); save(); render(); });
-}
-function renderBudget(p){
-  const catRows=p.categories.map(c=>{
-    const a=catActualCents(p,c.id);
-    const isCont=c.name===CONTINGENCY_NAME;
-    const b=isCont?contingencyAllocCents(p):c.budgetCents;
-    const over=a>b;
-    return `<tr class="${over?"over":""}">
-      <td data-l="Category"><b>${esc(c.name)}</b>${isCont?' <span class="pill">auto</span>':""}</td>
-      <td data-l="Budget" class="num money">${isCont?`<span class="muted">${fmt(b)}</span> <span class="muted">(${p.contingencyPct}%)</span>`:
-        `<input type="number" step="0.01" min="0" data-budget="${c.id}" value="${(c.budgetCents/100).toFixed(2)}" style="width:110px" aria-label="Budget for ${esc(c.name)}">`}</td>
-      <td data-l="Actual" class="num money">${fmt(a)}</td>
-      <td data-l="Left" class="num money ${over?"neg":""}">${fmt(b-a)}</td>
-      <td data-l="Used" class="num">${a>b?'<span class="neg"><b>Over</b></span>':(b>0?Math.round(pct(a,b))+"%":"—")}</td>
-      <td data-l="Actions" class="no-print"><div class="q-actions">
-        ${isCont?"":`<button class="small icon" onclick="categoryForm('${c.id}')" title="Rename">✎</button>
-        <button class="small icon danger" onclick="deleteCategory('${c.id}')" title="Delete">🗑</button>`}
-      </div></td></tr>`;
-  }).join("");
-  const exRows=[...p.expenses].sort((a,b)=>b.date.localeCompare(a.date)||b.cents-a.cents).map(e=>
-    `<tr><td data-l="Date">${esc(e.date)}</td><td data-l="Category">${esc(catName(p,e.categoryId))}</td>
-     <td data-l="Payee">${esc(e.vendor||"—")}</td><td data-l="Note" class="muted">${esc(e.note||"")}</td>
-     <td data-l="Amount" class="num money">${fmt(e.cents)}</td>
-     <td data-l="Actions" class="no-print"><div class="q-actions">
-       <button class="small icon" onclick="expenseForm('${e.id}')" title="Edit">✎</button>
-       <button class="small icon danger" onclick="deleteExpense('${e.id}')" title="Delete">🗑</button></div></td></tr>`).join("");
-  return `
-  <div class="card" style="margin-bottom:14px"><h2>Category budgets</h2>
-    <div class="toolbar no-print">
-      <button class="small" onclick="categoryForm()">+ Add category</button>
-      <span class="muted">Edit a budget amount, then press Enter or click out — totals update instantly.</span>
-      <span class="right"></span>
-      <label class="lbl" style="margin:0" for="coPct">Contingency %</label>
-      <input id="coPct" type="number" min="0" max="50" step="1" value="${p.contingencyPct}" style="width:70px" aria-label="Contingency percent">
-    </div>
-    <div style="overflow-x:auto"><table class="resp"><thead><tr><th>Category</th><th class="num">Budget</th><th class="num">Actual</th><th class="num">Left</th><th class="num">Used</th><th class="no-print">Actions</th></tr></thead>
-    <tbody>${catRows}</tbody></table></div></div>
-  <div class="card"><h2>Expense log</h2>
-    <div class="toolbar no-print"><button class="small primary" onclick="expenseForm()">+ Add expense</button></div>
-    ${p.expenses.length?`<div style="overflow-x:auto"><table class="resp"><thead><tr><th>Date</th><th>Category</th><th>Payee</th><th>Note</th><th class="num">Amount</th><th class="no-print">Actions</th></tr></thead>
-    <tbody>${exRows}</tbody></table></div>`:`<div class="empty">No expenses logged yet.</div>`}</div>`;
-}
-
-/* ---------- contractor quotes ---------- */
-function quoteForm(editId){
-  const p=P(); if(!p) return;
-  const q=editId?p.quotes.find(x=>x.id===editId):null;
-  const opts=p.categories.filter(c=>c.name!==CONTINGENCY_NAME).map(c=>[c.id,c.name]);
-  dlgForm(q?"Edit quote request":"New quote request",[
-    {k:"jobTitle",lbl:"Job / scope",val:q?q.jobTitle:"",req:true,ph:"e.g. Kitchen rewire"},
-    {k:"categoryId",lbl:"Category",type:"select",val:q?q.categoryId:(opts[0]?opts[0][0]:""),opts},
-    {k:"date",lbl:"Date requested",type:"date",val:q?q.date:todayStr()}
-  ],(vals)=>{
-    if(q){ Object.assign(q,{jobTitle:vals.jobTitle.trim(),categoryId:vals.categoryId,date:vals.date}); }
-    else{ p.quotes.push({id:uid(),jobTitle:vals.jobTitle.trim(),categoryId:vals.categoryId,date:vals.date,bids:[]}); }
-    save(); render();
-  },{saveLabel:q?"Save":"Add request"});
-}
-function deleteQuote(id){
-  const p=P(); const q=p.quotes.find(x=>x.id===id); if(!q) return;
-  dlgConfirm(`Delete the quote request "${esc(q.jobTitle)}" and its ${q.bids.length} bid(s)?`,
-    ()=>{ p.quotes=p.quotes.filter(x=>x.id!==id); save(); render(); });
-}
-function bidForm(quoteId,editIdx){
-  const p=P(); if(!p) return;
-  const q=p.quotes.find(x=>x.id===quoteId); if(!q) return;
-  const b=editIdx!==undefined?q.bids[editIdx]:null;
-  if(!b && q.bids.length>=4){ dlgAlert("Only 4 quotes per job — remove one first."); return; }
-  dlgForm(b?"Edit bid":"Add bid",[
-    {k:"contractor",lbl:"Contractor name",val:b?b.contractor:"",req:true,ph:"ABC Plumbing Co."},
-    {k:"amount",lbl:"Quoted amount ($)",type:"number",step:"0.01",min:"0",val:b?(b.cents/100).toFixed(2):"",req:true,ph:"0.00"},
-    {k:"notes",lbl:"Notes",ta:true,val:b?b.notes:"",ph:"Timeline, what's included…"}
-  ],(vals)=>{
-    const cents=toCents(vals.amount);
-    if(cents<=0){ dlgAlert("Enter an amount greater than $0."); return; }
-    const nb={contractor:vals.contractor.trim(),cents,notes:vals.notes.trim(),accepted:b?b.accepted:false};
-    if(b){ q.bids[editIdx]=nb; } else { q.bids.push(nb); }
-    save(); render();
-  },{saveLabel:b?"Save":"Add bid"});
-}
-function deleteBid(quoteId,idx){
-  const p=P(); const q=p.quotes.find(x=>x.id===quoteId); if(!q||!q.bids[idx]) return;
-  dlgConfirm(`Remove the ${fmt(q.bids[idx].cents)} bid from ${esc(q.bids[idx].contractor)}?`,
-    ()=>{ q.bids.splice(idx,1); save(); render(); });
-}
-function acceptBid(quoteId,idx){
-  const p=P(); const q=p.quotes.find(x=>x.id===quoteId); if(!q||!q.bids[idx]) return;
-  q.bids.forEach((b,i)=>{ b.accepted = (i===idx) ? !b.accepted : false; });
-  save(); render();
-}
-function renderQuotes(p){
-  const cards=p.quotes.map(q=>{
-    const sorted=q.bids.map((b,i)=>({b,i})).sort((x,y)=>x.b.cents-y.b.cents);
-    const low=sorted.length?sorted[0].b.cents:null;
-    const high=sorted.length?sorted[sorted.length-1].b.cents:null;
-    const bidsHTML=q.bids.length?q.bids.map((b,i)=>`
-      <div class="bid bid-card ${b.accepted?"accepted":""}" data-qid="${q.id}" data-i="${i}" role="button" tabindex="0" title="Click to edit this bid" aria-label="Bid from ${esc(b.contractor)} — activate to edit">
-        <div class="who">${esc(b.contractor)}</div>
-        <div class="amt money ${b.accepted?"v-ok":""}">${fmt(b.cents)}</div>
-        <div class="sub">${esc(b.notes||"—")}</div>
-        <div class="q-actions no-print">
-          <button class="small ${b.accepted?"":"primary"}" onclick="acceptBid('${q.id}',${i})">${b.accepted?"✓ Accepted":"Accept"}</button>
-          <button class="small icon" onclick="bidForm('${q.id}',${i})" title="Edit">✎</button>
-          <button class="small icon danger" onclick="deleteBid('${q.id}',${i})" title="Remove">🗑</button>
-        </div></div>`).join(""):`<div class="empty">No bids yet.</div>`;
-    return `<div class="card quote-card" style="margin-bottom:12px" data-qid="${q.id}" role="button" tabindex="0" title="Click to edit this quote request" aria-label="Quote request ${esc(q.jobTitle)} — activate to edit">
-      <div class="rowline" style="border:0;padding-top:0"><div style="flex:1">
-        <div class="catname">${esc(q.jobTitle)}</div>
-        <div class="sub">${esc(catName(p,q.categoryId))} · requested ${esc(q.date)} · ${q.bids.length}/4 bids
-        ${low!==null?` · range <span class="money">${fmt(low)}–${fmt(high)}</span>`:""}</div></div>
-        <div class="q-actions no-print">
-          <button class="small primary" onclick="bidForm('${q.id}')">+ Add bid</button>
-          <button class="small icon" onclick="quoteForm('${q.id}')" title="Edit">✎</button>
-          <button class="small icon danger" onclick="deleteQuote('${q.id}')" title="Delete">🗑</button>
-        </div></div>
-      <div class="quote-grid">${bidsHTML}</div></div>`;
-  }).join("");
-  return `<div class="toolbar no-print"><button class="small primary" onclick="quoteForm()">+ New quote request</button>
-    <span class="muted">Store up to 4 bids per job, compare side by side, mark the winner.</span></div>
-    ${p.quotes.length?cards:`<div class="card"><div class="empty">No quote requests yet — e.g. “Kitchen rewire”, then collect bids.</div></div>`}`;
-}
-
-/* ---------- change orders ---------- */
-function coForm(editId){
-  const p=P(); if(!p) return;
-  const c=editId?p.changeOrders.find(x=>x.id===editId):null;
-  const opts=p.categories.filter(x=>x.name!==CONTINGENCY_NAME).map(x=>[x.id,x.name]);
-  dlgForm(c?"Edit change order":"New change order",[
-    {k:"description",lbl:"Description",val:c?c.description:"",req:true,ta:true,ph:"Added under-cabinet lighting…"},
-    {k:"categoryId",lbl:"Category",type:"select",val:c?c.categoryId:(opts[0]?opts[0][0]:""),opts},
-    {k:"impact",lbl:"Cost impact ($) — use negative for a credit",type:"number",step:"0.01",val:c?(c.deltaCents/100).toFixed(2):"",req:true,ph:"0.00"},
-    {k:"date",lbl:"Date",type:"date",val:c?c.date:todayStr()},
-    {k:"status",lbl:"Status",type:"select",val:c?c.status:"proposed",opts:[["proposed","Proposed"],["approved","Approved"],["rejected","Rejected"]]}
-  ],(vals)=>{
-    const dc=toCents(vals.impact);
-    if(c){ Object.assign(c,{description:vals.description.trim(),categoryId:vals.categoryId,deltaCents:dc,date:vals.date,status:vals.status}); }
-    else{ p.changeOrders.push({id:uid(),description:vals.description.trim(),categoryId:vals.categoryId,deltaCents:dc,date:vals.date,status:vals.status}); coFilter="all"; }
-    save(); render();
-  },{saveLabel:c?"Save":"Add change order",
-      note:"Approved change orders roll into that category's actuals and draw on your contingency guard."});
-}
-function deleteCO(id){
-  const p=P(); const c=p.changeOrders.find(x=>x.id===id); if(!c) return;
-  dlgConfirm(`Delete this change order (${fmtSigned(c.deltaCents)})?`,
-    ()=>{ p.changeOrders=p.changeOrders.filter(x=>x.id!==id); save(); render(); });
-}
-function setCOStatus(id,st){
-  const p=P(); const c=p.changeOrders.find(x=>x.id===id); if(!c) return;
-  c.status=st; save(); render();
-}
-function renderChanges(p){
-  const list=p.changeOrders.filter(c=>coFilter==="all"||c.status===coFilter)
-    .sort((a,b)=>b.date.localeCompare(a.date));
-  const appr=p.changeOrders.filter(c=>c.status==="approved");
-  const apprCents=appr.reduce((t,c)=>t+c.deltaCents,0);
-  const coAlloc=contingencyAllocCents(p), coRem=contingencyRemainingCents(p);
-  const rows=list.map(c=>`<tr class="co-row" data-co="${c.id}" role="button" tabindex="0" title="Click to edit this change order" aria-label="Change order ${esc(c.description)} — activate to edit">
-    <td data-l="Date">${esc(c.date)}</td>
-    <td data-l="Description">${esc(c.description)}<div class="sub">${esc(catName(p,c.categoryId))}</div></td>
-    <td data-l="Impact" class="num money ${c.deltaCents<0?"pos":""}">${fmtSigned(c.deltaCents)}</td>
-    <td data-l="Status"><span class="badge b-${c.status}">${c.status}</span></td>
-    <td data-l="Actions" class="no-print"><div class="q-actions">
-      ${c.status!=="approved"?`<button class="small" onclick="setCOStatus('${c.id}','approved')">Approve</button>`:""}
-      ${c.status!=="rejected"?`<button class="small" onclick="setCOStatus('${c.id}','rejected')">Reject</button>`:""}
-      ${c.status!=="proposed"?`<button class="small" onclick="setCOStatus('${c.id}','proposed')">Reopen</button>`:""}
-      <button class="small icon" onclick="coForm('${c.id}')" title="Edit">✎</button>
-      <button class="small icon danger" onclick="deleteCO('${c.id}')" title="Delete">🗑</button>
-    </div></td></tr>`).join("");
-  const filterBtns=["all","proposed","approved","rejected"].map(f=>
-    `<button class="small ${coFilter===f?"primary":""}" onclick="coFilter='${f}';Sound.click();render()">${f[0].toUpperCase()+f.slice(1)}</button>`).join("");
-  return `
-  <div class="grid3" style="margin-bottom:14px">
-    <div class="stat" data-stat="cont-set" role="button" tabindex="0" aria-pressed="false" aria-label="Contingency set — activate for breakdown"><div class="k">Contingency set</div><div class="v money">${fmt(coAlloc)}</div><div class="sub">${p.contingencyPct}% of base budget</div></div>
-    <div class="stat" data-stat="co-approved" role="button" tabindex="0" aria-pressed="false" aria-label="Approved change orders — activate for breakdown"><div class="k">Approved change orders</div><div class="v money">${fmt(apprCents)}</div><div class="sub">${appr.length} approved</div></div>
-    <div class="stat" data-stat="co-rem" role="button" tabindex="0" aria-pressed="false" aria-label="Contingency remaining — activate for breakdown"><div class="k">Contingency remaining</div><div class="v money ${coRem<0?"v-bad":(coRem<coAlloc*0.25?"v-warn":"v-ok")}">${fmt(coRem)}</div>
-      <div class="sub">net approved change orders draw on it</div></div>
-  </div>
-  <div class="spot-note" id="statDetail" aria-live="polite" hidden></div>
-  <div class="card"><div class="toolbar no-print">
-      <button class="small primary" onclick="coForm()">+ New change order</button>
-      <span class="right"></span><div class="q-actions">${filterBtns}</div></div>
-    ${list.length?`<div style="overflow-x:auto"><table class="resp"><thead><tr><th>Date</th><th>Description</th><th class="num">Impact</th><th>Status</th><th class="no-print">Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`
-    :`<div class="empty">No change orders${coFilter==="all"?" yet":" with this status"}.</div>`}</div>`;
-}
-
-/* ---------- export / import ---------- */
-function asStr(v,fb){ return typeof v==="string"?v:(v===null||v===undefined?fb:String(v)); }
-function asCents(v){ v=Number(v); return isFinite(v)?Math.round(v):0; }
-function asDate(v,fb){ return /^\d{4}-\d{2}-\d{2}$/.test(asStr(v,""))?asStr(v,""):fb; }
-function sanitizeState(s){
-  const clean={version:1,theme:(s.theme==="dark"||s.theme==="light")?s.theme:null,
-    activeProjectId:asStr(s.activeProjectId,null),projects:[]};
-  for(const p of s.projects){
-    const cp={id:asStr(p.id,uid()),name:asStr(p.name,"Project").slice(0,120),
-      createdAt:asCents(p.createdAt)||Date.now(),
-      contingencyPct:Math.min(50,Math.max(0,parseInt(p.contingencyPct,10)||0)),
-      categories:[],expenses:[],quotes:[],changeOrders:[]};
-    const catIds=new Set();
-    for(const c of p.categories){
-      const cc={id:asStr(c.id,uid()),name:asStr(c.name,"Category").slice(0,80),budgetCents:Math.max(0,asCents(c.budgetCents))};
-      if(catIds.has(cc.id)) cc.id=uid();
-      catIds.add(cc.id); cp.categories.push(cc);
-    }
-    if(!cp.categories.length) cp.categories.push({id:uid(),name:"General",budgetCents:0});
-    const okCat=id=>catIds.has(id)?id:cp.categories[0].id;
-    for(const e of p.expenses) cp.expenses.push({id:asStr(e.id,uid()),date:asDate(e.date,todayStr()),
-      categoryId:okCat(e.categoryId),vendor:asStr(e.vendor,"").slice(0,120),
-      cents:Math.max(0,asCents(e.cents)),note:asStr(e.note,"").slice(0,500)});
-    for(const q of p.quotes){
-      const cq={id:asStr(q.id,uid()),jobTitle:asStr(q.jobTitle,"Job").slice(0,120),
-        categoryId:okCat(q.categoryId),date:asDate(q.date,todayStr()),bids:[]};
-      for(const b of (Array.isArray(q.bids)?q.bids:[]).slice(0,4))
-        cq.bids.push({contractor:asStr(b.contractor,"").slice(0,120),cents:Math.max(0,asCents(b.cents)),
-          notes:asStr(b.notes,"").slice(0,500),accepted:b.accepted===true});
-      // at most one accepted bid survives
-      let seen=false;
-      for(const b of cq.bids){ if(b.accepted){ if(seen) b.accepted=false; else seen=true; } }
-      cp.quotes.push(cq);
-    }
-    const STATUSES=["proposed","approved","rejected"];
-    for(const c of p.changeOrders)
-      cp.changeOrders.push({id:asStr(c.id,uid()),description:asStr(c.description,"").slice(0,500),
-        categoryId:okCat(c.categoryId),deltaCents:asCents(c.deltaCents),
-        date:asDate(c.date,todayStr()),status:STATUSES.includes(c.status)?c.status:"proposed"});
-    clean.projects.push(cp);
-  }
-  if(!clean.projects.some(p=>p.id===clean.activeProjectId))
-    clean.activeProjectId=clean.projects[0].id;
-  return clean;
-}
-function exportData(){
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="renotrack-backup-"+todayStr()+".json";
-  document.body.appendChild(a); a.click();
-  setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500);
-}
-function importData(file){
-  const r=new FileReader();
-  r.onload=()=>{
-    try{
-      const s=JSON.parse(r.result);
-      if(!s||typeof s!=="object"||!Array.isArray(s.projects)) throw new Error("bad shape");
-      for(const p of s.projects){
-        if(typeof p.id!=="string"||typeof p.name!=="string"||!Array.isArray(p.categories)||
-           !Array.isArray(p.expenses)||!Array.isArray(p.quotes)||!Array.isArray(p.changeOrders)) throw new Error("bad project");
-      }
-      dlgConfirm("Import will REPLACE all current data. Continue?",()=>{
-        S=sanitizeState(s);
-        save(); initTheme(); renderProjectSel(); render(); Sound.success();
-      });
-    }catch(e){ dlgAlert("That file isn't a valid RenoTrack backup."); Sound.error(); }
+/* ---------- planner (allocations + savings) ---------- */
+function renderPlanner(t){
+  const el = document.getElementById("tab-planner");
+  const days = tripDays(t);
+  const allocated = CATEGORIES.reduce((a,c)=>a+(t.allocations[c.id]||0),0);
+  const dailyAllow = days>0 ? Math.floor((t.totalBudgetCents||0)/days) : 0;
+  el.innerHTML =
+    '<div class="card"><h2>Pre-trip budget allocation <span class="note">(in '+esc(t.homeCur)+')</span></h2>'+
+    '<div class="field" style="max-width:320px"><label>Total trip budget ('+esc(t.homeCur)+')</label>'+
+      '<input id="pBudget" type="number" min="0" step="0.01" value="'+(t.totalBudgetCents/100)+'"></div>'+
+    CATEGORIES.map(c=>
+      '<div class="cat-row" data-focusrow="'+c.id+'"><div class="nm">'+c.icon+' '+esc(c.name)+'</div>'+
+      '<div><input type="number" min="0" step="0.01" data-alloc="'+c.id+'" value="'+((t.allocations[c.id]||0)/100)+'" aria-label="'+esc(c.name)+' allocation"></div>'+
+      '<div class="bar-cell"><div class="progress"><i style="width:'+(allocated>0?Math.min(100,(t.allocations[c.id]||0)/allocated*100):0)+'%"></i></div></div>'+
+      '<div class="note" data-share="'+c.id+'">'+(allocated>0?Math.round((t.allocations[c.id]||0)/allocated*1000)/10:0)+'%</div></div>'
+    ).join("")+
+    '<p><strong>Allocated: <span id="pAllocTotal">'+esc(fmtCents(allocated,t.homeCur))+'</span></strong> '+
+    '<span class="note">of '+esc(fmtCents(t.totalBudgetCents,t.homeCur))+'</span> '+
+    '<span id="pAllocDiff"></span></p>'+
+    (days>0?'<p class="note">Per-day allowance: <strong>'+esc(fmtCents(dailyAllow,t.homeCur))+'</strong> over '+days+' day'+(days===1?"":"s")+'.</p>':'<p class="note">Pick valid trip dates to see the per-day allowance.</p>')+
+    '</div>'+
+    '<div class="card"><h2>Savings target</h2>'+
+    '<div class="form-grid"><div class="field"><label>Departure date</label><input id="sDepart" type="date" value="'+esc(t.start||'')+'"></div>'+
+    '<div class="field"><label>Target to save ('+esc(t.homeCur)+')</label><input id="sTarget" type="number" min="0" step="0.01" value="'+((t.savings&&t.savings.targetCents||0)/100)+'"></div></div>'+
+    '<div id="savingsOut" class="savings-out">Enter a departure date and a target above.</div>'+
+    '<p class="note">Based on today ('+esc(fmtDate(todayStr()))+'). Save a little each week and the trip pays for itself.</p></div>';
+  const recalcAlloc = ()=>{
+    let sum = 0;
+    el.querySelectorAll("[data-alloc]").forEach(inp=>{
+      const cents = Math.max(0, toCents(inp.value||0)); // negatives invalid -> clamp
+      inp.value = cents/100;
+      t.allocations[inp.dataset.alloc] = cents; sum += cents;
+    });
+    const pb = document.getElementById("pBudget");
+    t.totalBudgetCents = Math.max(0, toCents(pb.value||0));
+    pb.value = t.totalBudgetCents/100;
+    save();
+    document.getElementById("pAllocTotal").textContent = fmtCents(sum,t.homeCur);
+    const diff = t.totalBudgetCents - sum;
+    const dEl = document.getElementById("pAllocDiff");
+    if(diff === 0){ dEl.innerHTML = '<span class="badge ok">fully allocated</span>'; }
+    else if(diff > 0){ dEl.innerHTML = '<span class="badge soon">'+esc(fmtCents(diff,t.homeCur))+' unallocated</span>'; }
+    else { dEl.innerHTML = '<span class="badge over">'+esc(fmtCents(-diff,t.homeCur))+' over budget</span>'; }
+    el.querySelectorAll("[data-alloc]").forEach(inp=>{
+      const c = inp.dataset.alloc;
+      const sh = sum>0 ? Math.round((t.allocations[c]||0)/sum*1000)/10 : 0;
+      const lbl = el.querySelector('[data-share="'+c+'"]');
+      if(lbl) lbl.textContent = sh+"%";
+      const bar = inp.closest(".cat-row").querySelector(".progress>i");
+      if(bar) bar.style.width = Math.min(100, sh)+"%";
+    });
   };
-  r.readAsText(file);
+  el.querySelectorAll("[data-alloc]").forEach(inp=>inp.addEventListener("change", recalcAlloc));
+  document.getElementById("pBudget").addEventListener("change", recalcAlloc);
+  recalcAlloc();
+  /* tapping anywhere on an allocation row focuses its amount input */
+  el.querySelectorAll("[data-focusrow]").forEach(row=>{
+    row.style.cursor="pointer";
+    row.addEventListener("click",e=>{
+      if(e.target&&e.target.closest&&e.target.closest("input,button,a"))return;
+      const inp=row.querySelector("input[data-alloc]"); if(inp){inp.focus();Sound.click();}
+    });
+  });
+  const recalcSavings = ()=>{
+    const depart = document.getElementById("sDepart").value;
+    const target = toCents(document.getElementById("sTarget").value||0);
+    t.savings = {targetCents:target}; save();
+    const out = document.getElementById("savingsOut");
+    const daysLeft = daysBetween(todayStr(), depart);
+    if(!depart || target<=0){ out.textContent = "Enter a departure date and a target above."; return; }
+    if(daysLeft <= 0){ out.textContent = "Departure is today or in the past — time to enjoy the trip!"; return; }
+    const weeks = Math.max(1, Math.ceil(daysLeft/7));
+    const months = Math.max(1, Math.ceil(daysLeft/30.44));
+    const perWeek = Math.ceil(target/weeks), perMonth = Math.ceil(target/months);
+    out.innerHTML = 'Save <strong>'+esc(fmtCents(perMonth,t.homeCur))+'/month</strong> or <strong>'+esc(fmtCents(perWeek,t.homeCur))+'/week</strong> to reach '+esc(fmtCents(target,t.homeCur))+' by '+esc(fmtDate(depart))+' <span class="note">('+daysLeft+' days to go)</span>';
+  };
+  document.getElementById("sDepart").addEventListener("change", recalcSavings);
+  document.getElementById("sTarget").addEventListener("change", recalcSavings);
+  recalcSavings();
 }
 
-/* ---------- render ---------- */
-function render(){
-  const p=P();
-  if(!p){
-    document.getElementById("view").innerHTML=`<div class="card"><div class="empty">No project yet.</div></div>`;
+/* ---------- expenses ---------- */
+function openExpenseModal(editId){
+  const t = activeTrip(); if(!t) return;
+  const sel = document.getElementById("eCat");
+  sel.innerHTML = CATEGORIES.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join("");
+  document.getElementById("eCurHint").textContent = "(in "+t.tripCur+")";
+  const x = editId ? t.expenses.find(e=>e.id===editId) : null;
+  document.getElementById("expenseModalTitle").textContent = x ? "Edit expense" : "Log expense";
+  document.getElementById("eDate").value = x ? x.date : todayStr();
+  document.getElementById("eCat").value = x ? x.cat : "food";
+  document.getElementById("eAmount").value = x ? x.tripAmount : "";
+  document.getElementById("eNote").value = x ? (x.note||"") : "";
+  document.getElementById("eHomeCur").checked = false;
+  editingExpense = editId || null;
+  document.getElementById("expenseModal").style.display = "flex";
+}
+let editingExpense = null;
+document.getElementById("expenseSave").addEventListener("click", ()=>{
+  const t = activeTrip(); if(!t) return;
+  const date = document.getElementById("eDate").value;
+  const cat = document.getElementById("eCat").value;
+  const amt = document.getElementById("eAmount").value;
+  const note = document.getElementById("eNote").value.trim();
+  const inHome = document.getElementById("eHomeCur").checked;
+  if(!date){ alert("Pick a date for the expense."); return; }
+  const num = Number(amt);
+  if(!(num > 0)){ alert("Enter an amount greater than 0."); return; }
+  // round trip amount to 2dp to keep money exact
+  const tripAmount = inHome ? homeCentsToTrip(toCents(num), t.rate) : Math.round(num*100)/100;
+  const homeCents = inHome ? toCents(num) : tripToHomeCents(tripAmount, t.rate);
+  const rec = {id: editingExpense || uid(), date, cat,
+    tripAmount: Math.round(tripAmount*100)/100, homeCents, note};
+  if(editingExpense){
+    const i = t.expenses.findIndex(e=>e.id===editingExpense);
+    if(i>=0) t.expenses[i] = rec;
+  } else t.expenses.push(rec);
+  save(); closeModal("expenseModal"); renderAll();
+});
+document.getElementById("expenseCancel").addEventListener("click", ()=>closeModal("expenseModal"));
+function renderExpenses(t){
+  const el = document.getElementById("tab-expenses");
+  const d = tripTotals(t);
+  const rows = t.expenses.slice().sort((a,b)=> a.date<b.date?-1:a.date>b.date?1:0);
+  el.innerHTML =
+    '<div class="toolbar"><button class="primary" id="addExpBtn">+ Log expense</button><span class="spacer"></span>'+
+    '<span class="note">Amounts entered in <strong>'+esc(t.tripCur)+'</strong>; totals shown in <strong>'+esc(t.homeCur)+'</strong>. Rate: 1 '+esc(t.tripCur)+' = '+esc(String(t.rate))+' '+esc(t.homeCur)+'</span></div>'+
+    '<div class="card"><h2>Budget vs actual by category</h2>'+
+    CATEGORIES.map(c=>{
+      const alloc = t.allocations[c.id]||0, spent = d.perCat[c.id];
+      const pct = alloc>0 ? Math.round(spent/alloc*1000)/10 : (spent>0?100:0);
+      const left = alloc-spent;
+      return '<div class="day-row" data-cat="'+c.id+'" data-det="catDetExp" role="button" tabindex="0" aria-pressed="false" aria-label="'+esc(c.name)+' — activate to see the expenses in this category"><div class="hd"><div class="d">'+c.icon+' '+esc(c.name)+'</div>'+
+        '<div><strong>'+esc(fmtCents(spent,t.homeCur))+'</strong> <span class="note">/ '+esc(fmtCents(alloc,t.homeCur))+'</span> '+
+        (left<0?'<span class="badge over">over by '+esc(fmtCents(-left,t.homeCur))+'</span>':'<span class="badge ok">'+esc(fmtCents(left,t.homeCur))+' left</span>')+'</div></div>'+
+        '<div class="progress'+(left<0?' over':'')+'"><i style="width:'+Math.min(100,pct)+'%"></i></div></div>';
+    }).join("")+'<div class="ch-det" id="catDetExp" hidden></div></div>'+
+    '<div class="card"><h2>Expense log ('+rows.length+')</h2>'+
+    (rows.length ?
+      '<div style="overflow-x:auto"><table><thead><tr><th>Date</th><th>Category</th><th>Note</th><th class="num">'+esc(t.tripCur)+'</th><th class="num">'+esc(t.homeCur)+'</th><th></th></tr></thead><tbody>'+
+      rows.map(x=>{
+        const c = catById(x.cat);
+        const tSym = CURR_SYMBOLS[t.tripCur]!==undefined?CURR_SYMBOLS[t.tripCur]:t.tripCur+" ";
+        return '<tr class="exp-tr" data-id="'+x.id+'" role="button" tabindex="0" aria-label="Expense '+esc(fmtDate(x.date))+' '+esc(c.name)+' — activate to edit"><td>'+esc(fmtDate(x.date))+'</td><td>'+esc(c.name)+'</td><td>'+esc(x.note||"—")+'</td>'+
+          '<td class="num">'+esc(tSym+Number(x.tripAmount).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}))+'</td>'+
+          '<td class="num">'+esc(fmtCents(x.homeCents,t.homeCur))+'</td>'+
+          '<td class="num no-print"><button data-edit="'+x.id+'">Edit</button> <button data-del="'+x.id+'" class="danger">✕</button></td></tr>';
+      }).join("")+'</tbody></table></div>'
+    : '<p class="empty">No expenses yet — log your first one above.</p>')+'</div>';
+  document.getElementById("addExpBtn").addEventListener("click", ()=>openExpenseModal(null));
+  el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click", ()=>openExpenseModal(b.dataset.edit)));
+  el.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click", ()=>{
+    if(!confirm("Delete this expense?")) return;
+    t.expenses = t.expenses.filter(e=>e.id!==b.dataset.del);
+    save(); renderAll();
+  }));
+  wireToggles(el);
+}
+
+/* ---------- daily view ---------- */
+/* daily spend vertical bars vs allowance line */
+function dailyChartHTML(t,dailyAllow,dayRows){
+  const W=400,baseY=200,topY=26,H=246,pad=8;
+  const max=Math.max.apply(null,dayRows.map(r=>r.spent).concat([dailyAllow,1]));
+  const slot=(W-pad*2)/dayRows.length,bw=Math.min(30,slot*0.55);
+  const y=v=>baseY-(v/max)*(baseY-topY);
+  let s="";
+  dayRows.forEach((r,i)=>{
+    const cx=pad+slot*(i+0.5),x=cx-bw/2,bh=r.spent>0?Math.max(baseY-y(r.spent),3):0;
+    const over=dailyAllow>0&&r.spent>dailyAllow;
+    s+='<g class="ch-bar" tabindex="0" role="button" data-i="'+i+'" aria-pressed="false"'
+      +' aria-label="'+esc(r.full+": "+fmtCents(r.spent,t.homeCur))+'">'
+      +'<rect x="'+x.toFixed(1)+'" y="'+(baseY-bh).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="4"'
+      +' fill="'+(over?"var(--bad)":"var(--bar)")+'"/>'
+      +'<text x="'+cx.toFixed(1)+'" y="'+(baseY+18)+'" text-anchor="middle" style="font-size:11px;fill:var(--muted)">'+esc(r.dayShort)+'</text></g>';
+  });
+  if(dailyAllow>0){
+    const ay=y(dailyAllow);
+    s+='<line x1="'+pad+'" y1="'+ay.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+ay.toFixed(1)+'" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="6 4"/>'
+      +'<text x="'+(W-pad)+'" y="'+(ay-6).toFixed(1)+'" text-anchor="end" style="font-size:11px;font-weight:600;fill:var(--warn)">allowance '+esc(fmtCents(dailyAllow,t.homeCur))+'</text>';
+  }
+  s+='<line x1="'+pad+'" y1="'+baseY+'" x2="'+(W-pad)+'" y2="'+baseY+'" stroke="var(--border)" stroke-width="1"/>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Daily spending bar chart">'+s+'</svg>';
+}
+function renderDaily(t){
+  const el = document.getElementById("tab-daily");
+  const d = tripTotals(t), days = tripDays(t);
+  if(days<=0){ el.innerHTML = '<div class="card empty">Set trip dates in Trip settings to see the daily view.</div>'; return; }
+  const dailyAllow = d.budget>0 ? Math.floor(d.budget/days) : 0;
+  const byDay = {};
+  t.expenses.forEach(x=>{ byDay[x.date] = (byDay[x.date]||0) + x.homeCents; });
+  const start = parseLocal(t.start);
+  const dayRows = [];
+  for(let i=0;i<days;i++){
+    const dt = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+    const key = dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+    const spent = byDay[key]||0;
+    const pct = dailyAllow>0 ? Math.round(spent/dailyAllow*1000)/10 : (spent>0?100:0);
+    const cats = {};
+    t.expenses.filter(x=>x.date===key).forEach(x=>{ cats[x.cat]=(cats[x.cat]||0)+x.homeCents; });
+    let topCat=null,topAmt=0;
+    Object.keys(cats).forEach(cid=>{ if(cats[cid]>topAmt){topAmt=cats[cid];topCat=catById(cid).name;} });
+    const catBars = Object.keys(cats).map(cid=>{
+      const c = catById(cid), share = spent>0?Math.round(cats[cid]/spent*100):0;
+      return '<div style="display:flex;align-items:center;gap:.5rem;margin:.2rem 0"><span style="width:150px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.icon+' '+esc(c.name)+'</span>'+
+        '<div class="progress" style="flex:1;margin:0"><i style="width:'+share+'%"></i></div>'+
+        '<span class="num" style="width:90px;text-align:right">'+esc(fmtCents(cats[cid],t.homeCur))+'</span></div>';
+    }).join("");
+    dayRows.push({key,spent,pct,catBars,topCat,
+      full:dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}),
+      dayShort:dt.toLocaleDateString("en-US",{weekday:"narrow"})+" "+dt.getDate()});
+  }
+  let html = '<div class="card no-print"><h2>Daily spend <span class="note">(bars vs daily allowance)</span></h2>'
+    +'<div id="dayChartWrap">'+dailyChartHTML(t,dailyAllow,dayRows)+'</div><div class="ch-det" id="dayDet"></div></div>';
+  html += '<div class="card"><h2>Daily spending vs allowance <span class="note">('+esc(fmtCents(dailyAllow,t.homeCur))+'/day)</span></h2>';
+  dayRows.forEach(r=>{
+    const over=r.spent>dailyAllow&&dailyAllow>0;
+    html += '<div class="day-row"><div class="hd"><div class="d">'+esc(r.full)+'</div>'+
+      '<div><strong>'+esc(fmtCents(r.spent,t.homeCur))+'</strong> <span class="note">of '+esc(fmtCents(dailyAllow,t.homeCur))+'</span> '+
+      (over?'<span class="badge over">over</span>':'<span class="badge ok">'+r.pct+'%</span>')+'</div></div>'+
+      '<div class="progress'+(over?' over':'')+'"><i style="width:'+Math.min(100,r.pct)+'%"></i></div>'+
+      (r.catBars?'<details><summary>Category breakdown</summary>'+r.catBars+'</details>':'<div class="note">No spending logged.</div>')+'</div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+  const logged=dayRows.filter(r=>r.spent>0).length;
+  wireSelectable(document.getElementById("dayChartWrap"),dayRows,
+    r=>{
+      const over=dailyAllow>0&&r.spent>dailyAllow;
+      return "<strong>"+esc(r.full)+"</strong> &mdash; "+esc(fmtCents(r.spent,t.homeCur))+" of "+esc(fmtCents(dailyAllow,t.homeCur))
+        +" ("+r.pct+"%)"+(over?" &middot; <strong>over by "+esc(fmtCents(r.spent-dailyAllow,t.homeCur))+"</strong>":" &middot; within allowance")
+        +(r.topCat?" &middot; top: "+esc(r.topCat):" &middot; nothing logged")+".";
+    },
+    ()=>(logged?("<strong>"+logged+"</strong> of "+dayRows.length+" days with spending."):"No spending logged yet.")
+      +" Tap a bar for the day's detail.",
+    "dayDet");
+  /* whole day-row toggles its category-breakdown details (bigger tap target) */
+  el.querySelectorAll(".day-row").forEach(row=>{
+    const det=row.querySelector("details"); if(!det)return;
+    row.style.cursor="pointer";
+    row.setAttribute("role","button"); row.setAttribute("tabindex","0");
+    row.setAttribute("aria-expanded",det.open?"true":"false");
+    const flip=()=>{ det.open=!det.open; row.setAttribute("aria-expanded",det.open?"true":"false"); Sound.click(); };
+    row.addEventListener("click",e=>{
+      if(e.target&&e.target.closest&&e.target.closest("summary,a,button,input"))return;
+      flip();
+    });
+    row.addEventListener("keydown",e=>{
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();flip();}
+    });
+  });
+}
+
+/* ---------- print ---------- */
+function printSummary(){
+  const t = activeTrip(); if(!t) return;
+  const d = tripTotals(t), days = tripDays(t);
+  const po = document.getElementById("print-only");
+  po.innerHTML = '<h1>Trip budget summary — '+esc(t.destination)+'</h1>'+
+    '<div class="sub">'+esc(fmtDate(t.start))+' → '+esc(fmtDate(t.end))+' ('+days+' days) · '+esc(t.homeCur)+' home / '+esc(t.tripCur)+' trip · 1 '+esc(t.tripCur)+' = '+esc(String(t.rate))+' '+esc(t.homeCur)+'</div>'+
+    '<table><thead><tr><th>Category</th><th class="num">Allocated</th><th class="num">Spent</th><th class="num">Remaining</th></tr></thead><tbody>'+
+    CATEGORIES.map(c=>{
+      const a=t.allocations[c.id]||0, s=d.perCat[c.id];
+      return '<tr><td>'+esc(c.name)+'</td><td class="num">'+esc(fmtCents(a,t.homeCur))+'</td><td class="num">'+esc(fmtCents(s,t.homeCur))+'</td><td class="num">'+esc(fmtCents(a-s,t.homeCur))+'</td></tr>';
+    }).join("")+
+    '<tr><td><strong>Total</strong></td><td class="num"><strong>'+esc(fmtCents(d.allocated,t.homeCur))+'</strong></td><td class="num"><strong>'+esc(fmtCents(d.spent,t.homeCur))+'</strong></td><td class="num"><strong>'+esc(fmtCents(d.remaining,t.homeCur))+'</strong></td></tr>'+
+    '</tbody></table><p>Budget '+esc(fmtCents(d.budget,t.homeCur))+' · used '+d.pct+'% · prepared with TripBudget</p>';
+  window.print();
+}
+
+/* ---------- render all ---------- */
+function renderTripSelect(){
+  const sel = document.getElementById("tripSelect");
+  sel.innerHTML = state.trips.map(t=>'<option value="'+t.id+'"'+(t.id===state.activeTripId?' selected':'')+'>'+esc(t.destination)+'</option>').join("");
+  sel.style.display = state.trips.length ? "" : "none";
+}
+function renderAll(){
+  renderTripSelect();
+  const t = activeTrip();
+  document.getElementById("emptyState").style.display = t ? "none" : "";
+  document.querySelectorAll(".tabpane").forEach(p=>p.style.display = t ? "" : "none");
+  document.querySelectorAll("nav.tabs").forEach(n=>n.style.display = t ? "" : "none");
+  if(!t){
+    /* clear every pane, not just the dashboard — otherwise stale inputs from a
+       deleted/last trip linger hidden in the DOM (also broke sample-off restore) */
+    document.querySelectorAll(".tabpane").forEach(p=>p.innerHTML="");
     return;
   }
-  catSpotId=null; donutSel=-1; paceSel=-1; /* DOM rebuilt — drop stale spotlight state */
-  const el=document.getElementById("view");
-  if(activeTab==="dashboard") el.innerHTML=renderDashboard(p);
-  else if(activeTab==="budget") el.innerHTML=renderBudget(p);
-  else if(activeTab==="quotes") el.innerHTML=renderQuotes(p);
-  else if(activeTab==="changes") el.innerHTML=renderChanges(p);
-  // live budget inputs
-  el.querySelectorAll("input[data-budget]").forEach(inp=>{
-    inp.addEventListener("change",()=>{
-      const c=catById(p,inp.dataset.budget); if(!c) return;
-      const v=toCents(inp.value);
-      if(v<0){ dlgAlert("Budget can't be negative."); inp.value=(c.budgetCents/100).toFixed(2); return; }
-      c.budgetCents=v; save(); render();
-    });
-    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); inp.blur(); } });
-  });
-  const coPct=document.getElementById("coPct");
-  if(coPct) coPct.addEventListener("change",()=>{
-    let v=parseInt(coPct.value,10);
-    if(!isFinite(v)||v<0) v=0; if(v>50) v=50;
-    p.contingencyPct=v; save(); render();
-  });
-  /* stat boxes: click/Enter/Space shows the real breakdown */
-  el.querySelectorAll(".stat[role=\"button\"]").forEach(st=>{
-    st.addEventListener("click",()=>statToggle(st));
-    st.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); statToggle(st); } });
-  });
-  /* clickable category rows (spotlight detail) */
-  el.querySelectorAll(".cat-row").forEach(row=>{
-    row.addEventListener("click",()=>catSpot(row.dataset.cat));
-    row.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); catSpot(row.dataset.cat); } });
-  });
-  /* recent-expense rows open the editor (clicks on the row's own buttons stay local) */
-  el.querySelectorAll(".exp-row").forEach(tr=>{
-    tr.addEventListener("click",e=>{ if(e.target&&e.target.closest&&e.target.closest("button")) return; expenseForm(tr.dataset.exp); });
-    tr.addEventListener("keydown",e=>{
-      if((e.key==="Enter"||e.key===" ")&&!(e.target&&e.target.closest&&e.target.closest("button"))){
-        e.preventDefault(); expenseForm(tr.dataset.exp);
-      }
-    });
-  });
-  /* donut segment / legend clicks */
-  const dw=el.querySelector("#donutWrap");
-  if(dw){
-    dw.addEventListener("click",e=>{
-      const s=e.target&&e.target.closest?e.target.closest("[data-seg]"):null;
-      if(s) donutSpot(parseInt(s.dataset.seg,10));
-    });
-    dw.addEventListener("keydown",e=>{
-      if(e.key==="Enter"||e.key===" "){
-        const s=e.target&&e.target.closest?e.target.closest("[data-seg]"):null;
-        if(s){ e.preventDefault(); donutSpot(parseInt(s.dataset.seg,10)); }
-      }
-    });
-  }
-  /* pace-sparkline clicks + arrow-key stepping */
-  const pw=el.querySelector("#paceWrap");
-  if(pw){
-    pw.addEventListener("click",e=>{
-      const d=e.target&&e.target.closest?e.target.closest(".pace-dot"):null;
-      if(d) paceSelFn(parseInt(d.dataset.i,10));
-    });
-    pw.addEventListener("keydown",e=>{
-      if(e.target&&e.target.classList&&e.target.classList.contains("pace-dot")&&(e.key==="Enter"||e.key===" ")){
-        e.preventDefault(); paceSelFn(parseInt(e.target.dataset.i,10)); return;
-      }
-      if((e.key==="ArrowRight"||e.key==="ArrowLeft")&&pacePtsArr.length){
-        e.preventDefault();
-        let i=paceSel<0?(e.key==="ArrowRight"?0:pacePtsArr.length-1):paceSel+(e.key==="ArrowRight"?1:-1);
-        paceSelFn(Math.max(0,Math.min(pacePtsArr.length-1,i)));
-      }
-    });
-  }
+  // keep first tab visible unless another is selected
+  const selTab = document.querySelector('nav.tabs button[aria-selected="true"]');
+  const tab = selTab ? selTab.dataset.tab : "dashboard";
+  document.querySelectorAll(".tabpane").forEach(p=>p.style.display="none");
+  document.getElementById("tab-"+tab).style.display = "";
+  renderDashboard(t); renderPlanner(t); renderExpenses(t); renderDaily(t);
 }
-
-/* ---------- demo data (first run) ---------- */
-function seedDemo(){
-  const p=blankProject("Kitchen remodel");
-  const byName=n=>p.categories.find(c=>c.name===n).id;
-  const set=(n,amt)=>{ byName(n); p.categories.find(c=>c.name===n).budgetCents=toCents(amt); };
-  set("Demolition","1800"); set("Structural","2500"); set("Plumbing","3200");
-  set("Electrical","2800"); set("Kitchen","9500"); set("Flooring","4100");
-  set("Paint & Drywall","2600"); set("Fixtures & Finishes","2200");
-  set("Appliances","5200"); set("Permits & Fees","900"); set("Labor","8000");
-  set("Bathrooms","0");
-  p.contingencyPct=10;
-  const E=(date,cat,vendor,amt,note)=>p.expenses.push({id:uid(),date,categoryId:byName(cat),vendor,note,cents:toCents(amt)});
-  E("2026-09-02","Permits & Fees","City of Bloomington","950.00","Building + electrical permits");
-  E("2026-09-05","Demolition","Dumpster Pros","625.40","20yd dumpster, 7-day rental");
-  E("2026-09-06","Demolition","Self","0.01","placeholder — replaced below");
-  p.expenses=p.expenses.filter(e=>e.note!=="placeholder — replaced below");
-  E("2026-09-08","Plumbing","ABC Plumbing Co.","1480.00","Rough-in deposit");
-  E("2026-09-10","Electrical","Bright Spark Electric","900.00","Panel upgrade labor deposit");
-  E("2026-09-12","Kitchen","Cabinet World","3200.00","Cabinets 50% deposit");
-  E("2026-09-14","Flooring","Floor & More","2150.00","White oak, 600 sq ft");
-  E("2026-09-15","Appliances","Appliance Direct","2899.00","Range + dishwasher");
-  E("2026-09-16","Paint & Drywall","Self","312.75","Primer, paint, mud, tape");
-  E("2026-09-18","Labor","Mike's Crew","1500.00","Demo labor week 1");
-  E("2026-09-19","Fixtures & Finishes","Build Supply","486.20","Faucet, pulls, hinges");
-  const Q=(job,cat,bids)=>p.quotes.push({id:uid(),jobTitle:job,categoryId:byName(cat),date:"2026-09-04",
-    bids:bids.map(([who,amt,notes,acc])=>({contractor:who,cents:toCents(amt),notes,accepted:!!acc}))});
-  Q("Kitchen rewire","Electrical",[
-    ["Bright Spark Electric","2650.00","Panel + full rewire, 3-day job",true],
-    ["VoltEdge","2980.00","Rewire only, panel extra",false],
-    ["HandyPro Remodeling","2340.00","No license number provided",false]]);
-  Q("Quartz countertops","Kitchen",[
-    ["StoneCraft","3875.00","Quartz, templated + installed",false],
-    ["TopChoice Surfaces","3590.00","Quartz, 2-week lead",true]]);
-  const CO=(desc,cat,impact,date,status)=>p.changeOrders.push({id:uid(),description:desc,
-    categoryId:byName(cat),deltaCents:toCents(impact),date,status});
-  CO("Add under-cabinet lighting + extra outlets on island","Electrical","640.00","2026-09-11","approved");
-  CO("Upgrade to soft-close hinges throughout","Kitchen","215.00","2026-09-13","approved");
-  CO("Move sink to island (plumbing reroute)","Plumbing","980.00","2026-09-15","proposed");
-  CO("Heated bathroom floor","Bathrooms","1400.00","2026-09-16","rejected");
-  CO("Credit: reuse existing pantry shelving","Kitchen","-180.00","2026-09-14","approved");
-  S.projects.push(p); S.activeProjectId=p.id;
-}
-
-/* ---------- init ---------- */
-function init(){
-  S=load();
-  if(!S){ S=blankState(); S.projects.push(blankProject("Project 1")); S.activeProjectId=S.projects[0].id; save(); }
-  else if(!S.projects.length){ S.projects.push(blankProject("Project 1")); S.activeProjectId=S.projects[0].id; save(); }
-  else if(!P()){ S.activeProjectId=S.projects[0].id; save(); }
-  initTheme();
-  document.getElementById("themeToggle").onclick=()=>{
-    const t=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
-    applyTheme(t); Sound.toggleTheme(); Sound.click();
-  };
-  document.getElementById("exportBtn").onclick=()=>{ exportData(); Sound.success(); };
-  document.getElementById("importBtn").onclick=()=>document.getElementById("importFile").click();
-  document.getElementById("importFile").addEventListener("change",e=>{
-    if(e.target.files[0]) importData(e.target.files[0]);
-    e.target.value="";
+CURR_LIST.forEach(c=>{
+  ["fHomeCur","fTripCur"].forEach(id=>{
+    const o = document.createElement("option"); o.value=c; o.textContent=c;
+    document.getElementById(id).appendChild(o);
   });
-  document.getElementById("newProjBtn").onclick=newProject;
-  document.getElementById("renameProjBtn").onclick=renameProject;
-  document.getElementById("delProjBtn").onclick=deleteProject;
-  /* tap-to-edit: quote cards, bid cards, change-order rows (inner action buttons stay isolated) */
-  document.addEventListener("click",e=>{
-    const bid=e.target.closest?e.target.closest(".bid-card"):null;
-    if(bid){ if(e.target.closest("button"))return; bidForm(bid.dataset.qid,+bid.dataset.i); Sound.click(); return; }
-    const qc=e.target.closest?e.target.closest(".quote-card"):null;
-    if(qc){ if(e.target.closest("button"))return; quoteForm(qc.dataset.qid); Sound.click(); return; }
-    const cor=e.target.closest?e.target.closest("tr.co-row"):null;
-    if(cor){ if(e.target.closest("button"))return; coForm(cor.dataset.co); Sound.click(); return; }
-  });
-  document.addEventListener("keydown",e=>{
-    if(e.key!=="Enter"&&e.key!==" ")return;
-    const t=e.target.closest?e.target.closest(".bid-card,.quote-card,tr.co-row"):null;
-    if(!t)return;
-    e.preventDefault();
-    if(t.classList.contains("bid-card")) bidForm(t.dataset.qid,+t.dataset.i);
-    else if(t.classList.contains("quote-card")) quoteForm(t.dataset.qid);
-    else coForm(t.dataset.co);
-    Sound.click();
-  });
-  /* Escape releases every spotlight back to the default view */
-  document.addEventListener("keydown",e=>{
-    if(e.key!=="Escape") return;
-    const card=document.getElementById("statDetail");
-    if(card&&!card.hidden){
-      card.hidden=true; card.innerHTML="";
-      document.querySelectorAll(".stat[role=\"button\"]").forEach(s=>s.setAttribute("aria-pressed","false"));
-      Sound.click();
-    }
-    if(donutSel>=0) donutSpot(donutSel);     /* toggle releases */
-    if(paceSel>=0) paceSelFn(paceSel);         /* back to latest-cumulative view */
-    if(catSpotId) catSpot(catSpotId);          /* toggle releases */
-  });
-  renderProjectSel(); renderTabs(); render();
-  paintSample();
-  const sb=document.getElementById("soundToggle"); if(sb) paintSoundBtn(sb);
-}
-document.addEventListener("DOMContentLoaded",init);
+});
+document.getElementById("fHomeCur").value = "USD";
+document.getElementById("fTripCur").value = "EUR";
+load();
+renderAll();
+paintSample();
+paintSoundBtn(document.getElementById("soundToggle"));
+/* Escape releases every tap-detail readout back to the default view */
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&releaseToggles()) Sound.click();
+});
+/* expose for automated QA */
+window.__tripbudget = {state:()=>state, tripTotals, tripToHomeCents, homeCentsToTrip, isValidDateStr, toCents, fmtCents, save, renderAll, load};
 </script>
 </body>
 </html>
