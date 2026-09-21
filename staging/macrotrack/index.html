@@ -862,30 +862,30 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
         <span class="g-label">Height <span class="g-hint" style="display:inline">feet + inches</span></span>
         <div class="row2">
           <input class="g-input" type="number" id="h-ft" inputmode="numeric" min="2" max="8" step="1" value="5" aria-label="Height feet">
-          <input class="g-input" type="number" id="h-in" inputmode="decimal" min="0" max="11.99" step="0.5" value="10" aria-label="Height inches">
+          <input class="g-input" type="number" id="h-in" inputmode="decimal" min="0" max="11.99" step="0.01" value="10" aria-label="Height inches">
         </div>
         <div class="g-error" id="h-err">Enter a height between 3 ft and 8 ft.</div>
       </div>
       <div class="g-field" id="h-met" hidden>
         <label class="g-label" for="h-cm">Height <span class="g-hint" style="display:inline">centimeters</span></label>
-        <input class="g-input" type="number" id="h-cm" inputmode="decimal" min="90" max="250" step="0.5" value="178">
+        <input class="g-input" type="number" id="h-cm" inputmode="decimal" min="90" max="250" step="0.01" value="178">
         <div class="g-error" id="h-cm-err">Enter a height between 90 and 250 cm.</div>
       </div>
 
       <div class="g-field" id="w-imp">
         <label class="g-label" for="w-lb">Weight <span class="g-hint" style="display:inline">pounds</span></label>
-        <input class="g-input" type="number" id="w-lb" inputmode="decimal" min="40" max="1100" step="0.5" value="180">
+        <input class="g-input" type="number" id="w-lb" inputmode="decimal" min="40" max="1100" step="0.01" value="180">
         <div class="g-error" id="w-err">Enter a weight between 40 and 1100 lb.</div>
       </div>
       <div class="g-field" id="w-met" hidden>
         <label class="g-label" for="w-kg">Weight <span class="g-hint" style="display:inline">kilograms</span></label>
-        <input class="g-input" type="number" id="w-kg" inputmode="decimal" min="18" max="500" step="0.5" value="82">
+        <input class="g-input" type="number" id="w-kg" inputmode="decimal" min="18" max="500" step="0.01" value="82">
         <div class="g-error" id="w-kg-err">Enter a weight between 18 and 500 kg.</div>
       </div>
 
       <div class="g-field">
         <label class="g-label" for="bf">Body fat % <span class="g-hint" style="display:inline">optional — needed for Katch-McArdle</span></label>
-        <input class="g-input" type="number" id="bf" inputmode="decimal" min="1" max="70" step="0.5" placeholder="e.g. 18">
+        <input class="g-input" type="number" id="bf" inputmode="decimal" min="1" max="70" step="0.01" placeholder="e.g. 18">
         <div class="g-error" id="bf-err">Enter a body fat % between 1 and 70, or leave blank.</div>
       </div>
 

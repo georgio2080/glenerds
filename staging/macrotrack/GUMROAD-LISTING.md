@@ -37,7 +37,7 @@ tdee calculator, macro calculator, bmr calculator, calorie calculator, protein c
 
 Stop trusting black-box calorie calculators. Enter your age, height, weight, activity level and goal, and MacroTrack shows your BMR, TDEE, target calories and protein/carb/fat grams — with the exact formula and every calculation step shown on screen, so you can verify it yourself.
 
-💸 100% FREE — free forever. No upsells, no subscription, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
+💸 100% FREE — free forever. No upsells, no subscription, no account, no internet required.
 
 ✨ WHAT IT DOES
 • 🧮 BMR with 3 published formulas — Mifflin-St Jeor (default), Harris-Benedict (revised 1984), Katch-McArdle (uses lean body mass)
