@@ -110,17 +110,37 @@ html[data-theme="dark"] body {
 .app-header .tagline { color: rgba(255,255,255,.85); font-size: .88rem; margin: 2px 0 0; }
 .theme-toggle {
   margin-left: auto;
-  display: inline-flex; align-items: center; gap: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,.16);
   border: 1px solid rgba(255,255,255,.4);
-  color: #fff; border-radius: 999px; padding: 8px 16px;
+  color: #fff; border-radius: 999px; padding: 0;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px;
   font-weight: 600; cursor: pointer; box-shadow: none;
 }
 .theme-toggle:hover { background: rgba(255,255,255,.28); border-color: rgba(255,255,255,.6); }
+.theme-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .theme-toggle svg { width: 17px; height: 17px; }
 .theme-toggle .ic-sun { display: none; }
 html[data-theme="dark"] .theme-toggle .ic-sun { display: inline; }
 html[data-theme="dark"] .theme-toggle .ic-moon { display: none; }
+#sound-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.4);
+  color: #fff; border-radius: 999px; padding: 0;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px;
+  font-size: 1.05rem; line-height: 1; cursor: pointer; box-shadow: none;
+}
+#sound-toggle:hover { background: rgba(255,255,255,.28); border-color: rgba(255,255,255,.6); }
+#sound-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* ---------- interactive dashboard rows ---------- */
+.ru-row[role="button"] { cursor: pointer; }
+.ru-row[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
+.ru-row[role="button"].sel { box-shadow: inset 0 0 0 2px var(--accent, #1f7a5c); border-radius: 10px; }
+.room-pill[role="button"] { cursor: pointer; }
+.room-pill[role="button"]:focus { outline: none; filter: drop-shadow(0 0 3px var(--accent, #1f7a5c)); }
+.ru-detail { margin: 8px 0 0; font-size: .85rem; color: var(--muted, #5b6472); }
+.ru-detail strong { color: var(--text, #1c2330); }
 
 /* ============ Controls ============ */
 button, input[type="text"], input[type="number"], select, textarea {
@@ -476,7 +496,8 @@ html[data-theme="dark"] .box-actions .small.danger::before {
   </div>
   <div class="g-header-actions" style="margin-left:auto">
     <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span id="themeLabel">Dark mode</span></button>
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode"><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    <button type="button" id="sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds">&#128266;</button>
   </div>
 </header>
 
@@ -486,9 +507,9 @@ html[data-theme="dark"] .box-actions .small.danger::before {
   <section aria-labelledby="dash-h">
     <h2 id="dash-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>Dashboard</h2>
     <div class="stat-grid" id="stat-grid" role="group" aria-label="Totals"></div>
-    <div class="room-counts" id="room-counts" aria-label="Boxes per room"></div>
+    <div class="room-counts" id="room-counts" role="group" aria-label="Boxes per room — activate a room for its box list"></div>
     <div class="ru-title">Unpack progress by room</div>
-    <div class="room-unpack" id="room-unpack" role="img" aria-label="Unpack progress by room"></div>
+    <div class="room-unpack" id="room-unpack" role="group" aria-label="Unpack progress by room"></div>
     <div class="progress-wrap">
       <progress id="unpack-progress" max="100" value="0" aria-label="Unpacking progress"></progress>
       <div class="progress-label" id="unpack-label"></div>
@@ -686,8 +707,9 @@ function labeledValue(parent, labelText, value) {
 function applyTheme(mode) {
   document.documentElement.setAttribute("data-theme", mode);
   const btn = document.getElementById("theme-toggle");
-  document.getElementById("themeLabel").textContent = mode === "dark" ? "Light mode" : "Dark mode";
-  btn.setAttribute("aria-label", mode === "dark" ? "Switch to light mode" : "Switch to dark mode");
+  const label = mode === "dark" ? "Switch to light mode" : "Switch to dark mode";
+  btn.setAttribute("aria-label", label);
+  btn.title = label;
   try { localStorage.setItem(THEME_KEY, mode); } catch (e) {}
 }
 function initTheme() {
@@ -700,7 +722,67 @@ function initTheme() {
   document.getElementById("theme-toggle").addEventListener("click", () => {
     const cur = document.documentElement.getAttribute("data-theme");
     applyTheme(cur === "dark" ? "light" : "dark");
+    Sound.toggleTheme();
   });
+  bindSoundToggle();
+}
+
+// ---------- subtle sounds (Web Audio, no files, offline) ----------
+const Sound = (() => {
+  const KEY = "packtrack.sound";
+  let on = true;
+  try { if (localStorage.getItem(KEY) === "off") on = false; } catch (e) {}
+  let ctx = null;
+  function ac() {
+    try {
+      if (!ctx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        ctx = new AC();
+      }
+      if (ctx.state === "suspended") ctx.resume();
+      return ctx;
+    } catch (e) { return null; }
+  }
+  function tone(freq, dur, type, vol, delay) {
+    const c = ac(); if (!c) return;
+    try {
+      const t = c.currentTime + (delay || 0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type || "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + dur + 0.05);
+    } catch (e) {}
+  }
+  return {
+    isOn: () => on,
+    toggle: () => {
+      on = !on;
+      try { localStorage.setItem(KEY, on ? "on" : "off"); } catch (e) {}
+      return on;
+    },
+    click: () => { if (on) tone(520, 0.06, "sine", 0.045); },
+    select: () => { if (on) { tone(660, 0.07, "sine", 0.055); tone(880, 0.09, "sine", 0.045, 0.06); } },
+    success: () => { if (on) { tone(660, 0.09, "sine", 0.06); tone(990, 0.12, "sine", 0.05, 0.08); } },
+    error: () => { if (on) tone(170, 0.16, "sawtooth", 0.045); },
+    toggleTheme: () => { if (on) tone(440, 0.06, "triangle", 0.05); }
+  };
+})();
+function bindSoundToggle() {
+  const btn = document.getElementById("sound-toggle");
+  if (!btn) return;
+  const paint = () => {
+    const on = Sound.isOn();
+    btn.innerHTML = on ? "&#128266;" : "&#128263;";
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", "Sound: " + (on ? "on" : "off"));
+    btn.title = "Toggle sounds (" + (on ? "on" : "off") + ")";
+  };
+  btn.addEventListener("click", () => { Sound.toggle(); paint(); Sound.click(); });
+  paint();
 }
 
 // ---------- Rooms ----------
@@ -740,13 +822,42 @@ function renderDashboard() {
   }
   const rc = document.getElementById("room-counts");
   while (rc.firstChild) rc.removeChild(rc.firstChild);
+  let rcDetail = document.getElementById("room-counts-detail");
+  if (!rcDetail) {
+    rcDetail = el("div", "ru-detail");
+    rcDetail.id = "room-counts-detail";
+    rcDetail.setAttribute("aria-live", "polite");
+    rc.parentNode.insertBefore(rcDetail, rc.nextSibling);
+  }
+  rcDetail.textContent = "";
   for (const r of allRooms()) {
-    const c = boxes.filter(b => b.room === r).length;
+    const roomBoxes = boxes.filter(b => b.room === r);
+    const c = roomBoxes.length;
     if (!c) continue;
     const pill = el("span", "room-pill");
+    pill.setAttribute("role", "button");
+    pill.setAttribute("tabindex", "0");
+    pill.setAttribute("aria-pressed", "false");
+    pill.setAttribute("aria-label", r + ": " + c + " boxes. Activate to list them.");
     txt(pill, r + " ");
     const b = el("b"); txt(b, String(c));
     pill.appendChild(b);
+    pill.addEventListener("click", () => {
+      const was = pill.getAttribute("aria-pressed") === "true";
+      rc.querySelectorAll(".room-pill[role=button]").forEach(x => x.setAttribute("aria-pressed", "false"));
+      rcDetail.textContent = "";
+      if (!was) {
+        pill.setAttribute("aria-pressed", "true");
+        rcDetail.appendChild((() => { const st = el("strong"); txt(st, r + ": "); return st; })());
+        txt(rcDetail, roomBoxes.map(bb => "Box " + bb.number + (bb.label ? " '" + bb.label + "'" : "")).join(", ") + ".");
+        Sound.select();
+      } else {
+        Sound.click();
+      }
+    });
+    pill.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pill.click(); }
+    });
     rc.appendChild(pill);
   }
   // unpack progress across packed boxes
@@ -758,9 +869,18 @@ function renderDashboard() {
   const lbl = document.getElementById("unpack-label");
   lbl.textContent = "";
   txt(lbl, uTotal ? `Unpacked ${uDone} of ${uTotal} items (${pct}%)` : "No items packed yet — add a box to get started.");
-  // per-room unpack bars (visual representation)
+  // per-room unpack bars (visual representation) — interactive: activate a row to spotlight it
   const ru = document.getElementById("room-unpack");
   while (ru.firstChild) ru.removeChild(ru.firstChild);
+  ru.setAttribute("role", "group");
+  let ruDetail = document.getElementById("room-unpack-detail");
+  if (!ruDetail) {
+    ruDetail = el("div", "ru-detail");
+    ruDetail.id = "room-unpack-detail";
+    ruDetail.setAttribute("aria-live", "polite");
+    ru.parentNode.insertBefore(ruDetail, ru.nextSibling);
+  }
+  ruDetail.textContent = "";
   const ruAria = [];
   for (const r of allRooms()) {
     const rb = boxes.filter(b => b.room === r);
@@ -770,13 +890,43 @@ function renderDashboard() {
     const rp = t ? Math.round((d / t) * 100) : 0;
     ruAria.push(r + ": " + d + " of " + t + " (" + rp + "%)");
     const row = el("div", "ru-row");
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-pressed", "false");
+    row.setAttribute("aria-label", r + ": " + d + " of " + t + " items unpacked. Activate to spotlight.");
     const nm = el("div", "ru-name"); txt(nm, r);
     const vl = el("div", "ru-val"); txt(vl, t ? d + "/" + t + " · " + rp + "%" : "no items");
     const track = el("div", "ru-track");
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-label", r + " unpack progress");
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", "100");
+    track.setAttribute("aria-valuenow", String(rp));
     const fill = el("div", "ru-fill");
     fill.style.width = rp + "%";
     track.appendChild(fill);
     row.appendChild(nm); row.appendChild(vl); row.appendChild(track);
+    row.addEventListener("click", () => {
+      const was = row.classList.contains("sel");
+      ru.querySelectorAll(".ru-row.sel").forEach(x => { x.classList.remove("sel"); x.setAttribute("aria-pressed", "false"); });
+      ruDetail.textContent = "";
+      if (!was) {
+        row.classList.add("sel");
+        row.setAttribute("aria-pressed", "true");
+        const perBox = rb.map(b => {
+          const bt = b.items.length, bd = b.items.filter(i => i.unpacked).length;
+          return "Box " + b.number + (b.label ? " '" + b.label + "'" : "") + " (" + bd + "/" + bt + " unpacked)";
+        });
+        ruDetail.appendChild((() => { const st = el("strong"); txt(st, r + ": "); return st; })());
+        txt(ruDetail, d + " of " + t + " items unpacked — " + (perBox.length ? perBox.join(", ") : "no boxes") + ".");
+        Sound.select();
+      } else {
+        Sound.click();
+      }
+    });
+    row.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); row.click(); }
+    });
     ru.appendChild(row);
   }
   ru.setAttribute("aria-label", "Unpack progress by room: " + ruAria.join(", "));
@@ -893,7 +1043,7 @@ function renderBoxCard(grid, box) {
       cb.type = "checkbox";
       cb.checked = item.unpacked;
       cb.setAttribute("aria-label", "Mark unpacked: " + item.text);
-      cb.addEventListener("change", () => { item.unpacked = cb.checked; save(); renderAll(); });
+      cb.addEventListener("change", () => { item.unpacked = cb.checked; save(); renderAll(); if (cb.checked) Sound.success(); else Sound.click(); });
       li.appendChild(cb);
     }
     const span = el("span", "item-text"); txt(span, item.text);
@@ -902,7 +1052,7 @@ function renderBoxCard(grid, box) {
     rm.type = "button";
     txt(rm, "Remove");
     rm.setAttribute("aria-label", "Remove item " + item.text);
-    rm.addEventListener("click", () => { box.items.splice(idx, 1); save(); renderAll(); runSearch(); });
+    rm.addEventListener("click", () => { box.items.splice(idx, 1); save(); renderAll(); runSearch(); Sound.click(); });
     li.appendChild(rm);
     list.appendChild(li);
   });
@@ -922,8 +1072,11 @@ function renderBoxCard(grid, box) {
     if (addItem(box, inp.value)) {
       const num = box.number;
       renderAll(); runSearch();
+      Sound.success();
       const fresh = document.querySelector('input[aria-label="Add item to box ' + num + '"]');
       if (fresh) fresh.focus();
+    } else {
+      Sound.error();
     }
   };
   addBtn.addEventListener("click", commit);
@@ -936,7 +1089,7 @@ function renderBoxCard(grid, box) {
   const sealBtn = el("button", "small");
   sealBtn.type = "button";
   txt(sealBtn, box.packed ? "Unseal" : "Seal box");
-  sealBtn.addEventListener("click", () => { box.packed = !box.packed; save(); renderAll(); runSearch(); });
+  sealBtn.addEventListener("click", () => { box.packed = !box.packed; save(); renderAll(); runSearch(); Sound.click(); });
   actions.appendChild(sealBtn);
 
   const printBtn = el("button", "small");
@@ -952,6 +1105,9 @@ function renderBoxCard(grid, box) {
     if (window.confirm(`Delete Box ${box.number} and all its items?`)) {
       state.boxes = state.boxes.filter(x => x !== box);
       save(); renderAll(); runSearch();
+      Sound.success();
+    } else {
+      Sound.click();
     }
   });
   actions.appendChild(delBtn);
@@ -1020,8 +1176,10 @@ function importJSON(file) {
       document.getElementById("nb-number").value = state.nextNumber;
       renderAll(); runSearch();
       alert("Import complete: " + state.boxes.length + " boxes loaded.");
+      Sound.success();
     } catch (e) {
       alert("Import failed: that file is not a valid PackTrack backup.");
+      Sound.error();
     }
   };
   reader.readAsText(file);
@@ -1029,7 +1187,7 @@ function importJSON(file) {
 
 // ---------- Demo data ----------
 function loadDemo() {
-  if (state.boxes.length && !window.confirm("Replace current data with the demo set?")) return;
+  if (state.boxes.length && !window.confirm("Replace current data with the demo set?")) { Sound.click(); return; }
   state = sanitizeState({
     nextNumber: 105,
     boxes: [
@@ -1047,6 +1205,7 @@ function loadDemo() {
   refreshRoomSelect();
   document.getElementById("nb-number").value = state.nextNumber;
   renderAll(); runSearch();
+  Sound.success();
 }
 
 // ---------- New box form ----------
@@ -1068,6 +1227,7 @@ function initNewBoxForm() {
     sw.addEventListener("click", () => {
       selectedColor = c;
       for (const s of row.children) s.setAttribute("aria-pressed", s === sw ? "true" : "false");
+      Sound.select();
     });
     row.appendChild(sw);
   }
@@ -1079,15 +1239,15 @@ function initNewBoxForm() {
     const number = cleanNum(numInput.value, LIMITS.numberMin, LIMITS.numberMax, null);
     if (number === null) {
       err.textContent = "Enter a box number between 1 and 9999.";
-      err.hidden = false; numInput.focus(); return;
+      err.hidden = false; numInput.focus(); Sound.error(); return;
     }
     if (state.boxes.some(b => b.number === number)) {
       err.textContent = "Box " + number + " already exists. Pick another number.";
-      err.hidden = false; numInput.focus(); return;
+      err.hidden = false; numInput.focus(); Sound.error(); return;
     }
     if (state.boxes.length >= LIMITS.maxBoxes) {
       err.textContent = "Box limit reached (500). Delete a box first.";
-      err.hidden = false; return;
+      err.hidden = false; Sound.error(); return;
     }
     const newRoom = cleanStr(document.getElementById("nb-new-room").value, LIMITS.roomLen);
     let room = document.getElementById("nb-room").value;
@@ -1096,7 +1256,7 @@ function initNewBoxForm() {
       if (!allRooms().includes(room)) {
         if (state.customRooms.length >= LIMITS.maxRooms) {
           err.textContent = "Too many custom rooms — pick an existing one.";
-          err.hidden = false; return;
+          err.hidden = false; Sound.error(); return;
         }
         state.customRooms.push(room);
         refreshRoomSelect(room);
@@ -1120,6 +1280,7 @@ function initNewBoxForm() {
     selectedColor = "";
     for (const s of row.children) s.setAttribute("aria-pressed", s === row.children[0] ? "true" : "false");
     renderAll(); runSearch();
+    Sound.success();
   });
   form.addEventListener("reset", () => {
     selectedColor = "";
@@ -1135,9 +1296,10 @@ function initToolbar() {
     um.setAttribute("aria-pressed", String(unpackMode));
     um.textContent = "Unpack mode: " + (unpackMode ? "on" : "off");
     renderAll();
+    Sound.click();
   });
   document.getElementById("print-all").addEventListener("click", () => {
-    if (!state.boxes.length) { alert("No boxes to print yet."); return; }
+    if (!state.boxes.length) { alert("No boxes to print yet."); Sound.error(); return; }
     const host = document.getElementById("print-label");
     while (host.firstChild) host.removeChild(host.firstChild);
     for (const b of state.boxes.slice().sort((a, x) => a.number - x.number)) buildLabel(host, b);
@@ -1147,7 +1309,7 @@ function initToolbar() {
     window.addEventListener("afterprint", done);
     setTimeout(() => document.body.classList.remove("printing-label"), 2000);
   });
-  document.getElementById("export-btn").addEventListener("click", exportJSON);
+  document.getElementById("export-btn").addEventListener("click", () => { exportJSON(); Sound.success(); });
   document.getElementById("import-btn").addEventListener("click", () => document.getElementById("import-file").click());
   document.getElementById("import-file").addEventListener("change", e => {
     if (e.target.files[0]) importJSON(e.target.files[0]);

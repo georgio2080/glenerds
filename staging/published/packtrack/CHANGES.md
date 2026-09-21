@@ -1,5 +1,11 @@
 # PackTrack — Build Log
 
+## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
+- Standardized the header cluster: `.g-header-actions` wrapper with More Apps pill first, icon-only dark-mode button (44x44px circular, moon/sun icon, dynamic aria-label/title — no more "Dark mode" text label), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
+- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `packtrack.sound`, wired into theme toggle, add-box form (validation errors and success), color swatch select, add item (success/error), item unpack check/uncheck, item remove, seal/unseal, delete box (success/cancel), print, unpack mode, export, import (success/failure), and demo load.
+- Made the "Unpack progress by room" bars interactive: each row is a keyboard-accessible button — activating it spotlights the row and shows unpacked/total plus a per-box breakdown in a detail line; activating again restores.
+- Made the room-count pills interactive: each pill is a keyboard-accessible button that lists the room's boxes (with labels) in a detail line.
+
 ## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
 - **New "Unpack progress by room" bars** on the Dashboard, between the room
   pills and the overall unpack bar: per-room unpacked/total with % and green
