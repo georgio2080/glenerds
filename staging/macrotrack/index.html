@@ -1058,7 +1058,7 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
             <path id="pie-c" class="pie-seg pie-carbs" d="" fill="none" stroke-width="34"/>
             <path id="pie-f" class="pie-seg pie-fat" d="" fill="none" stroke-width="34"/>
           </svg>
-          <div class="pie-center"><div class="v" id="pie-total">–</div><div class="l">target kcal/day</div></div>
+          <div class="pie-center"><div class="v" id="pie-total">–</div><div class="l" id="pie-sub">target kcal/day</div></div>
         </div>
       </div>
 
@@ -1360,7 +1360,17 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       off += frac * 360;
     });
     var ok = isFinite(target) && target > 0;
-    $('pie-total').textContent = ok ? fmt(target) : '–';
+    var macroNames = { p: 'protein', c: 'carbs', f: 'fat' };
+    if (ok && pieSelected) {
+      var fr = { p: pp, c: cp, f: fp }[pieSelected] / 100;
+      var skcal = target * fr;
+      var sg = pieSelected === 'f' ? skcal / 9 : skcal / 4;
+      $('pie-total').textContent = fmt(skcal);
+      $('pie-sub').textContent = macroNames[pieSelected] + ' kcal · ' + Math.round(sg) + ' g';
+    } else {
+      $('pie-total').textContent = ok ? fmt(target) : '–';
+      $('pie-sub').textContent = 'target kcal/day';
+    }
   }
   function repaintPie() { paintPie(pieState.p, pieState.c, pieState.f, pieState.target); }
   // clicking a macro bar spotlights its slice (click again to release)
