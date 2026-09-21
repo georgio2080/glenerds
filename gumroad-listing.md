@@ -1,39 +1,62 @@
-# Gumroad listing draft — DebtPayoff
+# Gumroad listing draft — RecipeCost
 
-## Title
-DebtPayoff — Free Debt Payoff Calculator: Snowball vs Avalanche
+## Title (SEO-first, keyword-first)
 
-## Permalink
-`debt-payoff-planner-snowball-avalanche`
+Recipe Cost Calculator for Home Bakers — Food Costing, Pricing & Profit Margin Tool
 
 ## Price
-$0 (free tool)
+
+$9 (one-time purchase, no subscription)
+
+## Thumbnail
+
+gallery/cover-square-1200.png
 
 ## Description
-**Snowball or avalanche — which actually gets you debt-free faster, and which costs less?** DebtPayoff runs your real debts through all three payoff strategies and shows you the answer in months and dollars: how long each one takes, and how much interest each one costs. No guesswork, no signups, no selling you a "debt solution."
 
-**How it works:** download the ZIP, unzip it, and open the HTML file in any browser — no install, no account needed. Your plan saves automatically in your browser.
+Stop guessing what your bakes cost. RecipeCost tells home bakers and cottage-food sellers
+exactly what each recipe costs to make — and exactly what to charge.
 
-**What's inside:**
-- 💳 Add your debts — names, balances, APRs, minimum payments
-- ❄️ Snowball vs 🏔️ avalanche vs custom order — all three strategies compared side-by-side
-- 🔁 Automatic payment rollover — when a debt is paid off, its payment moves to the next target automatically, like real payoff plans
-- 📊 Strategy comparison — months to debt-free and total interest per strategy, so you can compare the tradeoffs
-- 🗓️ Month-by-month payoff schedule for any strategy
-- 💰 Extra payment support — see what a bigger monthly payment does to your timeline
-- 💾 Backup & restore — save your plan to a file and reload it anytime
-- 🌙 Dark mode, works on phone/tablet/computer
+**What you get**
 
-**Private by design:** 100% offline single HTML file. No account, no ads, no subscription, no tracking — your debt numbers never leave your device. Free to use.
+- Ingredient library: save every ingredient with its package size and price; the app works
+  out the true cost per gram, per ml, or per piece
+- Automatic unit conversion: buy flour by the bag, bake by the cup — RecipeCost converts
+  (including eggs and other count items used by weight)
+- True batch costing: ingredients + your labor + packaging + overhead, all itemized
+- Pricing for profit: set your target margin and get a suggested selling price, profit per
+  piece, profit per batch, and food-cost percentage
+- Unlimited recipes, all saved on your device
+- Print-ready cost sheets (print straight to PDF)
+- JSON backup / restore — your data moves with you
 
-**More from Glenerds:** free offline tools for your money and home — [RenoTrack](https://glenerds.gumroad.com) (home renovation budget tracker) and [HomeInventory](https://glenerds.gumroad.com) (insurance-ready home inventory).
+**Why RecipeCost instead of a spreadsheet or a subscription app?**
 
-By Glenerds. https://glenerds.gumroad.com
+- One-time purchase — no monthly fee, ever
+- Works offline — no account, no internet, no data harvesting
+- Single file — open it in any browser on any device, keep it forever
 
-_This tool is 100% free. If you were ever charged for this product, contact us for a full refund._
+Perfect for home bakeries, cottage-food businesses, farmers-market sellers, and anyone who
+sells cakes, cookies, bread, or desserts and wants to price with confidence.
 
-## Thumbnail/gallery
-Thumbnail: `gallery/cover-square-1200.png` (verified). Gallery screenshots from `gallery/` (debt list, strategy comparison, payoff schedule, dark mode, mobile).
+**How it works**
 
-## Tags
-debt payoff calculator, credit card payoff calculator, debt snowball calculator, debt avalanche, debt free date calculator, debt payoff planner, debt reduction calculator, debt snowball vs avalanche calculator, debt payoff schedule, credit card interest calculator
+Download the ZIP, open the single HTML file in any browser — no install, no account,
+no internet. Your ingredient library and recipes save on your device and stay yours
+forever.
+
+*By Glenerds — simple offline tools for people who make things: https://glenerds.gumroad.com*
+
+---
+
+Related Glenerds tools: [GardenCal](https://glenerds.gumroad.com) — vegetable garden planting
+calendar by zone; [CraftCost](https://glenerds.gumroad.com) — pricing calculator for
+handmade & craft sellers. More one-time-purchase tools at https://glenerds.gumroad.com
+
+*Affiliates welcome — 30% commission, auto-approved. Share RecipeCost with your baking
+audience and earn on every sale: https://glenerds.gumroad.com/affiliates*
+
+## Tags / categories
+
+baking, recipe costing, food costing, home bakery, cottage food, pricing calculator,
+profit margin, small business

@@ -1,32 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23d93025'/%3E%3Ctext x='32' y='44' font-size='30' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3Ekcal%3C/text%3E%3C/svg%3E">
-<title>Free TDEE Calculator &amp; Macro Calculator — See Every Step of the Math (MacroTrack)</title>
-<meta name="description" content="Free TDEE calculator with BMR, target calories and protein/carb/fat macros. Shows every formula step, works fully offline, no account, no ads.">
-<script>
-// Apply saved theme (or OS preference) before first paint to avoid a flash.
-(function () {
-  try {
-    var stored = localStorage.getItem('glenerds-theme');
-    var theme = stored === 'dark' || stored === 'light' ? stored :
-      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-  } catch (e) {
-    document.documentElement.setAttribute('data-theme', 'light');
-  }
-})();
-function gToggleTheme() {
-  var h = document.documentElement;
-  var n = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  h.setAttribute('data-theme', n);
-  try { localStorage.setItem('glenerds-theme', n); } catch (e) {}
-}
-</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c2570b'/%3E%3Ctext x='32' y='44' font-size='30' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E$%3C/text%3E%3C/svg%3E">
+<meta name="description" content="RecipeCost — free offline recipe cost calculator for home bakers. Cost every ingredient, get per-serving cost, and price with your target profit margin. No signup, works offline.">
+<title>Recipe Cost Calculator for Home Bakers — Ingredient Costing & Pricing | RecipeCost</title>
 <style>
-/* ===== GLENERDS DESIGN SYSTEM v1.0 (pasted verbatim) ===== */
+/* ===== GLENERDS DESIGN SYSTEM (inlined) ===== */
 /* ==========================================================================
    GLENERDS DESIGN SYSTEM v1.0
    --------------------------------------------------------------------------
@@ -49,26 +30,26 @@ function gToggleTheme() {
   color-scheme: light;
 
   /* Surfaces */
-  --g-bg:            #f8fafc;
-  --g-surface:       #ffffff;
-  --g-surface-2:     #f1f5f9;
-  --g-border:        #e2e8f0;
+  --g-bg:            #f8fafc;   /* page background: soft cool white */
+  --g-surface:       #ffffff;   /* cards, panels */
+  --g-surface-2:     #f1f5f9;   /* recessed / inset areas, tab track */
+  --g-border:        #e2e8f0;   /* hairlines */
   --g-border-strong: #cbd5e1;
 
   /* Text */
-  --g-text:          #0f172a;
-  --g-text-soft:     #334155;
-  --g-muted:         #64748b;
+  --g-text:          #0f172a;   /* slate-900 */
+  --g-text-soft:     #334155;   /* slate-700 — secondary text */
+  --g-muted:         #64748b;   /* slate-500 — captions, hints */
 
   /* Accent: refined indigo */
-  --g-accent:        #4f46e5;
-  --g-accent-hover:  #4338ca;
-  --g-accent-ink:    #ffffff;
-  --g-accent-soft:   #eef2ff;
+  --g-accent:        #4f46e5;   /* indigo-600 */
+  --g-accent-hover:  #4338ca;   /* indigo-700 */
+  --g-accent-ink:    #ffffff;   /* text on accent */
+  --g-accent-soft:   #eef2ff;   /* indigo-50 — tinted fills */
   --g-accent-ring:   rgba(79, 70, 229, 0.22);
 
   /* Status */
-  --g-good:          #047857;
+  --g-good:          #047857;   /* emerald-700 */
   --g-good-soft:     #ecfdf5;
   --g-bad:           #b42318;
   --g-bad-soft:      #fef3f2;
@@ -97,6 +78,8 @@ function gToggleTheme() {
             "Liberation Mono", monospace;
 }
 
+/* Dark theme: genuinely designed — deep blue-black, lifted surfaces,
+   brightened indigo. Not an inversion of light. */
 [data-theme="dark"] {
   color-scheme: dark;
 
@@ -110,8 +93,8 @@ function gToggleTheme() {
   --g-text-soft:     #cbd5e1;
   --g-muted:         #94a3b8;
 
-  --g-accent:        #818cf8;
-  --g-accent-hover:  #a5b4fc;
+  --g-accent:        #818cf8;   /* indigo-400 — readable on dark */
+  --g-accent-hover:  #a5b4fc;   /* indigo-300 */
   --g-accent-ink:    #ffffff;
   --g-accent-soft:   rgba(129, 140, 248, 0.14);
   --g-accent-ring:   rgba(129, 140, 248, 0.35);
@@ -144,6 +127,7 @@ function gToggleTheme() {
   text-rendering: optimizeLegibility;
 }
 
+/* Page container */
 .g-wrap {
   max-width: 720px;
   margin: 0 auto;
@@ -180,6 +164,7 @@ function gToggleTheme() {
 .g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
 .g-tagline { color: var(--g-muted); font-size: 0.92rem; margin: 6px 0 14px; max-width: 56ch; }
 
+/* Theme toggle */
 .g-theme-toggle {
   flex: 0 0 auto;
   display: inline-flex; align-items: center; gap: 6px;
@@ -195,96 +180,6 @@ function gToggleTheme() {
 }
 .g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
 .g-theme-toggle:active { transform: scale(0.97); }
-
-/* "More Apps" button — permanent top-bar element on every app (Glen's pick 2026-09-21) */
-.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
-/* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only */
-.round-btn {
-  flex: 0 0 auto;
-  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--g-surface);
-  border: 1px solid var(--g-border);
-  color: var(--g-text);
-  border-radius: 999px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,.10);
-  font-size: 1.1rem;
-}
-.round-btn svg { width: 26px; height: 26px; flex: none; }
-/* Glen FINAL rev 4: all three icons fill their 44px button — flask 26px, theme+sound emoji 1.65rem */
-.round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
-.round-btn:hover { border-color: var(--g-accent); }
-.round-btn:active { transform: scale(.92); border-color: var(--g-accent); }
-.round-btn:focus { outline: none; }
-.round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-/* header spec 2026-09-21: sample ON = accent-soft tint + accent border/icon (NOT a solid
-   accent fill); sound button stays white in all states */
-.round-btn.sample-toggle[aria-pressed="true"] {
-  color: var(--g-accent); border-color: var(--g-accent);
-  background: var(--g-accent-soft);
-}
-@media (max-width: 480px) {
-  .g-header-actions { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-}
-.g-store-btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: var(--g-accent);
-  color: #fff; /* header spec + legibility rule: white text on accent in BOTH modes */
-  border-radius: var(--g-radius-pill);
-  padding: 8px 15px;
-  font-family: var(--g-font);
-  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
-  text-decoration: none; white-space: nowrap;
-  box-shadow: var(--g-shadow-sm);
-  transition: background var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
-}
-.g-store-btn:hover { background: var(--g-accent-hover); box-shadow: var(--g-shadow-md); color: #fff; }
-.g-store-btn:active { transform: scale(0.97); }
-.g-store-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-@media (max-width: 440px) {
-  .g-store-btn { padding: 8px 12px; }
-  .g-header-actions { gap: 6px; }
-}
-
-/* Macro calorie-split donut chart */
-.macro-pie-wrap {
-  display: flex; align-items: center; justify-content: center; gap: 26px;
-  flex-wrap: wrap;
-  margin: 20px 0 6px;
-}
-.macro-pie-box { position: relative; width: min(300px, 80vw); flex: 0 0 auto; }
-.macro-pie { display: block; width: 100%; height: auto; }
-.macro-pie-track { stroke: var(--g-surface-2); }
-.pie-seg { transition: transform 300ms ease, opacity 300ms ease; cursor: pointer; }
-.pie-seg:focus { outline: none; }
-.pie-seg:focus-visible { filter: drop-shadow(0 0 6px var(--g-accent, #4f46e5)); }
-.macro[data-macro] { cursor: pointer; border-radius: 10px; }
-.macro[data-macro]:hover .bar { border-color: var(--g-accent); }
-.macro[data-macro].sel .bar { border-color: var(--g-accent); box-shadow: 0 0 0 1px var(--g-accent); }
-.macro[data-macro]:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 4px; }
-.macro-hint { font-size: 0.78rem; color: var(--g-muted); margin: -4px 0 4px; }
-.pie-protein { stroke: #2563eb; }
-.pie-carbs   { stroke: #d97706; }
-.pie-fat     { stroke: #9333ea; }
-[data-theme="dark"] .pie-protein { stroke: #7aa8ff; }
-[data-theme="dark"] .pie-carbs   { stroke: #fbbf24; }
-[data-theme="dark"] .pie-fat     { stroke: #c084fc; }
-.pie-center {
-  position: absolute; inset: 0; margin: auto;
-  width: 62%; height: 62%;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; pointer-events: none;
-  overflow: hidden;
-}
-.pie-center .v {
-  font-size: clamp(1.25rem, 5.2vw, 1.7rem); font-weight: 800; letter-spacing: -0.02em;
-  color: var(--g-text); line-height: 1.1;
-  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.pie-center .l { font-size: 0.72rem; color: var(--g-muted); margin-top: 2px; }
-.macro .mvals { font-variant-numeric: tabular-nums; color: var(--g-muted); font-size: 0.92rem; }
-.macro .mvals b { color: var(--g-text); font-weight: 800; font-size: 1.08rem; }
 
 /* ---------- 5. TABS (segmented control) ---------- */
 .g-tabs {
@@ -417,6 +312,7 @@ function gToggleTheme() {
   opacity: 0.55; cursor: not-allowed; background: var(--g-surface-2);
 }
 
+/* Validation */
 .g-input.is-invalid, .g-select.is-invalid {
   border-color: var(--g-bad);
 }
@@ -426,6 +322,7 @@ function gToggleTheme() {
 .g-error { display: none; color: var(--g-bad); font-size: 0.86rem; font-weight: 600; margin-top: 6px; }
 .g-error.show { display: block; }
 
+/* Checkbox / radio rows */
 .g-check {
   display: flex; align-items: flex-start; gap: 10px;
   font-size: 0.95rem; color: var(--g-text-soft);
@@ -480,6 +377,7 @@ function gToggleTheme() {
 .g-verdict-warn { color: var(--g-warn); }
 .g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
 
+/* Show-your-work math block */
 .g-math {
   font-family: var(--g-mono);
   font-size: 0.85rem;
@@ -576,29 +474,6 @@ function gToggleTheme() {
 .g-footer a:hover { text-decoration: underline; }
 .g-footer .g-fine { display: block; margin-top: 8px; font-size: 0.78rem; }
 
-/* Bottom CTA strip — permanent cross-promo above the footer (preview on MacroTrack, Glen's call 2026-09-21) */
-.g-cta-strip {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin: 28px 0 0;
-  padding: 16px 20px;
-  border-radius: var(--g-radius-lg, 14px);
-  background: color-mix(in srgb, var(--g-accent) 9%, transparent);
-  border: 1px solid color-mix(in srgb, var(--g-accent) 28%, transparent);
-  color: var(--g-text);
-  font-family: var(--g-font);
-  font-size: 0.95rem; font-weight: 600;
-  text-decoration: none;
-  transition: background var(--g-ease), border-color var(--g-ease), transform var(--g-ease);
-}
-.g-cta-strip:hover {
-  background: color-mix(in srgb, var(--g-accent) 15%, transparent);
-  border-color: color-mix(in srgb, var(--g-accent) 45%, transparent);
-}
-.g-cta-strip:active { transform: scale(0.99); }
-.g-cta-strip:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: var(--g-accent); font-weight: 700; font-size: 1.4em; line-height: 1; transform: translateY(-0.04em); }
-[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
-
 /* ---------- 15. LAYOUT HELPERS ---------- */
 .g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .g-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
@@ -643,6 +518,7 @@ a:focus-visible {
 }
 .g-icon-sm { width: 18px; height: 18px; }
 .g-icon-lg { width: 32px; height: 32px; }
+/* Flash variant: brand indigo gradient stroke instead of text color. */
 .g-icon-flash { stroke: url(#g-grad-indigo); }
 .g-btn .g-icon { width: 20px; height: 20px; vertical-align: -3px; }
 .g-tab .g-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; }
@@ -665,163 +541,161 @@ a:focus-visible {
 .g-appicon-sm .g-icon { width: 24px; height: 24px; }
 .g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
 .g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-/* ===== END GLENERDS DESIGN SYSTEM v1.0 ===== */
 
-/* ===== MacroTrack app styles (visual layer only — no logic) ===== */
-.g-wrap.wide { max-width: 1080px; }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
-@media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.card-subhead { display: flex; align-items: center; gap: 8px; font-size: 1.02rem; font-weight: 700; letter-spacing: -0.01em; margin: 20px 0 4px; }
-.card-subhead .g-icon { width: 20px; height: 20px; }
-/* Segmented controls — same visuals as g-tabs, driven by aria-pressed (app JS) */
-.seg {
-  display: flex; gap: 4px; flex-wrap: wrap;
-  background: var(--g-surface-2);
-  border: 1px solid var(--g-border);
-  border-radius: var(--g-radius-md);
-  padding: 4px;
-  margin: 6px 0 2px;
-}
-.seg button {
-  flex: 1 1 auto;
-  appearance: none; border: 0; background: transparent;
-  color: var(--g-muted);
-  font-family: var(--g-font);
-  font-size: 0.93rem; font-weight: 600;
-  border-radius: 9px;
-  padding: 10px 14px;
-  min-height: 44px;
-  cursor: pointer;
-  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
-  white-space: nowrap;
-}
-.seg button:hover { color: var(--g-text); }
-.seg button[aria-pressed="true"] {
+/* ===== APP OVERRIDES (tokens only, no g- restyle) ===== */
+.g-table-wrap { overflow-x: auto; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.g-result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .75rem; margin-top: 1rem; }
+.kpi { background: var(--g-surface-2); border: 1px solid var(--g-border); border-radius: 10px; padding: .7rem .9rem; }
+.kpi .k { font-size: .75rem; color: var(--g-muted); text-transform: uppercase; letter-spacing: .04em; }
+.kpi .v { font-size: 1.25rem; font-weight: 700; margin-top: .15rem; font-variant-numeric: tabular-nums; }
+.kpi .v.good { color: #16a34a; } [data-theme="dark"] .kpi .v.good { color: #7de0a3; }
+.kpi .v.warn { color: #d97706; } [data-theme="dark"] .kpi .v.warn { color: #e3c76b; }
+.line-row { display: grid; grid-template-columns: 1fr 90px 110px auto auto; gap: .5rem; align-items: end; margin-bottom: .5rem; }
+@media (max-width: 640px) { .line-row { grid-template-columns: 1fr 72px 96px auto; } .line-row .hide-sm { display: none; } }
+.approx-flag { color: #d97706; font-size: .78rem; } [data-theme="dark"] .approx-flag { color: #e3c76b; }
+@media print { .no-print { display: none !important; } body { background: #fff; } }
+/* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
+.g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+/* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only */
+.round-btn {
+  flex: 0 0 auto;
+  width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
   background: var(--g-surface);
-  color: var(--g-text);
-  box-shadow: var(--g-shadow-sm);
-}
-.seg button:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-@media (max-width: 560px) { .seg button { font-size: 0.88rem; padding: 9px 10px; } }
-input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8px; }
-/* Result stat tiles */
-.bignums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 6px 0 10px; }
-@media (max-width: 520px) { .bignums { grid-template-columns: 1fr; } }
-.bignum {
-  background: var(--g-surface-2);
   border: 1px solid var(--g-border);
-  border-radius: var(--g-radius-md);
-  padding: 14px 10px;
-  text-align: center;
+  color: var(--g-text);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.10);
+  font-size: 1.1rem;
 }
-.bignum .v {
-  font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums; line-height: 1.15;
+.round-btn svg { width: 26px; height: 26px; flex: none; }
+/* Glen FINAL rev 4: all three icons fill their 44px button — flask 26px, theme+sound emoji 1.65rem */
+.round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
+.round-btn:hover { border-color: var(--g-accent); }
+.round-btn:active { transform: scale(.92); border-color: var(--g-accent); }
+.round-btn:focus { outline: none; }
+.round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+/* header spec 2026-09-21: sample ON = accent-soft tint + accent border/icon (NOT a solid
+   accent fill); sound button stays white in all states */
+.round-btn.sample-toggle[aria-pressed="true"] {
+  color: var(--g-accent); border-color: var(--g-accent);
+  background: var(--g-accent-soft);
 }
-.bignum .l { color: var(--g-muted); font-size: 0.82rem; margin-top: 4px; }
-.bignum.hero { border: 1.5px solid var(--g-accent); background: var(--g-accent-soft); }
-.bignum.hero .v { color: var(--g-accent); }
-.bignum[data-key] { cursor: pointer; }
-.bignum[data-key]:focus { outline: none; }
-.bignum[data-key]:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-.bignum.spot { border-color: var(--g-accent); box-shadow: 0 0 0 2px var(--g-accent-ring); }
-/* Calorie ladder — horizontal bar comparison of BMR / TDEE / target */
-.ladder { display: grid; gap: 8px; margin: 4px 0 6px; }
-.ladder-row {
-  display: grid; grid-template-columns: 92px 1fr auto; gap: 10px; align-items: center;
-  padding: 8px 12px; border: 1px solid var(--g-border); border-radius: var(--g-radius-md);
-  background: var(--g-surface); cursor: pointer;
-}
-.ladder-row .lad-label { font-weight: 700; font-size: 0.85rem; }
-.ladder-row .lad-track { height: 14px; border-radius: 999px; background: var(--g-surface-2); overflow: hidden; }
-.ladder-row .lad-fill { height: 100%; border-radius: 999px; width: 0; transition: width 300ms ease; }
-.lad-fill-bmr { background: #0ea5e9; }
-.lad-fill-tdee { background: #4f46e5; }
-.lad-fill-target { background: #10b981; }
-.ladder-row .lad-val { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 70px; text-align: right; }
-.ladder.dim .ladder-row:not(.spot) { opacity: 0.45; }
-.ladder-row.spot { border-color: var(--g-accent); box-shadow: 0 0 0 2px var(--g-accent-ring); }
-.ladder-row:focus { outline: none; }
-.ladder-row:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
-.ladder-readout { font-size: 0.9rem; color: var(--g-text-soft); margin: 2px 0 8px; min-height: 1.25em; }
+/* Cost visuals: breakdown donut, ingredient cost bars, food-cost gauge */
+.viz-row { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; margin: 14px 0 4px; }
+.cost-chart { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.cost-donut-box { position: relative; width: min(230px, 68vw); flex: 0 0 auto; }
+.cost-donut { display: block; width: 100%; height: auto; }
+.cc-seg { transition: transform 300ms ease, opacity 300ms ease; cursor: pointer; }
+.cc-seg:focus { outline: none; }
+.cc-seg:focus-visible { filter: drop-shadow(0 0 6px #4f46e5); }
+.cc-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; text-align: center; padding: 0 52px; }
+.cc-center .v { font-size: 1.45rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.cc-center .l { color: var(--g-muted); font-size: 0.78rem; margin-top: 2px; }
+.cc-legend { display: grid; gap: 8px; align-content: center; }
+.cc-chip { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--g-border); border-radius: 999px; background: var(--g-surface); cursor: pointer; font-size: 0.85rem; color: inherit; font-family: inherit; }
+.cc-chip .dot { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+.cc-chip .amt { font-weight: 700; font-variant-numeric: tabular-nums; }
+.cc-chip .pct { color: var(--g-muted); }
+.cc-chip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.cc-chip.spot { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,.22); }
+.gauge-wrap { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.gauge-svg { width: min(210px, 60vw); height: auto; flex: 0 0 auto; }
+.gauge-svg text { font-family: inherit; }
+.gauge-cap { color: var(--g-muted); font-size: 0.82rem; max-width: 220px; }
+.drivers { display: grid; gap: 6px; margin: 8px 0 4px; }
+.driver-row.dim { opacity: .45; }
+.driver-row.spot { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,.22); }
 /* ---- unified chart detail panel (spotlight breakdown) ---- */
 .chart-detail{margin:10px 0 6px;border:1px solid var(--g-border);border-radius:12px;padding:14px 16px;background:var(--g-surface)}
 .cd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
-.cd-title{font-weight:800;font-size:1.02rem;color:var(--g-text)}
+.cd-title{font-weight:800;font-size:1.02rem}
 .cd-sub{color:var(--g-muted);font-size:.85rem;margin-top:2px}
 .cd-x{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--g-border);background:var(--g-surface);color:var(--g-text);font-size:1.25rem;line-height:1;cursor:pointer}
 .cd-rows{display:grid;gap:6px;max-height:260px;overflow:auto}
-.cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--g-surface-2)}
-.cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.88rem;color:var(--g-text)}
+.cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--g-surface-2,#f1f5f9)}
+.cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.88rem}
 .cd-meta{color:var(--g-muted);font-size:.8rem;white-space:nowrap}
-.cd-val{font-weight:700;font-size:.88rem;white-space:nowrap;color:var(--g-accent)}
-/* Goal gauge — semicircular gauge over the -30%..+20% slider range */
-.gauge-wrap { display: flex; gap: 14px; align-items: center; margin: 10px 0 4px; flex-wrap: wrap; }
-.gauge-svg { width: min(220px, 62vw); height: auto; flex: 0 0 auto; }
-.gauge-svg text { font-family: var(--g-font); }
-.gauge-num { font-size: 1.55rem; font-weight: 800; fill: var(--g-text); }
-.gauge-cap { color: var(--g-muted); font-size: 0.82rem; }
-/* Macro bars */
-.macro { margin: 12px 0; }
-.macro .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.macro .name { font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
-.macro .bar { height: 10px; border-radius: 6px; background: var(--g-surface-2); border: 1px solid var(--g-border); margin-top: 8px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 6px; }
-.bar-protein { background: #2563eb; }
-.bar-carbs { background: #d97706; }
-.bar-fat { background: #9333ea; }
-[data-theme="dark"] .bar-protein { background: #7aa8ff; }
-[data-theme="dark"] .bar-carbs { background: #fbbf24; }
-[data-theme="dark"] .bar-fat { background: #c084fc; }
-.macro .pct { color: var(--g-muted); font-size: 0.85rem; }
-.macro-protein { color: #2563eb; }
-.macro-carbs { color: #d97706; }
-.macro-fat { color: #9333ea; }
-[data-theme="dark"] .macro-protein { color: #7aa8ff; }
-[data-theme="dark"] .macro-carbs { color: #fbbf24; }
-[data-theme="dark"] .macro-fat { color: #c084fc; }
-/* Notice boxes */
-.notice {
-  border: 1px solid var(--g-border);
-  border-left: 4px solid var(--g-accent);
-  background: var(--g-accent-soft);
-  border-radius: var(--g-radius-md);
-  padding: 12px 14px;
-  margin: 12px 0;
-  font-size: 0.92rem;
-  color: var(--g-text-soft);
+.cd-val{font-weight:700;font-size:.88rem;white-space:nowrap;color:#4f46e5}
+.cd-foot{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.driver-row { display: grid; grid-template-columns: minmax(90px, 190px) 1fr auto; gap: 10px; align-items: center; padding: 7px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; background: none; color: inherit; font-family: inherit; font-size: inherit; text-align: left; width: 100%; }
+.driver-row:hover { border-color: var(--g-border); }
+.driver-row .d-name { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.driver-row .d-track { height: 12px; border-radius: 999px; background: var(--g-surface-2, #f1f5f9); overflow: hidden; }
+.driver-row .d-fill { height: 100%; border-radius: 999px; background: #4f46e5; width: 0; transition: width 300ms ease; }
+.driver-row .d-val { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+.driver-row:focus { outline: none; }
+.driver-row:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.line-row.flash { outline: 2px solid #4f46e5; outline-offset: 2px; border-radius: 8px; }
+.kpi[role="button"] { cursor: pointer; }
+.kpi[role="button"]:focus { outline: none; }
+.kpi[role="button"]:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+@media (max-width: 480px) {
+  .g-header-actions { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 }
-/* Show-your-work */
-.work { font-size: 0.9rem; }
-.work .step {
-  background: var(--g-code-bg);
-  border: 1px solid var(--g-border);
-  border-radius: var(--g-radius-md);
-  padding: 12px 14px;
-  margin: 10px 0;
-  overflow-x: auto;
-  font-family: var(--g-mono);
-  font-size: 0.86rem;
-  line-height: 1.75;
-  color: var(--g-text-soft);
+.g-store-btn {
+  display: inline-flex; align-items: center;
+  background: var(--g-accent, #4f46e5);
+  color: #ffffff; /* header spec + legibility rule: white text on accent in BOTH modes */
+  border-radius: var(--g-radius-pill, 999px);
+  padding: 8px 15px;
+  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
+  text-decoration: none; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
 }
-.work .step .t { font-weight: 700; font-family: var(--g-font); margin-bottom: 6px; color: var(--g-text); }
-.work .formula-name { font-weight: 700; }
-.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-.disclaimer { color: var(--g-muted); font-size: 0.85rem; margin: 16px 0 0; }
-#print-head { display: none; }
+.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,.16); }
+.g-store-btn:active { transform: scale(0.97); }
+.g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+.g-cta-strip {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 28px 0 0; padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(79,70,229,.08);
+  border: 1px solid rgba(79,70,229,.28);
+  color: inherit;
+  font-size: 0.95rem; font-weight: 600;
+  text-decoration: none;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
+.g-cta-strip:active { transform: scale(0.99); }
+.g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; transform: translateY(-0.04em); }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
+@media (max-width: 440px) {
+  .g-store-btn { padding: 8px 12px; }
+  .g-header-actions { gap: 6px; }
+}
 @media print {
-  header.g-header .g-theme-toggle, header.g-header .g-header-actions, header.g-header .g-store-btn, .g-cta-strip, .actions, .g-footer, #inputs-card, .no-print { display: none !important; }
-  #print-head { display: block; margin-bottom: 12px; }
-  body { background: #fff; color: #000; }
-  .g-card { break-inside: avoid; background: #fff; border-color: #999; }
-  .g-wrap { max-width: none; }
+  .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
 }
 </style>
+<script>
+/* Pre-paint theme init — shared glenerds-theme key */
+(function(){var t=null;try{t=localStorage.getItem('glenerds-theme')}catch(e){}
+if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+document.documentElement.setAttribute('data-theme',t);})();
+function gToggleTheme(){var h=document.documentElement;
+var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+h.setAttribute('data-theme',n);try{localStorage.setItem('glenerds-theme',n)}catch(e){}}
+</script>
 </head>
 <body class="g-app">
-<!-- GLENERDS ICON SET v1.0 — inline sprite (pasted verbatim) -->
+<!-- ==========================================================================
+     GLENERDS ICON SET v1.0 — inline SVG <symbol> sprite
+     --------------------------------------------------------------------------
+     Inline this whole file right after <body> in each app (or paste the
+     <svg> block). Zero external requests. See INTEGRATION.md for usage.
+
+     - 24x24 grid, stroke-based line icons, stroke-width 2, round caps/joins.
+     - Clean variant inherits text color (currentColor).
+     - Flash variant: add class "g-icon-flash" to the <svg> wrapper and the
+       stroke renders in the brand indigo gradient instead.
+     - All geometry inherits from the symbol; do not set stroke/fill on <use>.
+     ========================================================================== -->
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <linearGradient id="g-grad-indigo" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
@@ -841,1024 +715,1258 @@ input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8p
       <stop offset="1" stop-color="#6366f1"/>
     </linearGradient>
   </defs>
+
+  <!-- calculator -->
   <symbol id="g-i-calc" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="6.5" y="3" width="11" height="18" rx="2"/>
     <path d="M9.5 7.5h5"/>
     <path d="M9.5 12h.02M12 12h.02M14.5 12h.02M9.5 15.5h.02M12 15.5h.02M14.5 15.5h.02"/>
   </symbol>
+
+  <!-- chart / graph (bars) -->
   <symbol id="g-i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M4 20h16"/>
     <path d="M7.5 20v-6.5M12 20V6.5M16.5 20v-9.5"/>
   </symbol>
+
+  <!-- calendar -->
   <symbol id="g-i-cal" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>
     <path d="M8 3v3.5M16 3v3.5M3.5 10h17"/>
   </symbol>
+
+  <!-- checkmark -->
   <symbol id="g-i-check" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M4.8 12.6l4.7 4.7L19.2 7.2"/>
   </symbol>
+
+  <!-- streak flame -->
   <symbol id="g-i-flame" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 3.2c.9 2.8-.5 4.3-1.7 5.6C8.7 10.5 7 12.4 7 15.2a5 5 0 0010 0c0-2-1-3.5-2-4.9-.4 1.1-1.1 1.9-2.1 2.3.4-3-.4-6.7-.9-9.4z"/>
   </symbol>
+
+  <!-- star -->
   <symbol id="g-i-star" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/>
   </symbol>
+
+  <!-- moon -->
   <symbol id="g-i-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M20.2 14.8A8.3 8.3 0 019.2 3.8a8.3 8.3 0 1011 11z"/>
   </symbol>
+
+  <!-- sun -->
   <symbol id="g-i-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="4.2"/>
     <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/>
   </symbol>
+
+  <!-- plus -->
   <symbol id="g-i-plus" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 5.5v13M5.5 12h13"/>
   </symbol>
+
+  <!-- trash -->
   <symbol id="g-i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M4.5 6.8h15"/>
     <path d="M9.5 6.2V4.8a1.3 1.3 0 011.3-1.3h2.4a1.3 1.3 0 011.3 1.3v1.4"/>
     <path d="M6.8 6.8l.9 12.4a1.6 1.6 0 001.6 1.5h5.4a1.6 1.6 0 001.6-1.5l.9-12.4"/>
     <path d="M10 10.8v5.5M14 10.8v5.5"/>
   </symbol>
+
+  <!-- download -->
   <symbol id="g-i-download" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 4v10.5"/>
     <path d="M7.6 11L12 15.4 16.4 11"/>
     <path d="M4.5 19.5h15"/>
   </symbol>
+
+  <!-- upload -->
   <symbol id="g-i-upload" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 15.5V5"/>
     <path d="M7.6 9.4L12 5l4.4 4.4"/>
     <path d="M4.5 19.5h15"/>
   </symbol>
+
+  <!-- settings gear -->
   <symbol id="g-i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="3.4"/>
     <path d="M12 5v2.2M12 16.8V19M5 12h2.2M16.8 12H19M7.1 7.1l1.5 1.5M15.4 15.4l1.5 1.5M16.9 7.1l-1.5 1.5M8.6 15.4l-1.5 1.5"/>
   </symbol>
+
+  <!-- heart -->
   <symbol id="g-i-heart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 20.5c-5-3.4-8.5-6.8-8.5-10.6C3.5 7.1 5.7 5 8.4 5c1.5 0 2.8.8 3.6 2 .8-1.2 2.1-2 3.6-2 2.7 0 4.9 2.1 4.9 4.9 0 3.8-3.5 7.2-8.5 10.6z"/>
   </symbol>
+
+  <!-- clock -->
   <symbol id="g-i-clock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="8.3"/>
     <path d="M12 7.3V12l3.2 2"/>
   </symbol>
+
+  <!-- target -->
   <symbol id="g-i-target" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="8.3"/>
     <circle cx="12" cy="12" r="4.8"/>
     <circle cx="12" cy="12" r="1.4"/>
   </symbol>
+
+  <!-- trophy -->
   <symbol id="g-i-trophy" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M7.5 4h9v4.5a4.5 4.5 0 01-9 0V4z"/>
     <path d="M7.5 5.5H4.5a3.5 3.5 0 003.8 3.8M16.5 5.5h3a3.5 3.5 0 01-3.8 3.8"/>
     <path d="M12 13v4M8.5 20.5h7"/>
   </symbol>
+
+  <!-- tag -->
   <symbol id="g-i-tag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M20.6 13.4L11 3.8a2 2 0 00-1.4-.6H5a1.8 1.8 0 00-1.8 1.8v4.6c0 .5.2 1 .6 1.4l9.6 9.6a1.9 1.9 0 002.7 0l4.5-4.5a1.9 1.9 0 000-2.7z"/>
     <circle cx="8" cy="8" r="1.4"/>
   </symbol>
+
+  <!-- search -->
   <symbol id="g-i-search" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="11" cy="11" r="6.5"/>
     <path d="M15.8 15.8l4.7 4.7"/>
   </symbol>
+
+  <!-- edit pencil -->
   <symbol id="g-i-edit" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M4 20l1.2-4.2L16.7 4.3a2 2 0 012.9 2.9L8.1 18.7 4 20z"/>
     <path d="M14.8 6.2l2.9 2.9"/>
   </symbol>
+
+  <!-- share -->
   <symbol id="g-i-share" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="6.5" cy="12" r="2.5"/>
     <circle cx="17" cy="5.8" r="2.5"/>
     <circle cx="17" cy="18.2" r="2.5"/>
     <path d="M8.7 10.9l6.1-3.5M8.7 13.1l6.1 3.5"/>
   </symbol>
+
+  <!-- lock -->
   <symbol id="g-i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/>
     <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/>
     <path d="M12 14.5v2"/>
   </symbol>
+
+  <!-- sparkles -->
   <symbol id="g-i-sparkles" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8-4.8-1.7 4.8-1.7L12 3.5z"/>
     <path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/>
   </symbol>
+
+  <!-- home -->
   <symbol id="g-i-home" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M4 11.2L12 4l8 7.2"/>
     <path d="M6.2 9.8V20h11.6V9.8"/>
     <path d="M10 20v-4.8h4V20"/>
   </symbol>
+
+  <!-- back arrow -->
   <symbol id="g-i-back" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M14.8 5.5L8.3 12l6.5 6.5"/>
   </symbol>
+
+  <!-- close X -->
   <symbol id="g-i-x" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M6 6l12 12M18 6L6 18"/>
   </symbol>
+
+  <!-- info -->
   <symbol id="g-i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="8.3"/>
     <path d="M12 11v5"/>
     <path d="M12 7.6v.2"/>
   </symbol>
+
+  <!-- wallet -->
   <symbol id="g-i-wallet" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="6.5" width="18" height="13" rx="3"/>
     <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
     <circle cx="17.5" cy="14.8" r="1.1"/>
   </symbol>
+
+  <!-- list -->
   <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
     <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
   </symbol>
+
+  <!-- bell -->
   <symbol id="g-i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M6.2 16v-4.8a5.8 5.8 0 0111.6 0V16l1.7 2.8H4.5L6.2 16z"/>
     <path d="M10 20.5a2.2 2.2 0 004 0"/>
   </symbol>
 </svg>
-<div class="g-wrap wide">
-  <div id="print-head">
-    <h1>MacroTrack — TDEE &amp; Macro Results</h1>
-    <p>Free offline calculator by Glenerds</p>
+
+<div class="g-wrap">
+
+<header class="g-header">
+  <div class="g-brand">
+    <span class="g-appicon g-appicon-sm" style="--g-ai1:#22c55e;--g-ai2:#84cc16">
+      <svg class="g-icon" aria-hidden="true"><use href="#g-i-calc"/></svg>
+    </span>
+    <h1 class="g-brand-name">RecipeCost</h1>
   </div>
-  <header class="g-header">
-    <div class="g-brand">
-      <span class="g-appicon g-appicon-sm" style="--g-ai1:#10b981;--g-ai2:#0ea5e9">
-        <svg class="g-icon" aria-hidden="true"><use href="#g-i-chart"/></svg>
-      </span>
-      <h1 class="g-brand-name">MacroTrack</h1>
-    </div>
-    <div class="g-header-actions">
-      <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button class="round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button class="round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
-      <button class="round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
-    </div>
-  </header>
-  <p class="g-tagline">Free TDEE &amp; macro calculator. Every formula shown, every step visible — your data never leaves this page.</p>
+  <div class="g-header-actions">
+  <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
+<button class="round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data" onclick="setSample(!sampleOn);Sound.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+<button class="round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode" onclick="gToggleTheme();paintTheme();Sound.toggleTheme();Sound.click();">🌙</button>
+<button class="round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)" onclick="toggleSound(this)">&#128266;</button>
+</div>
+</header>
+<p class="g-tagline">Recipe cost calculator for home bakers — know exactly what each batch costs and price it with confidence.</p>
 
-  <div class="grid">
-    <section class="g-card" id="inputs-card" aria-labelledby="inputs-h">
-      <h2 class="g-title" id="inputs-h"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-edit"/></svg> Your details</h2>
+<div class="g-tabs no-print" role="tablist" aria-label="Sections">
+  <button class="g-tab" role="tab" id="tab-ing" aria-selected="true" onclick="showTab('ing')">Ingredients</button>
+  <button class="g-tab" role="tab" id="tab-rec" aria-selected="false" onclick="showTab('rec')">Recipes</button>
+</div>
 
+<!-- ================= INGREDIENTS ================= -->
+<section id="panel-ing" role="tabpanel" aria-labelledby="tab-ing">
+  <div class="g-card">
+    <p class="g-title">Ingredient library</p>
+    <p class="g-desc">Enter what you paid per package. RecipeCost works out the cost per gram, ml, or piece automatically.</p>
+    <div class="g-grid-2">
       <div class="g-field">
-        <span class="g-label" id="units-l">Units</span>
-        <div class="seg" role="group" aria-label="Unit system">
-          <button type="button" id="u-imp" aria-pressed="true">Imperial (lb, ft/in)</button>
-          <button type="button" id="u-met" aria-pressed="false">Metric (kg, cm)</button>
+        <label class="g-label" for="ing-name">Ingredient name</label>
+        <input class="g-input" id="ing-name" type="text" placeholder="All-purpose flour" autocomplete="off">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-price">Package price ($)</label>
+        <input class="g-input" id="ing-price" type="number" min="0" step="0.01" placeholder="4.99">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-qty">Package size</label>
+        <input class="g-input" id="ing-qty" type="number" min="0" step="any" placeholder="5000">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-unit">Package unit</label>
+        <select class="g-input" id="ing-unit"></select>
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-gpc">Grams per cup <span class="g-hint" style="display:inline">(optional — for cup↔gram conversion)</span></label>
+        <input class="g-input" id="ing-gpc" type="number" min="0" step="any" placeholder="e.g. 120 for flour">
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="ing-gpe">Grams per piece <span class="g-hint" style="display:inline">(optional — for count items like eggs)</span></label>
+        <input class="g-input" id="ing-gpe" type="number" min="0" step="any" placeholder="e.g. 50 for an egg">
+      </div>
+      <div class="g-field" style="align-self:end">
+        <div class="g-btn-row">
+          <button class="g-btn g-btn-primary" id="ing-add" onclick="addIngredient()">Add ingredient</button>
+          <button class="g-btn g-btn-secondary" onclick="clearIngForm()">Clear</button>
         </div>
       </div>
+    </div>
+    <p class="g-error" id="ing-err"></p>
+  </div>
 
-      <div class="row2">
+  <div class="g-card">
+    <p class="g-title">Your ingredients <span class="g-badge g-badge-neutral" id="ing-count">0</span></p>
+    <div class="g-table-wrap"><table class="g-table" id="ing-table">
+      <thead><tr><th>Ingredient</th><th class="num">Package</th><th class="num">Unit cost</th><th class="no-print"></th></tr></thead>
+      <tbody id="ing-tbody"></tbody>
+    </table></div>
+    <div class="g-empty" id="ing-empty">
+      <p class="g-title">No ingredients yet</p>
+      <p class="g-desc">Add the ingredients you buy — with package size and price — and costing takes care of itself.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RECIPES ================= -->
+<section id="panel-rec" role="tabpanel" aria-labelledby="tab-rec" hidden>
+  <div class="g-card no-print">
+    <div class="g-field">
+      <label class="g-label" for="rec-select">Recipe</label>
+      <div class="g-btn-row">
+        <select class="g-input" id="rec-select" onchange="selectRecipe(this.value)" style="flex:1"></select>
+        <button class="g-btn g-btn-primary" onclick="newRecipe()">New</button>
+        <button class="g-btn g-btn-danger" onclick="deleteRecipe()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="rec-editor">
+    <div class="g-card">
+      <p class="g-title">Recipe details</p>
+      <div class="g-grid-3">
         <div class="g-field">
-          <label class="g-label" for="age">Age <span class="g-hint" style="display:inline">years</span></label>
-          <input class="g-input" type="number" id="age" inputmode="numeric" min="10" max="120" step="1" value="30">
-          <div class="g-error" id="age-err">Enter an age between 10 and 120.</div>
+          <label class="g-label" for="rec-name">Recipe name</label>
+          <input class="g-input" id="rec-name" type="text" placeholder="Chocolate chip cookies" oninput="recField('name', this.value)">
         </div>
         <div class="g-field">
-          <span class="g-label" id="sex-l">Sex</span>
-          <div class="seg" role="group" aria-label="Sex">
-            <button type="button" id="s-m" aria-pressed="true">Male</button>
-            <button type="button" id="s-f" aria-pressed="false">Female</button>
+          <label class="g-label" for="rec-yield">Batch yield (pieces / servings)</label>
+          <input class="g-input" id="rec-yield" type="number" min="0" step="any" placeholder="24" oninput="recField('yieldQty', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-yieldunit">Yield unit</label>
+          <input class="g-input" id="rec-yieldunit" type="text" placeholder="cookies" value="pieces" oninput="recField('yieldUnit', this.value)">
+        </div>
+      </div>
+    </div>
+
+    <div class="g-card">
+      <p class="g-title">Ingredients in this recipe</p>
+      <div id="lines"></div>
+      <div class="g-btn-row no-print">
+        <button class="g-btn g-btn-secondary" onclick="addLine()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-plus"/></svg> Add ingredient line</button>
+      </div>
+      <p class="g-error" id="line-err"></p>
+    </div>
+
+    <div class="g-card">
+      <p class="g-title">Labor, packaging &amp; overhead</p>
+      <div class="g-grid-2">
+        <div class="g-field">
+          <label class="g-label" for="rec-hours">Your hours on this batch</label>
+          <input class="g-input" id="rec-hours" type="number" min="0" step="any" placeholder="1.5" oninput="recField('laborHours', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-rate">Hourly rate ($)</label>
+          <input class="g-input" id="rec-rate" type="number" min="0" step="any" placeholder="20" oninput="recField('laborRate', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-pack">Packaging cost per piece ($)</label>
+          <input class="g-input" id="rec-pack" type="number" min="0" step="any" placeholder="0.25" oninput="recField('packagingPerUnit', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-oh">Overhead % <span class="g-hint" style="display:inline">(electricity, wear, fees)</span></label>
+          <input class="g-input" id="rec-oh" type="number" min="0" step="any" placeholder="10" oninput="recField('overheadPct', num(this.value))">
+        </div>
+        <div class="g-field">
+          <label class="g-label" for="rec-margin">Target profit margin %</label>
+          <input class="g-input" id="rec-margin" type="number" min="0" max="95" step="any" placeholder="50" oninput="recField('targetMarginPct', num(this.value))">
+          <p class="g-hint">Margin = profit ÷ selling price. 50% margin means half the price is profit.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-card" id="summary-card">
+      <p class="g-title">Cost &amp; pricing summary</p>
+      <div class="g-result-grid" id="summary-grid"></div>
+      <div class="viz-row">
+        <div class="cost-chart">
+          <div class="cost-donut-box">
+            <svg class="cost-donut" viewBox="0 0 248 248" role="img" aria-labelledby="cc-t">
+              <title id="cc-t">Batch cost breakdown donut chart</title>
+              <circle cx="124" cy="124" r="95" fill="none" stroke="var(--g-surface-2, #f1f5f9)" stroke-width="34"/>
+              <path id="cc-ing" class="cc-seg" d="" fill="none" stroke="#4f46e5" stroke-width="34"/>
+              <path id="cc-lab" class="cc-seg" d="" fill="none" stroke="#10b981" stroke-width="34"/>
+              <path id="cc-pac" class="cc-seg" d="" fill="none" stroke="#f59e0b" stroke-width="34"/>
+              <path id="cc-ovh" class="cc-seg" d="" fill="none" stroke="#8b5cf6" stroke-width="34"/>
+            </svg>
+            <div class="cc-center"><div class="v" id="cc-total">–</div><div class="l" id="cc-sub">batch cost</div></div>
           </div>
+          <div class="cc-legend" id="cc-legend"></div>
         </div>
-      </div>
-
-      <div class="g-field" id="h-imp">
-        <span class="g-label">Height <span class="g-hint" style="display:inline">feet + inches</span></span>
-        <div class="row2">
-          <input class="g-input" type="number" id="h-ft" inputmode="numeric" min="3" max="8" step="1" value="5" aria-label="Height feet">
-          <input class="g-input" type="number" id="h-in" inputmode="decimal" min="0" max="11.99" step="0.01" value="10" aria-label="Height inches">
-        </div>
-        <div class="g-error" id="h-err">Enter a height between 3 ft and 8 ft.</div>
-      </div>
-      <div class="g-field" id="h-met" hidden>
-        <label class="g-label" for="h-cm">Height <span class="g-hint" style="display:inline">centimeters</span></label>
-        <input class="g-input" type="number" id="h-cm" inputmode="decimal" min="90" max="250" step="0.01" value="178">
-        <div class="g-error" id="h-cm-err">Enter a height between 90 and 250 cm.</div>
-      </div>
-
-      <div class="g-field" id="w-imp">
-        <label class="g-label" for="w-lb">Weight <span class="g-hint" style="display:inline">pounds</span></label>
-        <input class="g-input" type="number" id="w-lb" inputmode="decimal" min="40" max="1100" step="0.01" value="180">
-        <div class="g-error" id="w-err">Enter a weight between 40 and 1100 lb.</div>
-      </div>
-      <div class="g-field" id="w-met" hidden>
-        <label class="g-label" for="w-kg">Weight <span class="g-hint" style="display:inline">kilograms</span></label>
-        <input class="g-input" type="number" id="w-kg" inputmode="decimal" min="18" max="500" step="0.01" value="82">
-        <div class="g-error" id="w-kg-err">Enter a weight between 18 and 500 kg.</div>
-      </div>
-
-      <div class="g-field">
-        <label class="g-label" for="bf">Body fat % <span class="g-hint" style="display:inline">optional — needed for Katch-McArdle</span></label>
-        <input class="g-input" type="number" id="bf" inputmode="decimal" min="1" max="70" step="0.01" placeholder="e.g. 18">
-        <div class="g-error" id="bf-err">Enter a body fat % between 1 and 70, or leave blank.</div>
-      </div>
-
-      <div class="g-field">
-        <label class="g-label" for="activity">Activity level</label>
-        <select class="g-select" id="activity">
-          <option value="1.2">Sedentary — little or no exercise</option>
-          <option value="1.375">Lightly active — light exercise 1–3 days/week</option>
-          <option value="1.55" selected>Moderately active — moderate exercise 3–5 days/week</option>
-          <option value="1.725">Very active — hard exercise 6–7 days/week</option>
-          <option value="1.9">Extra active — very hard exercise + physical job</option>
-        </select>
-      </div>
-
-      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-target"/></svg> Goal</p>
-      <div class="g-field">
-        <div class="seg" role="group" aria-label="Goal">
-          <button type="button" id="g-cut" aria-pressed="true">Cut −20%</button>
-          <button type="button" id="g-main" aria-pressed="false">Maintain</button>
-          <button type="button" id="g-bulk" aria-pressed="false">Lean bulk +10%</button>
-        </div>
-      </div>
-      <div class="g-field">
-        <label class="g-label" for="goal-slider">Fine-tune: <span id="goal-pct-label">−20%</span> <span class="g-hint" style="display:inline">calorie adjustment vs TDEE</span></label>
-        <input type="range" id="goal-slider" min="-30" max="20" step="1" value="-20">
-      </div>
-      <div class="gauge-wrap" aria-hidden="false">
-        <svg class="gauge-svg" viewBox="0 0 300 185" role="img" aria-labelledby="gg-t">
-          <title id="gg-t">Goal adjustment gauge, from 30 percent cut to 20 percent surplus</title>
-          <path d="M45 150 A105 105 0 0 1 255 150" fill="none" stroke="var(--g-border)" stroke-width="22" stroke-linecap="round"/>
-          <path id="gg-arc" d="" fill="none" stroke="#f59e0b" stroke-width="22" stroke-linecap="round"/>
-          <line id="gg-needle" x1="150" y1="150" x2="80" y2="150" stroke="var(--g-text)" stroke-width="5" stroke-linecap="round"/>
-          <circle cx="150" cy="150" r="10" fill="var(--g-text)"/>
-          <text id="gg-num" x="150" y="110" text-anchor="middle" class="gauge-num">−20%</text>
-          <text x="150" y="142" text-anchor="middle" class="gauge-cap" style="letter-spacing:.08em">VS TDEE</text>
-        </svg>
-        <div class="gauge-cap" id="gg-cap">Steady cut</div>
-      </div>
-
-      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-calc"/></svg> Formula</p>
-      <div class="g-field">
-        <div class="seg" role="group" aria-label="BMR formula">
-          <button type="button" id="f-mifflin" aria-pressed="true">Mifflin-St Jeor</button>
-          <button type="button" id="f-hb" aria-pressed="false">Harris-Benedict</button>
-          <button type="button" id="f-katch" aria-pressed="false">Katch-McArdle</button>
-        </div>
-        <p class="g-hint">Mifflin-St Jeor is the default — most validated for modern populations. Katch-McArdle uses lean body mass and needs your body fat %.</p>
-      </div>
-
-      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Macro split</p>
-      <div class="g-field">
-        <div class="seg" role="group" aria-label="Macro split">
-          <button type="button" id="m-bal" aria-pressed="true">Balanced 30/40/30</button>
-          <button type="button" id="m-hp" aria-pressed="false">High protein 35/35/30</button>
-          <button type="button" id="m-lc" aria-pressed="false">Lower carb 30/25/45</button>
-        </div>
-        <p class="g-hint">Protein / carbs / fat as % of calories. Protein &amp; carbs = 4 kcal/g, fat = 9 kcal/g.</p>
-      </div>
-
-      <div class="actions">
-        <button type="button" class="g-btn g-btn-secondary" id="reset-btn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-gear"/></svg> Reset to defaults</button>
-      </div>
-    </section>
-
-    <section class="g-card" aria-labelledby="results-h">
-      <h2 class="g-title" id="results-h"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-sparkles"/></svg> Your numbers</h2>
-      <div id="km-notice" class="notice" hidden>
-        Katch-McArdle needs your body fat % to compute lean body mass — enter it on the left, or pick another formula.
-      </div>
-      <div class="bignums" aria-live="polite" aria-atomic="true">
-        <div class="bignum" data-key="bmr" role="button" tabindex="0" aria-pressed="false" title="Spotlight BMR in the calorie ladder"><div class="v" id="o-bmr">–</div><div class="l">BMR (kcal/day)</div></div>
-        <div class="bignum" data-key="tdee" role="button" tabindex="0" aria-pressed="false" title="Spotlight TDEE in the calorie ladder"><div class="v" id="o-tdee">–</div><div class="l">TDEE (kcal/day)</div></div>
-        <div class="bignum hero" data-key="target" role="button" tabindex="0" aria-pressed="false" title="Spotlight target in the calorie ladder"><div class="v" id="o-target">–</div><div class="l" id="o-target-label">Target (kcal/day)</div></div>
-      </div>
-
-      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Calorie ladder</p>
-      <p class="macro-hint">Tip: click a number or its bar to spotlight it.</p>
-      <div class="ladder" id="ladder">
-        <div class="ladder-row" data-key="bmr" role="button" tabindex="0" aria-pressed="false" title="Spotlight BMR">
-          <span class="lad-label">BMR</span><div class="lad-track"><div class="lad-fill lad-fill-bmr" id="lad-bmr"></div></div><span class="lad-val" id="lad-bmr-v">–</span>
-        </div>
-        <div class="ladder-row" data-key="tdee" role="button" tabindex="0" aria-pressed="false" title="Spotlight TDEE">
-          <span class="lad-label">TDEE</span><div class="lad-track"><div class="lad-fill lad-fill-tdee" id="lad-tdee"></div></div><span class="lad-val" id="lad-tdee-v">–</span>
-        </div>
-        <div class="ladder-row" data-key="target" role="button" tabindex="0" aria-pressed="false" title="Spotlight target">
-          <span class="lad-label">Target</span><div class="lad-track"><div class="lad-fill lad-fill-target" id="lad-target"></div></div><span class="lad-val" id="lad-target-v">–</span>
-        </div>
-      </div>
-      <div class="ladder-readout" id="ladder-readout" aria-live="polite"></div>
-      <div id="pace" class="notice" hidden></div>
-
-      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Daily macros</p>
-      <p class="macro-hint">Tip: click a macro or its slice to spotlight it.</p>
-      <div class="macro" data-macro="p" role="button" tabindex="0" aria-pressed="false" title="Spotlight protein in the chart">
-        <div class="top"><span class="name macro-protein">Protein</span><span class="mvals"><b id="o-p-kcal">–</b> kcal · <span id="o-p-g">–</span> <span class="pct" id="o-p-p"></span></span></div>
-        <div class="bar"><div id="o-p-bar" class="bar-fill bar-protein" style="width:0%"></div></div>
-      </div>
-      <div class="macro" data-macro="c" role="button" tabindex="0" aria-pressed="false" title="Spotlight carbs in the chart">
-        <div class="top"><span class="name macro-carbs">Carbs</span><span class="mvals"><b id="o-c-kcal">–</b> kcal · <span id="o-c-g">–</span> <span class="pct" id="o-c-p"></span></span></div>
-        <div class="bar"><div id="o-c-bar" class="bar-fill bar-carbs" style="width:0%"></div></div>
-      </div>
-      <div class="macro" data-macro="f" role="button" tabindex="0" aria-pressed="false" title="Spotlight fat in the chart">
-        <div class="top"><span class="name macro-fat">Fat</span><span class="mvals"><b id="o-f-kcal">–</b> kcal · <span id="o-f-g">–</span> <span class="pct" id="o-f-p"></span></span></div>
-        <div class="bar"><div id="o-f-bar" class="bar-fill bar-fat" style="width:0%"></div></div>
-      </div>
-
-      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Calorie split</p>
-      <div class="macro-pie-wrap" id="pie-wrap">
-        <div class="macro-pie-box">
-          <svg class="macro-pie" viewBox="0 0 248 248" role="img" aria-labelledby="pie-title">
-            <title id="pie-title">Macro calorie split donut chart</title>
-            <circle class="macro-pie-track" cx="124" cy="124" r="95" fill="none" stroke-width="34"/>
-            <path id="pie-p" class="pie-seg pie-protein" d="" fill="none" stroke-width="34"/>
-            <path id="pie-c" class="pie-seg pie-carbs" d="" fill="none" stroke-width="34"/>
-            <path id="pie-f" class="pie-seg pie-fat" d="" fill="none" stroke-width="34"/>
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 300 185" role="img" aria-labelledby="fc-t">
+            <title id="fc-t">Food cost percent gauge, target at or under 35 percent</title>
+            <path d="M45 150 A105 105 0 0 1 255 150" fill="none" stroke="var(--g-border, #e2e8f0)" stroke-width="22" stroke-linecap="round"/>
+            <path id="fc-arc" d="" fill="none" stroke="#10b981" stroke-width="22" stroke-linecap="round"/>
+            <line id="fc-needle" x1="150" y1="150" x2="45" y2="150" stroke="var(--g-text, #0f172a)" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="150" cy="150" r="10" fill="var(--g-text, #0f172a)"/>
+            <text id="fc-num" x="150" y="110" text-anchor="middle" style="fill:var(--g-text, #0f172a);font-size:30px;font-weight:800">–</text>
+            <text x="150" y="142" text-anchor="middle" style="fill:var(--g-muted, #64748b);font-size:12px;letter-spacing:.08em">FOOD COST %</text>
           </svg>
-          <div class="pie-center"><div class="v" id="pie-total">–</div><div class="l" id="pie-sub">target kcal/day</div></div>
+          <div class="gauge-cap" id="fc-cap">Healthy food cost is ≤ 35%.</div>
         </div>
       </div>
-
+      <p class="g-title" style="margin-top:1rem">Top ingredient costs</p>
+      <div class="drivers" id="drivers"></div>
       <div class="chart-detail" id="chartDetail" aria-live="polite" hidden></div>
-
-      <div class="actions">
-        <button type="button" class="g-btn g-btn-primary" id="print-btn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg> Print / save results</button>
+      <div class="g-math" id="summary-math" style="margin-top:1rem"></div>
+      <div class="g-btn-row no-print" style="margin-top:1rem">
+        <button class="g-btn g-btn-secondary" onclick="window.print()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-download"/></svg> Print / save PDF</button>
+        <button class="g-btn g-btn-ghost" onclick="exportData()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-share"/></svg> Export data</button>
+        <button class="g-btn g-btn-ghost" onclick="document.getElementById('import-file').click()"><svg class="g-icon g-icon-sm" aria-hidden="true"><use href="#g-i-upload"/></svg> Import data</button>
+        <input type="file" id="import-file" accept="application/json" hidden onchange="importData(this)">
       </div>
-    </section>
+      <p class="g-error" id="rec-err"></p>
+    </div>
   </div>
+  <div class="g-empty" id="rec-empty" hidden>
+    <p class="g-title">No recipes yet</p>
+    <p class="g-desc">Create your first recipe, add ingredient lines from your library, and see the true cost per piece.</p>
+    <div class="g-btn-row"><button class="g-btn g-btn-primary" onclick="newRecipe()">New recipe</button></div>
+  </div>
+</section>
 
-  <section class="g-card work" id="work-card" aria-labelledby="work-h">
-    <h2 class="g-title" id="work-h"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-list"/></svg> Show your work</h2>
-    <p class="g-caption" style="margin-bottom:8px">No black box. Step 1 shows the exact substituted values; later steps print rounded headlines — totals are computed at full precision.</p>
-    <div id="work-steps"></div>
-  </section>
+<a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
+</a>
 
-  <p class="disclaimer">Estimates only — formulas are population averages and can't account for medical conditions, medications, or individual variation. For weight loss, muscle gain, or any health concern, talk to a doctor or registered dietitian.</p>
-
-  <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-    <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
-  </a>
-  <footer class="g-footer">
-    MacroTrack — free offline TDEE &amp; macro calculator. No trackers, no ads, no account.
-    <span class="g-fine"><a href="https://glenerds.gumroad.com">by Glenerds</a></span>
-  </footer>
+<footer class="g-footer">
+  Free offline tool <a href="https://glenerds.gumroad.com">by Glenerds</a> — no signup, no tracking, your data never leaves this device.
+</footer>
 </div>
 <script>
-(function () {
-  'use strict';
-  var LS_KEY = 'macrotrack-state-v1';
-  var $ = function (id) { return document.getElementById(id); };
+"use strict";
+/* ================= RecipeCost — offline recipe costing for home bakers ================= */
+var STORE_KEY = 'recipecost.v1';
 
-  var DEFAULTS = {
-    units: 'imp', age: 30, sex: 'm',
-    weightKg: 81.65, heightCm: 177.8, bodyFat: null,
-    activity: 1.55, goalPct: -20, formula: 'mifflin', macro: 'bal'
-  };
+/* ---------- units ---------- */
+var MASS = { g: 1, kg: 1000, oz: 28.349523125, lb: 453.59237 };
+var VOL  = { ml: 1, l: 1000, tsp: 4.92892159375, tbsp: 14.78676478125, cup: 236.5882365 };
+var EACH = { each: 1, pc: 1, pcs: 1, piece: 1, pieces: 1 };
+var UNIT_GROUPS = [
+  { label: 'Weight', units: ['g', 'kg', 'oz', 'lb'] },
+  { label: 'Volume', units: ['ml', 'l', 'tsp', 'tbsp', 'cup'] },
+  { label: 'Count',  units: ['each'] }
+];
+function unitDim(u) {
+  u = String(u).toLowerCase();
+  if (Object.prototype.hasOwnProperty.call(MASS, u)) return 'mass';
+  if (Object.prototype.hasOwnProperty.call(VOL, u)) return 'vol';
+  return 'each';
+}
+function toBase(qty, unit) { /* grams | ml | count */
+  var u = String(unit).toLowerCase(), d = unitDim(u);
+  if (d === 'mass') return qty * MASS[u];
+  if (d === 'vol') return qty * VOL[u];
+  return qty;
+}
+function fmtMoney(n) {
+  if (!isFinite(n)) return '—';
+  return (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2);
+}
+function num(v) { var n = parseFloat(v); return isFinite(n) ? n : 0; }
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function uid() { return 'x' + Math.random().toString(36).slice(2, 10); }
 
-  function loadState() {
-    var s = {};
-    for (var k in DEFAULTS) s[k] = DEFAULTS[k];
-    try {
-      var raw = localStorage.getItem(LS_KEY);
-      if (raw) {
-        var p = JSON.parse(raw);
-        if (p && typeof p === 'object') {
-          if (p.units === 'imp' || p.units === 'met') s.units = p.units;
-          if (typeof p.age === 'number' && p.age >= 10 && p.age <= 120) s.age = p.age;
-          if (p.sex === 'm' || p.sex === 'f') s.sex = p.sex;
-          if (typeof p.weightKg === 'number' && p.weightKg > 0 && p.weightKg < 1000) s.weightKg = p.weightKg;
-          if (typeof p.heightCm === 'number' && p.heightCm > 0 && p.heightCm < 400) s.heightCm = p.heightCm;
-          if (p.bodyFat === null || (typeof p.bodyFat === 'number' && p.bodyFat >= 1 && p.bodyFat <= 70)) s.bodyFat = p.bodyFat;
-          if (p.activity === 1.2 || p.activity === 1.375 || p.activity === 1.55 || p.activity === 1.725 || p.activity === 1.9) s.activity = p.activity;
-          if (typeof p.goalPct === 'number' && p.goalPct >= -30 && p.goalPct <= 20) s.goalPct = Math.round(p.goalPct);
-          if (p.formula === 'mifflin' || p.formula === 'hb' || p.formula === 'katch') s.formula = p.formula;
-          if (p.macro === 'bal' || p.macro === 'hp' || p.macro === 'lc') s.macro = p.macro;
-        }
-      }
-    } catch (e) { /* corrupted storage: fall back to defaults */ }
-    return s;
-  }
-  var S = loadState();
-  var sampleOn = false, sampleSnap = null;
-  function save() {
-    if (sampleOn) return; /* sample data is transient — never persisted */
-    try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {}
-  }
-
-  // ---- theme (shared glenerds-theme key) ----
-  var themeBtn = $('themeToggle');
-  function paintTheme() {
-    var t = document.documentElement.getAttribute('data-theme') || 'light';
-    var dark = t === 'dark';
-    var l = dark ? 'Switch to light mode' : 'Switch to dark mode';
-    themeBtn.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19"; /* header spec: emoji shows the mode you GET */
-    themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
-    themeBtn.setAttribute('aria-label', l);
-    themeBtn.title = l;
-    themeBtn.setAttribute('data-mode', dark ? 'dark' : 'light');
-  }
-  themeBtn.addEventListener('click', function () { gToggleTheme(); paintTheme(); Sound.toggleTheme(); Sound.click(); });
-  paintTheme();
-
-  // ---- sample data toggle (transient: snapshot user data, never persisted) ----
-  function paintSample() {
-    var b = $('sampleToggle'), l = sampleOn ? 'Clear sample data' : 'Try sample data';
-    b.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
-    b.setAttribute('aria-label', l);
-    b.title = l;
-  }
-  /* Transient (uncommitted) input values live only in the DOM, not in S — snapshot
-     them so sample-off restores the exact pre-sample form state (values, checks,
-     and derived UI such as validation hints). */
-  function snapInputs() {
-    var els = document.querySelectorAll('input,select,textarea'), out = [];
-    for (var i = 0; i < els.length; i++) out.push([els[i].value, els[i].checked]);
-    return out;
-  }
-  function restoreInputs(snap) {
-    var els = document.querySelectorAll('input,select,textarea');
-    for (var i = 0; i < snap.length && i < els.length; i++) {
-      var e = els[i], s = snap[i];
-      if (e.type === 'checkbox' || e.type === 'radio') {
-        if (e.checked !== s[1]) { e.checked = s[1]; e.dispatchEvent(new Event('change', { bubbles: true })); }
-      } else if (e.value !== s[0]) {
-        e.value = s[0];
-        e.dispatchEvent(new Event('input', { bubbles: true }));
-        e.dispatchEvent(new Event('change', { bubbles: true }));
-      }
+/* ---------- state ---------- */
+var state = { ingredients: [], recipes: [] };
+var sampleOn = false, sampleSnap = null;
+function load() {
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      var d = JSON.parse(raw);
+      if (d && Array.isArray(d.ingredients) && Array.isArray(d.recipes)) state = d;
     }
-  }
-  var sampleDom = null;
-  function setSample(on) {
-    if (on && !sampleOn) {
-      sampleSnap = JSON.stringify(S);
-      sampleDom = snapInputs();
-      sampleOn = true;
-      S.units = 'imp'; S.age = 34; S.sex = 'f';
-      S.weightKg = 68.04; S.heightCm = 165.1; S.bodyFat = 24;
-      S.activity = 1.725; S.goalPct = -15;
-      S.formula = 'mifflin'; S.macro = 'hp';
-      syncInputs(); paintUnits(); paintGoalLabel(); reseg(); compute();
-    } else if (!on && sampleOn) {
-      sampleOn = false;
-      try { var s = JSON.parse(sampleSnap); if (s && typeof s === 'object') S = s; } catch (e) {}
-      sampleSnap = null;
-      syncInputs(); paintUnits(); paintGoalLabel(); reseg(); compute();
-      /* re-apply transient pre-sample input values (with events, so validation
-         hints and derived UI return to their exact pre-sample state) */
-      if (sampleDom) { restoreInputs(sampleDom); sampleDom = null; }
+  } catch (e) { /* corrupted storage -> start fresh */ state = { ingredients: [], recipes: [] }; }
+  sanitizeState();
+  /* First run starts EMPTY — the flask toggle shows transient sample data instead of persisted demo. */
+}
+function save() {
+  if (sampleOn) return; /* sample data is transient — never persisted */
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+/* Harden against hand-edited / corrupted data (import file or localStorage):
+   guarantees the shapes recipeTotals/renderLines/renderIngredients assume. */
+function sanitizeState() {
+  if (!Array.isArray(state.ingredients)) state.ingredients = [];
+  if (!Array.isArray(state.recipes)) state.recipes = [];
+  state.ingredients = state.ingredients.filter(function (i) { return i && typeof i === 'object'; });
+  state.recipes = state.recipes.filter(function (r) { return r && typeof r === 'object'; });
+  var NUMS = ['yieldQty', 'laborHours', 'laborRate', 'packagingPerUnit', 'overheadPct', 'targetMarginPct'];
+  /* Imported ids are interpolated into HTML/attribute sinks on render, so only
+     uid()-safe ids survive: anything else is regenerated and references remapped.
+     Units are whitelisted so crafted strings can't slip into the cost math. */
+  var ID_OK = /^[A-Za-z0-9_-]+$/;
+  var UNIT_OK = Object.keys(MASS).concat(Object.keys(VOL)).concat(Object.keys(EACH));
+  function goodUnit(u) { u = String(u).toLowerCase(); return UNIT_OK.indexOf(u) !== -1 ? u : 'each'; }
+  var idMap = {};
+  state.ingredients.forEach(function (i) {
+    if (typeof i.id !== 'string' || !ID_OK.test(i.id)) {
+      var old = i.id; i.id = uid(); if (old != null) idMap[String(old)] = i.id;
     }
-    paintSample();
+    i.pkgQty = num(i.pkgQty); i.pkgPrice = num(i.pkgPrice);
+    if (i.pkgQty < 0) i.pkgQty = 0; if (i.pkgPrice < 0) i.pkgPrice = 0;
+    i.pkgUnit = goodUnit(i.pkgUnit);
+  });
+  state.recipes.forEach(function (r) {
+    if (typeof r.id !== 'string' || !ID_OK.test(r.id)) r.id = uid();
+    if (!Array.isArray(r.lines)) r.lines = [];
+    NUMS.forEach(function (f) { r[f] = Math.max(0, num(r[f])); });
+    r.lines = r.lines.filter(function (ln) { return ln && typeof ln === 'object'; });
+    r.lines.forEach(function (ln) {
+      ln.qty = Math.max(0, num(ln.qty));
+      if (typeof ln.ingId === 'string' && idMap[ln.ingId]) ln.ingId = idMap[ln.ingId];
+      ln.unit = goodUnit(ln.unit);
+    });
+  });
+}
+/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
+function paintSample() {
+  var b = document.getElementById('sampleToggle'); if (!b) return;
+  var l = sampleOn ? 'Clear sample data' : 'Try sample data';
+  b.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+  b.setAttribute('aria-label', l); b.title = l;
+}
+function fillSample() {
+  var flour = uid(), sugar = uid(), butter = uid(), egg = uid(), choc = uid(), salt = uid();
+  state.ingredients = [
+    { id: flour, name: 'All-purpose flour', pkgQty: 5000, pkgUnit: 'g', pkgPrice: 4.99, gPerCup: 120 },
+    { id: sugar, name: 'Granulated sugar', pkgQty: 4000, pkgUnit: 'g', pkgPrice: 3.89, gPerCup: 200 },
+    { id: butter, name: 'Unsalted butter', pkgQty: 16, pkgUnit: 'oz', pkgPrice: 4.49, gPerCup: 227 },
+    { id: egg, name: 'Large eggs', pkgQty: 12, pkgUnit: 'each', pkgPrice: 3.29, gPerCup: 0, gPerEach: 50 },
+    { id: choc, name: 'Chocolate chips', pkgQty: 2000, pkgUnit: 'g', pkgPrice: 6.49, gPerCup: 170 },
+    { id: salt, name: 'Fine sea salt', pkgQty: 737, pkgUnit: 'g', pkgPrice: 2.79, gPerCup: 288 }
+  ];
+  var r = blankRecipe();
+  r.name = 'Chocolate Chip Cookies'; r.yieldQty = 24; r.yieldUnit = 'cookies';
+  r.laborHours = 0.75; r.laborRate = 18; r.packagingPerUnit = 0.25;
+  r.overheadPct = 15; r.targetMarginPct = 60;
+  r.lines = [
+    { ingId: flour, qty: 360, unit: 'g' },
+    { ingId: sugar, qty: 200, unit: 'g' },
+    { ingId: butter, qty: 226, unit: 'g' },
+    { ingId: egg, qty: 2, unit: 'each' },
+    { ingId: choc, qty: 340, unit: 'g' },
+    { ingId: salt, qty: 5, unit: 'g' }
+  ];
+  state.recipes = [r];
+  currentRecipeId = r.id;
+  renderIngredients(); renderRecipeSelect(); renderRecipe();
+  showTab('rec');
+}
+/* transient (uncommitted) form values live only in the DOM — snapshot by id so
+   sample-off restores the exact pre-sample form state even across re-renders */
+function snapForm() {
+  var o = {}, els = document.querySelectorAll('input[id],select[id],textarea[id]');
+  for (var i = 0; i < els.length; i++) { var e = els[i];
+    o[e.id] = (e.type === 'checkbox' || e.type === 'radio') ? (e.checked ? '1' : '0') : e.value; }
+  return o;
+}
+function restoreForm(snap) {
+  if (!snap) return;
+  for (var id in snap) { if (!Object.prototype.hasOwnProperty.call(snap, id)) continue;
+    var e = document.getElementById(id); if (!e) continue; var v = snap[id];
+    if (e.type === 'checkbox' || e.type === 'radio') e.checked = (v === '1'); else e.value = v; }
+}
+function setSample(on) {
+  if (on && !sampleOn) {
+    sampleSnap = JSON.stringify({ state: state, currentRecipeId: currentRecipeId,
+      tab: document.getElementById('tab-ing').getAttribute('aria-selected') === 'true' ? 'ing' : 'rec',
+      form: snapForm() });
+    sampleOn = true;
+    fillSample();
+  } else if (!on && sampleOn) {
+    sampleOn = false;
+    try { var s = JSON.parse(sampleSnap);
+      if (s && s.state) { state = s.state; currentRecipeId = s.currentRecipeId; } } catch (e) {}
+    sampleSnap = null;
+    renderIngredients(); renderRecipeSelect(); renderRecipe();
+    try { restoreForm(s.form); showTab(s.tab === 'rec' ? 'rec' : 'ing'); } catch (e) {}
   }
-
-  // ---- subtle sounds (Web Audio oscillator, no files, offline) ----
-  var Sound = (function () {
-    var K = 'macrotrack.sound', on = true, ctx = null;
-    try { if (window.localStorage.getItem(K) === 'off') on = false; } catch (e) {}
-    function ac() { try {
-      if (!ctx) { var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; ctx = new AC(); }
-      return ctx; } catch (e) { return null; } }
-    function tone(freq, dur, type, vol, delay) {
-      var c = ac(); if (!c) return;
-      function play() { try {
-        var t = c.currentTime + (delay || 0), o = c.createOscillator(), g = c.createGain();
-        o.type = type || 'sine'; o.frequency.value = freq;
-        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-        o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.05); } catch (e) {} }
-      if (c.state === 'suspended') { c.resume().then(play, play); } else { play(); }
-    }
-    return {
-      isOn: function () { return on; },
-      toggle: function () { on = !on; try { window.localStorage.setItem(K, on ? 'on' : 'off'); } catch (e) {} return on; },
-      click: function () { if (on) tone(520, 0.06, 'sine', 0.045); },
-      select: function () { if (on) { tone(660, 0.07, 'sine', 0.055); tone(880, 0.09, 'sine', 0.045, 0.06); } },
-      success: function () { if (on) { tone(660, 0.09, 'sine', 0.06); tone(990, 0.12, 'sine', 0.05, 0.08); } },
-      error: function () { if (on) tone(170, 0.16, 'sawtooth', 0.045); },
-      toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
-    };
-  })();
-  (function () {
-    var btn = $('soundToggle'); if (!btn) return;
-    function paint() { var on = Sound.isOn();
-      btn.innerHTML = on ? '&#128266;' : '&#128263;';
-      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
-      btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
-      btn.setAttribute('data-sound', on ? 'on' : 'muted'); }
-    btn.addEventListener('click', function () { Sound.toggle(); paint(); Sound.click(); });
-    paint();
-  })();
-  $('sampleToggle').addEventListener('click', function () { setSample(!sampleOn); Sound.click(); });
   paintSample();
+}
 
-  // ---- segmented control helper ----
-  function seg(ids, get, set) {
-    ids.forEach(function (id) {
-      var el = $(id);
-      el.setAttribute('aria-pressed', get() === id ? 'true' : 'false');
-      el.addEventListener('click', function () {
-        set(id);
-        ids.forEach(function (id2) { $(id2).setAttribute('aria-pressed', id2 === id ? 'true' : 'false'); });
-        save(); compute(); Sound.click();
-      });
-    });
+/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
+var Sound = (function () {
+  var K = 'recipecost.sound', on = true, ctx = null;
+  try { if (window.localStorage.getItem(K) === 'off') on = false; } catch (e) {}
+  function ac() { try {
+    if (!ctx) { var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; ctx = new AC(); }
+    return ctx; } catch (e) { return null; } }
+  function tone(freq, dur, type, vol, delay) {
+    var c = ac(); if (!c) return;
+    function play() { try {
+      var t = c.currentTime + (delay || 0), o = c.createOscillator(), g = c.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.05); } catch (e) {} }
+    if (c.state === 'suspended') { c.resume().then(play, play); } else { play(); }
   }
-  seg(['u-imp', 'u-met'], function () { return S.units === 'imp' ? 'u-imp' : 'u-met'; }, function (id) {
-    S.units = id === 'u-imp' ? 'imp' : 'met';
-    paintUnits();
-  });
-  seg(['s-m', 's-f'], function () { return S.sex === 'm' ? 's-m' : 's-f'; }, function (id) {
-    S.sex = id === 's-m' ? 'm' : 'f';
-  });
-  seg(['g-cut', 'g-main', 'g-bulk'], function () {
-    return S.goalPct === -20 ? 'g-cut' : (S.goalPct === 0 ? 'g-main' : (S.goalPct === 10 ? 'g-bulk' : null));
-  }, function (id) {
-    S.goalPct = id === 'g-cut' ? -20 : (id === 'g-main' ? 0 : 10);
-    $('goal-slider').value = S.goalPct;
-    paintGoalLabel();
-  });
-  seg(['f-mifflin', 'f-hb', 'f-katch'], function () { return 'f-' + S.formula; }, function (id) {
-    S.formula = id.slice(2);
-  });
-  seg(['m-bal', 'm-hp', 'm-lc'], function () { return 'm-' + S.macro; }, function (id) {
-    S.macro = id.slice(2);
-  });
-
-  // ---- units ----
-  var LB = 0.45359237, IN = 2.54;
-  function paintUnits() {
-    var imp = S.units === 'imp';
-    $('h-imp').hidden = !imp; $('w-imp').hidden = !imp;
-    $('h-met').hidden = imp; $('w-met').hidden = imp;
-    if (imp) {
-      var totalIn = S.heightCm / IN;
-      var ft = Math.floor(totalIn / 12);
-      var inch = Math.round((totalIn - ft * 12) * 10) / 10;
-      if (inch === 12) { ft += 1; inch = 0; }
-      $('h-ft').value = ft; $('h-in').value = inch;
-      $('w-lb').value = Math.round(S.weightKg / LB * 100) / 100;
-    } else {
-      $('h-cm').value = Math.round(S.heightCm * 100) / 100;
-      $('w-kg').value = Math.round(S.weightKg * 100) / 100;
-    }
-  }
-
-  function readInputs() {
-    var ok = true;
-    var errFailed = {}; // one shared error element (e.g. h-err) stays shown until ALL its fields pass
-    function num(id, errId, min, max, allowBlank) {
-      var el = $(id), raw = el.value.trim();
-      var err = $(errId);
-      if (raw === '' && allowBlank) { err.classList.remove('show'); return null; }
-      var v = parseFloat(raw);
-      if (!isFinite(v) || v < min || v > max) { err.classList.add('show'); errFailed[errId] = true; ok = false; return NaN; }
-      if (!errFailed[errId]) err.classList.remove('show');
-      return v;
-    }
-    var age = num('age', 'age-err', 10, 120);
-    var bf = num('bf', 'bf-err', 1, 70, true);
-    var hCm, wKg;
-    if (S.units === 'imp') {
-      var ft = num('h-ft', 'h-err', 3, 8), inch = num('h-in', 'h-err', 0, 11.99);
-      var lb = num('w-lb', 'w-err', 40, 1100);
-      if (isFinite(ft) && isFinite(inch)) hCm = Math.round((ft * 12 + inch) * IN * 100) / 100;
-      else { hCm = NaN; }
-      if (isFinite(ft) && isFinite(inch) && (ft * 12 + inch < 36 || ft * 12 + inch > 96)) { $('h-err').classList.add('show'); ok = false; }
-      wKg = isFinite(lb) ? Math.round(lb * LB * 100) / 100 : NaN;
-    } else {
-      hCm = num('h-cm', 'h-cm-err', 90, 250);
-      wKg = num('w-kg', 'w-kg-err', 18, 500);
-      if (isFinite(hCm)) hCm = Math.round(hCm * 100) / 100;
-      if (isFinite(wKg)) wKg = Math.round(wKg * 100) / 100;
-    }
-    return { ok: ok, age: age, bodyFat: bf, heightCm: hCm, weightKg: wKg };
-  }
-
-  function persistFromInputs(r, adoptHW) {
-    if (!r.ok) return;
-    S.age = r.age;
-    // Adopt height/weight into canonical state ONLY from fields the user just
-    // edited. Re-deriving from the rounded display fields on every input (e.g.
-    // after a unit toggle) silently drifted canonical state: 180 cm -> 5 ft
-    // 10.9 in -> (60+10.9)*2.54 = 180.09 cm, moving BMR by ~1 kcal.
-    if (adoptHW) { S.heightCm = r.heightCm; S.weightKg = r.weightKg; }
-    S.bodyFat = r.bodyFat;
-    S.activity = parseFloat($('activity').value);
-    S.goalPct = parseInt($('goal-slider').value, 10);
-    save();
-  }
-
-  $('activity').addEventListener('change', function () { persistFromInputs(readInputs(), false); compute(); Sound.click(); });
-  $('goal-slider').addEventListener('input', function () {
-    S.goalPct = parseInt($('goal-slider').value, 10);
-    // keep preset buttons in sync when the slider matches one
-    [['g-cut', -20], ['g-main', 0], ['g-bulk', 10]].forEach(function (p) {
-      $(p[0]).setAttribute('aria-pressed', S.goalPct === p[1] ? 'true' : 'false');
-    });
-    paintGoalLabel(); save(); compute();
-  });
-  function paintGoalLabel() {
-    var p = S.goalPct;
-    $('goal-pct-label').textContent = (p > 0 ? '+' : '') + p + '%';
-    var lbl = p < 0 ? 'Target (cut ' + p + '%)' : (p > 0 ? 'Target (bulk +' + p + '%)' : 'Target (maintain)');
-    $('o-target-label').textContent = lbl + ' (kcal/day)';
-    paintGauge(p);
-  }
-  // Goal gauge: semicircular gauge over the -30%..+20% slider range
-  function paintGauge(p) {
-    var f = (p + 30) / 50;
-    if (f < 0) f = 0; if (f > 1) f = 1;
-    var th = (180 - f * 180) * Math.PI / 180;
-    var ax = 150 + 105 * Math.cos(th), ay = 150 - 105 * Math.sin(th);
-    var arc = $('gg-arc');
-    if (!arc) return;
-    arc.setAttribute('d', 'M45 150 A105 105 0 0 1 ' + ax.toFixed(1) + ' ' + ay.toFixed(1));
-    arc.setAttribute('stroke', p < 0 ? '#f59e0b' : (p > 0 ? '#0ea5e9' : '#10b981'));
-    var nd = $('gg-needle');
-    nd.setAttribute('x2', (150 + 78 * Math.cos(th)).toFixed(1));
-    nd.setAttribute('y2', (150 - 78 * Math.sin(th)).toFixed(1));
-    $('gg-num').textContent = (p > 0 ? '+' : '') + p + '%';
-    $('gg-cap').textContent = p <= -25 ? 'Deep cut — aggressive deficit' :
-      (p < 0 ? (p <= -10 ? 'Steady cut' : 'Gentle cut') :
-      (p === 0 ? 'Maintenance' : (p >= 15 ? 'Aggressive bulk' : 'Lean bulk')));
-  }
-
-  ['age', 'h-ft', 'h-in', 'h-cm', 'w-lb', 'w-kg', 'bf'].forEach(function (id) {
-    $(id).addEventListener('input', function () {
-      var r = readInputs();
-      var isHW = (id === 'h-ft' || id === 'h-in' || id === 'h-cm' || id === 'w-lb' || id === 'w-kg');
-      persistFromInputs(r, isHW);
-      compute();
-    });
-  });
-
-  $('print-btn').addEventListener('click', function () { window.print(); });
-  $('reset-btn').addEventListener('click', function () {
-    if (sampleOn) { setSample(false); Sound.click(); return; } /* reset during sample = restore user data */
-    S = JSON.parse(JSON.stringify(DEFAULTS));
-    try { localStorage.removeItem(LS_KEY); } catch (e) {}
-    syncInputs(); paintUnits(); paintGoalLabel(); reseg(); save(); compute(); Sound.success();
-  });
-  function reseg() {
-    var map = {
-      'u-imp': S.units === 'imp', 'u-met': S.units === 'met',
-      's-m': S.sex === 'm', 's-f': S.sex === 'f',
-      'g-cut': S.goalPct === -20, 'g-main': S.goalPct === 0, 'g-bulk': S.goalPct === 10,
-      'f-mifflin': S.formula === 'mifflin', 'f-hb': S.formula === 'hb', 'f-katch': S.formula === 'katch',
-      'm-bal': S.macro === 'bal', 'm-hp': S.macro === 'hp', 'm-lc': S.macro === 'lc'
-    };
-    for (var id in map) $(id).setAttribute('aria-pressed', map[id] ? 'true' : 'false');
-    $('activity').value = String(S.activity);
-    $('goal-slider').value = S.goalPct;
-  }
-  function syncInputs() {
-    $('age').value = S.age;
-    $('bf').value = S.bodyFat === null ? '' : S.bodyFat;
-    $('activity').value = String(S.activity);
-    $('goal-slider').value = S.goalPct;
-    reseg();
-  }
-
-  // ---- formulas (public math) ----
-  var FORMULAS = {
-    mifflin: { name: 'Mifflin-St Jeor (1990)' },
-    hb: { name: 'Harris-Benedict, revised (1984)' },
-    katch: { name: 'Katch-McArdle (2006)' }
+  return {
+    isOn: function () { return on; },
+    toggle: function () { on = !on; try { window.localStorage.setItem(K, on ? 'on' : 'off'); } catch (e) {} return on; },
+    click: function () { if (on) tone(520, 0.06, 'sine', 0.045); },
+    select: function () { if (on) { tone(660, 0.07, 'sine', 0.055); tone(880, 0.09, 'sine', 0.045, 0.06); } },
+    success: function () { if (on) { tone(660, 0.09, 'sine', 0.06); tone(990, 0.12, 'sine', 0.05, 0.08); } },
+    error: function () { if (on) tone(170, 0.16, 'sawtooth', 0.045); },
+    toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
   };
-  var MACROS = {
-    bal: { p: 30, c: 40, f: 30, label: 'Balanced 30/40/30' },
-    hp: { p: 35, c: 35, f: 30, label: 'High protein 35/35/30' },
-    lc: { p: 30, c: 25, f: 45, label: 'Lower carb 30/25/45' }
-  };
-  var ACT_LABELS = { '1.2': 'Sedentary', '1.375': 'Lightly active', '1.55': 'Moderately active', '1.725': 'Very active', '1.9': 'Extra active' };
+})();
+function paintSoundBtn(btn) {
+  var on = Sound.isOn();
+  btn.innerHTML = on ? '&#128266;' : '&#128263;';
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
+  btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
+  btn.setAttribute('data-sound', on ? 'on' : 'muted');
+}
+function toggleSound(btn) {
+  Sound.toggle();
+  paintSoundBtn(btn);
+  Sound.click();
+}
 
-  function r2(x) { return Math.round(x * 100) / 100; }
-  function fmt(x) { return Math.round(x).toLocaleString('en-US'); }
+/* ---------- theme icon paint ---------- */
+function paintTheme() {
+  var t = document.documentElement.getAttribute('data-theme') || 'light', dark = t === 'dark';
+  var b = document.getElementById('themeToggle'); if (!b) return;
+  var l = dark ? 'Switch to light mode' : 'Switch to dark mode';
+  b.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19"; /* header spec: emoji shows the mode you GET */
+  b.setAttribute('aria-pressed', dark ? 'true' : 'false');
+  b.setAttribute('aria-label', l); b.title = l;
+  b.setAttribute('data-mode', dark ? 'dark' : 'light');
+}
 
-  function bmrMifflin(w, h, a, sex) {
-    // w kg, h cm, a years
-    return sex === 'm'
-      ? { v: 10 * w + 6.25 * h - 5 * a + 5, expr: '10 × ' + r2(w) + ' + 6.25 × ' + r2(h) + ' − 5 × ' + a + ' + 5' }
-      : { v: 10 * w + 6.25 * h - 5 * a - 161, expr: '10 × ' + r2(w) + ' + 6.25 × ' + r2(h) + ' − 5 × ' + a + ' − 161' };
+/* ---------- ingredient costing ---------- */
+function pkgBaseQty(ing) { return toBase(ing.pkgQty, ing.pkgUnit); }
+function unitCost(ing) { /* cost per gram / ml / each */
+  var b = pkgBaseQty(ing);
+  if (!(b > 0)) return 0;
+  return ing.pkgPrice / b;
+}
+function unitCostLabel(ing) {
+  var d = unitDim(ing.pkgUnit);
+  return d === 'mass' ? 'per gram' : d === 'vol' ? 'per ml' : 'each';
+}
+/* cost of qty+unit of ingredient ing. Returns {cost, approx} */
+function lineCost(ing, qty, unit) {
+  if (!(qty > 0)) return { cost: 0, approx: false };
+  var pd = unitDim(ing.pkgUnit), ld = unitDim(unit);
+  var uc = unitCost(ing);
+  if (pd === ld) return { cost: toBase(qty, unit) / pkgBaseQty(ing) * ing.pkgPrice, approx: false };
+  var gpc = num(ing.gPerCup), gpe = num(ing.gPerEach);
+  /* count <-> weight via grams-per-piece */
+  if (pd === 'each' && ld === 'mass') {
+    if (!(gpe > 0)) return { cost: 0, approx: false, err: 'needs grams-per-piece' };
+    return { cost: toBase(qty, unit) * (ing.pkgPrice / (ing.pkgQty * gpe)), approx: false };
   }
-  function bmrHB(w, h, a, sex) {
-    return sex === 'm'
-      ? { v: 88.362 + 13.397 * w + 4.799 * h - 5.677 * a,
-          expr: '88.362 + 13.397 × ' + r2(w) + ' + 4.799 × ' + r2(h) + ' − 5.677 × ' + a }
-      : { v: 447.593 + 9.247 * w + 3.098 * h - 4.330 * a,
-          expr: '447.593 + 9.247 × ' + r2(w) + ' + 3.098 × ' + r2(h) + ' − 4.330 × ' + a };
+  if (pd === 'mass' && ld === 'each') {
+    if (!(gpe > 0)) return { cost: 0, approx: false, err: 'needs grams-per-piece' };
+    return { cost: qty * gpe * uc, approx: false };
   }
-  function bmrKatch(w, bf) {
-    var lbm = w * (1 - bf / 100);
-    return { v: 370 + 21.6 * lbm,
-      expr: '370 + 21.6 × ' + r2(lbm),
-      extra: 'Lean body mass = ' + r2(w) + ' kg × (1 − ' + bf + '%) = ' + r2(lbm) + ' kg' };
+  if (pd === 'each' || ld === 'each') return { cost: 0, approx: false, err: 'cannot convert' };
+  /* mass <-> volume via grams-per-cup */
+  var cups;
+  if (ld === 'vol') cups = toBase(qty, unit) / VOL.cup;
+  else {
+    if (!(gpc > 0)) return { cost: 0, approx: false, err: 'needs grams-per-cup' };
+    cups = toBase(qty, unit) / gpc;
   }
+  var approx = !(gpc > 0);
+  if (pd === 'mass') return { cost: cups * (gpc > 0 ? gpc : VOL.cup) * uc, approx: approx };
+  return { cost: cups * VOL.cup * uc, approx: approx };
+}
+function lineCostHTML(ing, ln) {
+  var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+  if (lc.err) return '<span class="approx-flag" title="' + esc(lc.err) + ' — add it on the Ingredients tab">needs conversion</span>';
+  return fmtMoney(lc.cost) + (lc.approx ? ' <span class="approx-flag" title="Used water-density fallback — add grams-per-cup for accuracy">≈</span>' : '');
+}
 
-  // ---- macro calorie-split donut chart (arc paths so a slice can break out) ----
-  var PIE_R = 95, PIE_CX = 124, PIE_CY = 124;
-  var pieSelected = null; // 'p' | 'c' | 'f' | null
-  var pieState = { p: 0, c: 0, f: 0, target: NaN };
-  function piePolar(deg) {
-    var rad = deg * Math.PI / 180;
-    return [PIE_CX + PIE_R * Math.cos(rad), PIE_CY + PIE_R * Math.sin(rad)];
-  }
-  function pieSegPath(frac, startDeg, gapDeg) {
-    if (!(frac > 0)) return '';
-    var a0 = startDeg + gapDeg / 2, a1 = startDeg + frac * 360 - gapDeg / 2;
-    if (frac >= 0.9999) { // full ring: two arcs
-      var p1 = piePolar(-90), p2 = piePolar(90);
-      return 'M ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) +
-        ' A ' + PIE_R + ' ' + PIE_R + ' 0 1 1 ' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2) +
-        ' A ' + PIE_R + ' ' + PIE_R + ' 0 1 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
-    }
-    var s = piePolar(a0), e = piePolar(a1);
-    return 'M ' + s[0].toFixed(2) + ' ' + s[1].toFixed(2) +
-      ' A ' + PIE_R + ' ' + PIE_R + ' 0 ' + ((a1 - a0) > 180 ? 1 : 0) + ' 1 ' +
-      e[0].toFixed(2) + ' ' + e[1].toFixed(2);
-  }
-  function paintPie(pp, cp, fp, target) {
-    pieState = { p: pp, c: cp, f: fp, target: target };
-    var gapDeg = 360 * 0.012; // small visual gap between segments
-    var off = -90; // start at top, like the old rotate(-90)
-    [['pie-p', 'p', pp], ['pie-c', 'c', cp], ['pie-f', 'f', fp]].forEach(function (t) {
-      var el = $(t[0]), key = t[1], frac = t[2] / 100;
-      el.setAttribute('d', pieSegPath(frac, off, gapDeg));
-      var mid = off + frac * 180;
-      if (pieSelected === key && frac > 0) {
-        var rad = mid * Math.PI / 180, dist = 10;
-        el.style.transform = 'translate(' + (Math.cos(rad) * dist).toFixed(1) + 'px,' + (Math.sin(rad) * dist).toFixed(1) + 'px)';
-        el.style.opacity = '1';
-      } else {
-        el.style.transform = '';
-        el.style.opacity = pieSelected ? '0.4' : '1';
-      }
-      off += frac * 360;
+/* ---------- tabs ---------- */
+function showTab(which) {
+  var ing = which === 'ing';
+  document.getElementById('panel-ing').hidden = !ing;
+  document.getElementById('panel-rec').hidden = ing;
+  document.getElementById('tab-ing').setAttribute('aria-selected', ing ? 'true' : 'false');
+  document.getElementById('tab-rec').setAttribute('aria-selected', ing ? 'false' : 'true');
+  Sound.click();
+}
+
+/* ---------- ingredients UI ---------- */
+function fillUnitSelect() {
+  var sel = document.getElementById('ing-unit');
+  sel.innerHTML = '';
+  UNIT_GROUPS.forEach(function (g) {
+    var og = document.createElement('optgroup'); og.label = g.label;
+    g.units.forEach(function (u) {
+      var o = document.createElement('option'); o.value = u; o.textContent = u; og.appendChild(o);
     });
-    var ok = isFinite(target) && target > 0;
-    var macroNames = { p: 'protein', c: 'carbs', f: 'fat' };
-    if (ok && pieSelected) {
-      var fr = { p: pp, c: cp, f: fp }[pieSelected] / 100;
-      var skcal = target * fr;
-      var sg = pieSelected === 'f' ? skcal / 9 : skcal / 4;
-      $('pie-total').textContent = fmt(skcal);
-      $('pie-sub').textContent = macroNames[pieSelected] + ' kcal · ' + Math.round(sg) + ' g';
-    } else {
-      $('pie-total').textContent = ok ? fmt(target) : '–';
-      $('pie-sub').textContent = 'target kcal/day';
-    }
-  }
-  function repaintPie() { paintPie(pieState.p, pieState.c, pieState.f, pieState.target); }
-  // clicking a macro bar OR its pie slice spotlights it (click again to release)
-  var macroNames = { p: 'protein', c: 'carbs', f: 'fat' };
-  function setSelected(key) {
-    pieSelected = (pieSelected === key) ? null : key;
-    chartSpotKind = pieSelected ? 'macro' : (ladderSel ? 'ladder' : null);
-    Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (o) {
-      var on = pieSelected === o.getAttribute('data-macro');
-      o.classList.toggle('sel', on);
-      o.setAttribute('aria-pressed', on ? 'true' : 'false');
-    });
-    repaintPie();
-    renderChartDetail();
-  }
-  function wireToggle(el, key) {
-    el.addEventListener('click', function () {
-      if (pieState[key] > 0) setSelected(key);
-    });
-    el.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (pieState[key] > 0) setSelected(key); }
-    });
-  }
-  Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (m) {
-    wireToggle(m, m.getAttribute('data-macro'));
+    sel.appendChild(og);
   });
-  [['pie-p', 'p'], ['pie-c', 'c'], ['pie-f', 'f']].forEach(function (t) {
-    var el = $(t[0]);
+}
+var editingIngId = null;
+function ingErr(msg) {
+  var el = document.getElementById('ing-err');
+  el.textContent = msg || ''; el.classList.toggle('show', !!msg);
+}
+function addIngredient() {
+  var name = document.getElementById('ing-name').value.trim();
+  var price = num(document.getElementById('ing-price').value);
+  var qty = num(document.getElementById('ing-qty').value);
+  var unit = document.getElementById('ing-unit').value;
+  var gpc = num(document.getElementById('ing-gpc').value);
+  var gpe = num(document.getElementById('ing-gpe').value);
+  if (!name) { Sound.error(); return ingErr('Give the ingredient a name.'); }
+  if (!(price >= 0) || !(qty > 0)) { Sound.error(); return ingErr('Enter a package price and a package size greater than zero.'); }
+  ingErr('');
+  if (editingIngId) {
+    var ing = state.ingredients.find(function (i) { return i.id === editingIngId; });
+    if (ing) { ing.name = name; ing.pkgPrice = price; ing.pkgQty = qty; ing.pkgUnit = unit; ing.gPerCup = gpc; ing.gPerEach = gpe; }
+    editingIngId = null;
+    document.getElementById('ing-add').textContent = 'Add ingredient';
+  } else {
+    state.ingredients.push({ id: uid(), name: name, pkgPrice: price, pkgQty: qty, pkgUnit: unit, gPerCup: gpc, gPerEach: gpe });
+  }
+  save(); clearIngForm(); renderIngredients(); renderRecipeSelect(); Sound.success();
+}
+function clearIngForm() {
+  ['ing-name', 'ing-price', 'ing-qty', 'ing-gpc', 'ing-gpe'].forEach(function (id) { document.getElementById(id).value = ''; });
+  editingIngId = null; document.getElementById('ing-add').textContent = 'Add ingredient'; ingErr('');
+}
+function editIngredient(id) {
+  var ing = state.ingredients.find(function (i) { return i.id === id; });
+  if (!ing) return;
+  document.getElementById('ing-name').value = ing.name;
+  document.getElementById('ing-price').value = ing.pkgPrice;
+  document.getElementById('ing-qty').value = ing.pkgQty;
+  document.getElementById('ing-unit').value = ing.pkgUnit;
+  document.getElementById('ing-gpc').value = ing.gPerCup || '';
+  document.getElementById('ing-gpe').value = ing.gPerEach || '';
+  editingIngId = id;
+  document.getElementById('ing-add').textContent = 'Save changes';
+  document.getElementById('ing-name').focus();
+}
+function deleteIngredient(id) {
+  var used = state.recipes.some(function (r) { return r.lines.some(function (l) { return l.ingId === id; }); });
+  if (used && !confirm('This ingredient is used in a recipe. Delete it anyway?')) return;
+  state.ingredients = state.ingredients.filter(function (i) { return i.id !== id; });
+  state.recipes.forEach(function (r) { r.lines = r.lines.filter(function (l) { return l.ingId !== id; }); });
+  save(); renderIngredients(); renderRecipe(); Sound.click();
+}
+function renderIngredients() {
+  var tb = document.getElementById('ing-tbody');
+  tb.innerHTML = '';
+  document.getElementById('ing-count').textContent = state.ingredients.length;
+  document.getElementById('ing-empty').style.display = state.ingredients.length ? 'none' : '';
+  state.ingredients.forEach(function (ing) {
+    var tr = document.createElement('tr');
+    var uc = unitCost(ing);
+    var ucTxt = uc < 0.01 ? '$' + uc.toFixed(4) : fmtMoney(uc);
+    tr.innerHTML =
+      '<td>' + esc(ing.name) + '</td>' +
+      '<td class="num">' + esc(String(ing.pkgQty)) + ' ' + esc(ing.pkgUnit) + ' @ ' + fmtMoney(ing.pkgPrice) + '</td>' +
+      '<td class="num">' + ucTxt + ' ' + unitCostLabel(ing) + '</td>' +
+      '<td class="num no-print"><button class="g-btn g-btn-ghost g-btn-sm" onclick="editIngredient(\'' + ing.id + '\')">Edit</button> ' +
+      '<button class="g-btn g-btn-ghost g-btn-sm" onclick="deleteIngredient(\'' + ing.id + '\')">Delete</button></td>';
+    tb.appendChild(tr);
+  });
+}
+
+/* ---------- recipes ---------- */
+var currentRecipeId = null;
+function blankRecipe() {
+  return { id: uid(), name: '', yieldQty: 0, yieldUnit: 'pieces', lines: [],
+           laborHours: 0, laborRate: 0, packagingPerUnit: 0, overheadPct: 10, targetMarginPct: 50 };
+}
+function cur() { return state.recipes.find(function (r) { return r.id === currentRecipeId; }); }
+function renderRecipeSelect() {
+  var sel = document.getElementById('rec-select');
+  sel.innerHTML = '';
+  state.recipes.forEach(function (r) {
+    var o = document.createElement('option');
+    o.value = r.id; o.textContent = r.name || '(unnamed recipe)';
+    if (r.id === currentRecipeId) o.selected = true;
+    sel.appendChild(o);
+  });
+  var has = state.recipes.length > 0;
+  document.getElementById('rec-editor').hidden = !has;
+  document.getElementById('rec-empty').hidden = has;
+}
+function newRecipe() {
+  var r = blankRecipe();
+  state.recipes.push(r); currentRecipeId = r.id;
+  save(); renderRecipeSelect(); renderRecipe(); Sound.success();
+  document.getElementById('rec-name').focus();
+}
+function selectRecipe(id) { currentRecipeId = id; renderRecipe(); Sound.select(); }
+function deleteRecipe() {
+  var r = cur(); if (!r) return;
+  if (!confirm('Delete "' + (r.name || 'this recipe') + '"?')) return;
+  state.recipes = state.recipes.filter(function (x) { return x.id !== r.id; });
+  currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+  save(); renderRecipeSelect(); renderRecipe(); Sound.click();
+}
+function recField(field, val) {
+  var r = cur(); if (!r) return;
+  if (field !== 'name' && field !== 'yieldUnit') val = Math.max(0, val); /* typed negatives bypass min="0" */
+  r[field] = val; save();
+  if (field === 'name') renderRecipeSelect(); /* keep the dropdown label in sync while typing */
+  renderSummary();
+}
+function lineField(idx, field, val) {
+  var r = cur(); if (!r || !r.lines[idx]) return;
+  if (field === 'qty') val = Math.max(0, val); /* typed negatives bypass min="0" */
+  r.lines[idx][field] = val; save();
+  /* update this line's cost in place — never rebuild the row while typing */
+  var cell = document.getElementById('linecost-' + idx);
+  if (cell) {
+    var ing = state.ingredients.find(function (i) { return i.id === r.lines[idx].ingId; });
+    cell.innerHTML = lineCostHTML(ing, r.lines[idx]);
+  }
+  renderSummary();
+}
+function addLine() {
+  var r = cur(); if (!r) return;
+  if (!state.ingredients.length) {
+    var e = document.getElementById('line-err');
+    e.textContent = 'Add ingredients to your library first (Ingredients tab).';
+    e.classList.add('show'); return;
+  }
+  r.lines.push({ ingId: state.ingredients[0].id, qty: 0, unit: state.ingredients[0].pkgUnit });
+  save(); renderLines(); renderSummary(); Sound.click();
+}
+function removeLine(idx) {
+  var r = cur(); if (!r) return;
+  r.lines.splice(idx, 1); save(); renderLines(); renderSummary(); Sound.click();
+}
+function lineUnitOptions(selected) {
+  var html = '';
+  UNIT_GROUPS.forEach(function (g) {
+    html += '<optgroup label="' + g.label + '">';
+    g.units.forEach(function (u) {
+      html += '<option value="' + u + '"' + (u === selected ? ' selected' : '') + '>' + u + '</option>';
+    });
+    html += '</optgroup>';
+  });
+  return html;
+}
+function renderLines() {
+  var r = cur(), host = document.getElementById('lines');
+  host.innerHTML = '';
+  document.getElementById('line-err').classList.remove('show');
+  if (!r) return;
+  r.lines.forEach(function (ln, idx) {
+    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+    var row = document.createElement('div');
+    row.className = 'line-row';
+    var opts = state.ingredients.map(function (i) {
+      return '<option value="' + i.id + '"' + (i.id === ln.ingId ? ' selected' : '') + '>' + esc(i.name) + '</option>';
+    }).join('');
+    var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+    var costTxt = lineCostHTML(ing, ln);
+    row.innerHTML =
+      '<div class="g-field" style="margin:0"><select class="g-input" onchange="lineField(' + idx + ',\'ingId\',this.value)">' + opts + '</select></div>' +
+      '<div class="g-field" style="margin:0"><input class="g-input" type="number" min="0" step="any" placeholder="Qty" value="' + esc(String(ln.qty || '')) + '" oninput="lineField(' + idx + ',\'qty\',num(this.value))"></div>' +
+      '<div class="g-field" style="margin:0"><select class="g-input" onchange="lineField(' + idx + ',\'unit\',this.value)">' + lineUnitOptions(ln.unit) + '</select></div>' +
+      '<div class="num hide-sm" id="linecost-' + idx + '" style="font-variant-numeric:tabular-nums">' + costTxt + '</div>' +
+      '<div class="no-print"><button class="g-btn g-btn-ghost g-btn-sm" onclick="removeLine(' + idx + ')" aria-label="Remove line">✕</button></div>';
+    host.appendChild(row);
+  });
+}
+
+/* ---------- summary ---------- */
+function recipeTotals(r) {
+  var ingTotal = 0, approx = false, missing = 0, errGpc = 0, errGpe = 0, errConv = 0;
+  r.lines.forEach(function (ln) {
+    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+    if (!ing) { missing++; return; }
+    var lc = lineCost(ing, num(ln.qty), ln.unit);
+    if (lc.err === 'needs grams-per-cup') errGpc++;
+    else if (lc.err === 'needs grams-per-piece') errGpe++;
+    else if (lc.err) errConv++;
+    ingTotal += lc.cost;
+    if (lc.approx) approx = true;
+  });
+  var labor = num(r.laborHours) * num(r.laborRate);
+  var pack = num(r.packagingPerUnit) * num(r.yieldQty);
+  var subtotal = ingTotal + labor + pack;
+  var overhead = subtotal * num(r.overheadPct) / 100;
+  var total = subtotal + overhead;
+  var y = num(r.yieldQty);
+  var perUnit = y > 0 ? total / y : 0;
+  var margin = num(r.targetMarginPct);
+  var price = (margin < 100 && margin >= 0 && y > 0) ? perUnit / (1 - margin / 100) : 0;
+  return { ingTotal: ingTotal, labor: labor, pack: pack, overhead: overhead, total: total,
+           perUnit: perUnit, price: price, profitUnit: price - perUnit,
+           profitBatch: (price - perUnit) * y, approx: approx, missing: missing,
+           errGpc: errGpc, errGpe: errGpe, errConv: errConv };
+}
+/* ---------- cost visuals: breakdown donut, ingredient bars, food-cost gauge ---------- */
+var CC_R = 95, CC_CX = 124, CC_CY = 124;
+var ccSel = null; /* 'ing' | 'lab' | 'pac' | 'ovh' | null */
+var ccLast = null; /* last recipeTotals, for spotlight repaints */
+var chartSpotKind = null; /* 'cost' | 'driver' | null — which visual owns #chartDetail */
+var driverSpotIdx = null; /* recipe line index spotlighted via the driver bars, or null */
+var CC_PARTS = [
+  ['ing', 'Ingredients', '#4f46e5'],
+  ['lab', 'Labor', '#10b981'],
+  ['pac', 'Packaging', '#f59e0b'],
+  ['ovh', 'Overhead', '#8b5cf6']
+];
+function ccPolar(deg) {
+  var rad = deg * Math.PI / 180;
+  return [CC_CX + CC_R * Math.cos(rad), CC_CY + CC_R * Math.sin(rad)];
+}
+function ccSegPath(frac, startDeg, gapDeg) {
+  if (!(frac > 0)) return '';
+  var a0 = startDeg + gapDeg / 2, a1 = startDeg + frac * 360 - gapDeg / 2;
+  if (frac >= 0.9999) { /* full ring: two arcs */
+    var p1 = ccPolar(-90), p2 = ccPolar(90);
+    return 'M ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) +
+      ' A ' + CC_R + ' ' + CC_R + ' 0 1 1 ' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2) +
+      ' A ' + CC_R + ' ' + CC_R + ' 0 1 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
+  }
+  var s = ccPolar(a0), e = ccPolar(a1);
+  return 'M ' + s[0].toFixed(2) + ' ' + s[1].toFixed(2) +
+    ' A ' + CC_R + ' ' + CC_R + ' 0 ' + ((a1 - a0) > 180 ? 1 : 0) + ' 1 ' +
+    e[0].toFixed(2) + ' ' + e[1].toFixed(2);
+}
+function ccFlip(key) {
+  ccSel = (ccSel === key) ? null : key;
+  chartSpotKind = ccSel ? 'cost' : (driverSpotIdx !== null ? 'driver' : null);
+  if (ccLast) paintCostChart(ccLast);
+  renderChartDetail();
+  Sound.select();
+}
+/* Real breakdown behind the spotlighted cost slice or driver bar: every line behind
+   the number. Activating again (or the panel's close button) releases to totals. */
+function renderChartDetail() {
+  var box = document.getElementById('chartDetail');
+  if (!box) return;
+  var kind = chartSpotKind;
+  if (kind === 'cost' && !ccSel) kind = driverSpotIdx !== null ? 'driver' : null;
+  if (kind === 'driver' && driverSpotIdx === null) kind = ccSel ? 'cost' : null;
+  if (!kind) { box.hidden = true; box.innerHTML = ''; return; }
+  var t = ccLast, r = cur();
+  if (!t || !(t.total > 0) || !r) { box.hidden = true; box.innerHTML = ''; return; }
+  var title = '', sub = '', rows = [], foot = '';
+  if (kind === 'cost') {
+    var ci = CC_PARTS.filter(function (p) { return p[0] === ccSel; })[0];
+    var v = { ing: t.ingTotal, lab: t.labor, pac: t.pack, ovh: t.overhead }[ccSel];
+    title = ci[1] + ' — breakdown';
+    sub = fmtMoney(v) + ' · ' + (v / t.total * 100).toFixed(1) + '% of ' + fmtMoney(t.total) + ' batch';
+    if (ccSel === 'ing') {
+      rows = r.lines.map(function (ln) {
+        var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+        var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+        return { name: ing ? ing.name : '(missing ingredient)',
+          meta: num(ln.qty) + ' ' + (ln.unit || '') + ' · ' + (t.ingTotal > 0 ? (lc.cost / t.ingTotal * 100).toFixed(1) : '0') + '% of ingredients',
+          val: fmtMoney(lc.cost), cost: lc.cost };
+      }).filter(function (x) { return x.cost > 0; })
+        .sort(function (a, b) { return b.cost - a.cost; })
+        .map(function (x) { return { name: x.name, meta: x.meta, val: x.val }; });
+    } else if (ccSel === 'lab') {
+      rows = [{ name: num(r.laborHours) + ' hrs × ' + fmtMoney(num(r.laborRate)) + '/hr', meta: 'labor', val: fmtMoney(t.labor) }];
+      if (num(r.yieldQty) > 0) rows.push({ name: 'Per ' + String(r.yieldUnit || 'unit'), meta: 'labor share', val: fmtMoney(t.labor / num(r.yieldQty)) });
+    } else if (ccSel === 'pac') {
+      rows = [{ name: fmtMoney(num(r.packagingPerUnit)) + ' × ' + num(r.yieldQty) + ' ' + String(r.yieldUnit || 'units'), meta: 'packaging', val: fmtMoney(t.pack) }];
+    } else {
+      var sub2 = t.ingTotal + t.labor + t.pack;
+      rows = [{ name: num(r.overheadPct) + '% of ' + fmtMoney(sub2), meta: 'ingredients + labor + packaging', val: fmtMoney(t.overhead) }];
+    }
+  } else {
+    var ln = r.lines[driverSpotIdx];
+    var ing = ln ? state.ingredients.find(function (i) { return i.id === ln.ingId; }) : null;
+    if (!ln || !ing) { box.hidden = true; box.innerHTML = ''; return; }
+    var lc = lineCost(ing, num(ln.qty), ln.unit);
+    title = ing.name + ' — cost detail';
+    sub = fmtMoney(lc.cost) + ' · ' + (t.ingTotal > 0 ? (lc.cost / t.ingTotal * 100).toFixed(1) : '0') + '% of ingredient costs';
+    rows = [
+      { name: 'Quantity used', meta: 'recipe line', val: num(ln.qty) + ' ' + (ln.unit || '') },
+      { name: 'Line cost', meta: 'this recipe', val: fmtMoney(lc.cost) },
+      { name: 'Share of ingredients', meta: fmtMoney(t.ingTotal) + ' total', val: (t.ingTotal > 0 ? (lc.cost / t.ingTotal * 100).toFixed(1) : '0') + '%' }
+    ];
+    foot = '<div class="cd-foot"><button type="button" class="g-btn g-btn-secondary" id="chartDetailFind">Find in recipe →</button></div>';
+  }
+  var html = '<div class="cd-head"><div><div class="cd-title">' + esc(title) + '</div>' +
+    '<div class="cd-sub">' + esc(sub) + '</div></div>' +
+    '<button type="button" class="cd-x" id="chartDetailX" aria-label="Clear selection and show totals">×</button></div>';
+  if (rows.length) {
+    html += '<div class="cd-rows">' + rows.map(function (x) {
+      return '<div class="cd-row"><span class="cd-name">' + esc(x.name) + '</span>' +
+        '<span class="cd-meta">' + esc(x.meta) + '</span>' +
+        '<span class="cd-val">' + esc(x.val) + '</span></div>';
+    }).join('') + '</div>';
+  } else html += '<p class="empty">No lines behind this number.</p>';
+  box.innerHTML = html + foot; box.hidden = false;
+  var x = document.getElementById('chartDetailX');
+  if (x) x.addEventListener('click', function () {
+    if (kind === 'cost' && ccSel) ccFlip(ccSel);
+    else if (driverSpotIdx !== null) driverSpot(driverSpotIdx);
+  });
+  var fb = document.getElementById('chartDetailFind');
+  if (fb) fb.addEventListener('click', function () { driverFind(driverSpotIdx); });
+}
+function paintCostChart(t) {
+  var vals = { ing: t.ingTotal, lab: t.labor, pac: t.pack, ovh: t.overhead };
+  var total = t.total, ok = total > 0;
+  if (ccSel && !(vals[ccSel] > 0)) ccSel = null;
+  var off = -90, gapDeg = 360 * 0.012;
+  CC_PARTS.forEach(function (p) {
+    var el = document.getElementById('cc-' + p[0]);
+    if (!el) return;
+    var frac = ok ? vals[p[0]] / total : 0;
+    el.setAttribute('d', ccSegPath(frac, off, gapDeg));
+    var mid = off + frac * 180;
+    if (ccSel === p[0] && frac > 0) {
+      var rad = mid * Math.PI / 180;
+      el.style.transform = 'translate(' + (Math.cos(rad) * 10).toFixed(1) + 'px,' + (Math.sin(rad) * 10).toFixed(1) + 'px)';
+      el.style.opacity = '1';
+    } else {
+      el.style.transform = '';
+      el.style.opacity = ccSel ? '0.4' : '1';
+    }
+    off += frac * 360;
+  });
+  var leg = document.getElementById('cc-legend');
+  leg.innerHTML = '';
+  CC_PARTS.forEach(function (p) {
+    var v = vals[p[0]], pct = ok ? v / total * 100 : 0;
+    var chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'cc-chip' + (ccSel === p[0] ? ' spot' : '');
+    chip.setAttribute('aria-pressed', ccSel === p[0] ? 'true' : 'false');
+    chip.setAttribute('aria-label', p[1] + ' ' + fmtMoney(v) + ' — activate to spotlight');
+    chip.innerHTML = '<span class="dot" style="background:' + p[2] + '"></span>' +
+      '<span>' + esc(p[1]) + '</span> <span class="amt">' + fmtMoney(v) + '</span>' +
+      '<span class="pct">' + (ok ? pct.toFixed(1) + '%' : '') + '</span>';
+    (function (key, hasVal) {
+      chip.addEventListener('click', function () { if (hasVal) ccFlip(key); });
+    })(p[0], ok && v > 0);
+    leg.appendChild(chip);
+  });
+  var tot = document.getElementById('cc-total'), sub = document.getElementById('cc-sub');
+  if (ok && ccSel) {
+    var ci = CC_PARTS.filter(function (p) { return p[0] === ccSel; })[0];
+    tot.textContent = fmtMoney(vals[ccSel]);
+    sub.textContent = ci[1] + ' · ' + (vals[ccSel] / total * 100).toFixed(1) + '% of batch';
+  } else {
+    tot.textContent = ok ? fmtMoney(total) : '–';
+    sub.textContent = ok ? 'batch cost' : 'add ingredient lines';
+  }
+}
+function wireCostChart() {
+  CC_PARTS.forEach(function (p) {
+    var el = document.getElementById('cc-' + p[0]);
+    if (!el) return;
     el.setAttribute('tabindex', '0');
     el.setAttribute('role', 'button');
-    el.setAttribute('aria-label', macroNames[t[1]] + ' slice — activate to spotlight');
-    wireToggle(el, t[1]);
-  });
-
-  // ---- calorie ladder: horizontal bars comparing BMR / TDEE / target ----
-  var ladderSel = null; // 'bmr' | 'tdee' | 'target' | null
-  var chartSpotKind = null; // 'macro' | 'ladder' | null — which chart owns #chartDetail
-  var ladderVals = { bmr: NaN, tdee: NaN, target: NaN };
-  function paintLadder(bmr, tdee, target) {
-    ladderVals = { bmr: bmr, tdee: tdee, target: target };
-    var max = Math.max(bmr, tdee, target);
-    var ok = isFinite(max) && max > 0;
-    [['bmr', 'lad-bmr', 'lad-bmr-v'], ['tdee', 'lad-tdee', 'lad-tdee-v'], ['target', 'lad-target', 'lad-target-v']].forEach(function (t) {
-      var v = ladderVals[t[0]];
-      $(t[1]).style.width = (ok && isFinite(v)) ? (v / max * 100).toFixed(1) + '%' : '0%';
-      $(t[2]).textContent = (ok && isFinite(v)) ? fmt(v) : '–';
-    });
-    repaintLadder();
-  }
-  function repaintLadder() {
-    var on = !!ladderSel;
-    var ok = isFinite(ladderVals.bmr) && ladderVals.bmr > 0;
-    $('ladder').classList.toggle('dim', on);
-    Array.prototype.forEach.call(document.querySelectorAll('.ladder-row[data-key],.bignum[data-key]'), function (el) {
-      var s = on && el.getAttribute('data-key') === ladderSel;
-      el.classList.toggle('spot', s);
-      el.setAttribute('aria-pressed', s ? 'true' : 'false');
-    });
-    var ro = $('ladder-readout');
-    if (!on || !ok) { ro.textContent = ''; renderChartDetail(); return; }
-    var v = ladderVals[ladderSel];
-    if (ladderSel === 'bmr') ro.textContent = 'BMR ≈ ' + fmt(v) + ' kcal/day — energy burned at complete rest.';
-    else if (ladderSel === 'tdee') ro.textContent = 'TDEE ≈ ' + fmt(v) + ' kcal/day — BMR × ' + ACT_LABELS[String(S.activity)] + ' (×' + S.activity + ').';
-    else ro.textContent = 'Target ≈ ' + fmt(v) + ' kcal/day — TDEE ' + (S.goalPct >= 0 ? '+' : '') + S.goalPct + '% (' + (S.goalPct < 0 ? 'cut' : S.goalPct > 0 ? 'bulk' : 'maintain') + ').';
-    renderChartDetail();
-  }
-  /* Real breakdown behind the spotlighted chart value: component rows in #chartDetail.
-     A macro slice shows the kcal / grams / share behind its number; a ladder row shows
-     the inputs or formula steps behind BMR / TDEE / target. Activating again (or the
-     panel's close button) releases back to the totals. */
-  function renderChartDetail() {
-    var box = $('chartDetail'); if (!box) return;
-    var kind = chartSpotKind;
-    if (kind === 'macro' && !pieSelected) kind = ladderSel ? 'ladder' : null;
-    if (kind === 'ladder' && !ladderSel) kind = pieSelected ? 'macro' : null;
-    if (!kind) { box.hidden = true; box.innerHTML = ''; return; }
-    var title = '', sub = '', rows = [];
-    if (kind === 'macro') {
-      var t = pieState.target, okT = isFinite(t) && t > 0;
-      if (!okT) { box.hidden = true; box.innerHTML = ''; return; }
-      var fr = pieState[pieSelected] / 100;
-      var kcal = t * fr, g = pieSelected === 'f' ? kcal / 9 : kcal / 4;
-      var nm = macroNames[pieSelected];
-      title = nm.charAt(0).toUpperCase() + nm.slice(1) + ' — breakdown';
-      sub = fmt(kcal) + ' of ' + fmt(t) + ' target kcal/day';
-      rows = [
-        { name: 'Calories from ' + nm, meta: (fr * 100).toFixed(1) + '% of target', val: fmt(kcal) + ' kcal' },
-        { name: 'Grams', meta: pieSelected === 'f' ? '9 kcal per gram' : '4 kcal per gram', val: Math.round(g) + ' g' },
-        { name: 'Share of macro calories', meta: 'protein + carbs + fat', val: (fr * 100).toFixed(1) + '%' }
-      ];
-    } else {
-      var v = ladderVals[ladderSel], okL = isFinite(v) && v > 0;
-      if (!okL) { box.hidden = true; box.innerHTML = ''; return; }
-      if (ladderSel === 'bmr') {
-        title = 'BMR — inputs behind the number';
-        sub = fmt(v) + ' kcal/day at complete rest';
-        var fl = S.formula === 'hb' ? 'Harris–Benedict' : (S.formula === 'katch' ? 'Katch–McArdle' : 'Mifflin-St Jeor');
-        rows = [
-          { name: 'Weight', meta: 'your input', val: r2(S.weightKg) + ' kg' },
-          { name: 'Height', meta: 'your input', val: r2(S.heightCm) + ' cm' },
-          { name: 'Age', meta: 'your input', val: S.age + ' yrs' },
-          { name: 'Sex', meta: 'your input', val: S.sex === 'm' ? 'Male' : 'Female' }
-        ];
-        if (S.formula === 'katch') rows.push({ name: 'Body fat', meta: 'your input', val: S.bodyFat + '%' });
-        rows.push({ name: 'Formula', meta: 'BMR equation', val: fl });
-      } else if (ladderSel === 'tdee') {
-        title = 'TDEE — how it is built';
-        sub = fmt(v) + ' kcal/day total daily energy expenditure';
-        rows = [
-          { name: 'BMR', meta: 'at complete rest', val: fmt(ladderVals.bmr) + ' kcal' },
-          { name: 'Activity', meta: ACT_LABELS[String(S.activity)], val: '×' + S.activity },
-          { name: 'TDEE', meta: 'BMR × activity', val: fmt(v) + ' kcal' }
-        ];
-      } else {
-        title = 'Target — how it is built';
-        sub = fmt(v) + ' kcal/day target';
-        var gp = S.goalPct;
-        rows = [
-          { name: 'TDEE', meta: 'maintenance', val: fmt(ladderVals.tdee) + ' kcal' },
-          { name: 'Goal', meta: gp < 0 ? 'cut' : (gp > 0 ? 'bulk' : 'maintain'), val: (gp >= 0 ? '+' : '') + gp + '%' },
-          { name: 'Target', meta: 'TDEE ± goal', val: fmt(v) + ' kcal' }
-        ];
+    el.setAttribute('aria-label', p[1] + ' slice — activate to spotlight');
+    (function (key) {
+      function go() {
+        if (!ccLast || !(ccLast.total > 0)) return;
+        var v = { ing: ccLast.ingTotal, lab: ccLast.labor, pac: ccLast.pack, ovh: ccLast.overhead }[key];
+        if (v > 0) ccFlip(key);
       }
-    }
-    box.innerHTML = '<div class="cd-head"><div><div class="cd-title">' + esc(title) + '</div>' +
-      '<div class="cd-sub">' + esc(sub) + '</div></div>' +
-      '<button type="button" class="cd-x" id="chartDetailX" aria-label="Clear selection and show totals">×</button></div>' +
-      '<div class="cd-rows">' + rows.map(function (r) {
-        return '<div class="cd-row"><span class="cd-name">' + esc(r.name) + '</span>' +
-          '<span class="cd-meta">' + esc(r.meta) + '</span>' +
-          '<span class="cd-val">' + esc(r.val) + '</span></div>';
-      }).join('') + '</div>';
-    box.hidden = false;
-    var x = $('chartDetailX');
-    if (x) x.addEventListener('click', function () {
-      if (kind === 'macro' && pieSelected) setSelected(pieSelected);
-      else { ladderSel = null; chartSpotKind = pieSelected ? 'macro' : null; repaintLadder(); }
-    });
-  }
-  // clicking a bignum card or its ladder bar spotlights it (click again to release)
-  function wireLadder(el, key) {
-    function flip() {
-      ladderSel = (ladderSel === key) ? null : key;
-      chartSpotKind = ladderSel ? 'ladder' : (pieSelected ? 'macro' : null);
-      repaintLadder(); Sound.click();
-    }
-    el.addEventListener('click', flip);
-    el.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
-    });
-  }
-  Array.prototype.forEach.call(document.querySelectorAll('.ladder-row[data-key],.bignum[data-key]'), function (el) {
-    wireLadder(el, el.getAttribute('data-key'));
-  });
-  /* Esc clears any chart spotlight (pie slice / macro bar / ladder row / bignum card) */
-  document.addEventListener('keydown', function (e) {
-    if (e.key !== 'Escape') return;
-    if (!pieSelected && !ladderSel) return;
-    pieSelected = null; ladderSel = null; chartSpotKind = null;
-    Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (o) {
-      o.classList.remove('sel'); o.setAttribute('aria-pressed', 'false');
-    });
-    repaintPie(); repaintLadder(); Sound.click();
-  });
-
-  function compute() {
-    var r = readInputs();
-    var stepsEl = $('work-steps');
-    // Height/weight come from canonical state S (full precision), not from the
-    // rounded display fields — see persistFromInputs. r still validates them.
-    var hCm = S.heightCm, wKg = S.weightKg;
-    if (!r.ok || !isFinite(r.age) || !isFinite(wKg) || !isFinite(hCm)) {
-      ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
-      ['p', 'c', 'f'].forEach(function (m) {
-        $('o-' + m + '-kcal').textContent = '–'; $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
-        $('o-' + m + '-bar').style.width = '0%';
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
       });
-      $('pace').hidden = true;
-      $('km-notice').hidden = true;
-      stepsEl.innerHTML = '<div class="notice">Fix the highlighted fields above to see your numbers.</div>';
-      paintPie(0, 0, 0, null);
-      paintLadder(NaN, NaN, NaN);
-      return;
-    }
-    var b;
-    if (S.formula === 'mifflin') b = bmrMifflin(wKg, hCm, r.age, S.sex);
-    else if (S.formula === 'hb') b = bmrHB(wKg, hCm, r.age, S.sex);
-    else {
-      if (r.bodyFat === null || !isFinite(r.bodyFat)) {
-        $('km-notice').hidden = false;
-        ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
-        ['p', 'c', 'f'].forEach(function (m) {
-          $('o-' + m + '-kcal').textContent = '–'; $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
-          $('o-' + m + '-bar').style.width = '0%';
-        });
-        $('pace').hidden = true;
-        stepsEl.innerHTML = '<div class="notice">Katch-McArdle needs body fat % — enter it above or choose another formula.</div>';
-        paintPie(0, 0, 0, null);
-        paintLadder(NaN, NaN, NaN);
-        return;
-      }
-      b = bmrKatch(wKg, r.bodyFat);
-    }
-    $('km-notice').hidden = true;
-
-    var bmr = b.v;
-    var act = S.activity;
-    var tdee = bmr * act;
-    var target = tdee * (1 + S.goalPct / 100);
-    var mp = MACROS[S.macro];
-    var pG = target * mp.p / 100 / 4;
-    var cG = target * mp.c / 100 / 4;
-    var fG = target * mp.f / 100 / 9;
-
-    $('o-bmr').textContent = fmt(bmr);
-    $('o-tdee').textContent = fmt(tdee);
-    $('o-target').textContent = fmt(target);
-    paintGoalLabel();
-    var pK = target * mp.p / 100, cK = target * mp.c / 100, fK = target * mp.f / 100;
-    $('o-p-kcal').textContent = fmt(pK); $('o-p-g').textContent = fmt(pG) + ' g'; $('o-p-p').textContent = '(' + mp.p + '%)';
-    $('o-c-kcal').textContent = fmt(cK); $('o-c-g').textContent = fmt(cG) + ' g'; $('o-c-p').textContent = '(' + mp.c + '%)';
-    $('o-f-kcal').textContent = fmt(fK); $('o-f-g').textContent = fmt(fG) + ' g'; $('o-f-p').textContent = '(' + mp.f + '%)';
-    $('o-p-bar').style.width = mp.p + '%';
-    $('o-c-bar').style.width = mp.c + '%';
-    $('o-f-bar').style.width = mp.f + '%';
-    paintPie(mp.p, mp.c, mp.f, target);
-    paintLadder(bmr, tdee, target);
-
-    // weekly pace estimate: ~7700 kcal per kg of body weight change
-    var paceEl = $('pace');
-    if (S.goalPct !== 0) {
-      var weeklyKg = Math.abs(target - tdee) * 7 / 7700;
-      var weeklyVal = S.units === 'imp' ? weeklyKg * 2.20462 : weeklyKg;
-      var unit = S.units === 'imp' ? 'lb' : 'kg';
-      paceEl.hidden = false;
-      paceEl.textContent = 'At this target you\u2019d average \u2248 ' + (Math.round(weeklyVal * 100) / 100) +
-        ' ' + unit + ' per week ' + (S.goalPct < 0 ? 'lost' : 'gained') +
-        ' (rule of thumb: ~7,700 kcal per kg of body weight, about 2.2 lb).';
-    } else paceEl.hidden = true;
-
-    // show your work
-    var h = '';
-    h += '<div class="step"><div class="t">1 · BMR — <span class="formula-name">' + FORMULAS[S.formula].name + '</span></div>';
-    if (b.extra) h += esc(b.extra) + '<br>';
-    h += 'BMR = ' + esc(b.expr) + '<br>= <strong>' + fmt(bmr) + ' kcal/day</strong></div>';
-    h += '<div class="step"><div class="t">2 · TDEE — BMR × activity (' + ACT_LABELS[String(act)] + ', ×' + act + ')</div>';
-    h += 'TDEE = ' + fmt(bmr) + ' × ' + act + '<br>= <strong>' + fmt(tdee) + ' kcal/day</strong></div>';
-    var gp = S.goalPct;
-    var goalWord = gp < 0 ? 'cut' : (gp > 0 ? 'surplus' : 'maintenance');
-    h += '<div class="step"><div class="t">3 · Target — TDEE ' + (gp >= 0 ? '+' : '') + gp + '% (' + goalWord + ')</div>';
-    h += 'Target = ' + fmt(tdee) + ' × ' + (1 + gp / 100).toFixed(2) + '<br>= <strong>' + fmt(target) + ' kcal/day</strong></div>';
-    h += '<div class="step"><div class="t">4 · Macros — ' + mp.label + ' of target calories</div>';
-    h += 'Protein = ' + fmt(target) + ' × ' + mp.p + '% ÷ 4 kcal/g = <strong>' + fmt(pG) + ' g</strong><br>';
-    h += 'Carbs = ' + fmt(target) + ' × ' + mp.c + '% ÷ 4 kcal/g = <strong>' + fmt(cG) + ' g</strong><br>';
-    h += 'Fat = ' + fmt(target) + ' × ' + mp.f + '% ÷ 9 kcal/g = <strong>' + fmt(fG) + ' g</strong></div>';
-    stepsEl.innerHTML = h;
+    })(p[0]);
+  });
+}
+/* top ingredient cost bars — click a bar to find that line in the recipe */
+function paintDrivers(r, t) {
+  var host = document.getElementById('drivers');
+  host.innerHTML = '';
+  if (!r || !r.lines.length) return;
+  var rows = [];
+  r.lines.forEach(function (ln, idx) {
+    var ing = state.ingredients.find(function (i) { return i.id === ln.ingId; });
+    var lc = ing ? lineCost(ing, num(ln.qty), ln.unit) : { cost: 0 };
+    if (lc.cost > 0) rows.push({ idx: idx, name: ing ? ing.name : '(missing ingredient)', cost: lc.cost });
+  });
+  rows.sort(function (a, b) { return b.cost - a.cost; });
+  rows = rows.slice(0, 6);
+  if (!rows.length) return;
+  var max = rows[0].cost;
+  rows.forEach(function (dr) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'driver-row';
+    b.setAttribute('data-idx', dr.idx);
+    b.setAttribute('aria-label', dr.name + ' costs ' + fmtMoney(dr.cost) + ' — activate to spotlight');
+    b.innerHTML = '<span class="d-name">' + esc(dr.name) + '</span>' +
+      '<span class="d-track"><span class="d-fill" style="display:block;width:' + (dr.cost / max * 100).toFixed(1) + '%"></span></span>' +
+      '<span class="d-val">' + fmtMoney(dr.cost) + '</span>';
+    (function (idx) { b.addEventListener('click', function () { driverSpot(idx); }); })(dr.idx);
+    host.appendChild(b);
+  });
+  /* spotlight survives re-renders; stale index clears */
+  if (driverSpotIdx !== null && !(r.lines[driverSpotIdx])) {
+    driverSpotIdx = null; chartSpotKind = ccSel ? 'cost' : null;
   }
-  function esc(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  paintDriverSpot();
+  renderChartDetail();
+}
+/* top ingredient bars use the unified spotlight: dim the rest, show the cost detail
+   (the find-in-recipe jump now lives on a button inside the detail panel) */
+function driverSpot(idx) {
+  driverSpotIdx = (driverSpotIdx === idx) ? null : idx;
+  chartSpotKind = driverSpotIdx !== null ? 'driver' : (ccSel ? 'cost' : null);
+  paintDriverSpot();
+  renderChartDetail();
+  if (driverSpotIdx !== null) Sound.select(); else Sound.click();
+}
+function paintDriverSpot() {
+  Array.prototype.forEach.call(document.querySelectorAll('#drivers .driver-row'), function (b) {
+    var on = driverSpotIdx !== null && parseInt(b.getAttribute('data-idx'), 10) === driverSpotIdx;
+    b.classList.toggle('spot', on);
+    b.classList.toggle('dim', driverSpotIdx !== null && !on);
+  });
+}
+/* Esc clears any chart spotlight (cost donut slice / chip / driver bar) */
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+  if (!ccSel && driverSpotIdx === null) return;
+  ccSel = null; driverSpotIdx = null; chartSpotKind = null;
+  if (ccLast) paintCostChart(ccLast);
+  paintDriverSpot(); renderChartDetail(); Sound.click();
+});
+function driverFind(idx) {
+  var rows = document.getElementById('lines').children;
+  Array.prototype.forEach.call(rows, function (x) { x.classList.remove('flash'); });
+  var row = rows[idx];
+  if (!row) return;
+  row.classList.add('flash');
+  try { row.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+  Sound.select();
+  setTimeout(function () { row.classList.remove('flash'); }, 1600);
+}
+/* food-cost gauge: needle over 0–60%, healthy at or under 35% */
+function paintFoodGauge(t, pct, ok) {
+  var arc = document.getElementById('fc-arc');
+  if (!arc) return;
+  var f = ok ? pct / 60 : 0;
+  if (f > 1) f = 1;
+  var th = (180 - f * 180) * Math.PI / 180;
+  arc.setAttribute('d', ok ? 'M45 150 A105 105 0 0 1 ' + (150 + 105 * Math.cos(th)).toFixed(1) + ' ' + (150 - 105 * Math.sin(th)).toFixed(1) : '');
+  arc.setAttribute('stroke', !ok ? '#94a3b8' : (pct <= 35 ? '#10b981' : (pct <= 45 ? '#f59e0b' : '#ef4444')));
+  var nd = document.getElementById('fc-needle');
+  nd.setAttribute('x2', (150 + 78 * Math.cos(th)).toFixed(1));
+  nd.setAttribute('y2', (150 - 78 * Math.sin(th)).toFixed(1));
+  document.getElementById('fc-num').textContent = ok ? pct.toFixed(1) + '%' : '–';
+  document.getElementById('fc-cap').textContent = !ok ? 'Set a yield and target margin to price this recipe.' :
+    (pct <= 35 ? 'Healthy — at or under the 35% target.' :
+    (pct <= 45 ? 'High — consider raising the price or trimming costs.' : 'Too high — this recipe loses margin fast.'));
+}
+/* KPI cards copy their value on click */
+function copyKpiText(txt, el) {
+  function flash() {
+    var v = el.querySelector('.v'); if (!v) return;
+    var orig = v.textContent;
+    v.textContent = 'Copied';
+    Sound.select();
+    setTimeout(function () { v.textContent = orig; }, 900);
   }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(flash, flash);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      ta.remove(); flash();
+    }
+  } catch (e) { flash(); }
+}
+function wireKpis() {
+  var grid = document.getElementById('summary-grid');
+  if (!grid) return;
+  function act(target) {
+    var k = target.closest ? target.closest('.kpi') : null;
+    if (!k) return;
+    var v = k.querySelector('.v');
+    if (v) copyKpiText(v.textContent.trim(), k);
+  }
+  grid.addEventListener('click', function (e) { act(e.target); });
+  grid.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(e.target); }
+  });
+}
+function renderSummary() {
+  var r = cur(); if (!r) return;
+  var t = recipeTotals(r);
+  var y = num(r.yieldQty);
+  var foodPct = (t.price > 0 && y > 0) ? (t.ingTotal / (t.price * y) * 100) : 0;
+  function kpi(label, val, cls) {
+    var l = esc(label);
+    return '<div class="kpi" tabindex="0" role="button" title="Click to copy" aria-label="Copy ' + l + ': ' + esc(val) + '"><div class="k">' + l + '</div><div class="v' + (cls ? ' ' + cls : '') + '">' + val + '</div></div>';
+  }
+  /* singular-ish unit word for "Cost per cookie" style labels ("cookies" -> "cookie") */
+  function perUnitWord() {
+    var w = String(r.yieldUnit || 'piece');
+    return (/s$/i.test(w) && w.length > 2) ? w.slice(0, -1) : w;
+  }
+  var priceCls = t.price > 0 ? 'good' : '';
+  document.getElementById('summary-grid').innerHTML =
+    kpi('Total batch cost', fmtMoney(t.total)) +
+    kpi('Cost per ' + perUnitWord(), fmtMoney(t.perUnit)) +
+    kpi('Suggested price', t.price > 0 ? fmtMoney(t.price) : '—', priceCls) +
+    kpi('Profit per ' + perUnitWord(), t.price > 0 ? fmtMoney(t.profitUnit) : '—') +
+    kpi('Profit per batch', t.price > 0 ? fmtMoney(t.profitBatch) : '—') +
+    kpi('Food cost %', t.price > 0 ? foodPct.toFixed(1) + '%' : '—', foodPct > 35 ? 'warn' : '');
+  ccLast = t;
+  paintCostChart(t);
+  paintDrivers(r, t);
+  paintFoodGauge(t, foodPct, t.price > 0 && y > 0);
+  var math =
+    'Ingredients ' + fmtMoney(t.ingTotal) + ' + labor ' + fmtMoney(t.labor) +
+    ' + packaging ' + fmtMoney(t.pack) + ' + overhead ' + fmtMoney(t.overhead) +
+    ' = ' + fmtMoney(t.total) + ' total' +
+    (y > 0 ? ' ÷ ' + y + ' = ' + fmtMoney(t.perUnit) + ' per ' + esc(perUnitWord()) : '') +
+    (t.price > 0 ? ' → price at ' + num(r.targetMarginPct) + '% margin: ' +
+      fmtMoney(t.perUnit) + ' ÷ (1 − ' + (num(r.targetMarginPct) / 100).toFixed(2) + ') = ' + fmtMoney(t.price) : '');
+  if (t.approx) math += ' · <span class="approx-flag">≈ some lines used water-density fallback — add grams-per-cup on the Ingredients tab for exact costs</span>';
+  if (t.errGpc) math += ' · <span class="approx-flag">' + t.errGpc + ' line(s) need a grams-per-cup value to cost</span>';
+  if (t.errGpe) math += ' · <span class="approx-flag">' + t.errGpe + ' line(s) need a grams-per-piece value to cost</span>';
+  if (t.errConv) math += ' · <span class="approx-flag">' + t.errConv + ' line(s) cannot convert between count and weight/volume</span>';
+  if (t.missing) math += ' · <span class="approx-flag">' + t.missing + ' line(s) reference a missing ingredient — re-link them above</span>';
+  document.getElementById('summary-math').innerHTML = math;
+}
+function renderRecipe() {
+  var r = cur();
+  renderRecipeSelect();
+  if (!r) { renderSummary && null; return; }
+  document.getElementById('rec-name').value = r.name || '';
+  document.getElementById('rec-yield').value = r.yieldQty || '';
+  document.getElementById('rec-yieldunit').value = r.yieldUnit || 'pieces';
+  document.getElementById('rec-hours').value = r.laborHours || '';
+  document.getElementById('rec-rate').value = r.laborRate || '';
+  document.getElementById('rec-pack').value = r.packagingPerUnit || '';
+  document.getElementById('rec-oh').value = r.overheadPct;
+  document.getElementById('rec-margin').value = r.targetMarginPct;
+  renderLines(); renderSummary();
+}
 
-  // ---- init ----
-  syncInputs();
-  paintUnits();
-  paintGoalLabel();
-  compute();
-})();
+/* ---------- export / import ---------- */
+function download(name, text, type) {
+  var blob = new Blob([text], { type: type || 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function exportData() { download('recipecost-backup.json', JSON.stringify(state, null, 2)); Sound.success(); }
+function importData(input) {
+  var f = input.files && input.files[0]; if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function () {
+    try {
+      var d = JSON.parse(rd.result);
+      if (!d || !Array.isArray(d.ingredients) || !Array.isArray(d.recipes)) throw new Error('bad file');
+      state = d; sanitizeState();
+      currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+      save(); renderIngredients(); renderRecipe(); Sound.success();
+    } catch (e) {
+      var el = document.getElementById('rec-err');
+      el.textContent = 'Could not import that file — it is not a RecipeCost backup.';
+      el.classList.add('show'); Sound.error();
+    }
+    input.value = '';
+  };
+  rd.readAsText(f);
+}
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded', function () {
+  load();
+  fillUnitSelect();
+  renderIngredients();
+  currentRecipeId = state.recipes.length ? state.recipes[0].id : null;
+  renderRecipe();
+  paintTheme(); paintSample();
+  wireCostChart(); wireKpis();
+  var sb = document.getElementById('soundToggle');
+  if (sb) paintSoundBtn(sb);
+});
 </script>
 </body>
 </html>

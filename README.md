@@ -1,30 +1,36 @@
-# MacroTrack — Free TDEE & Macro Calculator
+# RecipeCost — Recipe Cost Calculator for Home Bakers
 
-Stop trusting black-box calorie calculators. Enter your details and MacroTrack
-shows your BMR, TDEE, target calories and daily protein/carb/fat grams — with
-the exact formula and every calculation step shown on screen.
+An offline, single-file web app that tells home bakers and cottage-food sellers exactly what
+each recipe costs and what to charge for it. No account, no subscription, no internet needed —
+open `index.html` in any browser (even from `file://`) and it just works.
 
-## What's inside
-- `index.html` — the complete app. Single file, works offline.
-  Open it in any modern browser (double-click, or File → Open). No install,
-  no account, no internet needed.
-- `gallery/` — 8 screenshots showing the app in action.
+## What it does
 
-## Features
-- BMR from 3 published formulas: Mifflin-St Jeor (default), Harris-Benedict
-  (revised 1984), Katch-McArdle (uses lean body mass via body fat %)
-- TDEE from 5 activity levels (sedentary → extra active)
-- Goal targets: cut / maintain / lean bulk, plus a fine-tune slider (−30% to +20%)
-- Daily macros in grams with 3 split presets (balanced, high protein, lower carb)
-- Imperial + metric units, show-your-work math transparency, weekly pace estimate
-- Print / save a clean results sheet
-- Dark mode (follows your system, remembers your choice)
-- Inputs persist privately in your browser — your data never leaves your device
+- **Ingredient library** — store every ingredient with its package size, package price, and unit
+  (g, kg, oz, lb, ml, l, tsp, tbsp, cup, each). The app computes the true cost per gram / ml / piece.
+- **Smart unit conversion** — use flour by the cup in a recipe even though you buy it by the
+  kilogram. Optional grams-per-cup handles cup↔gram; optional grams-per-piece handles count
+  items used by weight (e.g. eggs).
+- **Full recipe costing** — ingredients + your labor hours × hourly rate + packaging per piece +
+  overhead % = true batch cost.
+- **Pricing for profit** — set a target profit margin and get a suggested selling price per
+  piece, profit per piece, profit per batch, and food-cost %.
+- **Multiple recipes** — build, switch between, and delete as many recipes as you like.
+- **Dark mode** — visible toggle, follows your system preference on first load, remembered.
+- **Your data stays yours** — everything is saved in the browser's localStorage on your device.
+  Export a JSON backup any time; import it on another device.
+- **Print / PDF** — a clean print stylesheet gives you a one-page cost sheet per recipe.
 
-## Support
-Questions or issues: reply to your Gumroad receipt email.
+## Files
+
+- `index.html` — the whole app (single file, zero external requests)
+- `gallery/` — screenshots for the listing
+
+## Privacy
+
+No analytics, no network requests, no cookies. The only link in the app is the discreet
+"by Glenerds" attribution in the footer.
 
 ---
 
-If you received this product for free, you may share the unmodified ZIP with
-others. © Glenerds — https://glenerds.gumroad.com
+© Glenerds. Sold as a one-time purchase — yours forever, no subscription.
