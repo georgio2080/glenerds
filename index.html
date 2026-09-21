@@ -1,1125 +1,1863 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23059669'/%3E%3Ctext x='32' y='44' font-size='32' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3E$%3C/text%3E%3C/svg%3E">
-<title>Free Debt Payoff Planner: Snowball vs Avalanche Calculator (DebtPayoff)</title>
-<meta name="description" content="Compare debt payoff strategies offline: snowball, avalanche, and custom order. No account, no ads — your data never leaves this device.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23d93025'/%3E%3Ctext x='32' y='44' font-size='30' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3Ekcal%3C/text%3E%3C/svg%3E">
+<title>Free TDEE Calculator &amp; Macro Calculator — See Every Step of the Math (MacroTrack)</title>
+<meta name="description" content="Free TDEE calculator with BMR, target calories and protein/carb/fat macros. Shows every formula step, works fully offline, no account, no ads.">
 <script>
-/* Pre-theme: set data-theme before first paint to avoid flash */
-(function(){try{
-  var t=localStorage.getItem("debtpayoff-theme");
-  if(t!=="dark"&&t!=="light"){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}
-  document.documentElement.setAttribute("data-theme",t);
-}catch(e){}})();
+// Apply saved theme (or OS preference) before first paint to avoid a flash.
+(function () {
+  try {
+    var stored = localStorage.getItem('glenerds-theme');
+    var theme = stored === 'dark' || stored === 'light' ? stored :
+      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+function gToggleTheme() {
+  var h = document.documentElement;
+  var n = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  h.setAttribute('data-theme', n);
+  try { localStorage.setItem('glenerds-theme', n); } catch (e) {}
+}
 </script>
 <style>
-:root,[data-theme="light"]{
-  --bg:#f3f1fa; --card:#ffffff; --text:#1e1b2e; --muted:#6b6584;
-  --border:#e4e0f3; --input-bg:#ffffff; --input-border:#d8d3ea;
-  --chip-bg:#f0edfb; --header-grad:linear-gradient(135deg,#4f46e5 0%,#7c3aed 55%,#9333ea 100%);
-  --primary:#6d28d9; --primary2:#8b5cf6; --btn-text:#ffffff;
-  --btn-bg:#ffffff; --btn-border:#d8d3ea;
-  --shadow:0 8px 24px rgba(109,40,217,.10);
-  --good:#15803d; --good-bg:#dcfce7; --warn:#b45309; --warn-bg:#fef3c7;
-  --table-head:#f0edfb; --zebra:#faf9fe; --bar:#e9e5f7;
-  --danger:#dc2626; --danger-bg:#fee2e2;
+/* ===== GLENERDS DESIGN SYSTEM v1.0 (pasted verbatim) ===== */
+/* ==========================================================================
+   GLENERDS DESIGN SYSTEM v1.0
+   --------------------------------------------------------------------------
+   One shared visual language for every Glenerds microtool.
+   Designed to be INLINED into each app's <style> block — keeps the
+   single-file property: zero network requests, file:// safe, no webfonts,
+   no CDNs, no frameworks, no build step.
+
+   Usage: paste this whole file inside a STYLE element in <head>, then use
+   the g- classes below. See INTEGRATION.md for the theme-toggle wiring.
+
+   Conventions:
+   - Every class is prefixed `g-` to avoid collisions.
+   - Theming is driven by `data-theme="light|dark"` on <html>.
+   - First load with no saved choice honors prefers-color-scheme.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --g-bg:            #f8fafc;
+  --g-surface:       #ffffff;
+  --g-surface-2:     #f1f5f9;
+  --g-border:        #e2e8f0;
+  --g-border-strong: #cbd5e1;
+
+  /* Text */
+  --g-text:          #0f172a;
+  --g-text-soft:     #334155;
+  --g-muted:         #64748b;
+
+  /* Accent: refined indigo */
+  --g-accent:        #4f46e5;
+  --g-accent-hover:  #4338ca;
+  --g-accent-ink:    #ffffff;
+  --g-accent-soft:   #eef2ff;
+  --g-accent-ring:   rgba(79, 70, 229, 0.22);
+
+  /* Status */
+  --g-good:          #047857;
+  --g-good-soft:     #ecfdf5;
+  --g-bad:           #b42318;
+  --g-bad-soft:      #fef3f2;
+  --g-warn:          #b45309;
+  --g-warn-soft:     #fffbeb;
+
+  /* Inputs */
+  --g-input-bg:      #ffffff;
+  --g-input-border:  #cbd5e1;
+  --g-code-bg:       #f1f5f9;
+
+  /* Shape + motion */
+  --g-radius-sm: 8px;
+  --g-radius-md: 12px;
+  --g-radius-lg: 16px;
+  --g-radius-pill: 999px;
+  --g-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --g-shadow-md: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --g-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --g-ease: 160ms ease;
+
+  /* Type */
+  --g-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, system-ui, sans-serif;
+  --g-mono: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Consolas,
+            "Liberation Mono", monospace;
 }
-[data-theme="dark"]{
-  --bg:#0e0c17; --card:#171425; --text:#f1eefc; --muted:#a49dc2;
-  --border:#2b2644; --input-bg:#1f1b31; --input-border:#3a3357;
-  --chip-bg:#221e38; --input-bg:#1f1b31;
-  --primary:#a78bfa; --primary2:#8b5cf6; --btn-text:#1a1430;
-  --btn-bg:#262142; --btn-border:#4a4468;
-  --shadow:0 8px 24px rgba(0,0,0,.35);
-  --good:#4ade80; --good-bg:#14532d; --warn:#fbbf24; --warn-bg:#451a03;
-  --table-head:#221e38; --zebra:#1a1629; --bar:#2b2644;
-  --danger:#f87171; --danger-bg:#450a0a;
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --g-bg:            #0b0e14;
+  --g-surface:       #141926;
+  --g-surface-2:     #0f1420;
+  --g-border:        #232c40;
+  --g-border-strong: #33405c;
+
+  --g-text:          #f1f5f9;
+  --g-text-soft:     #cbd5e1;
+  --g-muted:         #94a3b8;
+
+  --g-accent:        #818cf8;
+  --g-accent-hover:  #a5b4fc;
+  --g-accent-ink:    #ffffff;
+  --g-accent-soft:   rgba(129, 140, 248, 0.14);
+  --g-accent-ring:   rgba(129, 140, 248, 0.35);
+
+  --g-good:          #34d399;
+  --g-good-soft:     rgba(52, 211, 153, 0.12);
+  --g-bad:           #f87171;
+  --g-bad-soft:      rgba(248, 113, 113, 0.12);
+  --g-warn:          #fbbf24;
+  --g-warn-soft:     rgba(251, 191, 36, 0.12);
+
+  --g-input-bg:      #0f1420;
+  --g-input-border:  #33405c;
+  --g-code-bg:       #0f1420;
+
+  --g-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --g-shadow-md: 0 1px 3px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --g-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.5}
-.hero{position:static;background:none;color:var(--text);
-  padding:14px 20px 6px;box-shadow:none}
-.hero-inner{max-width:1024px;margin:0 auto;display:flex;align-items:center;gap:14px}
-.logo-badge{width:48px;height:48px;flex:0 0 48px;border-radius:14px;background:var(--primary);
-  display:flex;align-items:center;justify-content:center;border:none}
-.logo-badge svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.hero h1{margin:0;font-size:1.45rem;letter-spacing:.2px}
-.hero .tagline{margin:2px 0 0;font-size:.85rem;color:var(--muted);opacity:1}
-.theme-pill{margin-left:auto;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);
-  border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.85rem}
-.theme-pill:hover{background:rgba(255,255,255,.24)}
-.theme-pill svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
-main{max-width:1024px;margin:0 auto;padding:20px 16px 60px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;
-  box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
-.card-head{display:flex;align-items:center;gap:10px;margin:0 0 14px}
-.icon-chip{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:var(--chip-bg);
-  display:flex;align-items:center;justify-content:center}
-.icon-chip svg{width:19px;height:19px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.card-head h2{margin:0;font-size:1.12rem}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.field{margin-bottom:12px}
-.field label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
-input[type=text],input[type=number],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--input-border);
-  border-radius:10px;background:var(--input-bg);color:var(--text);font-size:.95rem}
-input:focus,select:focus{outline:2px solid var(--primary2);border-color:var(--primary2)}
-.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;cursor:pointer;
-  font-size:.92rem;font-weight:600;padding:10px 16px}
-.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
-  box-shadow:0 4px 14px rgba(109,40,217,.35)}
-[data-theme="dark"] .btn-primary{color:#fff}
-.btn-primary:hover{filter:brightness(1.08)}
-.btn-secondary{background:transparent;border:1px solid var(--input-border);color:var(--text)}
-.btn-secondary:hover{border-color:var(--primary)}
-.btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
-.btn-danger:hover{background:var(--danger-bg)}
-.btn-sm{padding:6px 10px;font-size:.8rem;border-radius:8px}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-[hidden]{display:none!important}
-.debt-item{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;background:var(--zebra)}
-.debt-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.debt-name{font-weight:700;font-size:1.02rem}
-.debt-meta{color:var(--muted);font-size:.85rem}
-.debt-actions{margin-left:auto;display:flex;gap:8px}
-.tabs{display:flex;background:var(--chip-bg);border-radius:12px;padding:4px;gap:4px;margin-bottom:14px}
-.tab{flex:1;border:none;background:transparent;color:var(--muted);border-radius:9px;padding:10px;cursor:pointer;
-  font-weight:600;font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:8px}
-.tab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.tab.active{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 3px 10px rgba(109,40,217,.35)}
-[data-theme="dark"] .tab.active{color:#fff}
-.order-row{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:10px;
-  padding:8px 12px;margin-bottom:8px;background:var(--zebra)}
-.order-rank{font-weight:800;color:var(--primary);min-width:26px}
-.order-name{flex:1;font-weight:600}
-.order-btns{display:flex;gap:6px}
-.stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px}
-.stat{border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--zebra);position:relative}
-.stat .s-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
-.stat .s-val{font-size:1.35rem;font-weight:800;margin-top:4px}
-.stat .s-sub{font-size:.8rem;color:var(--muted)}
-.stat .best{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#059669,#34d399);color:#fff;
-  font-size:.7rem;font-weight:700;border-radius:999px;padding:3px 10px}
-.progress{height:10px;background:var(--bar);border-radius:999px;overflow:hidden;margin:10px 0 4px}
-.progress>div{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));border-radius:999px}
-.table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
-table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
-thead th{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;text-align:left;
-  padding:10px 12px;font-size:.78rem;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
-[data-theme="dark"] thead th{color:#fff}
-tbody td{padding:9px 12px;border-top:1px solid var(--border);white-space:nowrap}
-tbody tr:nth-child(even){background:var(--zebra)}
-.num{text-align:right;font-variant-numeric:tabular-nums}
-canvas.chart{width:100%;height:260px;display:block}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin:8px 0}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 6px;margin:0;font:inherit;color:inherit;cursor:pointer;border-radius:6px}
-.legend-btn:hover{text-decoration:underline}
-.legend-btn:focus{outline:none}
-.legend-btn:focus-visible{outline:2px solid var(--g-accent,#4f46e5);outline-offset:2px}
-.legend-btn[aria-pressed="true"]{font-weight:700}
-.dot{width:12px;height:12px;border-radius:50%;display:inline-block}
-.notice{border-left:4px solid var(--primary);background:var(--chip-bg);border-radius:0 10px 10px 0;
-  padding:12px 16px;margin:12px 0;font-size:.92rem}
-.warnbox{border-left:4px solid var(--warn);background:var(--warn-bg);border-radius:0 10px 10px 0;
-  padding:12px 16px;margin:12px 0;font-size:.92rem;color:var(--text)}
-.err{color:var(--danger);font-size:.88rem;margin-top:6px;min-height:1.2em}
-input[type=range]{width:100%;accent-color:var(--primary);margin-left:0;margin-right:0}
-.slider-val{font-weight:800;color:var(--primary);font-size:1.1rem}
-footer{max-width:1024px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:.82rem;text-align:center}
-footer a{color:var(--primary)}
-.disclaimer{margin-top:8px;font-size:.78rem;opacity:.85}
-@media(max-width:640px){
-  .grid2{grid-template-columns:1fr}
-  .stat-cards{grid-template-columns:1fr 1fr}
-  .hero h1{font-size:1.15rem}
-  .hero .tagline{display:none}
-  .card{padding:16px}
-  .tab{font-size:.78rem;padding:8px 4px;gap:5px}
-  .tab svg{width:14px;height:14px}
-  .slider-val{font-size:1rem}
-  .field label{overflow-wrap:anywhere}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; }
+
+.g-app {
+  font-family: var(--g-font);
+  background: var(--g-bg);
+  color: var(--g-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
-/* Glenerds cross-promo: More Apps button + bottom CTA (shared) */
+
+.g-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+/* ---------- 3. TYPOGRAPHY ---------- */
+.g-display  { font-size: 1.9rem;  font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;  margin: 0 0 8px; }
+.g-title    { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;  margin: 0 0 6px; }
+.g-body     { font-size: 1rem;    color: var(--g-text-soft); margin: 0 0 12px; }
+.g-caption  { font-size: 0.85rem; color: var(--g-muted);    margin: 0; }
+.g-mono     { font-family: var(--g-mono); font-size: 0.9em; }
+
+/* ---------- 4. HEADER ---------- */
+.g-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 4px;
+}
+.g-brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.g-brand-mark {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--g-accent);
+  color: var(--g-accent-ink);
+  font-weight: 800; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-sm);
+  user-select: none;
+}
+.g-brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; line-height: 1.15; }
+.g-tagline { color: var(--g-muted); font-size: 0.92rem; margin: 6px 0 14px; max-width: 56ch; }
+
+.g-theme-toggle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  border-radius: var(--g-radius-pill);
+  padding: 8px 14px;
+  font-size: 0.88rem; font-weight: 600; font-family: var(--g-font);
+  cursor: pointer;
+  transition: border-color var(--g-ease), color var(--g-ease), transform var(--g-ease);
+  white-space: nowrap;
+}
+.g-theme-toggle:hover { border-color: var(--g-accent); color: var(--g-text); }
+.g-theme-toggle:active { transform: scale(0.97); }
+
+/* "More Apps" button — permanent top-bar element on every app (Glen's pick 2026-09-21) */
 .g-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
-.g-store-btn {
-  display: inline-flex; align-items: center;
-  background: var(--g-accent, #4f46e5);
-  color: #ffffff;
-  border-radius: var(--g-radius-pill, 999px);
-  padding: 8px 15px;
-  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
-  text-decoration: none; white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(0,0,0,.12);
-  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
-}
-.g-store-btn:hover { background: var(--g-accent-hover, #4338ca); color: var(--g-accent-ink, #ffffff); box-shadow: 0 4px 12px rgba(0,0,0,.16); }
-.g-store-btn:active { transform: scale(0.97); }
-.g-store-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
-/* Glenerds standard header cluster: More Apps + sample flask + theme + sound */
-.g-header-actions { margin-left: auto; flex-wrap: wrap; row-gap: 6px; justify-content: flex-end; }
-a.g-store-btn, header.hero .g-store-btn { color: #ffffff; }
+/* Glenerds standard cluster buttons: flask, dark-mode, sound — circular 44x44 icon-only */
 .round-btn {
+  flex: 0 0 auto;
   width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 0;
-  border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer; background: var(--btn-bg); border: 1px solid var(--btn-border);
-  color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,.10); flex: none;
-  transition: transform .08s ease, border-color .15s ease;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  color: var(--g-text);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.10);
+  font-size: 1.1rem;
 }
 .round-btn svg { width: 26px; height: 26px; flex: none; }
-.round-btn:hover { border-color: var(--g-accent, #4f46e5); }
-.round-btn:active { transform: scale(.92); border-color: var(--g-accent, #4f46e5); }
-.round-btn:focus { outline: none; }
-.round-btn:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
+/* Glen FINAL rev 4: all three icons fill their 44px button — flask 26px, theme+sound emoji 1.65rem */
 .round-btn.theme-toggle, .round-btn.sound-toggle { font-size: 1.65rem; line-height: 1; }
-/* header spec 2026-09-21: white round buttons; sample ON = accent-soft tint + accent
-   border/icon (NOT a solid accent fill); sound button stays white in all states */
+.round-btn:hover { border-color: var(--g-accent); }
+.round-btn:active { transform: scale(.92); border-color: var(--g-accent); }
+.round-btn:focus { outline: none; }
+.round-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+/* header spec 2026-09-21: sample ON = accent-soft tint + accent border/icon (NOT a solid
+   accent fill); sound button stays white in all states */
 .round-btn.sample-toggle[aria-pressed="true"] {
-  color: var(--g-accent, #4f46e5);
-  border-color: var(--g-accent, #4f46e5);
-  background: var(--g-accent-soft, #eef2ff);
+  color: var(--g-accent); border-color: var(--g-accent);
+  background: var(--g-accent-soft);
 }
-/* clickable comparison stat cards (click isolates that strategy's line) */
-.stat.spot-card { cursor: pointer; }
-.stat.spot-card:hover { border-color: var(--g-accent, #4f46e5); }
-.stat.spot-card:focus { outline: none; }
-.stat.spot-card:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
-.stat.spot-card[aria-pressed="true"] { border-color: var(--g-accent, #4f46e5); box-shadow: 0 0 0 2px var(--g-accent, #4f46e5); }
-.chart-cap { font-size: .8rem; color: var(--muted); margin: 6px 0 0; }
-/* balance-share donut */
-.donut-wrap { display: grid; grid-template-columns: 190px 1fr; gap: 18px; align-items: center; margin-top: 14px; }
-.donut-wrap svg { width: 100%; max-width: 190px; height: auto; display: block; margin: 0 auto; }
-.donut-seg { cursor: pointer; transition: opacity .15s; }
-.donut-seg:focus { outline: none; filter: drop-shadow(0 0 4px var(--g-accent, #4f46e5)); }
-.donut-legend { display: grid; gap: 6px; }
-.dl-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
-  background: none; border: 1px solid transparent; border-radius: 8px; padding: 6px 8px;
-  color: var(--text); font-size: .82rem; cursor: pointer; }
-.dl-item:hover { border-color: var(--border); }
-.dl-item:focus { outline: none; }
-.dl-item:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 1px; }
-.dl-item[aria-pressed="true"] { border-color: var(--g-accent, #4f46e5); background: var(--zebra); }
-.dl-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-.dl-item .dl-amt { margin-left: auto; font-weight: 700; white-space: nowrap; }
-.donut-detail { font-size: .85rem; color: var(--muted); margin-top: 10px; min-height: 1.4em; }
-.donut-detail strong { color: var(--text); }
-/* payoff-order timeline */
-.timeline { display: flex; align-items: stretch; gap: 0; margin-top: 14px; overflow-x: auto; padding-bottom: 4px; }
-.tl-step { flex: 1 1 0; min-width: 120px; text-align: center; cursor: pointer; background: none; border: none;
-  color: var(--text); padding: 6px 4px; border-radius: 10px; font-family: inherit; }
-.tl-step:hover { background: var(--zebra); }
-.tl-step:focus { outline: none; }
-.tl-step:focus-visible { outline: 2px solid var(--g-accent, #4f46e5); outline-offset: 2px; }
-.tl-dot { width: 30px; height: 30px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: .8rem; background: var(--zebra); border: 2px solid var(--border); color: var(--text); position: relative; z-index: 1; }
-.tl-step[aria-pressed="true"] .tl-dot { background: var(--g-accent, #4f46e5); border-color: var(--g-accent, #4f46e5); color: #fff; }
-.tl-name { font-size: .8rem; font-weight: 700; }
-.tl-when { font-size: .72rem; color: var(--muted); }
-.tl-rail { align-self: center; flex: 0 0 18px; height: 2px; background: var(--border); margin: 0 -4px; position: relative; top: -21px; }
-.tl-note { font-size: .8rem; color: var(--muted); margin-top: 8px; min-height: 1.4em; }
-.tl-note strong { color: var(--text); }
-.sub-h { font-size: .95rem; font-weight: 800; margin: 18px 0 2px; }
-@media (max-width: 640px) { .donut-wrap { grid-template-columns: 1fr; } }
-@media (max-width: 640px) {
-  .hero-inner { flex-wrap: wrap; }
-  .g-header-actions { margin-left: 0; gap: 6px; }
+@media (max-width: 480px) {
+  .g-header-actions { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 }
-.g-cta-strip {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin: 28px 0 0; padding: 16px 20px;
-  border-radius: 14px;
-  background: rgba(79,70,229,.08);
-  border: 1px solid rgba(79,70,229,.28);
-  color: inherit;
-  font-size: 0.95rem; font-weight: 600;
-  text-decoration: none;
-  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+.g-store-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--g-accent);
+  color: #fff; /* header spec + legibility rule: white text on accent in BOTH modes */
+  border-radius: var(--g-radius-pill);
+  padding: 8px 15px;
+  font-family: var(--g-font);
+  font-size: 0.88rem; font-weight: 700; line-height: 1.2;
+  text-decoration: none; white-space: nowrap;
+  box-shadow: var(--g-shadow-sm);
+  transition: background var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
 }
-.g-cta-strip:hover { background: rgba(79,70,229,.14); border-color: rgba(79,70,229,.45); }
-.g-cta-strip:active { transform: scale(0.99); }
-.g-cta-strip:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
-.g-cta-strip .g-cta-arrow { color: #4f46e5; font-weight: 700; font-size: 1.4em; line-height: 1; }
-[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
+.g-store-btn:hover { background: var(--g-accent-hover); box-shadow: var(--g-shadow-md); color: #fff; }
+.g-store-btn:active { transform: scale(0.97); }
+.g-store-btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
 @media (max-width: 440px) {
   .g-store-btn { padding: 8px 12px; }
   .g-header-actions { gap: 6px; }
 }
+
+/* Macro calorie-split donut chart */
+.macro-pie-wrap {
+  display: flex; align-items: center; justify-content: center; gap: 26px;
+  flex-wrap: wrap;
+  margin: 20px 0 6px;
+}
+.macro-pie-box { position: relative; width: min(300px, 80vw); flex: 0 0 auto; }
+.macro-pie { display: block; width: 100%; height: auto; }
+.macro-pie-track { stroke: var(--g-surface-2); }
+.pie-seg { transition: transform 300ms ease, opacity 300ms ease; cursor: pointer; }
+.pie-seg:focus { outline: none; }
+.pie-seg:focus-visible { filter: drop-shadow(0 0 6px var(--g-accent, #4f46e5)); }
+.macro[data-macro] { cursor: pointer; border-radius: 10px; }
+.macro[data-macro]:hover .bar { border-color: var(--g-accent); }
+.macro[data-macro].sel .bar { border-color: var(--g-accent); box-shadow: 0 0 0 1px var(--g-accent); }
+.macro[data-macro]:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 4px; }
+.macro-hint { font-size: 0.78rem; color: var(--g-muted); margin: -4px 0 4px; }
+.pie-protein { stroke: #2563eb; }
+.pie-carbs   { stroke: #d97706; }
+.pie-fat     { stroke: #9333ea; }
+[data-theme="dark"] .pie-protein { stroke: #7aa8ff; }
+[data-theme="dark"] .pie-carbs   { stroke: #fbbf24; }
+[data-theme="dark"] .pie-fat     { stroke: #c084fc; }
+.pie-center {
+  position: absolute; inset: 0; margin: auto;
+  width: 62%; height: 62%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; pointer-events: none;
+  overflow: hidden;
+}
+.pie-center .v {
+  font-size: clamp(1.25rem, 5.2vw, 1.7rem); font-weight: 800; letter-spacing: -0.02em;
+  color: var(--g-text); line-height: 1.1;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pie-center .l { font-size: 0.72rem; color: var(--g-muted); margin-top: 2px; }
+.macro .mvals { font-variant-numeric: tabular-nums; color: var(--g-muted); font-size: 0.92rem; }
+.macro .mvals b { color: var(--g-text); font-weight: 800; font-size: 1.08rem; }
+
+/* ---------- 5. TABS (segmented control) ---------- */
+.g-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  background: var(--g-surface-2);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 4px;
+  margin: 14px 0;
+}
+.g-tab {
+  flex: 1 1 auto;
+  appearance: none;
+  border: 0; background: transparent;
+  color: var(--g-muted);
+  font-family: var(--g-font);
+  font-size: 0.93rem; font-weight: 600;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
+  white-space: nowrap;
+}
+.g-tab:hover { color: var(--g-text); }
+.g-tab[aria-selected="true"] {
+  background: var(--g-surface);
+  color: var(--g-text);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-tab:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+
+/* ---------- 6. CARDS ---------- */
+.g-card {
+  background: var(--g-surface);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-lg);
+  padding: 22px;
+  margin: 16px 0;
+  box-shadow: var(--g-shadow-sm);
+}
+.g-card > .g-title { margin-bottom: 4px; }
+.g-card .g-desc { color: var(--g-muted); font-size: 0.92rem; margin: 0 0 14px; }
+.g-card-flat { box-shadow: none; }
+
+/* ---------- 7. BUTTONS ---------- */
+.g-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--g-font);
+  font-size: 0.95rem; font-weight: 650;
+  border-radius: 10px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--g-ease), border-color var(--g-ease),
+              color var(--g-ease), transform var(--g-ease), box-shadow var(--g-ease);
+  text-decoration: none;
+  line-height: 1.2;
+}
+.g-btn:active { transform: translateY(1px) scale(0.99); }
+.g-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.g-btn-primary {
+  background: var(--g-accent);
+  border-color: var(--g-accent);
+  color: var(--g-accent-ink);
+  box-shadow: var(--g-shadow-sm);
+}
+.g-btn-primary:hover:not(:disabled) { background: var(--g-accent-hover); border-color: var(--g-accent-hover); }
+
+.g-btn-secondary {
+  background: var(--g-surface);
+  border-color: var(--g-border-strong);
+  color: var(--g-text);
+}
+.g-btn-secondary:hover:not(:disabled) { border-color: var(--g-accent); color: var(--g-accent); }
+
+.g-btn-danger {
+  background: var(--g-bad-soft);
+  border-color: transparent;
+  color: var(--g-bad);
+}
+.g-btn-danger:hover:not(:disabled) { background: var(--g-bad); color: #fff; }
+
+.g-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--g-text-soft);
+}
+.g-btn-ghost:hover:not(:disabled) { background: var(--g-surface-2); color: var(--g-text); }
+
+.g-btn-sm { font-size: 0.85rem; padding: 8px 13px; border-radius: 8px; }
+.g-btn-block { display: flex; width: 100%; }
+.g-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+
+/* ---------- 8. FORMS ---------- */
+.g-field { margin: 12px 0; }
+.g-label { display: block; font-weight: 650; font-size: 0.92rem; margin-bottom: 6px; color: var(--g-text); }
+.g-hint { font-size: 0.82rem; color: var(--g-muted); margin-top: 6px; }
+
+.g-input, .g-select, .g-textarea {
+  width: 100%;
+  font-family: var(--g-font);
+  font-size: 1rem;
+  color: var(--g-text);
+  background: var(--g-input-bg);
+  border: 1px solid var(--g-input-border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  transition: border-color var(--g-ease), box-shadow var(--g-ease);
+}
+.g-input::placeholder, .g-textarea::placeholder { color: var(--g-muted); opacity: 0.75; }
+.g-input:hover, .g-select:hover, .g-textarea:hover { border-color: var(--g-border-strong); }
+.g-input:focus, .g-select:focus, .g-textarea:focus {
+  outline: none;
+  border-color: var(--g-accent);
+  box-shadow: 0 0 0 3px var(--g-accent-ring);
+}
+.g-textarea { min-height: 96px; resize: vertical; }
+.g-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+[data-theme="dark"] .g-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.g-input:disabled, .g-select:disabled, .g-textarea:disabled {
+  opacity: 0.55; cursor: not-allowed; background: var(--g-surface-2);
+}
+
+.g-input.is-invalid, .g-select.is-invalid {
+  border-color: var(--g-bad);
+}
+.g-input.is-invalid:focus, .g-select.is-invalid:focus {
+  box-shadow: 0 0 0 3px var(--g-bad-soft);
+}
+.g-error { display: none; color: var(--g-bad); font-size: 0.86rem; font-weight: 600; margin-top: 6px; }
+.g-error.show { display: block; }
+
+.g-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.95rem; color: var(--g-text-soft);
+  cursor: pointer; margin: 10px 0;
+}
+.g-check input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  margin: 1px 0 0;
+  border: 1.5px solid var(--g-input-border);
+  border-radius: 6px;
+  background: var(--g-input-bg);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--g-ease), border-color var(--g-ease);
+}
+.g-check input[type="radio"] { border-radius: 50%; }
+.g-check input:checked { background: var(--g-accent); border-color: var(--g-accent); }
+.g-check input:checked::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: no-repeat center / 12px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5 6.8 11.8 12.5 4.5' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.g-check input[type="radio"]:checked::after {
+  background: none;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--g-accent-ink);
+}
+.g-check input:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--g-accent-ring); }
+
+/* ---------- 9. RESULT PANELS ---------- */
+.g-result {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: var(--g-radius-md);
+  border: 1px solid var(--g-border);
+  background: var(--g-surface-2);
+}
+.g-big-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 2px 0 6px;
+}
+.g-verdict { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+.g-verdict-good { color: var(--g-good); }
+.g-verdict-bad  { color: var(--g-bad); }
+.g-verdict-warn { color: var(--g-warn); }
+.g-result-note { color: var(--g-text-soft); font-size: 0.95rem; margin: 0; }
+
+.g-math {
+  font-family: var(--g-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background: var(--g-code-bg);
+  border: 1px solid var(--g-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  color: var(--g-text-soft);
+}
+
+/* ---------- 10. STAT ROWS ---------- */
+.g-stats { margin: 12px 0 0; border-top: 1px solid var(--g-border); }
+.g-stat {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--g-border);
+  font-size: 0.95rem;
+}
+.g-stat:last-child { border-bottom: 0; }
+.g-stat .g-stat-label { color: var(--g-muted); }
+.g-stat .g-stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+.g-stat .g-stat-value.good { color: var(--g-good); }
+.g-stat .g-stat-value.bad  { color: var(--g-bad); }
+
+/* ---------- 11. TABLES ---------- */
+.g-table-wrap { overflow-x: auto; margin: 12px -4px 0; padding: 0 4px; }
+.g-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.g-table th {
+  text-align: left;
+  font-size: 0.76rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--g-muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--g-border-strong);
+  white-space: nowrap;
+}
+.g-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--g-border);
+  color: var(--g-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+.g-table tr:last-child td { border-bottom: 0; }
+.g-table tbody tr { transition: background var(--g-ease); }
+.g-table tbody tr:hover { background: var(--g-surface-2); }
+
+/* ---------- 12. BADGES / PILLS ---------- */
+.g-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; font-weight: 700;
+  border-radius: var(--g-radius-pill);
+  padding: 4px 11px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.g-badge-accent { background: var(--g-accent-soft); color: var(--g-accent); }
+.g-badge-good   { background: var(--g-good-soft);   color: var(--g-good); }
+.g-badge-bad    { background: var(--g-bad-soft);    color: var(--g-bad); }
+.g-badge-warn   { background: var(--g-warn-soft);   color: var(--g-warn); }
+.g-badge-neutral{ background: var(--g-surface-2);    color: var(--g-muted); border: 1px solid var(--g-border); }
+.g-badge-dot::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+}
+
+/* ---------- 13. EMPTY STATES ---------- */
+.g-empty {
+  text-align: center;
+  border: 1.5px dashed var(--g-border-strong);
+  border-radius: var(--g-radius-lg);
+  padding: 36px 20px;
+  margin: 16px 0;
+  color: var(--g-muted);
+}
+.g-empty-icon { font-size: 2rem; margin-bottom: 8px; }
+.g-empty .g-title { font-size: 1.05rem; color: var(--g-text-soft); }
+.g-empty p { font-size: 0.9rem; margin: 4px 0 14px; }
+
+/* ---------- 14. FOOTER ---------- */
+.g-footer {
+  text-align: center;
+  margin: 32px 0 8px;
+  font-size: 0.85rem;
+  color: var(--g-muted);
+}
+.g-footer a { color: var(--g-accent); text-decoration: none; font-weight: 600; }
+.g-footer a:hover { text-decoration: underline; }
+.g-footer .g-fine { display: block; margin-top: 8px; font-size: 0.78rem; }
+
+/* Bottom CTA strip — permanent cross-promo above the footer (preview on MacroTrack, Glen's call 2026-09-21) */
+.g-cta-strip {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 28px 0 0;
+  padding: 16px 20px;
+  border-radius: var(--g-radius-lg, 14px);
+  background: color-mix(in srgb, var(--g-accent) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--g-accent) 28%, transparent);
+  color: var(--g-text);
+  font-family: var(--g-font);
+  font-size: 0.95rem; font-weight: 600;
+  text-decoration: none;
+  transition: background var(--g-ease), border-color var(--g-ease), transform var(--g-ease);
+}
+.g-cta-strip:hover {
+  background: color-mix(in srgb, var(--g-accent) 15%, transparent);
+  border-color: color-mix(in srgb, var(--g-accent) 45%, transparent);
+}
+.g-cta-strip:active { transform: scale(0.99); }
+.g-cta-strip:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.g-cta-strip .g-cta-arrow { color: var(--g-accent); font-weight: 700; font-size: 1.4em; line-height: 1; transform: translateY(-0.04em); }
+[data-theme="dark"] .g-cta-strip .g-cta-arrow { color: #a5b4fc; }
+
+/* ---------- 15. LAYOUT HELPERS ---------- */
+.g-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.g-stack > * + * { margin-top: 12px; }
+.g-divider { border: 0; border-top: 1px solid var(--g-border); margin: 20px 0; }
+
+/* ---------- 16. FOCUS (accessibility) ---------- */
+.g-btn:focus-visible,
+.g-theme-toggle:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--g-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 17. RESPONSIVE ---------- */
+@media (max-width: 560px) {
+  .g-wrap { padding: 14px 12px 40px; }
+  .g-display { font-size: 1.6rem; }
+  .g-card { padding: 18px 16px; border-radius: 14px; }
+  .g-big-number { font-size: 2rem; }
+  .g-grid-2, .g-grid-3 { grid-template-columns: 1fr; }
+  .g-brand-mark { width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px; }
+  .g-brand-name { font-size: 1.2rem; }
+  .g-tab { padding: 9px 10px; font-size: 0.88rem; }
+}
+
+/* ---------- 18. MOTION PREFERENCE ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+
+/* ---------- 19. ICONS ----------
+   Requires the glenerds-icons.svg sprite inlined in the page (see
+   INTEGRATION.md). <use> inherits stroke from the wrapper, so the two
+   variants are just classes on the <svg> element. */
+.g-icon {
+  width: 24px; height: 24px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  fill: none;
+  vertical-align: -4px;
+}
+.g-icon-sm { width: 18px; height: 18px; }
+.g-icon-lg { width: 32px; height: 32px; }
+.g-icon-flash { stroke: url(#g-grad-indigo); }
+.g-btn .g-icon { width: 20px; height: 20px; vertical-align: -3px; }
+.g-tab .g-icon { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; }
+
+/* ---------- 20. APP ICONS ----------
+   iOS-style rounded-square gradient tile + one white glyph.
+   Each app picks its own gradient via --g-ai1 / --g-ai2. */
+.g-appicon {
+  --g-ai1: #6366f1;
+  --g-ai2: #8b5cf6;
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--g-ai1), var(--g-ai2));
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: var(--g-shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  flex: 0 0 auto;
+}
+.g-appicon .g-icon { width: 32px; height: 32px; color: #ffffff; }
+.g-appicon-sm { width: 44px; height: 44px; border-radius: 13px; }
+.g-appicon-sm .g-icon { width: 24px; height: 24px; }
+.g-appicon-row { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; margin: 12px 0; }
+.g-appicon-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+/* ===== END GLENERDS DESIGN SYSTEM v1.0 ===== */
+
+/* ===== MacroTrack app styles (visual layer only — no logic) ===== */
+.g-wrap.wide { max-width: 1080px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+@media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card-subhead { display: flex; align-items: center; gap: 8px; font-size: 1.02rem; font-weight: 700; letter-spacing: -0.01em; margin: 20px 0 4px; }
+.card-subhead .g-icon { width: 20px; height: 20px; }
+/* Segmented controls — same visuals as g-tabs, driven by aria-pressed (app JS) */
+.seg {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  background: var(--g-surface-2);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 4px;
+  margin: 6px 0 2px;
+}
+.seg button {
+  flex: 1 1 auto;
+  appearance: none; border: 0; background: transparent;
+  color: var(--g-muted);
+  font-family: var(--g-font);
+  font-size: 0.93rem; font-weight: 600;
+  border-radius: 9px;
+  padding: 10px 14px;
+  min-height: 44px;
+  cursor: pointer;
+  transition: background var(--g-ease), color var(--g-ease), box-shadow var(--g-ease);
+  white-space: nowrap;
+}
+.seg button:hover { color: var(--g-text); }
+.seg button[aria-pressed="true"] {
+  background: var(--g-surface);
+  color: var(--g-text);
+  box-shadow: var(--g-shadow-sm);
+}
+.seg button:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+@media (max-width: 560px) { .seg button { font-size: 0.88rem; padding: 9px 10px; } }
+input[type="range"] { width: 100%; accent-color: var(--g-accent); margin-top: 8px; }
+/* Result stat tiles */
+.bignums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 6px 0 10px; }
+@media (max-width: 520px) { .bignums { grid-template-columns: 1fr; } }
+.bignum {
+  background: var(--g-surface-2);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 14px 10px;
+  text-align: center;
+}
+.bignum .v {
+  font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums; line-height: 1.15;
+}
+.bignum .l { color: var(--g-muted); font-size: 0.82rem; margin-top: 4px; }
+.bignum.hero { border: 1.5px solid var(--g-accent); background: var(--g-accent-soft); }
+.bignum.hero .v { color: var(--g-accent); }
+.bignum[data-key] { cursor: pointer; }
+.bignum[data-key]:focus { outline: none; }
+.bignum[data-key]:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.bignum.spot { border-color: var(--g-accent); box-shadow: 0 0 0 2px var(--g-accent-ring); }
+/* Calorie ladder — horizontal bar comparison of BMR / TDEE / target */
+.ladder { display: grid; gap: 8px; margin: 4px 0 6px; }
+.ladder-row {
+  display: grid; grid-template-columns: 92px 1fr auto; gap: 10px; align-items: center;
+  padding: 8px 12px; border: 1px solid var(--g-border); border-radius: var(--g-radius-md);
+  background: var(--g-surface); cursor: pointer;
+}
+.ladder-row .lad-label { font-weight: 700; font-size: 0.85rem; }
+.ladder-row .lad-track { height: 14px; border-radius: 999px; background: var(--g-surface-2); overflow: hidden; }
+.ladder-row .lad-fill { height: 100%; border-radius: 999px; width: 0; transition: width 300ms ease; }
+.lad-fill-bmr { background: #0ea5e9; }
+.lad-fill-tdee { background: #4f46e5; }
+.lad-fill-target { background: #10b981; }
+.ladder-row .lad-val { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 70px; text-align: right; }
+.ladder.dim .ladder-row:not(.spot) { opacity: 0.45; }
+.ladder-row.spot { border-color: var(--g-accent); box-shadow: 0 0 0 2px var(--g-accent-ring); }
+.ladder-row:focus { outline: none; }
+.ladder-row:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.ladder-readout { font-size: 0.9rem; color: var(--g-text-soft); margin: 2px 0 8px; min-height: 1.25em; }
+/* ---- unified chart detail panel (spotlight breakdown) ---- */
+.chart-detail{margin:10px 0 6px;border:1px solid var(--g-border);border-radius:12px;padding:14px 16px;background:var(--g-surface)}
+.cd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.cd-title{font-weight:800;font-size:1.02rem;color:var(--g-text)}
+.cd-sub{color:var(--g-muted);font-size:.85rem;margin-top:2px}
+.cd-x{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:1px solid var(--g-border);background:var(--g-surface);color:var(--g-text);font-size:1.25rem;line-height:1;cursor:pointer}
+.cd-rows{display:grid;gap:6px;max-height:260px;overflow:auto}
+.cd-row{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;background:var(--g-surface-2)}
+.cd-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.88rem;color:var(--g-text)}
+.cd-meta{color:var(--g-muted);font-size:.8rem;white-space:nowrap}
+.cd-val{font-weight:700;font-size:.88rem;white-space:nowrap;color:var(--g-accent)}
+/* Goal gauge — semicircular gauge over the -30%..+20% slider range */
+.gauge-wrap { display: flex; gap: 14px; align-items: center; margin: 10px 0 4px; flex-wrap: wrap; }
+.gauge-svg { width: min(220px, 62vw); height: auto; flex: 0 0 auto; }
+.gauge-svg text { font-family: var(--g-font); }
+.gauge-num { font-size: 1.55rem; font-weight: 800; fill: var(--g-text); }
+.gauge-cap { color: var(--g-muted); font-size: 0.82rem; }
+/* Macro bars */
+.macro { margin: 12px 0; }
+.macro .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.macro .name { font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+.macro .bar { height: 10px; border-radius: 6px; background: var(--g-surface-2); border: 1px solid var(--g-border); margin-top: 8px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 6px; }
+.bar-protein { background: #2563eb; }
+.bar-carbs { background: #d97706; }
+.bar-fat { background: #9333ea; }
+[data-theme="dark"] .bar-protein { background: #7aa8ff; }
+[data-theme="dark"] .bar-carbs { background: #fbbf24; }
+[data-theme="dark"] .bar-fat { background: #c084fc; }
+.macro .pct { color: var(--g-muted); font-size: 0.85rem; }
+.macro-protein { color: #2563eb; }
+.macro-carbs { color: #d97706; }
+.macro-fat { color: #9333ea; }
+[data-theme="dark"] .macro-protein { color: #7aa8ff; }
+[data-theme="dark"] .macro-carbs { color: #fbbf24; }
+[data-theme="dark"] .macro-fat { color: #c084fc; }
+/* Notice boxes */
+.notice {
+  border: 1px solid var(--g-border);
+  border-left: 4px solid var(--g-accent);
+  background: var(--g-accent-soft);
+  border-radius: var(--g-radius-md);
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 0.92rem;
+  color: var(--g-text-soft);
+}
+/* Show-your-work */
+.work { font-size: 0.9rem; }
+.work .step {
+  background: var(--g-code-bg);
+  border: 1px solid var(--g-border);
+  border-radius: var(--g-radius-md);
+  padding: 12px 14px;
+  margin: 10px 0;
+  overflow-x: auto;
+  font-family: var(--g-mono);
+  font-size: 0.86rem;
+  line-height: 1.75;
+  color: var(--g-text-soft);
+}
+.work .step .t { font-weight: 700; font-family: var(--g-font); margin-bottom: 6px; color: var(--g-text); }
+.work .formula-name { font-weight: 700; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.disclaimer { color: var(--g-muted); font-size: 0.85rem; margin: 16px 0 0; }
+#print-head { display: none; }
 @media print {
-  .g-store-btn, .g-header-actions, .g-cta-strip { display: none !important; }
+  header.g-header .g-theme-toggle, header.g-header .g-header-actions, header.g-header .g-store-btn, .g-cta-strip, .actions, .g-footer, #inputs-card, .no-print { display: none !important; }
+  #print-head { display: block; margin-bottom: 12px; }
+  body { background: #fff; color: #000; }
+  .g-card { break-inside: avoid; background: #fff; border-color: #999; }
+  .g-wrap { max-width: none; }
 }
 </style>
 </head>
-<body>
-<header class="hero">
-  <div class="hero-inner">
-    <div class="logo-badge" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/><path d="M3 21h18"/></svg>
-    </div>
-    <div>
-      <h1>DebtPayoff Strategy Planner</h1>
-      <p class="tagline">Snowball vs avalanche vs custom — compare payoff plans offline, privately.</p>
+<body class="g-app">
+<!-- GLENERDS ICON SET v1.0 — inline sprite (pasted verbatim) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-grad-indigo" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#818cf8"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="g-grad-sunset" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="g-grad-ocean" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="g-grad-royal" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="18" y2="20">
+      <stop offset="0" stop-color="#c084fc"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <symbol id="g-i-calc" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6.5" y="3" width="11" height="18" rx="2"/>
+    <path d="M9.5 7.5h5"/>
+    <path d="M9.5 12h.02M12 12h.02M14.5 12h.02M9.5 15.5h.02M12 15.5h.02M14.5 15.5h.02"/>
+  </symbol>
+  <symbol id="g-i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20h16"/>
+    <path d="M7.5 20v-6.5M12 20V6.5M16.5 20v-9.5"/>
+  </symbol>
+  <symbol id="g-i-cal" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>
+    <path d="M8 3v3.5M16 3v3.5M3.5 10h17"/>
+  </symbol>
+  <symbol id="g-i-check" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.8 12.6l4.7 4.7L19.2 7.2"/>
+  </symbol>
+  <symbol id="g-i-flame" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.2c.9 2.8-.5 4.3-1.7 5.6C8.7 10.5 7 12.4 7 15.2a5 5 0 0010 0c0-2-1-3.5-2-4.9-.4 1.1-1.1 1.9-2.1 2.3.4-3-.4-6.7-.9-9.4z"/>
+  </symbol>
+  <symbol id="g-i-star" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/>
+  </symbol>
+  <symbol id="g-i-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.2 14.8A8.3 8.3 0 019.2 3.8a8.3 8.3 0 1011 11z"/>
+  </symbol>
+  <symbol id="g-i-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4.2"/>
+    <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/>
+  </symbol>
+  <symbol id="g-i-plus" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5.5v13M5.5 12h13"/>
+  </symbol>
+  <symbol id="g-i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 6.8h15"/>
+    <path d="M9.5 6.2V4.8a1.3 1.3 0 011.3-1.3h2.4a1.3 1.3 0 011.3 1.3v1.4"/>
+    <path d="M6.8 6.8l.9 12.4a1.6 1.6 0 001.6 1.5h5.4a1.6 1.6 0 001.6-1.5l.9-12.4"/>
+    <path d="M10 10.8v5.5M14 10.8v5.5"/>
+  </symbol>
+  <symbol id="g-i-download" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4v10.5"/>
+    <path d="M7.6 11L12 15.4 16.4 11"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+  <symbol id="g-i-upload" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 15.5V5"/>
+    <path d="M7.6 9.4L12 5l4.4 4.4"/>
+    <path d="M4.5 19.5h15"/>
+  </symbol>
+  <symbol id="g-i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3.4"/>
+    <path d="M12 5v2.2M12 16.8V19M5 12h2.2M16.8 12H19M7.1 7.1l1.5 1.5M15.4 15.4l1.5 1.5M16.9 7.1l-1.5 1.5M8.6 15.4l-1.5 1.5"/>
+  </symbol>
+  <symbol id="g-i-heart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 20.5c-5-3.4-8.5-6.8-8.5-10.6C3.5 7.1 5.7 5 8.4 5c1.5 0 2.8.8 3.6 2 .8-1.2 2.1-2 3.6-2 2.7 0 4.9 2.1 4.9 4.9 0 3.8-3.5 7.2-8.5 10.6z"/>
+  </symbol>
+  <symbol id="g-i-clock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 7.3V12l3.2 2"/>
+  </symbol>
+  <symbol id="g-i-target" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <circle cx="12" cy="12" r="4.8"/>
+    <circle cx="12" cy="12" r="1.4"/>
+  </symbol>
+  <symbol id="g-i-trophy" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.5 4h9v4.5a4.5 4.5 0 01-9 0V4z"/>
+    <path d="M7.5 5.5H4.5a3.5 3.5 0 003.8 3.8M16.5 5.5h3a3.5 3.5 0 01-3.8 3.8"/>
+    <path d="M12 13v4M8.5 20.5h7"/>
+  </symbol>
+  <symbol id="g-i-tag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.6 13.4L11 3.8a2 2 0 00-1.4-.6H5a1.8 1.8 0 00-1.8 1.8v4.6c0 .5.2 1 .6 1.4l9.6 9.6a1.9 1.9 0 002.7 0l4.5-4.5a1.9 1.9 0 000-2.7z"/>
+    <circle cx="8" cy="8" r="1.4"/>
+  </symbol>
+  <symbol id="g-i-search" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="6.5"/>
+    <path d="M15.8 15.8l4.7 4.7"/>
+  </symbol>
+  <symbol id="g-i-edit" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20l1.2-4.2L16.7 4.3a2 2 0 012.9 2.9L8.1 18.7 4 20z"/>
+    <path d="M14.8 6.2l2.9 2.9"/>
+  </symbol>
+  <symbol id="g-i-share" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6.5" cy="12" r="2.5"/>
+    <circle cx="17" cy="5.8" r="2.5"/>
+    <circle cx="17" cy="18.2" r="2.5"/>
+    <path d="M8.7 10.9l6.1-3.5M8.7 13.1l6.1 3.5"/>
+  </symbol>
+  <symbol id="g-i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/>
+    <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5"/>
+    <path d="M12 14.5v2"/>
+  </symbol>
+  <symbol id="g-i-sparkles" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8-4.8-1.7 4.8-1.7L12 3.5z"/>
+    <path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/>
+  </symbol>
+  <symbol id="g-i-home" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11.2L12 4l8 7.2"/>
+    <path d="M6.2 9.8V20h11.6V9.8"/>
+    <path d="M10 20v-4.8h4V20"/>
+  </symbol>
+  <symbol id="g-i-back" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.8 5.5L8.3 12l6.5 6.5"/>
+  </symbol>
+  <symbol id="g-i-x" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 6l12 12M18 6L6 18"/>
+  </symbol>
+  <symbol id="g-i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.3"/>
+    <path d="M12 11v5"/>
+    <path d="M12 7.6v.2"/>
+  </symbol>
+  <symbol id="g-i-wallet" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="6.5" width="18" height="13" rx="3"/>
+    <path d="M3 9.8c4 0 5 1.6 9 1.6s5-1.6 9-1.6"/>
+    <circle cx="17.5" cy="14.8" r="1.1"/>
+  </symbol>
+  <symbol id="g-i-list" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 6.5h11M9 12h11M9 17.5h11"/>
+    <path d="M4.5 6.5h.02M4.5 12h.02M4.5 17.5h.02"/>
+  </symbol>
+  <symbol id="g-i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.2 16v-4.8a5.8 5.8 0 0111.6 0V16l1.7 2.8H4.5L6.2 16z"/>
+    <path d="M10 20.5a2.2 2.2 0 004 0"/>
+  </symbol>
+</svg>
+<div class="g-wrap wide">
+  <div id="print-head">
+    <h1>MacroTrack — TDEE &amp; Macro Results</h1>
+    <p>Free offline calculator by Glenerds</p>
+  </div>
+  <header class="g-header">
+    <div class="g-brand">
+      <span class="g-appicon g-appicon-sm" style="--g-ai1:#10b981;--g-ai2:#0ea5e9">
+        <svg class="g-icon" aria-hidden="true"><use href="#g-i-chart"/></svg>
+      </span>
+      <h1 class="g-brand-name">MacroTrack</h1>
     </div>
     <div class="g-header-actions">
       <a class="g-store-btn" href="https://glenerds.gumroad.com" target="_blank" rel="noopener">More Apps</a>
-      <button id="sampleToggle" class="round-btn sample-toggle" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
-      <button id="themeToggle" class="round-btn theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">&#x1F319;</button>
-      <button id="soundToggle" class="round-btn sound-toggle" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
+      <button class="round-btn sample-toggle" id="sampleToggle" type="button" aria-pressed="false" aria-label="Try sample data" title="Try sample data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5"/><path d="M10.5 2.5v6l-5.6 9.2A1.7 1.7 0 0 0 6.4 20.5h11.2a1.7 1.7 0 0 0 1.5-2.8l-5.6-9.2v-6"/><circle cx="11" cy="14.8" r="1.2"/><circle cx="14" cy="16.8" r=".85"/><circle cx="10" cy="17.8" r=".6"/></svg></button>
+      <button class="round-btn theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">🌙</button>
+      <button class="round-btn sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="Sound: on" title="Toggle sounds (on)">&#128266;</button>
     </div>
+  </header>
+  <p class="g-tagline">Free TDEE &amp; macro calculator. Every formula shown, every step visible — your data never leaves this page.</p>
+
+  <div class="grid">
+    <section class="g-card" id="inputs-card" aria-labelledby="inputs-h">
+      <h2 class="g-title" id="inputs-h"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-edit"/></svg> Your details</h2>
+
+      <div class="g-field">
+        <span class="g-label" id="units-l">Units</span>
+        <div class="seg" role="group" aria-label="Unit system">
+          <button type="button" id="u-imp" aria-pressed="true">Imperial (lb, ft/in)</button>
+          <button type="button" id="u-met" aria-pressed="false">Metric (kg, cm)</button>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="g-field">
+          <label class="g-label" for="age">Age <span class="g-hint" style="display:inline">years</span></label>
+          <input class="g-input" type="number" id="age" inputmode="numeric" min="10" max="120" step="1" value="30">
+          <div class="g-error" id="age-err">Enter an age between 10 and 120.</div>
+        </div>
+        <div class="g-field">
+          <span class="g-label" id="sex-l">Sex</span>
+          <div class="seg" role="group" aria-label="Sex">
+            <button type="button" id="s-m" aria-pressed="true">Male</button>
+            <button type="button" id="s-f" aria-pressed="false">Female</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="g-field" id="h-imp">
+        <span class="g-label">Height <span class="g-hint" style="display:inline">feet + inches</span></span>
+        <div class="row2">
+          <input class="g-input" type="number" id="h-ft" inputmode="numeric" min="3" max="8" step="1" value="5" aria-label="Height feet">
+          <input class="g-input" type="number" id="h-in" inputmode="decimal" min="0" max="11.99" step="0.01" value="10" aria-label="Height inches">
+        </div>
+        <div class="g-error" id="h-err">Enter a height between 3 ft and 8 ft.</div>
+      </div>
+      <div class="g-field" id="h-met" hidden>
+        <label class="g-label" for="h-cm">Height <span class="g-hint" style="display:inline">centimeters</span></label>
+        <input class="g-input" type="number" id="h-cm" inputmode="decimal" min="90" max="250" step="0.01" value="178">
+        <div class="g-error" id="h-cm-err">Enter a height between 90 and 250 cm.</div>
+      </div>
+
+      <div class="g-field" id="w-imp">
+        <label class="g-label" for="w-lb">Weight <span class="g-hint" style="display:inline">pounds</span></label>
+        <input class="g-input" type="number" id="w-lb" inputmode="decimal" min="40" max="1100" step="0.01" value="180">
+        <div class="g-error" id="w-err">Enter a weight between 40 and 1100 lb.</div>
+      </div>
+      <div class="g-field" id="w-met" hidden>
+        <label class="g-label" for="w-kg">Weight <span class="g-hint" style="display:inline">kilograms</span></label>
+        <input class="g-input" type="number" id="w-kg" inputmode="decimal" min="18" max="500" step="0.01" value="82">
+        <div class="g-error" id="w-kg-err">Enter a weight between 18 and 500 kg.</div>
+      </div>
+
+      <div class="g-field">
+        <label class="g-label" for="bf">Body fat % <span class="g-hint" style="display:inline">optional — needed for Katch-McArdle</span></label>
+        <input class="g-input" type="number" id="bf" inputmode="decimal" min="1" max="70" step="0.01" placeholder="e.g. 18">
+        <div class="g-error" id="bf-err">Enter a body fat % between 1 and 70, or leave blank.</div>
+      </div>
+
+      <div class="g-field">
+        <label class="g-label" for="activity">Activity level</label>
+        <select class="g-select" id="activity">
+          <option value="1.2">Sedentary — little or no exercise</option>
+          <option value="1.375">Lightly active — light exercise 1–3 days/week</option>
+          <option value="1.55" selected>Moderately active — moderate exercise 3–5 days/week</option>
+          <option value="1.725">Very active — hard exercise 6–7 days/week</option>
+          <option value="1.9">Extra active — very hard exercise + physical job</option>
+        </select>
+      </div>
+
+      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-target"/></svg> Goal</p>
+      <div class="g-field">
+        <div class="seg" role="group" aria-label="Goal">
+          <button type="button" id="g-cut" aria-pressed="true">Cut −20%</button>
+          <button type="button" id="g-main" aria-pressed="false">Maintain</button>
+          <button type="button" id="g-bulk" aria-pressed="false">Lean bulk +10%</button>
+        </div>
+      </div>
+      <div class="g-field">
+        <label class="g-label" for="goal-slider">Fine-tune: <span id="goal-pct-label">−20%</span> <span class="g-hint" style="display:inline">calorie adjustment vs TDEE</span></label>
+        <input type="range" id="goal-slider" min="-30" max="20" step="1" value="-20">
+      </div>
+      <div class="gauge-wrap" aria-hidden="false">
+        <svg class="gauge-svg" viewBox="0 0 300 185" role="img" aria-labelledby="gg-t">
+          <title id="gg-t">Goal adjustment gauge, from 30 percent cut to 20 percent surplus</title>
+          <path d="M45 150 A105 105 0 0 1 255 150" fill="none" stroke="var(--g-border)" stroke-width="22" stroke-linecap="round"/>
+          <path id="gg-arc" d="" fill="none" stroke="#f59e0b" stroke-width="22" stroke-linecap="round"/>
+          <line id="gg-needle" x1="150" y1="150" x2="80" y2="150" stroke="var(--g-text)" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="150" cy="150" r="10" fill="var(--g-text)"/>
+          <text id="gg-num" x="150" y="110" text-anchor="middle" class="gauge-num">−20%</text>
+          <text x="150" y="142" text-anchor="middle" class="gauge-cap" style="letter-spacing:.08em">VS TDEE</text>
+        </svg>
+        <div class="gauge-cap" id="gg-cap">Steady cut</div>
+      </div>
+
+      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-calc"/></svg> Formula</p>
+      <div class="g-field">
+        <div class="seg" role="group" aria-label="BMR formula">
+          <button type="button" id="f-mifflin" aria-pressed="true">Mifflin-St Jeor</button>
+          <button type="button" id="f-hb" aria-pressed="false">Harris-Benedict</button>
+          <button type="button" id="f-katch" aria-pressed="false">Katch-McArdle</button>
+        </div>
+        <p class="g-hint">Mifflin-St Jeor is the default — most validated for modern populations. Katch-McArdle uses lean body mass and needs your body fat %.</p>
+      </div>
+
+      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Macro split</p>
+      <div class="g-field">
+        <div class="seg" role="group" aria-label="Macro split">
+          <button type="button" id="m-bal" aria-pressed="true">Balanced 30/40/30</button>
+          <button type="button" id="m-hp" aria-pressed="false">High protein 35/35/30</button>
+          <button type="button" id="m-lc" aria-pressed="false">Lower carb 30/25/45</button>
+        </div>
+        <p class="g-hint">Protein / carbs / fat as % of calories. Protein &amp; carbs = 4 kcal/g, fat = 9 kcal/g.</p>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="g-btn g-btn-secondary" id="reset-btn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-gear"/></svg> Reset to defaults</button>
+      </div>
+    </section>
+
+    <section class="g-card" aria-labelledby="results-h">
+      <h2 class="g-title" id="results-h"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-sparkles"/></svg> Your numbers</h2>
+      <div id="km-notice" class="notice" hidden>
+        Katch-McArdle needs your body fat % to compute lean body mass — enter it on the left, or pick another formula.
+      </div>
+      <div class="bignums" aria-live="polite" aria-atomic="true">
+        <div class="bignum" data-key="bmr" role="button" tabindex="0" aria-pressed="false" title="Spotlight BMR in the calorie ladder"><div class="v" id="o-bmr">–</div><div class="l">BMR (kcal/day)</div></div>
+        <div class="bignum" data-key="tdee" role="button" tabindex="0" aria-pressed="false" title="Spotlight TDEE in the calorie ladder"><div class="v" id="o-tdee">–</div><div class="l">TDEE (kcal/day)</div></div>
+        <div class="bignum hero" data-key="target" role="button" tabindex="0" aria-pressed="false" title="Spotlight target in the calorie ladder"><div class="v" id="o-target">–</div><div class="l" id="o-target-label">Target (kcal/day)</div></div>
+      </div>
+
+      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Calorie ladder</p>
+      <p class="macro-hint">Tip: click a number or its bar to spotlight it.</p>
+      <div class="ladder" id="ladder">
+        <div class="ladder-row" data-key="bmr" role="button" tabindex="0" aria-pressed="false" title="Spotlight BMR">
+          <span class="lad-label">BMR</span><div class="lad-track"><div class="lad-fill lad-fill-bmr" id="lad-bmr"></div></div><span class="lad-val" id="lad-bmr-v">–</span>
+        </div>
+        <div class="ladder-row" data-key="tdee" role="button" tabindex="0" aria-pressed="false" title="Spotlight TDEE">
+          <span class="lad-label">TDEE</span><div class="lad-track"><div class="lad-fill lad-fill-tdee" id="lad-tdee"></div></div><span class="lad-val" id="lad-tdee-v">–</span>
+        </div>
+        <div class="ladder-row" data-key="target" role="button" tabindex="0" aria-pressed="false" title="Spotlight target">
+          <span class="lad-label">Target</span><div class="lad-track"><div class="lad-fill lad-fill-target" id="lad-target"></div></div><span class="lad-val" id="lad-target-v">–</span>
+        </div>
+      </div>
+      <div class="ladder-readout" id="ladder-readout" aria-live="polite"></div>
+      <div id="pace" class="notice" hidden></div>
+
+      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Daily macros</p>
+      <p class="macro-hint">Tip: click a macro or its slice to spotlight it.</p>
+      <div class="macro" data-macro="p" role="button" tabindex="0" aria-pressed="false" title="Spotlight protein in the chart">
+        <div class="top"><span class="name macro-protein">Protein</span><span class="mvals"><b id="o-p-kcal">–</b> kcal · <span id="o-p-g">–</span> <span class="pct" id="o-p-p"></span></span></div>
+        <div class="bar"><div id="o-p-bar" class="bar-fill bar-protein" style="width:0%"></div></div>
+      </div>
+      <div class="macro" data-macro="c" role="button" tabindex="0" aria-pressed="false" title="Spotlight carbs in the chart">
+        <div class="top"><span class="name macro-carbs">Carbs</span><span class="mvals"><b id="o-c-kcal">–</b> kcal · <span id="o-c-g">–</span> <span class="pct" id="o-c-p"></span></span></div>
+        <div class="bar"><div id="o-c-bar" class="bar-fill bar-carbs" style="width:0%"></div></div>
+      </div>
+      <div class="macro" data-macro="f" role="button" tabindex="0" aria-pressed="false" title="Spotlight fat in the chart">
+        <div class="top"><span class="name macro-fat">Fat</span><span class="mvals"><b id="o-f-kcal">–</b> kcal · <span id="o-f-g">–</span> <span class="pct" id="o-f-p"></span></span></div>
+        <div class="bar"><div id="o-f-bar" class="bar-fill bar-fat" style="width:0%"></div></div>
+      </div>
+
+      <p class="card-subhead"><svg class="g-icon g-icon-flash" aria-hidden="true"><use href="#g-i-chart"/></svg> Calorie split</p>
+      <div class="macro-pie-wrap" id="pie-wrap">
+        <div class="macro-pie-box">
+          <svg class="macro-pie" viewBox="0 0 248 248" role="img" aria-labelledby="pie-title">
+            <title id="pie-title">Macro calorie split donut chart</title>
+            <circle class="macro-pie-track" cx="124" cy="124" r="95" fill="none" stroke-width="34"/>
+            <path id="pie-p" class="pie-seg pie-protein" d="" fill="none" stroke-width="34"/>
+            <path id="pie-c" class="pie-seg pie-carbs" d="" fill="none" stroke-width="34"/>
+            <path id="pie-f" class="pie-seg pie-fat" d="" fill="none" stroke-width="34"/>
+          </svg>
+          <div class="pie-center"><div class="v" id="pie-total">–</div><div class="l" id="pie-sub">target kcal/day</div></div>
+        </div>
+      </div>
+
+      <div class="chart-detail" id="chartDetail" aria-live="polite" hidden></div>
+
+      <div class="actions">
+        <button type="button" class="g-btn g-btn-primary" id="print-btn"><svg class="g-icon" aria-hidden="true"><use href="#g-i-download"/></svg> Print / save results</button>
+      </div>
+    </section>
   </div>
-</header>
-<main>
-  <div id="demoNotice" class="notice" hidden></div>
 
-  <section class="card" aria-labelledby="debts-h">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></div>
-      <h2 id="debts-h">Your debts</h2>
-    </div>
-    <div id="debtList"></div>
-    <div id="debtForm">
-      <div class="grid2">
-        <div class="field"><label for="fName">Debt name</label><input type="text" id="fName" maxlength="60" placeholder="e.g. Visa card" autocomplete="off"></div>
-        <div class="field"><label for="fBalance">Balance ($)</label><input type="number" id="fBalance" min="0" step="0.01" placeholder="6500.00" inputmode="decimal"></div>
-        <div class="field"><label for="fApr">APR (%)</label><input type="number" id="fApr" min="0" step="0.01" placeholder="24.99" inputmode="decimal"></div>
-        <div class="field"><label for="fMin">Minimum payment ($/mo)</label><input type="number" id="fMin" min="0" step="0.01" placeholder="195.00" inputmode="decimal"></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" id="addDebtBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Add debt</span></button>
-        <button class="btn btn-secondary" id="cancelEditBtn" hidden><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg><span>Cancel edit</span></button>
-      </div>
-      <div class="err" id="debtErr" role="alert"></div>
-    </div>
+  <section class="g-card work" id="work-card" aria-labelledby="work-h">
+    <h2 class="g-title" id="work-h"><svg class="g-icon g-icon-sm g-icon-flash" aria-hidden="true"><use href="#g-i-list"/></svg> Show your work</h2>
+    <p class="g-caption" style="margin-bottom:8px">No black box. Step 1 shows the exact substituted values; later steps print rounded headlines — totals are computed at full precision.</p>
+    <div id="work-steps"></div>
   </section>
 
-  <section class="card" aria-labelledby="strat-h">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></div>
-      <h2 id="strat-h">Payoff strategy</h2>
-    </div>
-    <div class="tabs" role="tablist">
-      <button class="tab" data-strat="snowball" role="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7"/></svg>Snowball</button>
-      <button class="tab" data-strat="avalanche" role="tab"><svg viewBox="0 0 24 24"><path d="M12 3l9 18H3z"/><path d="M12 10v4M12 17.5v.5"/></svg>Avalanche</button>
-      <button class="tab" data-strat="custom" role="tab"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="18" r="2"/></svg>Custom</button>
-    </div>
-    <div class="notice" id="stratDesc"></div>
-    <div id="customOrder" hidden>
-      <div class="field"><label>Custom payoff order (top = paid first)</label></div>
-      <div id="orderList"></div>
-    </div>
-    <div class="field" style="margin-top:14px">
-      <label for="extraRange">What-if: extra payment each month — <span class="slider-val" id="extraVal">$0</span></label>
-      <input type="range" id="extraRange" min="0" max="2000" step="10" value="0">
-    </div>
-  </section>
+  <p class="disclaimer">Estimates only — formulas are population averages and can't account for medical conditions, medications, or individual variation. For weight loss, muscle gain, or any health concern, talk to a doctor or registered dietitian.</p>
 
-  <section class="card" aria-labelledby="cmp-h">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
-      <h2 id="cmp-h">Strategy comparison</h2>
-    </div>
-    <div id="compareEmpty" class="notice">Add at least one debt above to see the comparison.</div>
-    <div id="compareWrap" hidden>
-      <div class="stat-cards" id="compareCards"></div>
-      <div class="legend" role="group" aria-label="Strategy lines">
-        <button type="button" class="legend-btn" data-strat="snowball" aria-pressed="false" aria-label="Snowball — click to isolate its line"><span class="dot" style="background:#6366f1"></span>Snowball</button>
-        <button type="button" class="legend-btn" data-strat="avalanche" aria-pressed="false" aria-label="Avalanche — click to isolate its line"><span class="dot" style="background:#8b5cf6"></span>Avalanche</button>
-        <button type="button" class="legend-btn" data-strat="custom" aria-pressed="false" aria-label="Custom — click to isolate its line"><span class="dot" style="background:#14b8a6"></span>Custom</button>
-      </div>
-      <canvas class="chart" id="balanceChart" aria-label="Remaining balance over time chart"></canvas>
-      <p class="chart-cap" id="chartCap">Click a strategy card above to isolate its line — click again to show all.</p>
-      <h3 class="sub-h">Where your balance sits</h3>
-      <div class="donut-wrap">
-        <svg id="donutSvg" viewBox="0 0 200 200" role="img" aria-label="Balance share by debt"></svg>
-        <div class="donut-legend" id="donutLegend"></div>
-      </div>
-      <div class="donut-detail" id="donutDetail" aria-live="polite"></div>
-      <h3 class="sub-h">Payoff order timeline <span class="chart-cap" id="tlStrat"></span></h3>
-      <div class="timeline" id="payoffTl" role="list" aria-label="Payoff order timeline"></div>
-      <div class="tl-note" id="tlNote" aria-live="polite"></div>
-    </div>
-  </section>
-
-  <section class="card" aria-labelledby="sched-h">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
-      <h2 id="sched-h">Payoff schedule</h2>
-    </div>
-    <div class="field" style="max-width:320px">
-      <label for="schedStrat">Show schedule for</label>
-      <select id="schedStrat">
-        <option value="snowball">Snowball</option>
-        <option value="avalanche">Avalanche</option>
-        <option value="custom">Custom</option>
-      </select>
-    </div>
-    <div id="schedEmpty" class="notice">Add at least one debt to see the month-by-month schedule.</div>
-    <div id="schedWrap" hidden>
-      <div class="table-scroll"><table aria-label="Monthly payoff schedule">
-        <thead><tr><th>Month</th><th class="num">Payment</th><th class="num">Interest</th><th class="num">Remaining</th></tr></thead>
-        <tbody id="schedBody"></tbody>
-      </table></div>
-    </div>
-  </section>
-
-  <section class="card" aria-labelledby="data-h">
-    <div class="card-head">
-      <div class="icon-chip"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
-      <h2 id="data-h">Data</h2>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-secondary" id="exportBtn"><svg viewBox="0 0 24 24"><path d="M12 3v12M6 11l6 6 6-6"/><path d="M4 21h16"/></svg><span>Export JSON</span></button>
-      <button class="btn btn-secondary" id="importBtn"><svg viewBox="0 0 24 24"><path d="M12 15V3M6 9l6-6 6 6"/><path d="M4 21h16"/></svg><span>Import JSON</span></button>
-      <input type="file" id="importFile" accept="application/json,.json" hidden>
-      <button class="btn btn-secondary" id="demoBtn"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8z"/></svg><span>Load demo data</span></button>
-      <button class="btn btn-danger" id="clearBtn"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 14h10l1-14"/></svg><span id="clearLabel">Clear all data</span></button>
-    </div>
-    <div class="err" id="dataErr" role="alert"></div>
-    <p style="font-size:.82rem;color:var(--muted);margin:12px 0 0">Import validates and sanitizes everything: text is length-capped, amounts must be finite numbers ≥ 0. Bad records are skipped and reported.</p>
-  </section>
-</main>
-<a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
-  <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
-</a>
-<footer>
-  <div>DebtPayoff Strategy Planner — your data never leaves this device.</div>
-  <div>by <a href="https://glenerds.gumroad.com">Glenerds</a></div>
-  <div class="disclaimer">Educational estimates only — not financial advice. Interest is modeled as monthly APR/12 with no fees or rate changes.</div>
-</footer>
+  <a class="g-cta-strip" href="https://glenerds.gumroad.com" target="_blank" rel="noopener" aria-label="Like this tool? Check out our other apps on Gumroad">
+    <span>Like this tool? Check out our other apps</span><span class="g-cta-arrow" aria-hidden="true">➔</span>
+  </a>
+  <footer class="g-footer">
+    MacroTrack — free offline TDEE &amp; macro calculator. No trackers, no ads, no account.
+    <span class="g-fine"><a href="https://glenerds.gumroad.com">by Glenerds</a></span>
+  </footer>
+</div>
 <script>
-"use strict";
-/* ============ DebtPayoff Strategy Planner ============ */
-var LS_STATE = "debtpayoff-state-v1";
-var LS_THEME = "debtpayoff-theme";
-var MAX_MONTHS = 600;
+(function () {
+  'use strict';
+  var LS_KEY = 'macrotrack-state-v1';
+  var $ = function (id) { return document.getElementById(id); };
 
-function $(id){ return document.getElementById(id); }
-function esc(s){
-  return String(s==null?"":s).replace(/[&<>"']/g,function(c){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
-  });
-}
-var fmtMoney = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"});
-function money(n){ return fmtMoney.format(Math.round(n*100)/100); }
-function uid(){ return "d"+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36); }
-
-/* ---------- theme ---------- */
-function applyTheme(t){
-  if(t!=="dark") t="light";
-  document.documentElement.setAttribute("data-theme",t);
-  try{ localStorage.setItem(LS_THEME,t); }catch(e){}
-  var btn=$("themeToggle"), dark=(t==="dark"), lbl=dark?"Switch to light mode":"Switch to dark mode";
-  btn.setAttribute("aria-pressed",dark?"true":"false");
-  btn.setAttribute("aria-label",lbl); btn.title=lbl;
-  btn.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19"; /* header spec: emoji icon shows the mode you GET */
-  if(window.paintSoundBtn) window.paintSoundBtn();
-  drawChart();
-}
-$("themeToggle").addEventListener("click",function(){
-  var cur=document.documentElement.getAttribute("data-theme");
-  applyTheme(cur==="dark"?"light":"dark");
-  Sound.toggleTheme(); Sound.click();
-});
-
-/* ---------- state ---------- */
-var state = { debts:[], order:[], strategy:"snowball", extraMonthly:0, schedStrat:"snowball" };
-var editingId = null;
-
-var sampleOn=false, sampleSnap=null, sampleDom=null;
-function save(){
-  if(sampleOn) return; /* sample data is transient — never persisted */
-  try{ localStorage.setItem(LS_STATE, JSON.stringify(state)); }catch(e){}
-}
-function sanitizeDebt(d){
-  if(!d || typeof d!=="object") return null;
-  var name = String(d.name||"").slice(0,60).trim();
-  var balance = Number(d.balance), apr = Number(d.apr), min = Number(d.minPayment);
-  if(!name) return null;
-  if(!isFinite(balance)||balance<=0||balance>1e9) return null;
-  if(!isFinite(apr)||apr<0||apr>200) return null;
-  if(!isFinite(min)||min<0||min>1e9) return null;
-  return { id:String(d.id||uid()).slice(0,40), name:name, balance:Math.round(balance*100)/100,
-           apr:Math.round(apr*100)/100, minPayment:Math.round(min*100)/100 };
-}
-function load(){
-  try{
-    var raw=localStorage.getItem(LS_STATE); if(!raw) return false;
-    var s=JSON.parse(raw); if(!s||typeof s!=="object") return false;
-    var debts=(Array.isArray(s.debts)?s.debts:[]).map(sanitizeDebt).filter(Boolean);
-    state.debts=debts;
-    var ids=debts.map(function(d){return d.id;});
-    state.order=(Array.isArray(s.order)?s.order:[]).filter(function(id){return ids.indexOf(id)>=0;});
-    ids.forEach(function(id){ if(state.order.indexOf(id)<0) state.order.push(id); });
-    state.strategy=["snowball","avalanche","custom"].indexOf(s.strategy)>=0?s.strategy:"snowball";
-    state.extraMonthly=(isFinite(Number(s.extraMonthly))&&Number(s.extraMonthly)>=0)?Math.min(100000,Number(s.extraMonthly)):0;
-    state.schedStrat=["snowball","avalanche","custom"].indexOf(s.schedStrat)>=0?s.schedStrat:"snowball";
-    return true;
-  }catch(e){ return false; }
-}
-function demoData(){
-  state.debts=[
-    {id:uid(),name:"Personal loan",balance:2500,apr:7.99,minPayment:80},
-    {id:uid(),name:"Store card",balance:4200,apr:29.99,minPayment:126},
-    {id:uid(),name:"Visa card",balance:6500,apr:24.99,minPayment:195}
-  ];
-  state.order=state.debts.map(function(d){return d.id;});
-  state.strategy="snowball"; state.extraMonthly=150; state.schedStrat="snowball";
-  save(); renderAll();
-  var n=$("demoNotice"); n.hidden=false;
-  n.textContent="Demo data loaded (3 debts). Edit or delete these, or add your own — everything stays on this device.";
-}
-
-/* ---------- sample data toggle (transient: snapshot user data, never persisted) ---------- */
-function paintSample(){
-  var btn=$("sampleToggle"), lbl=sampleOn?"Clear sample data":"Try sample data";
-  btn.setAttribute("aria-pressed",sampleOn?"true":"false");
-  btn.setAttribute("aria-label",lbl); btn.title=lbl;
-}
-function setSample(on){
-  if(on && !sampleOn){
-    sampleSnap=JSON.stringify(state);
-    /* transient (uncommitted) form + control state — snapshot the DOM too */
-    sampleDom={ fName:$("fName").value, fBalance:$("fBalance").value, fApr:$("fApr").value, fMin:$("fMin").value,
-      extraRange:$("extraRange").value, schedStrat:$("schedStrat").value, debtErr:$("debtErr").textContent,
-      addLabel:$("addDebtBtn").querySelector("span").textContent, cancelHidden:$("cancelEditBtn").hidden };
-    sampleOn=true; editingId=null;
-    window._spotDebt=null; window._spotStrat=null;
-    state.debts=[
-      {id:uid(),name:"Personal loan",balance:2500,apr:7.99,minPayment:80},
-      {id:uid(),name:"Store card",balance:4200,apr:29.99,minPayment:126},
-      {id:uid(),name:"Visa card",balance:6500,apr:24.99,minPayment:195},
-      {id:uid(),name:"Auto loan",balance:11800,apr:5.49,minPayment:312}
-    ];
-    state.order=state.debts.map(function(d){return d.id;});
-    state.strategy="snowball"; state.extraMonthly=200; state.schedStrat="snowball";
-    renderAll();
-    var n=$("demoNotice"); n.hidden=false;
-    n.textContent="Sample data is on — toggle the flask icon again to restore your own data.";
-  }else if(!on && sampleOn){
-    sampleOn=false;
-    try{ var s=JSON.parse(sampleSnap); if(s&&typeof s==="object") state=s; }catch(e){}
-    sampleSnap=null; editingId=null;
-    window._spotDebt=null; window._spotStrat=null;
-    /* restore the exact transient form/control values, not just committed state */
-    if(sampleDom){
-      $("fName").value=sampleDom.fName; $("fBalance").value=sampleDom.fBalance;
-      $("fApr").value=sampleDom.fApr; $("fMin").value=sampleDom.fMin;
-      $("extraRange").value=sampleDom.extraRange; $("schedStrat").value=sampleDom.schedStrat;
-      $("debtErr").textContent=sampleDom.debtErr;
-      $("addDebtBtn").querySelector("span").textContent=sampleDom.addLabel;
-      $("cancelEditBtn").hidden=sampleDom.cancelHidden;
-      sampleDom=null;
-    }
-    renderAll();
-    $("demoNotice").hidden=true;
-  }
-  paintSample();
-}
-$("sampleToggle").addEventListener("click",function(){ setSample(!sampleOn); Sound.click(); });
-
-/* ---------- subtle sounds (Web Audio oscillator, no files, offline) ---------- */
-var Sound=(function(){
-  var KEY="debtpayoff.sound", on=true, ctx=null;
-  try{ if(window.localStorage.getItem(KEY)==="off") on=false; }catch(e){}
-  function ac(){ try{
-    if(!ctx){ var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null; ctx=new AC(); }
-    return ctx; }catch(e){ return null; } }
-  function tone(freq,dur,type,vol,delay){
-    var c=ac(); if(!c) return;
-    function play(){ try{
-      var t=c.currentTime+(delay||0), o=c.createOscillator(), g=c.createGain();
-      o.type=type||"sine"; o.frequency.value=freq;
-      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.06,t+0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05);
-    }catch(e){} }
-    if(c.state==="suspended"){ c.resume().then(play,play); }else{ play(); }
-  }
-  return{
-    isOn:function(){ return on; },
-    toggle:function(){ on=!on; try{ window.localStorage.setItem(KEY,on?"on":"off"); }catch(e){} return on; },
-    click:function(){ if(on) tone(520,0.06,"sine",0.045); },
-    select:function(){ if(on){ tone(660,0.07,"sine",0.055); tone(880,0.09,"sine",0.045,0.06); } },
-    success:function(){ if(on){ tone(660,0.09,"sine",0.06); tone(990,0.12,"sine",0.05,0.08); } },
-    error:function(){ if(on) tone(170,0.16,"sawtooth",0.045); },
-    toggleTheme:function(){ if(on) tone(440,0.06,"triangle",0.05); }
+  var DEFAULTS = {
+    units: 'imp', age: 30, sex: 'm',
+    weightKg: 81.65, heightCm: 177.8, bodyFat: null,
+    activity: 1.55, goalPct: -20, formula: 'mifflin', macro: 'bal'
   };
-})();
-(function(){
-  var btn=$("soundToggle"); if(!btn) return;
-  function paint(){ var on=Sound.isOn();
-    btn.innerHTML=on?"&#128266;":"&#128263;";
-    btn.setAttribute("data-snd",on?"on":"off");
-    btn.setAttribute("aria-pressed",on?"true":"false");
-    btn.setAttribute("aria-label","Sound: "+(on?"on":"off"));
-    btn.title="Toggle sounds ("+(on?"on":"off")+")";
-  }
-  window.paintSoundBtn=paint;
-  btn.addEventListener("click",function(){ Sound.toggle(); paint(); Sound.click(); });
-  paint();
-})();
 
-/* ---------- simulation engine ---------- */
-function orderFor(strategy){
-  var ds=state.debts.slice();
-  if(strategy==="snowball"){ ds.sort(function(a,b){return a.balance-b.balance;}); }
-  else if(strategy==="avalanche"){ ds.sort(function(a,b){return b.apr-a.apr;}); }
-  else { var pos=Object.create(null); state.order.forEach(function(id,i){pos[id]=i;});
-         ds.sort(function(a,b){return (pos[a.id]==null?999:pos[a.id])-(pos[b.id]==null?999:pos[b.id]);}); }
-  return ds.map(function(d){return d.id;});
-}
-function simulate(strategy, extraMonthly){
-  var debts=state.debts.map(function(d){return {id:d.id,bal:d.balance,apr:d.apr,min:d.minPayment};});
-  var byId=Object.create(null); debts.forEach(function(d){byId[d.id]=d;});
-  var order=orderFor(strategy);
-  var totalInterest=0, totalPaid=0, month=0, streak=0, prevBal=Infinity;
-  var schedule=[];
-  var paidOff=[], paidSeen=Object.create(null); /* per-debt payoff months — recording only, no math change */
-  var now=new Date(); var startY=now.getFullYear(), startM=now.getMonth();
-  var startBal=debts.reduce(function(s,d){return s+d.bal;},0);
-  if(startBal<=0.004) return {never:true,reason:"empty"};
-  var monthPaid0=debts.reduce(function(s,d){return s+d.min;},0)+extraMonthly;
-  if(monthPaid0<=0) return {never:true,reason:"nopay"};
-  while(month<MAX_MONTHS){
-    var anyLeft=false;
-    for(var i=0;i<debts.length;i++){ if(debts[i].bal>0.004){anyLeft=true;break;} }
-    if(!anyLeft) break;
-    month++;
-    var mInt=0, mPaid=0, extra=extraMonthly;
-    for(i=0;i<debts.length;i++){ var d=debts[i];
-      if(d.bal>0.004){ var it=d.bal*d.apr/1200; d.bal+=it; mInt+=it; } }
-    totalInterest+=mInt;
-    var oi, dd;
-    for(oi=0;oi<order.length;oi++){ dd=byId[order[oi]];
-      if(!dd) continue;
-      if(dd.bal<=0.004){ extra+=dd.min; continue; } /* paid-off debt: its minimum rolls into the attack pool */
-      var pay=Math.min(dd.min,dd.bal);
-      dd.bal-=pay; mPaid+=pay;
-      extra+=(dd.min-pay); /* freed minimum rolls into the extra pool */
+  function loadState() {
+    var s = {};
+    for (var k in DEFAULTS) s[k] = DEFAULTS[k];
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (raw) {
+        var p = JSON.parse(raw);
+        if (p && typeof p === 'object') {
+          if (p.units === 'imp' || p.units === 'met') s.units = p.units;
+          if (typeof p.age === 'number' && p.age >= 10 && p.age <= 120) s.age = p.age;
+          if (p.sex === 'm' || p.sex === 'f') s.sex = p.sex;
+          if (typeof p.weightKg === 'number' && p.weightKg > 0 && p.weightKg < 1000) s.weightKg = p.weightKg;
+          if (typeof p.heightCm === 'number' && p.heightCm > 0 && p.heightCm < 400) s.heightCm = p.heightCm;
+          if (p.bodyFat === null || (typeof p.bodyFat === 'number' && p.bodyFat >= 1 && p.bodyFat <= 70)) s.bodyFat = p.bodyFat;
+          if (p.activity === 1.2 || p.activity === 1.375 || p.activity === 1.55 || p.activity === 1.725 || p.activity === 1.9) s.activity = p.activity;
+          if (typeof p.goalPct === 'number' && p.goalPct >= -30 && p.goalPct <= 20) s.goalPct = Math.round(p.goalPct);
+          if (p.formula === 'mifflin' || p.formula === 'hb' || p.formula === 'katch') s.formula = p.formula;
+          if (p.macro === 'bal' || p.macro === 'hp' || p.macro === 'lc') s.macro = p.macro;
+        }
+      }
+    } catch (e) { /* corrupted storage: fall back to defaults */ }
+    return s;
+  }
+  var S = loadState();
+  var sampleOn = false, sampleSnap = null;
+  function save() {
+    if (sampleOn) return; /* sample data is transient — never persisted */
+    try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {}
+  }
+
+  // ---- theme (shared glenerds-theme key) ----
+  var themeBtn = $('themeToggle');
+  function paintTheme() {
+    var t = document.documentElement.getAttribute('data-theme') || 'light';
+    var dark = t === 'dark';
+    var l = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    themeBtn.innerHTML = (dark) ? `<svg viewBox="0 0 48 48" width="32" height="32" aria-hidden="true"><g fill="#F59E0B"><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(0 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(45 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(90 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(135 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(180 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(225 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(270 24 24)"/><path d="M24 3.5 L27.2 13.5 L20.8 13.5 Z" transform="rotate(315 24 24)"/></g><circle cx="24" cy="24" r="10.5" fill="#FFC421"/><ellipse cx="19.5" cy="17.5" rx="2.2" ry="3" fill="#FFDF6B" transform="rotate(-25 19.5 17.5)"/></svg>` : "\uD83C\uDF19"; /* header spec: emoji shows the mode you GET */
+    themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    themeBtn.setAttribute('aria-label', l);
+    themeBtn.title = l;
+    themeBtn.setAttribute('data-mode', dark ? 'dark' : 'light');
+  }
+  themeBtn.addEventListener('click', function () { gToggleTheme(); paintTheme(); Sound.toggleTheme(); Sound.click(); });
+  paintTheme();
+
+  // ---- sample data toggle (transient: snapshot user data, never persisted) ----
+  function paintSample() {
+    var b = $('sampleToggle'), l = sampleOn ? 'Clear sample data' : 'Try sample data';
+    b.setAttribute('aria-pressed', sampleOn ? 'true' : 'false');
+    b.setAttribute('aria-label', l);
+    b.title = l;
+  }
+  /* Transient (uncommitted) input values live only in the DOM, not in S — snapshot
+     them so sample-off restores the exact pre-sample form state (values, checks,
+     and derived UI such as validation hints). */
+  function snapInputs() {
+    var els = document.querySelectorAll('input,select,textarea'), out = [];
+    for (var i = 0; i < els.length; i++) out.push([els[i].value, els[i].checked]);
+    return out;
+  }
+  function restoreInputs(snap) {
+    var els = document.querySelectorAll('input,select,textarea');
+    for (var i = 0; i < snap.length && i < els.length; i++) {
+      var e = els[i], s = snap[i];
+      if (e.type === 'checkbox' || e.type === 'radio') {
+        if (e.checked !== s[1]) { e.checked = s[1]; e.dispatchEvent(new Event('change', { bubbles: true })); }
+      } else if (e.value !== s[0]) {
+        e.value = s[0];
+        e.dispatchEvent(new Event('input', { bubbles: true }));
+        e.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     }
-    for(oi=0;oi<order.length;oi++){ dd=byId[order[oi]];
-      if(!dd||dd.bal<=0.004||extra<=0) continue;
-      var p=Math.min(extra,dd.bal);
-      dd.bal-=p; mPaid+=p; extra-=p; /* leftover cascades to the next debt in order */
+  }
+  var sampleDom = null;
+  function setSample(on) {
+    if (on && !sampleOn) {
+      sampleSnap = JSON.stringify(S);
+      sampleDom = snapInputs();
+      sampleOn = true;
+      S.units = 'imp'; S.age = 34; S.sex = 'f';
+      S.weightKg = 68.04; S.heightCm = 165.1; S.bodyFat = 24;
+      S.activity = 1.725; S.goalPct = -15;
+      S.formula = 'mifflin'; S.macro = 'hp';
+      syncInputs(); paintUnits(); paintGoalLabel(); reseg(); compute();
+    } else if (!on && sampleOn) {
+      sampleOn = false;
+      try { var s = JSON.parse(sampleSnap); if (s && typeof s === 'object') S = s; } catch (e) {}
+      sampleSnap = null;
+      syncInputs(); paintUnits(); paintGoalLabel(); reseg(); compute();
+      /* re-apply transient pre-sample input values (with events, so validation
+         hints and derived UI return to their exact pre-sample state) */
+      if (sampleDom) { restoreInputs(sampleDom); sampleDom = null; }
     }
-    totalPaid+=mPaid;
-    var bal=debts.reduce(function(s,x){return s+Math.max(0,x.bal);},0);
-    for(var pi=0;pi<debts.length;pi++){ var pd=debts[pi];
-      if(pd.bal<=0.004 && !paidSeen[pd.id]){ paidSeen[pd.id]=1; paidOff.push({id:pd.id,month:month}); } }
-    schedule.push({month:month,paid:mPaid,interest:mInt,balance:bal,
-      date:new Date(startY,startM+month-1,1)});
-    if(mPaid<=1e-9) return {never:true,reason:"stuck"};
-    if(bal>=prevBal-1e-6){ streak++; } else { streak=0; }
-    prevBal=bal;
-    if(streak>=6) return {never:true,reason:"growing"};
+    paintSample();
   }
-  if(month>=MAX_MONTHS) return {never:true,reason:"toolong"};
-  var payoff=new Date(startY,startM+month-1,1);
-  return {never:false,months:month,totalInterest:totalInterest,totalPaid:totalPaid,
-    startBal:startBal,schedule:schedule,paidOff:paidOff,
-    payoffLabel:payoff.toLocaleDateString("en-US",{month:"short",year:"numeric"})};
-}
 
-/* ---------- descriptions ---------- */
-var STRAT_DESC={
-  snowball:"Snowball: pay the smallest balance first. Quick wins keep you motivated.",
-  avalanche:"Avalanche: pay the highest APR first. Mathematically the cheapest way out.",
-  custom:"Custom: you choose the payoff order below — drag your priorities with the arrows."
-};
-</script>
-<script>
-"use strict";
-/* ---------- rendering ---------- */
-var STRAT_NAMES={snowball:"Snowball",avalanche:"Avalanche",custom:"Custom"};
-var STRAT_COLORS={snowball:"#6366f1",avalanche:"#8b5cf6",custom:"#14b8a6"};
-
-function renderDebts(){
-  var wrap=$("debtList"); wrap.innerHTML="";
-  if(state.debts.length===0){
-    wrap.innerHTML='<div class="notice">No debts yet — add your first one below, or load the demo data.</div>';
-    return;
-  }
-  state.debts.forEach(function(d){
-    var div=document.createElement("div"); div.className="debt-item";
-    div.innerHTML=
-      '<div class="debt-top">'+
-      '<span class="debt-name"></span>'+
-      '<span class="debt-meta"></span>'+
-      '<span class="debt-actions">'+
-      '<button class="btn btn-secondary btn-sm edit-btn">Edit</button>'+
-      '<button class="btn btn-danger btn-sm del-btn">Delete</button>'+
-      '</span></div>';
-    div.querySelector(".debt-name").textContent=d.name;
-    div.querySelector(".debt-meta").textContent=money(d.balance)+" · "+d.apr+"% APR · "+money(d.minPayment)+"/mo min";
-    div.querySelector(".edit-btn").addEventListener("click",function(){startEdit(d.id);});
-    div.querySelector(".del-btn").addEventListener("click",function(e){armDelete(e.currentTarget,d.id);});
-    wrap.appendChild(div);
-  });
-}
-function armDelete(btn,id){
-  if(btn.dataset.armed){ doDelete(id); return; }
-  btn.dataset.armed="1"; var old=btn.textContent; btn.textContent="Confirm?"; Sound.click();
-  setTimeout(function(){ if(btn.isConnected){btn.textContent=old; delete btn.dataset.armed;} },2500);
-}
-function doDelete(id){
-  state.debts=state.debts.filter(function(d){return d.id!==id;});
-  state.order=state.order.filter(function(x){return x!==id;});
-  if(editingId===id) cancelEdit();
-  save(); renderAll(); Sound.success();
-}
-function startEdit(id){
-  var d=state.debts.filter(function(x){return x.id===id;})[0]; if(!d) return;
-  editingId=id;
-  $("fName").value=d.name; $("fBalance").value=d.balance; $("fApr").value=d.apr; $("fMin").value=d.minPayment;
-  $("addDebtBtn").querySelector("span").textContent="Save changes";
-  $("cancelEditBtn").hidden=false;
-  $("fName").focus();
-}
-function cancelEdit(){
-  editingId=null; $("fName").value="";$("fBalance").value="";$("fApr").value="";$("fMin").value="";
-  $("addDebtBtn").querySelector("span").textContent="Add debt";
-  $("cancelEditBtn").hidden=true; $("debtErr").textContent="";
-}
-function submitDebt(){
-  var err=$("debtErr"); err.textContent="";
-  var name=$("fName").value.trim().slice(0,60);
-  var bal=Number($("fBalance").value), apr=Number($("fApr").value), mn=Number($("fMin").value);
-  if(!name){ err.textContent="Give the debt a name."; Sound.error(); return; }
-  if(!isFinite(bal)||bal<=0||bal>1e9){ err.textContent="Balance must be a number greater than 0."; Sound.error(); return; }
-  if(!isFinite(apr)||apr<0||apr>200){ err.textContent="APR must be between 0 and 200."; Sound.error(); return; }
-  if(!isFinite(mn)||mn<0||mn>1e9){ err.textContent="Minimum payment must be 0 or more."; Sound.error(); return; }
-  bal=Math.round(bal*100)/100; apr=Math.round(apr*100)/100; mn=Math.round(mn*100)/100;
-  if(editingId){
-    var d=state.debts.filter(function(x){return x.id===editingId;})[0];
-    if(d){ d.name=name; d.balance=bal; d.apr=apr; d.minPayment=mn; }
-    cancelEdit();
-  }else{
-    var id=uid();
-    state.debts.push({id:id,name:name,balance:bal,apr:apr,minPayment:mn});
-    state.order.push(id);
-    $("fName").value="";$("fBalance").value="";$("fApr").value="";$("fMin").value="";
-  }
-  save(); renderAll(); Sound.success();
-}
-
-function renderStrategy(){
-  var tabs=document.querySelectorAll(".tab");
-  tabs.forEach(function(t){ t.classList.toggle("active",t.dataset.strat===state.strategy); });
-  $("stratDesc").textContent=STRAT_DESC[state.strategy];
-  var co=$("customOrder"); co.hidden=(state.strategy!=="custom");
-  if(state.strategy==="custom") renderOrder();
-  $("extraRange").value=state.extraMonthly;
-  $("extraVal").textContent=money(state.extraMonthly);
-}
-function renderOrder(){
-  var wrap=$("orderList"); wrap.innerHTML="";
-  var pos=Object.create(null); state.order.forEach(function(id,i){pos[id]=i;});
-  var sorted=state.debts.slice().sort(function(a,b){
-    return (pos[a.id]==null?999:pos[a.id])-(pos[b.id]==null?999:pos[b.id]);});
-  sorted.forEach(function(d,i){
-    var row=document.createElement("div"); row.className="order-row";
-    row.innerHTML='<span class="order-rank"></span><span class="order-name"></span><span class="order-btns"></span>';
-    row.querySelector(".order-rank").textContent=(i+1)+".";
-    row.querySelector(".order-name").textContent=d.name;
-    var btns=row.querySelector(".order-btns");
-    var up=document.createElement("button"); up.className="btn btn-secondary btn-sm"; up.textContent="▲"; up.setAttribute("aria-label","Move up");
-    var dn=document.createElement("button"); dn.className="btn btn-secondary btn-sm"; dn.textContent="▼"; dn.setAttribute("aria-label","Move down");
-    up.disabled=(i===0); dn.disabled=(i===sorted.length-1);
-    up.addEventListener("click",function(){moveOrder(d.id,-1);});
-    dn.addEventListener("click",function(){moveOrder(d.id,1);});
-    btns.appendChild(up); btns.appendChild(dn);
-    wrap.appendChild(row);
-  });
-}
-function moveOrder(id,dir){
-  var i=state.order.indexOf(id), j=i+dir;
-  if(i<0||j<0||j>=state.order.length) return;
-  var t=state.order[i]; state.order[i]=state.order[j]; state.order[j]=t;
-  save(); renderOrder(); renderCompare(); renderSchedule();
-}
-
-/* strategy-line spotlight shared by cards + legend; canvas point inspection */
-window._chartSpot=null;
-function toggleSpotStrat(s){ window._spotStrat=(window._spotStrat===s)?null:s; Sound.select(); renderCompare(); }
-function paintChartCap(){
-  var cap=$("chartCap"); if(!cap) return;
-  var res=window._cmpResults;
-  if(window._chartSpot!=null && res){
-    var m=window._chartSpot, parts=[];
-    ["snowball","avalanche","custom"].forEach(function(s){
-      var r=res[s]; if(r.never||!r.schedule.length) return;
-      var pt=null; for(var i=0;i<r.schedule.length;i++){ if(r.schedule[i].month<=m) pt=r.schedule[i]; else break; }
-      parts.push(STRAT_NAMES[s]+" "+money(pt?pt.balance:0).replace(".00",""));
-    });
-    cap.textContent="Month "+m+" — remaining balance: "+parts.join(" · ")+" — click the chart again to clear.";
-    return;
-  }
-  cap.textContent=window._spotStrat ?
-    ("Showing "+STRAT_NAMES[window._spotStrat]+" only — click its card again to show all.") :
-    "Click a strategy card above to isolate its line — click again to show all.";
-}
-function renderCompare(){
-  var empty=state.debts.length===0;
-  $("compareEmpty").hidden=!empty; $("compareWrap").hidden=empty;
-  if(empty){ /* clear stale visuals so off-sample/empty state is truly empty */
-    $("donutSvg").innerHTML=""; $("donutLegend").innerHTML=""; $("donutDetail").textContent="";
-    $("payoffTl").innerHTML=""; $("tlNote").textContent="";
-    return;
-  }
-  var results={};
-  ["snowball","avalanche","custom"].forEach(function(s){ results[s]=simulate(s,state.extraMonthly); });
-  var wrap=$("compareCards");
-  var cfa=document.activeElement, cfk=cfa&&cfa.getAttribute?cfa.getAttribute("data-strat"):null;
-  wrap.innerHTML="";
-  var best=null,bestInt=Infinity;
-  ["snowball","avalanche","custom"].forEach(function(s){
-    var r=results[s];
-    if(!r.never&&r.totalInterest<bestInt){bestInt=r.totalInterest;best=s;}
-  });
-  ["snowball","avalanche","custom"].forEach(function(s){
-    var r=results[s];
-    var card=document.createElement("div"); card.className="stat spot-card";
-    card.setAttribute("data-strat",s);
-    card.tabIndex=0; card.setAttribute("role","button");
-    card.setAttribute("aria-pressed",window._spotStrat===s?"true":"false");
-    card.setAttribute("aria-label",STRAT_NAMES[s]+" — click to isolate its line on the chart");
-    (function(strat){
-      card.addEventListener("click",function(){ toggleSpotStrat(strat); });
-      card.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggleSpotStrat(strat); } });
-    })(s);
-    var html="";
-    if(s===best) html+='<span class="best">Lowest interest</span>';
-    html+='<div class="s-label">'+STRAT_NAMES[s]+'</div>';
-    if(r.never){
-      html+='<div class="s-val" style="font-size:1rem;color:var(--danger)">Never pays off</div>'+
-            '<div class="s-sub">Payments don\'t cover the interest. Raise a minimum or add extra.</div>';
-    }else{
-      html+='<div class="s-val">'+money(r.totalInterest)+'</div>'+
-            '<div class="s-sub">total interest · '+r.months+' months</div>'+
-            '<div class="s-sub">Debt-free: <strong>'+esc(r.payoffLabel)+'</strong></div>'+
-            '<div class="progress"><div style="width:'+Math.min(100,r.months/240*100)+'%"></div></div>'+
-            '<div class="s-sub">Total paid: '+money(r.totalPaid)+'</div>';
+  // ---- subtle sounds (Web Audio oscillator, no files, offline) ----
+  var Sound = (function () {
+    var K = 'macrotrack.sound', on = true, ctx = null;
+    try { if (window.localStorage.getItem(K) === 'off') on = false; } catch (e) {}
+    function ac() { try {
+      if (!ctx) { var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; ctx = new AC(); }
+      return ctx; } catch (e) { return null; } }
+    function tone(freq, dur, type, vol, delay) {
+      var c = ac(); if (!c) return;
+      function play() { try {
+        var t = c.currentTime + (delay || 0), o = c.createOscillator(), g = c.createGain();
+        o.type = type || 'sine'; o.frequency.value = freq;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.06, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.05); } catch (e) {} }
+      if (c.state === 'suspended') { c.resume().then(play, play); } else { play(); }
     }
-    card.innerHTML=html;
-    wrap.appendChild(card);
-  });
-  window._cmpResults=results;
-  document.querySelectorAll(".legend-btn").forEach(function(b){ b.setAttribute("aria-pressed", window._spotStrat===b.getAttribute("data-strat")?"true":"false"); });
-  paintChartCap();
-  drawChart();
-  renderDonut();
-  renderTimeline(results);
-  if(cfk){ var nc=wrap.querySelector('.spot-card[data-strat="'+cfk+'"]'); if(nc)nc.focus({preventScroll:true}); }
-}
-
-function drawChart(){
-  var cv=$("balanceChart"); if(!cv||$("compareWrap").hidden) return;
-  var res=window._cmpResults; if(!res) return;
-  var dpr=window.devicePixelRatio||1;
-  var W=cv.clientWidth||900, H=260;
-  cv.width=W*dpr; cv.height=H*dpr;
-  var ctx=cv.getContext("2d"); ctx.scale(dpr,dpr);
-  var dark=document.documentElement.getAttribute("data-theme")==="dark";
-  ctx.clearRect(0,0,W,H);
-  var maxM=0,maxB=0;
-  ["snowball","avalanche","custom"].forEach(function(s){
-    var r=res[s]; if(r.never) return;
-    maxM=Math.max(maxM,r.months); maxB=Math.max(maxB,r.startBal);
-  });
-  if(maxM===0) return;
-  var padL=64,padB=26,padT=14,padR=12;
-  var iw=W-padL-padR, ih=H-padT-padB;
-  ctx.strokeStyle=dark?"#3a3357":"#e4e0f3"; ctx.fillStyle=dark?"#a49dc2":"#6b6584";
-  ctx.font="11px sans-serif"; ctx.lineWidth=1;
-  var steps=4;
-  for(var g=0;g<=steps;g++){
-    var y=padT+ih-(ih*g/steps);
-    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();
-    ctx.fillText(money(maxB*g/steps).replace(".00",""),6,y+4);
-  }
-  var xStep=Math.max(1,Math.ceil(maxM/12));
-  ctx.fillStyle=dark?"#a49dc2":"#6b6584";
-  for(var m=0;m<=maxM;m+=xStep){
-    var x=padL+iw*m/maxM, label="mo "+m, tw=ctx.measureText(label).width;
-    var lx=Math.max(padL-12,Math.min(x-tw/2, W-padR-tw));
-    ctx.fillText(label,lx,H-8);
-  }
-  ["snowball","avalanche","custom"].forEach(function(s){
-    var r=res[s]; if(r.never||!r.schedule.length) return;
-    var spot=window._spotStrat;
-    ctx.globalAlpha=spot?(s===spot?1:0.15):1;
-    ctx.strokeStyle=STRAT_COLORS[s]; ctx.lineWidth=(spot&&s===spot)?4:2.5; ctx.beginPath();
-    r.schedule.forEach(function(pt,i){
-      var x=padL+iw*pt.month/maxM, y=padT+ih-(ih*pt.balance/maxB);
-      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    });
-    ctx.stroke(); ctx.globalAlpha=1;
-  });
-  if(window._chartSpot!=null){
-    var sx=padL+iw*window._chartSpot/maxM;
-    ctx.save(); ctx.setLineDash([5,4]); ctx.strokeStyle=dark?"#a5b4fc":"#4f46e5"; ctx.lineWidth=1.5;
-    ctx.beginPath(); ctx.moveTo(sx,padT); ctx.lineTo(sx,padT+ih); ctx.stroke(); ctx.restore();
-  }
-}
-
-/* ---------- balance-share donut (gallery SHARE) + payoff-order timeline (gallery STEPS) ---------- */
-var DEBT_COLORS=["#6366f1","#8b5cf6","#14b8a6","#f59e0b","#ef4444","#0ea5e9","#ec4899","#84cc16"];
-window._spotDebt=null; window._spotStrat=null;
-function toggleSpotDebt(id){
-  window._spotDebt=(window._spotDebt===id)?null:id;
-  Sound.select(); renderDonut(); renderTimeline(window._cmpResults);
-}
-function renderDonut(){
-  var svg=$("donutSvg"), leg=$("donutLegend"), det=$("donutDetail");
-  if(!svg) return;
-  /* keep keyboard focus on the same debt across the rebuild so Enter/Space can toggle back */
-  var fa=document.activeElement, fk=fa&&fa.getAttribute?fa.getAttribute("data-did"):null;
-  svg.innerHTML=""; leg.innerHTML="";
-  var debts=state.debts.slice();
-  var total=debts.reduce(function(s,d){return s+d.balance;},0);
-  var spot=window._spotDebt;
-  if(!debts.length||total<=0){ det.textContent=""; return; }
-  var NS="http://www.w3.org/2000/svg", C=2*Math.PI*70, cum=0;
-  debts.forEach(function(d,i){
-    var frac=d.balance/total, len=frac*C, col=DEBT_COLORS[i%DEBT_COLORS.length];
-    var c=document.createElementNS(NS,"circle");
-    c.setAttribute("cx",100); c.setAttribute("cy",100); c.setAttribute("r",70);
-    c.setAttribute("fill","none"); c.setAttribute("stroke",col);
-    c.setAttribute("stroke-width",spot===d.id?36:26);
-    c.setAttribute("stroke-dasharray",Math.max(0.1,len-1.5)+" "+C);
-    c.setAttribute("stroke-dashoffset",-cum);
-    c.setAttribute("transform","rotate(-90 100 100)");
-    c.setAttribute("class","donut-seg");
-    c.setAttribute("data-did",d.id);
-    c.setAttribute("tabindex","0"); c.setAttribute("role","button");
-    c.setAttribute("aria-label",d.name+": "+money(d.balance)+" ("+Math.round(frac*100)+"%) — click for details");
-    if(spot&&spot!==d.id) c.setAttribute("opacity","0.25");
-    (function(id){ function t(){ toggleSpotDebt(id); }
-      c.addEventListener("click",t);
-      c.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); t(); } });
-    })(d.id);
-    svg.appendChild(c);
-    cum+=len;
-    var b=document.createElement("button"); b.className="dl-item";
-    b.setAttribute("data-did",d.id);
-    b.setAttribute("aria-pressed",spot===d.id?"true":"false");
-    b.setAttribute("aria-label",d.name+" — click to spotlight");
-    b.innerHTML='<span class="dl-dot" style="background:'+col+'"></span><span class="dl-name"></span><span class="dl-amt"></span>';
-    b.querySelector(".dl-name").textContent=d.name;
-    b.querySelector(".dl-amt").textContent=money(d.balance);
-    (function(id){ b.addEventListener("click",function(){ toggleSpotDebt(id); }); })(d.id);
-    leg.appendChild(b);
-  });
-  var sd=debts.filter(function(d){return d.id===spot;})[0];
-  function txt(y,size,weight,str){
-    var t=document.createElementNS(NS,"text");
-    t.setAttribute("x",100); t.setAttribute("y",y); t.setAttribute("text-anchor","middle");
-    t.setAttribute("font-size",size); t.setAttribute("font-weight",weight);
-    t.setAttribute("fill","var(--text)"); t.setAttribute("pointer-events","none");
-    t.textContent=str; svg.appendChild(t);
-  }
-  if(sd){ txt(97,17,800,Math.round(sd.balance/total*100)+"%"); txt(118,11,600,sd.name.slice(0,18)); }
-  else { txt(97,17,800,money(total).replace(".00","")); txt(118,11,600,"total balance"); }
-  if(sd){
-    var pos=orderFor(state.strategy).indexOf(sd.id);
-    det.innerHTML="<strong>"+esc(sd.name)+"</strong> — "+money(sd.balance)+" · "+sd.apr+"% APR · "+
-      money(sd.minPayment)+"/mo min · "+Math.round(sd.balance/total*100)+"% of total balance"+
-      (pos>=0?" · #"+(pos+1)+" in "+STRAT_NAMES[state.strategy]+" order":"")+". Click the slice again to clear.";
-  }else{
-    det.innerHTML="Total balance <strong>"+money(total)+"</strong> across "+debts.length+
-      " debt"+(debts.length>1?"s":"")+" — click a slice or legend item for details.";
-  }
-  if(fk){ var ne=svg.querySelector('circle.donut-seg[data-did="'+fk+'"]')||leg.querySelector('button.dl-item[data-did="'+fk+'"]'); if(ne)ne.focus({preventScroll:true}); }
-}
-function renderTimeline(results){
-  var tl=$("payoffTl"), note=$("tlNote"), lab=$("tlStrat");
-  if(!tl) return;
-  /* keep keyboard focus on the same step across the rebuild so Space can toggle back */
-  var rfa=document.activeElement, rfk=rfa&&rfa.getAttribute?rfa.getAttribute("data-fk"):null;
-  tl.innerHTML="";
-  var s=state.strategy, r=results&&results[s];
-  lab.textContent="— "+STRAT_NAMES[s]+" plan";
-  if(!r||r.never||!r.paidOff||!r.paidOff.length){ note.textContent=""; return; }
-  var byId=Object.create(null); state.debts.forEach(function(d){byId[d.id]=d;});
-  var now=new Date();
-  r.paidOff.forEach(function(p,i){
-    var d=byId[p.id]; if(!d) return;
-    var dt=new Date(now.getFullYear(),now.getMonth()+p.month-1,1);
-    var when=dt.toLocaleDateString("en-US",{month:"short",year:"numeric"});
-    var st=document.createElement("button");
-    st.className="tl-step"; st.setAttribute("role","listitem");
-    st.setAttribute("data-fk","tl-"+p.id);
-    st.setAttribute("aria-pressed",window._spotDebt===p.id?"true":"false");
-    st.setAttribute("aria-label","Step "+(i+1)+": "+d.name+", paid off "+when+" — click for details");
-    st.innerHTML='<div class="tl-dot">'+(i+1)+'</div><div class="tl-name"></div><div class="tl-when"></div>';
-    st.querySelector(".tl-name").textContent=d.name;
-    st.querySelector(".tl-when").textContent=when;
-    if(window._spotDebt && window._spotDebt!==p.id) st.style.opacity="0.35"; /* dim the rest */
-    (function(id,monthN,whenS){ st.addEventListener("click",function(){
-      if(window._spotDebt===id){ window._spotDebt=null; }
-      else{ window._spotDebt=id; }
-      Sound.select(); renderDonut(); renderTimeline(window._cmpResults);
-    }); })(p.id,p.month,when);
-    tl.appendChild(st);
-    if(i<r.paidOff.length-1){ var rail=document.createElement("div"); rail.className="tl-rail"; tl.appendChild(rail); }
-  });
-  var sd=state.debts.filter(function(d){return d.id===window._spotDebt;})[0];
-  if(sd){
-    var sp=r.paidOff.filter(function(p){return p.id===sd.id;})[0];
-    var sdt=sp?new Date(now.getFullYear(),now.getMonth()+sp.month-1,1).toLocaleDateString("en-US",{month:"short",year:"numeric"}):"";
-    note.innerHTML="<strong>"+esc(sd.name)+"</strong> — "+money(sd.balance)+" at "+sd.apr+"% APR, "+
-      money(sd.minPayment)+"/mo minimum — paid off <strong>"+esc(sdt)+"</strong>, month "+(sp?sp.month:"?")+
-      " of the "+STRAT_NAMES[s]+" plan.";
-  }else{
-    note.textContent="Click a step to see that debt's payoff details.";
-  }
-  if(rfk){ var rne=tl.querySelector('[data-fk="'+rfk+'"]'); if(rne) rne.focus({preventScroll:true}); }
-}
-
-function renderSchedule(){
-  var empty=state.debts.length===0;
-  $("schedEmpty").hidden=!empty; $("schedWrap").hidden=empty;
-  if(empty) return;
-  $("schedStrat").value=state.schedStrat;
-  var r=simulate(state.schedStrat,state.extraMonthly);
-  var tb=$("schedBody"); tb.innerHTML="";
-  if(r.never){
-    var tr=document.createElement("tr");
-    var td=document.createElement("td"); td.colSpan=4;
-    td.textContent="This plan never pays the debt off — payments don't cover the interest. Raise a minimum payment or increase the extra amount.";
-    tr.appendChild(td); tb.appendChild(tr); return;
-  }
-  r.schedule.forEach(function(pt){
-    var tr=document.createElement("tr");
-    var d=pt.date.toLocaleDateString("en-US",{month:"short",year:"numeric"});
-    tr.innerHTML="<td></td><td class='num'></td><td class='num'></td><td class='num'></td>";
-    tr.children[0].textContent=d;
-    tr.children[1].textContent=money(pt.paid);
-    tr.children[2].textContent=money(pt.interest);
-    tr.children[3].textContent=money(pt.balance);
-    tb.appendChild(tr);
-  });
-}
-
-function renderAll(){
-  renderDebts(); renderStrategy(); renderCompare(); renderSchedule();
-}
-/* balance chart: click/tap inspects that month's balances; Enter/Space inspects the midpoint */
-function chartMonthFromX(clientX){
-  var cv=$("balanceChart"), res=window._cmpResults; if(!cv||!res) return null;
-  var r=cv.getBoundingClientRect(), x=clientX-r.left, maxM=0;
-  ["snowball","avalanche","custom"].forEach(function(s){ if(!res[s].never) maxM=Math.max(maxM,res[s].months); });
-  if(maxM<=0) return null;
-  var padL=64,padR=12, W=cv.clientWidth||900, iw=W-padL-padR;
-  return Math.max(0,Math.min(maxM,Math.round((x-padL)/iw*maxM)));
-}
-function toggleChartSpot(m){ window._chartSpot=(window._chartSpot===m)?null:m; Sound.select(); paintChartCap(); drawChart(); }
-(function(){
-  var cv=$("balanceChart"); if(!cv) return;
-  cv.setAttribute("tabindex","0"); cv.setAttribute("role","button");
-  cv.setAttribute("aria-label","Remaining balance over time chart. Click to inspect a month's balances; keyboard: Enter or Space inspects the midpoint month.");
-  cv.style.cursor="pointer";
-  cv.addEventListener("click",function(e){ var m=chartMonthFromX(e.clientX); if(m!=null) toggleChartSpot(m); });
-  cv.addEventListener("keydown",function(e){
-    if(e.key==="Enter"||e.key===" "){ e.preventDefault();
-      var res=window._cmpResults, maxM=0;
-      if(res)["snowball","avalanche","custom"].forEach(function(s){ if(!res[s].never) maxM=Math.max(maxM,res[s].months); });
-      if(maxM>0) toggleChartSpot(Math.round(maxM/2)); }
-  });
-  document.querySelectorAll(".legend-btn").forEach(function(b){
-    b.addEventListener("click",function(){ toggleSpotStrat(b.getAttribute("data-strat")); });
-  });
-})();
-/* Esc clears any active spotlight (balance donut / legend / timeline debt, strategy card, chart point) */
-document.addEventListener("keydown",function(e){
-  if(e.key!=="Escape")return;
-  if(!window._spotDebt&&!window._spotStrat&&window._chartSpot==null)return;
-  window._spotDebt=null; window._spotStrat=null; window._chartSpot=null;
-  renderDonut(); renderTimeline(window._cmpResults); renderCompare(); Sound.select();
-});
-
-/* ---------- events ---------- */
-$("addDebtBtn").addEventListener("click",submitDebt);
-$("cancelEditBtn").addEventListener("click",cancelEdit);
-document.querySelectorAll(".tab").forEach(function(t){
-  t.addEventListener("click",function(){ state.strategy=t.dataset.strat; save(); renderStrategy(); Sound.click(); });
-});
-$("extraRange").addEventListener("input",function(){
-  state.extraMonthly=Number($("extraRange").value);
-  $("extraVal").textContent=money(state.extraMonthly);
-  save(); renderCompare(); renderSchedule();
-});
-$("schedStrat").addEventListener("change",function(){
-  state.schedStrat=$("schedStrat").value; save(); renderSchedule(); Sound.click();
-});
-$("exportBtn").addEventListener("click",function(){
-  var err=$("dataErr"); err.textContent="";
-  var blob=new Blob([JSON.stringify({app:"debtpayoff",version:1,exported:new Date().toISOString(),
-    debts:state.debts,order:state.order,strategy:state.strategy,extraMonthly:state.extraMonthly},null,2)],
-    {type:"application/json"});
-  var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-  a.download="debtpayoff-export.json"; document.body.appendChild(a); a.click();
-  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
-  Sound.success();
-});
-$("importBtn").addEventListener("click",function(){ $("importFile").click(); });
-$("importFile").addEventListener("change",function(e){
-  var err=$("dataErr"); err.textContent="";
-  var f=e.target.files[0]; if(!f) return;
-  if(f.size>1048576){ err.textContent="That file is too large to be a DebtPayoff export."; Sound.error(); e.target.value=""; return; }
-  var rd=new FileReader();
-  rd.onload=function(){
-    try{
-      var obj=JSON.parse(rd.result);
-      var list=Array.isArray(obj)?obj:obj.debts;
-      if(!Array.isArray(list)) throw new Error("bad");
-      var debts=list.map(sanitizeDebt).filter(Boolean);
-      var skipped=list.length-debts.length;
-      if(debts.length===0) throw new Error("none");
-      state.debts=debts;
-      var ids=debts.map(function(d){return d.id;});
-      state.order=(Array.isArray(obj.order)?obj.order:[]).filter(function(id){return ids.indexOf(id)>=0;});
-      ids.forEach(function(id){ if(state.order.indexOf(id)<0) state.order.push(id); });
-      /* restore strategy + extra payment saved by export, validated */
-      if(obj.strategy==="snowball"||obj.strategy==="avalanche"||obj.strategy==="custom"){ state.strategy=obj.strategy; }
-      var ex=Number(obj.extraMonthly);
-      if(isFinite(ex)&&ex>=0&&ex<=100000){ state.extraMonthly=Math.round(ex*100)/100; }
-      state.schedStrat=state.strategy;
-      save(); renderAll();
-      err.textContent=""; 
-      var n=$("demoNotice"); n.hidden=false;
-      n.textContent="Imported "+debts.length+" debt"+(debts.length===1?"":"s")+(skipped?(" ("+skipped+" bad record"+(skipped===1?"":"s")+" skipped)"):"")+".";
-      Sound.success();
-    }catch(ex){ err.textContent="That file isn't a valid DebtPayoff export."; Sound.error(); }
-    e.target.value="";
-  };
-  rd.readAsText(f);
-});
-$("demoBtn").addEventListener("click",function(){
-  if(state.debts.length>0 && !confirm("Replace your current debts with the demo data?")) return;
-  demoData(); Sound.click();
-});
-$("clearBtn").addEventListener("click",function(){
-  var btn=$("clearBtn"), lbl=$("clearLabel");
-  if(btn.dataset.armed){
-    state.debts=[];state.order=[];editingId=null;save();renderAll();
-    lbl.textContent="Clear all data"; delete btn.dataset.armed;
-    $("demoNotice").hidden=true; Sound.success();
-  }else{
-    btn.dataset.armed="1"; lbl.textContent="Click again to confirm"; Sound.click();
-    setTimeout(function(){lbl.textContent="Clear all data";delete btn.dataset.armed;},2500);
-  }
-});
-
-/* ---------- init ---------- */
-(function init(){
-  var had=load();
-  applyTheme(document.documentElement.getAttribute("data-theme")||"light");
+    return {
+      isOn: function () { return on; },
+      toggle: function () { on = !on; try { window.localStorage.setItem(K, on ? 'on' : 'off'); } catch (e) {} return on; },
+      click: function () { if (on) tone(520, 0.06, 'sine', 0.045); },
+      select: function () { if (on) { tone(660, 0.07, 'sine', 0.055); tone(880, 0.09, 'sine', 0.045, 0.06); } },
+      success: function () { if (on) { tone(660, 0.09, 'sine', 0.06); tone(990, 0.12, 'sine', 0.05, 0.08); } },
+      error: function () { if (on) tone(170, 0.16, 'sawtooth', 0.045); },
+      toggleTheme: function () { if (on) tone(440, 0.06, 'triangle', 0.05); }
+    };
+  })();
+  (function () {
+    var btn = $('soundToggle'); if (!btn) return;
+    function paint() { var on = Sound.isOn();
+      btn.innerHTML = on ? '&#128266;' : '&#128263;';
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.setAttribute('aria-label', 'Sound: ' + (on ? 'on' : 'off'));
+      btn.title = 'Toggle sounds (' + (on ? 'on' : 'off') + ')';
+      btn.setAttribute('data-sound', on ? 'on' : 'muted'); }
+    btn.addEventListener('click', function () { Sound.toggle(); paint(); Sound.click(); });
+    paint();
+  })();
+  $('sampleToggle').addEventListener('click', function () { setSample(!sampleOn); Sound.click(); });
   paintSample();
-  renderAll(); /* first run starts EMPTY — demo data is opt-in via the demo button or transient via the flask */
+
+  // ---- segmented control helper ----
+  function seg(ids, get, set) {
+    ids.forEach(function (id) {
+      var el = $(id);
+      el.setAttribute('aria-pressed', get() === id ? 'true' : 'false');
+      el.addEventListener('click', function () {
+        set(id);
+        ids.forEach(function (id2) { $(id2).setAttribute('aria-pressed', id2 === id ? 'true' : 'false'); });
+        save(); compute(); Sound.click();
+      });
+    });
+  }
+  seg(['u-imp', 'u-met'], function () { return S.units === 'imp' ? 'u-imp' : 'u-met'; }, function (id) {
+    S.units = id === 'u-imp' ? 'imp' : 'met';
+    paintUnits();
+  });
+  seg(['s-m', 's-f'], function () { return S.sex === 'm' ? 's-m' : 's-f'; }, function (id) {
+    S.sex = id === 's-m' ? 'm' : 'f';
+  });
+  seg(['g-cut', 'g-main', 'g-bulk'], function () {
+    return S.goalPct === -20 ? 'g-cut' : (S.goalPct === 0 ? 'g-main' : (S.goalPct === 10 ? 'g-bulk' : null));
+  }, function (id) {
+    S.goalPct = id === 'g-cut' ? -20 : (id === 'g-main' ? 0 : 10);
+    $('goal-slider').value = S.goalPct;
+    paintGoalLabel();
+  });
+  seg(['f-mifflin', 'f-hb', 'f-katch'], function () { return 'f-' + S.formula; }, function (id) {
+    S.formula = id.slice(2);
+  });
+  seg(['m-bal', 'm-hp', 'm-lc'], function () { return 'm-' + S.macro; }, function (id) {
+    S.macro = id.slice(2);
+  });
+
+  // ---- units ----
+  var LB = 0.45359237, IN = 2.54;
+  function paintUnits() {
+    var imp = S.units === 'imp';
+    $('h-imp').hidden = !imp; $('w-imp').hidden = !imp;
+    $('h-met').hidden = imp; $('w-met').hidden = imp;
+    if (imp) {
+      var totalIn = S.heightCm / IN;
+      var ft = Math.floor(totalIn / 12);
+      var inch = Math.round((totalIn - ft * 12) * 10) / 10;
+      if (inch === 12) { ft += 1; inch = 0; }
+      $('h-ft').value = ft; $('h-in').value = inch;
+      $('w-lb').value = Math.round(S.weightKg / LB * 100) / 100;
+    } else {
+      $('h-cm').value = Math.round(S.heightCm * 100) / 100;
+      $('w-kg').value = Math.round(S.weightKg * 100) / 100;
+    }
+  }
+
+  function readInputs() {
+    var ok = true;
+    var errFailed = {}; // one shared error element (e.g. h-err) stays shown until ALL its fields pass
+    function num(id, errId, min, max, allowBlank) {
+      var el = $(id), raw = el.value.trim();
+      var err = $(errId);
+      if (raw === '' && allowBlank) { err.classList.remove('show'); return null; }
+      var v = parseFloat(raw);
+      if (!isFinite(v) || v < min || v > max) { err.classList.add('show'); errFailed[errId] = true; ok = false; return NaN; }
+      if (!errFailed[errId]) err.classList.remove('show');
+      return v;
+    }
+    var age = num('age', 'age-err', 10, 120);
+    var bf = num('bf', 'bf-err', 1, 70, true);
+    var hCm, wKg;
+    if (S.units === 'imp') {
+      var ft = num('h-ft', 'h-err', 3, 8), inch = num('h-in', 'h-err', 0, 11.99);
+      var lb = num('w-lb', 'w-err', 40, 1100);
+      if (isFinite(ft) && isFinite(inch)) hCm = Math.round((ft * 12 + inch) * IN * 100) / 100;
+      else { hCm = NaN; }
+      if (isFinite(ft) && isFinite(inch) && (ft * 12 + inch < 36 || ft * 12 + inch > 96)) { $('h-err').classList.add('show'); ok = false; }
+      wKg = isFinite(lb) ? Math.round(lb * LB * 100) / 100 : NaN;
+    } else {
+      hCm = num('h-cm', 'h-cm-err', 90, 250);
+      wKg = num('w-kg', 'w-kg-err', 18, 500);
+      if (isFinite(hCm)) hCm = Math.round(hCm * 100) / 100;
+      if (isFinite(wKg)) wKg = Math.round(wKg * 100) / 100;
+    }
+    return { ok: ok, age: age, bodyFat: bf, heightCm: hCm, weightKg: wKg };
+  }
+
+  function persistFromInputs(r, adoptHW) {
+    if (!r.ok) return;
+    S.age = r.age;
+    // Adopt height/weight into canonical state ONLY from fields the user just
+    // edited. Re-deriving from the rounded display fields on every input (e.g.
+    // after a unit toggle) silently drifted canonical state: 180 cm -> 5 ft
+    // 10.9 in -> (60+10.9)*2.54 = 180.09 cm, moving BMR by ~1 kcal.
+    if (adoptHW) { S.heightCm = r.heightCm; S.weightKg = r.weightKg; }
+    S.bodyFat = r.bodyFat;
+    S.activity = parseFloat($('activity').value);
+    S.goalPct = parseInt($('goal-slider').value, 10);
+    save();
+  }
+
+  $('activity').addEventListener('change', function () { persistFromInputs(readInputs(), false); compute(); Sound.click(); });
+  $('goal-slider').addEventListener('input', function () {
+    S.goalPct = parseInt($('goal-slider').value, 10);
+    // keep preset buttons in sync when the slider matches one
+    [['g-cut', -20], ['g-main', 0], ['g-bulk', 10]].forEach(function (p) {
+      $(p[0]).setAttribute('aria-pressed', S.goalPct === p[1] ? 'true' : 'false');
+    });
+    paintGoalLabel(); save(); compute();
+  });
+  function paintGoalLabel() {
+    var p = S.goalPct;
+    $('goal-pct-label').textContent = (p > 0 ? '+' : '') + p + '%';
+    var lbl = p < 0 ? 'Target (cut ' + p + '%)' : (p > 0 ? 'Target (bulk +' + p + '%)' : 'Target (maintain)');
+    $('o-target-label').textContent = lbl + ' (kcal/day)';
+    paintGauge(p);
+  }
+  // Goal gauge: semicircular gauge over the -30%..+20% slider range
+  function paintGauge(p) {
+    var f = (p + 30) / 50;
+    if (f < 0) f = 0; if (f > 1) f = 1;
+    var th = (180 - f * 180) * Math.PI / 180;
+    var ax = 150 + 105 * Math.cos(th), ay = 150 - 105 * Math.sin(th);
+    var arc = $('gg-arc');
+    if (!arc) return;
+    arc.setAttribute('d', 'M45 150 A105 105 0 0 1 ' + ax.toFixed(1) + ' ' + ay.toFixed(1));
+    arc.setAttribute('stroke', p < 0 ? '#f59e0b' : (p > 0 ? '#0ea5e9' : '#10b981'));
+    var nd = $('gg-needle');
+    nd.setAttribute('x2', (150 + 78 * Math.cos(th)).toFixed(1));
+    nd.setAttribute('y2', (150 - 78 * Math.sin(th)).toFixed(1));
+    $('gg-num').textContent = (p > 0 ? '+' : '') + p + '%';
+    $('gg-cap').textContent = p <= -25 ? 'Deep cut — aggressive deficit' :
+      (p < 0 ? (p <= -10 ? 'Steady cut' : 'Gentle cut') :
+      (p === 0 ? 'Maintenance' : (p >= 15 ? 'Aggressive bulk' : 'Lean bulk')));
+  }
+
+  ['age', 'h-ft', 'h-in', 'h-cm', 'w-lb', 'w-kg', 'bf'].forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      var r = readInputs();
+      var isHW = (id === 'h-ft' || id === 'h-in' || id === 'h-cm' || id === 'w-lb' || id === 'w-kg');
+      persistFromInputs(r, isHW);
+      compute();
+    });
+  });
+
+  $('print-btn').addEventListener('click', function () { window.print(); });
+  $('reset-btn').addEventListener('click', function () {
+    if (sampleOn) { setSample(false); Sound.click(); return; } /* reset during sample = restore user data */
+    S = JSON.parse(JSON.stringify(DEFAULTS));
+    try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    syncInputs(); paintUnits(); paintGoalLabel(); reseg(); save(); compute(); Sound.success();
+  });
+  function reseg() {
+    var map = {
+      'u-imp': S.units === 'imp', 'u-met': S.units === 'met',
+      's-m': S.sex === 'm', 's-f': S.sex === 'f',
+      'g-cut': S.goalPct === -20, 'g-main': S.goalPct === 0, 'g-bulk': S.goalPct === 10,
+      'f-mifflin': S.formula === 'mifflin', 'f-hb': S.formula === 'hb', 'f-katch': S.formula === 'katch',
+      'm-bal': S.macro === 'bal', 'm-hp': S.macro === 'hp', 'm-lc': S.macro === 'lc'
+    };
+    for (var id in map) $(id).setAttribute('aria-pressed', map[id] ? 'true' : 'false');
+    $('activity').value = String(S.activity);
+    $('goal-slider').value = S.goalPct;
+  }
+  function syncInputs() {
+    $('age').value = S.age;
+    $('bf').value = S.bodyFat === null ? '' : S.bodyFat;
+    $('activity').value = String(S.activity);
+    $('goal-slider').value = S.goalPct;
+    reseg();
+  }
+
+  // ---- formulas (public math) ----
+  var FORMULAS = {
+    mifflin: { name: 'Mifflin-St Jeor (1990)' },
+    hb: { name: 'Harris-Benedict, revised (1984)' },
+    katch: { name: 'Katch-McArdle (2006)' }
+  };
+  var MACROS = {
+    bal: { p: 30, c: 40, f: 30, label: 'Balanced 30/40/30' },
+    hp: { p: 35, c: 35, f: 30, label: 'High protein 35/35/30' },
+    lc: { p: 30, c: 25, f: 45, label: 'Lower carb 30/25/45' }
+  };
+  var ACT_LABELS = { '1.2': 'Sedentary', '1.375': 'Lightly active', '1.55': 'Moderately active', '1.725': 'Very active', '1.9': 'Extra active' };
+
+  function r2(x) { return Math.round(x * 100) / 100; }
+  function fmt(x) { return Math.round(x).toLocaleString('en-US'); }
+
+  function bmrMifflin(w, h, a, sex) {
+    // w kg, h cm, a years
+    return sex === 'm'
+      ? { v: 10 * w + 6.25 * h - 5 * a + 5, expr: '10 × ' + r2(w) + ' + 6.25 × ' + r2(h) + ' − 5 × ' + a + ' + 5' }
+      : { v: 10 * w + 6.25 * h - 5 * a - 161, expr: '10 × ' + r2(w) + ' + 6.25 × ' + r2(h) + ' − 5 × ' + a + ' − 161' };
+  }
+  function bmrHB(w, h, a, sex) {
+    return sex === 'm'
+      ? { v: 88.362 + 13.397 * w + 4.799 * h - 5.677 * a,
+          expr: '88.362 + 13.397 × ' + r2(w) + ' + 4.799 × ' + r2(h) + ' − 5.677 × ' + a }
+      : { v: 447.593 + 9.247 * w + 3.098 * h - 4.330 * a,
+          expr: '447.593 + 9.247 × ' + r2(w) + ' + 3.098 × ' + r2(h) + ' − 4.330 × ' + a };
+  }
+  function bmrKatch(w, bf) {
+    var lbm = w * (1 - bf / 100);
+    return { v: 370 + 21.6 * lbm,
+      expr: '370 + 21.6 × ' + r2(lbm),
+      extra: 'Lean body mass = ' + r2(w) + ' kg × (1 − ' + bf + '%) = ' + r2(lbm) + ' kg' };
+  }
+
+  // ---- macro calorie-split donut chart (arc paths so a slice can break out) ----
+  var PIE_R = 95, PIE_CX = 124, PIE_CY = 124;
+  var pieSelected = null; // 'p' | 'c' | 'f' | null
+  var pieState = { p: 0, c: 0, f: 0, target: NaN };
+  function piePolar(deg) {
+    var rad = deg * Math.PI / 180;
+    return [PIE_CX + PIE_R * Math.cos(rad), PIE_CY + PIE_R * Math.sin(rad)];
+  }
+  function pieSegPath(frac, startDeg, gapDeg) {
+    if (!(frac > 0)) return '';
+    var a0 = startDeg + gapDeg / 2, a1 = startDeg + frac * 360 - gapDeg / 2;
+    if (frac >= 0.9999) { // full ring: two arcs
+      var p1 = piePolar(-90), p2 = piePolar(90);
+      return 'M ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) +
+        ' A ' + PIE_R + ' ' + PIE_R + ' 0 1 1 ' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2) +
+        ' A ' + PIE_R + ' ' + PIE_R + ' 0 1 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
+    }
+    var s = piePolar(a0), e = piePolar(a1);
+    return 'M ' + s[0].toFixed(2) + ' ' + s[1].toFixed(2) +
+      ' A ' + PIE_R + ' ' + PIE_R + ' 0 ' + ((a1 - a0) > 180 ? 1 : 0) + ' 1 ' +
+      e[0].toFixed(2) + ' ' + e[1].toFixed(2);
+  }
+  function paintPie(pp, cp, fp, target) {
+    pieState = { p: pp, c: cp, f: fp, target: target };
+    var gapDeg = 360 * 0.012; // small visual gap between segments
+    var off = -90; // start at top, like the old rotate(-90)
+    [['pie-p', 'p', pp], ['pie-c', 'c', cp], ['pie-f', 'f', fp]].forEach(function (t) {
+      var el = $(t[0]), key = t[1], frac = t[2] / 100;
+      el.setAttribute('d', pieSegPath(frac, off, gapDeg));
+      var mid = off + frac * 180;
+      if (pieSelected === key && frac > 0) {
+        var rad = mid * Math.PI / 180, dist = 10;
+        el.style.transform = 'translate(' + (Math.cos(rad) * dist).toFixed(1) + 'px,' + (Math.sin(rad) * dist).toFixed(1) + 'px)';
+        el.style.opacity = '1';
+      } else {
+        el.style.transform = '';
+        el.style.opacity = pieSelected ? '0.4' : '1';
+      }
+      off += frac * 360;
+    });
+    var ok = isFinite(target) && target > 0;
+    var macroNames = { p: 'protein', c: 'carbs', f: 'fat' };
+    if (ok && pieSelected) {
+      var fr = { p: pp, c: cp, f: fp }[pieSelected] / 100;
+      var skcal = target * fr;
+      var sg = pieSelected === 'f' ? skcal / 9 : skcal / 4;
+      $('pie-total').textContent = fmt(skcal);
+      $('pie-sub').textContent = macroNames[pieSelected] + ' kcal · ' + Math.round(sg) + ' g';
+    } else {
+      $('pie-total').textContent = ok ? fmt(target) : '–';
+      $('pie-sub').textContent = 'target kcal/day';
+    }
+  }
+  function repaintPie() { paintPie(pieState.p, pieState.c, pieState.f, pieState.target); }
+  // clicking a macro bar OR its pie slice spotlights it (click again to release)
+  var macroNames = { p: 'protein', c: 'carbs', f: 'fat' };
+  function setSelected(key) {
+    pieSelected = (pieSelected === key) ? null : key;
+    chartSpotKind = pieSelected ? 'macro' : (ladderSel ? 'ladder' : null);
+    Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (o) {
+      var on = pieSelected === o.getAttribute('data-macro');
+      o.classList.toggle('sel', on);
+      o.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    repaintPie();
+    renderChartDetail();
+  }
+  function wireToggle(el, key) {
+    el.addEventListener('click', function () {
+      if (pieState[key] > 0) setSelected(key);
+    });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (pieState[key] > 0) setSelected(key); }
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (m) {
+    wireToggle(m, m.getAttribute('data-macro'));
+  });
+  [['pie-p', 'p'], ['pie-c', 'c'], ['pie-f', 'f']].forEach(function (t) {
+    var el = $(t[0]);
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', macroNames[t[1]] + ' slice — activate to spotlight');
+    wireToggle(el, t[1]);
+  });
+
+  // ---- calorie ladder: horizontal bars comparing BMR / TDEE / target ----
+  var ladderSel = null; // 'bmr' | 'tdee' | 'target' | null
+  var chartSpotKind = null; // 'macro' | 'ladder' | null — which chart owns #chartDetail
+  var ladderVals = { bmr: NaN, tdee: NaN, target: NaN };
+  function paintLadder(bmr, tdee, target) {
+    ladderVals = { bmr: bmr, tdee: tdee, target: target };
+    var max = Math.max(bmr, tdee, target);
+    var ok = isFinite(max) && max > 0;
+    [['bmr', 'lad-bmr', 'lad-bmr-v'], ['tdee', 'lad-tdee', 'lad-tdee-v'], ['target', 'lad-target', 'lad-target-v']].forEach(function (t) {
+      var v = ladderVals[t[0]];
+      $(t[1]).style.width = (ok && isFinite(v)) ? (v / max * 100).toFixed(1) + '%' : '0%';
+      $(t[2]).textContent = (ok && isFinite(v)) ? fmt(v) : '–';
+    });
+    repaintLadder();
+  }
+  function repaintLadder() {
+    var on = !!ladderSel;
+    var ok = isFinite(ladderVals.bmr) && ladderVals.bmr > 0;
+    $('ladder').classList.toggle('dim', on);
+    Array.prototype.forEach.call(document.querySelectorAll('.ladder-row[data-key],.bignum[data-key]'), function (el) {
+      var s = on && el.getAttribute('data-key') === ladderSel;
+      el.classList.toggle('spot', s);
+      el.setAttribute('aria-pressed', s ? 'true' : 'false');
+    });
+    var ro = $('ladder-readout');
+    if (!on || !ok) { ro.textContent = ''; renderChartDetail(); return; }
+    var v = ladderVals[ladderSel];
+    if (ladderSel === 'bmr') ro.textContent = 'BMR ≈ ' + fmt(v) + ' kcal/day — energy burned at complete rest.';
+    else if (ladderSel === 'tdee') ro.textContent = 'TDEE ≈ ' + fmt(v) + ' kcal/day — BMR × ' + ACT_LABELS[String(S.activity)] + ' (×' + S.activity + ').';
+    else ro.textContent = 'Target ≈ ' + fmt(v) + ' kcal/day — TDEE ' + (S.goalPct >= 0 ? '+' : '') + S.goalPct + '% (' + (S.goalPct < 0 ? 'cut' : S.goalPct > 0 ? 'bulk' : 'maintain') + ').';
+    renderChartDetail();
+  }
+  /* Real breakdown behind the spotlighted chart value: component rows in #chartDetail.
+     A macro slice shows the kcal / grams / share behind its number; a ladder row shows
+     the inputs or formula steps behind BMR / TDEE / target. Activating again (or the
+     panel's close button) releases back to the totals. */
+  function renderChartDetail() {
+    var box = $('chartDetail'); if (!box) return;
+    var kind = chartSpotKind;
+    if (kind === 'macro' && !pieSelected) kind = ladderSel ? 'ladder' : null;
+    if (kind === 'ladder' && !ladderSel) kind = pieSelected ? 'macro' : null;
+    if (!kind) { box.hidden = true; box.innerHTML = ''; return; }
+    var title = '', sub = '', rows = [];
+    if (kind === 'macro') {
+      var t = pieState.target, okT = isFinite(t) && t > 0;
+      if (!okT) { box.hidden = true; box.innerHTML = ''; return; }
+      var fr = pieState[pieSelected] / 100;
+      var kcal = t * fr, g = pieSelected === 'f' ? kcal / 9 : kcal / 4;
+      var nm = macroNames[pieSelected];
+      title = nm.charAt(0).toUpperCase() + nm.slice(1) + ' — breakdown';
+      sub = fmt(kcal) + ' of ' + fmt(t) + ' target kcal/day';
+      rows = [
+        { name: 'Calories from ' + nm, meta: (fr * 100).toFixed(1) + '% of target', val: fmt(kcal) + ' kcal' },
+        { name: 'Grams', meta: pieSelected === 'f' ? '9 kcal per gram' : '4 kcal per gram', val: Math.round(g) + ' g' },
+        { name: 'Share of macro calories', meta: 'protein + carbs + fat', val: (fr * 100).toFixed(1) + '%' }
+      ];
+    } else {
+      var v = ladderVals[ladderSel], okL = isFinite(v) && v > 0;
+      if (!okL) { box.hidden = true; box.innerHTML = ''; return; }
+      if (ladderSel === 'bmr') {
+        title = 'BMR — inputs behind the number';
+        sub = fmt(v) + ' kcal/day at complete rest';
+        var fl = S.formula === 'hb' ? 'Harris–Benedict' : (S.formula === 'katch' ? 'Katch–McArdle' : 'Mifflin-St Jeor');
+        rows = [
+          { name: 'Weight', meta: 'your input', val: r2(S.weightKg) + ' kg' },
+          { name: 'Height', meta: 'your input', val: r2(S.heightCm) + ' cm' },
+          { name: 'Age', meta: 'your input', val: S.age + ' yrs' },
+          { name: 'Sex', meta: 'your input', val: S.sex === 'm' ? 'Male' : 'Female' }
+        ];
+        if (S.formula === 'katch') rows.push({ name: 'Body fat', meta: 'your input', val: S.bodyFat + '%' });
+        rows.push({ name: 'Formula', meta: 'BMR equation', val: fl });
+      } else if (ladderSel === 'tdee') {
+        title = 'TDEE — how it is built';
+        sub = fmt(v) + ' kcal/day total daily energy expenditure';
+        rows = [
+          { name: 'BMR', meta: 'at complete rest', val: fmt(ladderVals.bmr) + ' kcal' },
+          { name: 'Activity', meta: ACT_LABELS[String(S.activity)], val: '×' + S.activity },
+          { name: 'TDEE', meta: 'BMR × activity', val: fmt(v) + ' kcal' }
+        ];
+      } else {
+        title = 'Target — how it is built';
+        sub = fmt(v) + ' kcal/day target';
+        var gp = S.goalPct;
+        rows = [
+          { name: 'TDEE', meta: 'maintenance', val: fmt(ladderVals.tdee) + ' kcal' },
+          { name: 'Goal', meta: gp < 0 ? 'cut' : (gp > 0 ? 'bulk' : 'maintain'), val: (gp >= 0 ? '+' : '') + gp + '%' },
+          { name: 'Target', meta: 'TDEE ± goal', val: fmt(v) + ' kcal' }
+        ];
+      }
+    }
+    box.innerHTML = '<div class="cd-head"><div><div class="cd-title">' + esc(title) + '</div>' +
+      '<div class="cd-sub">' + esc(sub) + '</div></div>' +
+      '<button type="button" class="cd-x" id="chartDetailX" aria-label="Clear selection and show totals">×</button></div>' +
+      '<div class="cd-rows">' + rows.map(function (r) {
+        return '<div class="cd-row"><span class="cd-name">' + esc(r.name) + '</span>' +
+          '<span class="cd-meta">' + esc(r.meta) + '</span>' +
+          '<span class="cd-val">' + esc(r.val) + '</span></div>';
+      }).join('') + '</div>';
+    box.hidden = false;
+    var x = $('chartDetailX');
+    if (x) x.addEventListener('click', function () {
+      if (kind === 'macro' && pieSelected) setSelected(pieSelected);
+      else { ladderSel = null; chartSpotKind = pieSelected ? 'macro' : null; repaintLadder(); }
+    });
+  }
+  // clicking a bignum card or its ladder bar spotlights it (click again to release)
+  function wireLadder(el, key) {
+    function flip() {
+      ladderSel = (ladderSel === key) ? null : key;
+      chartSpotKind = ladderSel ? 'ladder' : (pieSelected ? 'macro' : null);
+      repaintLadder(); Sound.click();
+    }
+    el.addEventListener('click', flip);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.ladder-row[data-key],.bignum[data-key]'), function (el) {
+    wireLadder(el, el.getAttribute('data-key'));
+  });
+  /* Esc clears any chart spotlight (pie slice / macro bar / ladder row / bignum card) */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!pieSelected && !ladderSel) return;
+    pieSelected = null; ladderSel = null; chartSpotKind = null;
+    Array.prototype.forEach.call(document.querySelectorAll('.macro[data-macro]'), function (o) {
+      o.classList.remove('sel'); o.setAttribute('aria-pressed', 'false');
+    });
+    repaintPie(); repaintLadder(); Sound.click();
+  });
+
+  function compute() {
+    var r = readInputs();
+    var stepsEl = $('work-steps');
+    // Height/weight come from canonical state S (full precision), not from the
+    // rounded display fields — see persistFromInputs. r still validates them.
+    var hCm = S.heightCm, wKg = S.weightKg;
+    if (!r.ok || !isFinite(r.age) || !isFinite(wKg) || !isFinite(hCm)) {
+      ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
+      ['p', 'c', 'f'].forEach(function (m) {
+        $('o-' + m + '-kcal').textContent = '–'; $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
+        $('o-' + m + '-bar').style.width = '0%';
+      });
+      $('pace').hidden = true;
+      $('km-notice').hidden = true;
+      stepsEl.innerHTML = '<div class="notice">Fix the highlighted fields above to see your numbers.</div>';
+      paintPie(0, 0, 0, null);
+      paintLadder(NaN, NaN, NaN);
+      return;
+    }
+    var b;
+    if (S.formula === 'mifflin') b = bmrMifflin(wKg, hCm, r.age, S.sex);
+    else if (S.formula === 'hb') b = bmrHB(wKg, hCm, r.age, S.sex);
+    else {
+      if (r.bodyFat === null || !isFinite(r.bodyFat)) {
+        $('km-notice').hidden = false;
+        ['o-bmr', 'o-tdee', 'o-target'].forEach(function (id) { $(id).textContent = '–'; });
+        ['p', 'c', 'f'].forEach(function (m) {
+          $('o-' + m + '-kcal').textContent = '–'; $('o-' + m + '-g').textContent = '–'; $('o-' + m + '-p').textContent = '';
+          $('o-' + m + '-bar').style.width = '0%';
+        });
+        $('pace').hidden = true;
+        stepsEl.innerHTML = '<div class="notice">Katch-McArdle needs body fat % — enter it above or choose another formula.</div>';
+        paintPie(0, 0, 0, null);
+        paintLadder(NaN, NaN, NaN);
+        return;
+      }
+      b = bmrKatch(wKg, r.bodyFat);
+    }
+    $('km-notice').hidden = true;
+
+    var bmr = b.v;
+    var act = S.activity;
+    var tdee = bmr * act;
+    var target = tdee * (1 + S.goalPct / 100);
+    var mp = MACROS[S.macro];
+    var pG = target * mp.p / 100 / 4;
+    var cG = target * mp.c / 100 / 4;
+    var fG = target * mp.f / 100 / 9;
+
+    $('o-bmr').textContent = fmt(bmr);
+    $('o-tdee').textContent = fmt(tdee);
+    $('o-target').textContent = fmt(target);
+    paintGoalLabel();
+    var pK = target * mp.p / 100, cK = target * mp.c / 100, fK = target * mp.f / 100;
+    $('o-p-kcal').textContent = fmt(pK); $('o-p-g').textContent = fmt(pG) + ' g'; $('o-p-p').textContent = '(' + mp.p + '%)';
+    $('o-c-kcal').textContent = fmt(cK); $('o-c-g').textContent = fmt(cG) + ' g'; $('o-c-p').textContent = '(' + mp.c + '%)';
+    $('o-f-kcal').textContent = fmt(fK); $('o-f-g').textContent = fmt(fG) + ' g'; $('o-f-p').textContent = '(' + mp.f + '%)';
+    $('o-p-bar').style.width = mp.p + '%';
+    $('o-c-bar').style.width = mp.c + '%';
+    $('o-f-bar').style.width = mp.f + '%';
+    paintPie(mp.p, mp.c, mp.f, target);
+    paintLadder(bmr, tdee, target);
+
+    // weekly pace estimate: ~7700 kcal per kg of body weight change
+    var paceEl = $('pace');
+    if (S.goalPct !== 0) {
+      var weeklyKg = Math.abs(target - tdee) * 7 / 7700;
+      var weeklyVal = S.units === 'imp' ? weeklyKg * 2.20462 : weeklyKg;
+      var unit = S.units === 'imp' ? 'lb' : 'kg';
+      paceEl.hidden = false;
+      paceEl.textContent = 'At this target you\u2019d average \u2248 ' + (Math.round(weeklyVal * 100) / 100) +
+        ' ' + unit + ' per week ' + (S.goalPct < 0 ? 'lost' : 'gained') +
+        ' (rule of thumb: ~7,700 kcal per kg of body weight, about 2.2 lb).';
+    } else paceEl.hidden = true;
+
+    // show your work
+    var h = '';
+    h += '<div class="step"><div class="t">1 · BMR — <span class="formula-name">' + FORMULAS[S.formula].name + '</span></div>';
+    if (b.extra) h += esc(b.extra) + '<br>';
+    h += 'BMR = ' + esc(b.expr) + '<br>= <strong>' + fmt(bmr) + ' kcal/day</strong></div>';
+    h += '<div class="step"><div class="t">2 · TDEE — BMR × activity (' + ACT_LABELS[String(act)] + ', ×' + act + ')</div>';
+    h += 'TDEE = ' + fmt(bmr) + ' × ' + act + '<br>= <strong>' + fmt(tdee) + ' kcal/day</strong></div>';
+    var gp = S.goalPct;
+    var goalWord = gp < 0 ? 'cut' : (gp > 0 ? 'surplus' : 'maintenance');
+    h += '<div class="step"><div class="t">3 · Target — TDEE ' + (gp >= 0 ? '+' : '') + gp + '% (' + goalWord + ')</div>';
+    h += 'Target = ' + fmt(tdee) + ' × ' + (1 + gp / 100).toFixed(2) + '<br>= <strong>' + fmt(target) + ' kcal/day</strong></div>';
+    h += '<div class="step"><div class="t">4 · Macros — ' + mp.label + ' of target calories</div>';
+    h += 'Protein = ' + fmt(target) + ' × ' + mp.p + '% ÷ 4 kcal/g = <strong>' + fmt(pG) + ' g</strong><br>';
+    h += 'Carbs = ' + fmt(target) + ' × ' + mp.c + '% ÷ 4 kcal/g = <strong>' + fmt(cG) + ' g</strong><br>';
+    h += 'Fat = ' + fmt(target) + ' × ' + mp.f + '% ÷ 9 kcal/g = <strong>' + fmt(fG) + ' g</strong></div>';
+    stepsEl.innerHTML = h;
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // ---- init ----
+  syncInputs();
+  paintUnits();
+  paintGoalLabel();
+  compute();
 })();
 </script>
 </body>
