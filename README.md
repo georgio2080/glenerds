@@ -1,34 +1,34 @@
-# GradePlan — Free Final Grade Calculator & GPA Calculator
+# RentReceipt — Free Rent Receipt Generator
 
-## What it is
-A free, fully offline single-file web app with three tools:
+Your tenant paid rent and needs a receipt. Make a clean, professional,
+printable rent receipt in seconds — no landlord software, no account,
+no subscription.
 
-1. **Final Exam Solver** — "What do I need on the final?" Enter current grade, desired grade, and
-   final weight. Returns the exact required score, an honest "not possible" verdict with your real
-   ceiling (score with a perfect 100% on the final), or an "already guaranteed" verdict with your floor.
-2. **Weighted Course Grade** — grading categories with weights and scores. Auto-scales when weights
-   don't total 100%.
-3. **GPA Calculator** — courses with credits and letter grades on a 4.0 scale, with a weighted toggle
-   (+1.0 for Honors/AP courses).
+## What's inside
+- `index.html` — the complete app. Single file, works offline.
+  Open it in any modern browser (double-click, or File → Open). No install,
+  no account, no internet needed.
+- `gallery/` — screenshots showing the app in action.
 
-Every result shows the formula with your numbers substituted (show-your-work).
+## Features
+- Landlord receipt form: tenant name, landlord name, property address,
+  amount, date paid, payment method (cash/check/money order/etc.), receipt
+  number, and memo/notes
+- Live preview — see the receipt update as you type
+- Print-optimized: printing outputs only the receipt, sized for US Letter
+  paper (`@page` 12mm margins)
+- Receipt history — every receipt is saved in your browser automatically;
+  reprint or copy an old receipt any time
+- Validation on required fields (landlord name, tenant name, amount,
+  date paid, payment method) so you never print a half-filled receipt
+- Dark mode (follows your system, remembers your choice)
+- Privacy by design: 100% offline, no account, no tracking — your tenants'
+  details never leave your device
 
-## How to use
-Double-click `index.html` — it opens in any browser. No install, no internet, no account.
-Works from `file://`. Your inputs are saved privately in your browser (localStorage).
+## Support
+Questions or issues: reply to your Gumroad receipt email.
 
-## Key formulas
-- Required final score: `required = (desired − (1 − w) × current) ÷ w`
-- Course grade: `Σ(weight × score) ÷ Σ(weight)`
-- GPA: `Σ(grade points × credits) ÷ Σ(credits)`
-- Grade points: A+/A 4.0, A− 3.7, B+ 3.3, B 3.0, B− 2.7, C+ 2.3, C 2.0, C− 1.7, D+ 1.3, D 1.0, D− 0.7, F 0.0
+---
 
-## Privacy
-Zero external requests. No trackers, no analytics. Data never leaves the device.
-
-## Files
-- `index.html` — the app (single file)
-- `gallery/` — 8 screenshot walkthrough images
-- `GUMROAD-LISTING.md` — SEO-first Gumroad draft copy ($0, unpublished)
-- `CHANGES.md` — changelog
-- `gradeplan-bundle.zip` — everything zipped for the Gumroad product file
+If you received this product for free, you may share the unmodified ZIP with
+others. © Glenerds — https://glenerds.gumroad.com

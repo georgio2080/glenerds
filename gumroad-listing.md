@@ -1,61 +1,37 @@
-# Gumroad listing — TripBudget
+# Gumroad listing draft — RentReceipt
 
-## Product title
+## Title
+Rent Receipt Generator — Free Printable Landlord Receipts
 
-Free Trip Budget Planner: Travel Expense Tracker with Currency Conversion (Offline)
+## Permalink
+`rent-receipt-generator-free`
 
-## URL slug suggestion
+## Price
+$0 (free tool)
 
-trip-budget-planner
+## Description
+**Your tenant paid rent and needs a receipt — make one in seconds.** RentReceipt is the free rent receipt generator for landlords: fill in the tenant, amount, and date, then print a clean, professional receipt. No landlord software to learn, no account to create, no subscription to pay for.
 
-## Short description (for cards / search)
+**What's inside:**
+- 🧾 Complete receipt form — tenant name, landlord name, property address, amount, date paid, payment method, receipt number, memo/notes
+- 👀 Live preview — watch the receipt update as you type
+- 🖨️ Print-ready — printing outputs only the receipt, sized for US Letter paper
+- 📚 Receipt history — every receipt auto-saves in your browser; reprint or copy any old receipt
+- ✅ Smart validation — required fields are checked so you never hand over a half-filled receipt
+- 🌙 Dark mode, works on phone/tablet/computer
 
-Plan your vacation budget before you go and track every expense while you travel — in any currency, with no internet, no account, and no subscription. One file, yours forever.
+**Private by design:** 100% offline single HTML file. No account, no ads, no subscription, no tracking — your tenants' details never leave your device. Free forever.
 
-## Long description
+**How it works:** download the ZIP, unzip it, and open the HTML file in any browser — on your phone, tablet, or computer. No install, no server, no account needed. Fill in the receipt, preview it live, hit print.
 
-**Stop guessing what your vacation will cost.**
+**More from Glenerds:** free offline tools for renters, landlords, and movers — [RenewOrMove](https://glenerds.gumroad.com) (should-you-renew-your-lease cost calculator) and [HomeInventory](https://glenerds.gumroad.com) (insurance-ready home inventory) — plus the whole collection in the Glenerds store: https://glenerds.gumroad.com
 
-TripBudget is a trip budget planner built for people who plan their trips like they mean it — and want to come home without credit-card shock. Most travel expense apps only track spending *during* the trip. TripBudget starts *before* you book anything: set your total budget, split it across flights, lodging, food, transport, activities, shopping and insurance, see your per-day allowance instantly, and get a concrete savings plan ("save $X per week") that gets you to departure day fully funded.
+By Glenerds. https://glenerds.gumroad.com
 
-**What it does**
+_This tool is 100% free. If you were ever charged for this product, contact us for a full refund._
 
-- **Pre-trip planning** — total budget + per-category allocations across 8 travel categories, with automatic per-day allowance from your trip dates
-- **Savings target calculator** — enter your departure date and goal; it tells you exactly what to save per month and per week
-- **Multi-currency expense tracking** — log spending in the local currency; it converts to your home currency at the exchange rate *you* enter (no internet needed, perfect for roaming-free travel)
-- **In-trip dashboard** — total spent, remaining, % of budget used, days until departure / days left on the trip
-- **Daily view** — every day's spending vs. your daily allowance, with per-day category breakdowns
-- **Over-budget warnings** — progress bars turn red the moment a category or day goes over
-- **Multiple trips** — plan Japan in October and Paris in December side by side
-- **Dark mode, print-friendly trip summary, JSON export/import** for backup
+## Thumbnail/gallery
+Thumbnail: `gallery/cover-square-1200.png` (verified). Gallery screenshots from `gallery/` (receipt form, live preview, dark mode, mobile).
 
-**Why it's different**
-
-- **100% offline** — a single HTML file. Works on the plane, abroad with no data, anywhere. No account, no sign-up, no spreadsheet skills required.
-- **No subscription** — pay once, use forever. Your data never leaves your device; there are no servers, no analytics, no tracking.
-- **One-time purchase** — no subscription, no monthly fee. Buy it once and it's yours forever.
-- **Exact money math** — amounts are calculated to the cent, so your totals always reconcile.
-
-**Who it's for**
-
-Type-A travel planners, budget honeymooners, family vacation organizers, backpackers watching every dollar, and anyone who's ever opened a credit-card statement after a trip and winced.
-
-**What you get**
-
-- `index.html` — the complete app, works in any modern browser on desktop or phone
-- `README.md` — quick-start guide
-- Free updates forever
-
-Open the file, plan the trip, enjoy the trip. ✈️
-
-*Affiliates welcome — 30% commission. Sign up here: [INSERT-AFFILIATE-SIGNUP-URL]*
-
-**More from Glenerds** — budgeters also like [RenoTrack](https://glenerds.gumroad.com) (home renovation budget tracker) and [DebtPayoff](https://glenerds.gumroad.com) (debt payoff planner): https://glenerds.gumroad.com
-
----
-
-*by Glenerds — simple offline tools that respect your privacy. Store: https://glenerds.gumroad.com*
-
-## Thumbnail
-
-`gallery/cover-square-1200.png` (verified present)
+## Tags
+rent receipt, landlord receipt, rent receipt generator, printable rent receipt, rental receipt template, landlord tools, property management
