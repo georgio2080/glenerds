@@ -1,57 +1,56 @@
-# HabitTrack — Gumroad listing (UNPUBLISHED $0 draft)
+# MoveInProof — Gumroad listing (UNPUBLISHED $0 draft)
 
 ## Title
-Free Habit Tracker App: Daily Streaks, Heatmap & Rest Days — Works Offline
+Free Apartment Move-In Checklist: Document Damage & Protect Your Security Deposit
 
-## URL slug
-`habittrack-free-habit-tracker`
-
-## Meta description
-Free habit tracker with daily streaks, a GitHub-style heatmap, rest days and partial credit. Unlimited habits, 100% offline, no account, no ads.
+## Permalink slug
+free-apartment-move-in-checklist-damage-logger
 
 ## Price
-$0 (free)
+$0
 
-## Category / tags
-Productivity, Habits, Self Improvement, Health & Fitness, Planner, Tracker, Offline Tool
+## CTA preset
+I want this!
 
-## Cover image
-`gallery/cover-square-1200.png` (alt: "HabitTrack — free habit tracker app, square product cover")
+## Thumbnail
+gallery/0-cover.png (also attach gallery/1-property.png … 7-backup.png as product images)
 
-## Gallery (in order)
-1. `gallery/cover-1280x720.png` — Hero cover: populated app in browser frame
-2. `gallery/01-light-overview.png` — Full app, light mode: habits, streaks, stats
-3. `gallery/02-dark-overview.png` — Dark mode: same dense layout, dark theme
-4. `gallery/04-heatmap-detail.png` — GitHub-style activity heatmap with rest days
-5. `gallery/05-new-habit.png` — Creating a habit: schedule, color, icon, partial credit
-6. `gallery/06-day-editor.png` — Per-day editor: status + notes
-7. `gallery/07-backup.png` — JSON/CSV backup & restore
-8. `gallery/03-mobile.png` — Mobile layout
-9. `gallery/08-empty-state.png` — Clean first-run state
+## Product file
+moveinproof-bundle.zip
 
-## Description body
+## Tags
+move in checklist, apartment checklist, security deposit, damage documentation, renter tools, move in inspection, property condition report, tenant rights, lease, handover report
 
-Build streaks that actually stick. HabitTrack is a free daily habit tracker that lives entirely in your browser — no account, no ads, no trackers, no subscription. Your habits never leave your device, and it works offline.
+## Description (paste in ONE operation: select-all, delete existing, paste all, save, reload-verify)
 
-💸 100% FREE — no upsells, no subscription, no account.
+📸 Free Apartment Move-In Checklist & Damage Logger — MoveInProof
 
-**What's inside** (by Glenerds):
-- ✅ One-tap daily check-offs with streak + best-streak counters
-- 📊 GitHub-style activity heatmap for every habit
-- ☾ Rest days that pause your streak without breaking it
-- ◐ Partial credit for half-done days (optional per habit)
-- 📅 Daily or weekly schedules (e.g. gym on Mon/Wed/Fri)
-- 📝 Per-day notes ("why did I miss Tuesday?")
-- 📈 Per-habit completion-rate stats
-- 💾 JSON + CSV backup, export and import — your data is yours
-- 🌙 Dark mode, works offline from a single file, mobile-friendly
+Document your apartment's condition on move-in day, room by room — with photos — before you unpack. When move-out comes, you'll have timestamped proof of every pre-existing scuff, stain, and crack, so no landlord can charge you for damage you didn't cause.
 
-**Honest comparison:** Loop is Android-only. Streaks (iOS) costs $5.99, is Apple-only, and caps you at 12 habits. HabitKit's free tier caps you at 4 habits. HabitTrack is unlimited, runs on any device with a browser, and is free forever — private by design, because there is no server.
+💸 100% FREE — no upsells, no account, no internet required. If you were ever charged for this product, contact us for a full refund, no questions asked.
 
-**How streaks work:** done or partial days extend your streak · rest days pause it without breaking · a missed scheduled day resets it.
+✨ WHAT IT DOES
+• 🏠 Property details — address, landlord, tenants, lease start, move-in date
+• 📝 Room-by-room condition log — rate each room Excellent → Poor + notes
+• 🔍 Defect entries — item, defect type (scuff/stain/crack/dent/missing/broken/dirty), severity, auto timestamp
+• 📷 Photo documentation — attach photos to rooms and defects (auto-optimized, stored privately on your device)
+• 🖨️ Printable handover report — full condition report with tenant + landlord signature blocks
+• ➕ Fully customizable — add your own rooms, edit anything
 
-**How it works:** no install, no account. Open the file — it works offline — add a habit, tap the check-off each day. Everything is stored privately in your own browser — your data never leaves your device. JSON/CSV backup export/import included.
+📦 WHAT YOU GET
+• MoveInProof as a single HTML file — double-click to open in any browser
+• 8 screenshot walkthrough images
+• README with quick-start guide
+• Free updates forever
 
----
+🖥️ HOW IT WORKS
+No install, no internet, no account. Open the file on your phone on move-in day, walk room by room, log every defect with photos. Everything is stored privately in your own browser — your data never leaves your device. Includes JSON backup export/import and one-click demo data.
 
-**More free tools by Glenerds:** ZoneSync (free time-zone overlap calculator), MacroTrack (free TDEE + macro calculator) — https://glenerds.gumroad.com
+🔒 PRIVACY
+MoveInProof is fully offline. No trackers, no analytics, no external requests.
+
+🛠️ MORE FROM GLENERDS
+• Browse all Glenerds tools → https://glenerds.gumroad.com
+
+📩 SUPPORT
+Questions or issues? Reply to your Gumroad receipt email and we'll sort it out.
