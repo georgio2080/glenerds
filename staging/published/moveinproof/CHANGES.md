@@ -1,5 +1,10 @@
 # MoveInProof — build log
 
+## 2026-09-21 — Retroactive sweep baseline (Glenerds sweep, build phase)
+- Standardized the header cluster: `.g-header-actions` wrapper with More Apps pill first, icon-only dark-mode button (44x44px, moon/sun icon, no text label, dynamic aria-label/title), new icon-only sound toggle (44x44px, 🔊/🔇) at the far right.
+- Added the standard WebAudio sound engine (oscillator-only, no audio files, offline): click/select/success/error/toggleTheme, on by default, persisted at `moveinproof.sound`, wired into theme toggle, add room (with validation error), delete room, demo load, clear, export/import, and print.
+- Made the report's condition-overview bars interactive: each row (room ratings, defect severities) is a keyboard-accessible button — activating it spotlights the row and shows which rooms or defects it counts in a detail line; activating again restores.
+
 ## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
 1. **New "Condition overview" in the Move-In Condition Report**: Room ratings
    distribution (Excellent/Good/Fair/Poor/Not rated) and Defects-by-severity
