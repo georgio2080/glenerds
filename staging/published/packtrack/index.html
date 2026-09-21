@@ -234,6 +234,14 @@ html[data-theme="dark"] .stat:nth-child(5) { --chip-ic: url("data:image/svg+xml,
   background: var(--grad);
 }
 .room-pill b { font-weight: 800; }
+/* unpack progress by room (visual representation) */
+.ru-title { font-size: .88rem; color: var(--text-muted); font-weight: 600; margin-top: 12px; }
+.room-unpack { display: grid; gap: 8px; margin-top: 6px; }
+.ru-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; }
+.ru-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ru-val { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; white-space: nowrap; }
+.ru-track { grid-column: 1 / -1; height: 12px; border-radius: 999px; background: var(--border); overflow: hidden; }
+.ru-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #22c55e, #10b981); }
 .progress-wrap { margin-top: 14px; }
 progress {
   width: 100%; height: 16px; accent-color: var(--ok);
@@ -438,6 +446,8 @@ html[data-theme="dark"] .box-actions .small.danger::before {
     <h2 id="dash-h"><span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>Dashboard</h2>
     <div class="stat-grid" id="stat-grid" role="group" aria-label="Totals"></div>
     <div class="room-counts" id="room-counts" aria-label="Boxes per room"></div>
+    <div class="ru-title">Unpack progress by room</div>
+    <div class="room-unpack" id="room-unpack" role="img" aria-label="Unpack progress by room"></div>
     <div class="progress-wrap">
       <progress id="unpack-progress" max="100" value="0" aria-label="Unpacking progress"></progress>
       <div class="progress-label" id="unpack-label"></div>
@@ -704,6 +714,28 @@ function renderDashboard() {
   const lbl = document.getElementById("unpack-label");
   lbl.textContent = "";
   txt(lbl, uTotal ? `Unpacked ${uDone} of ${uTotal} items (${pct}%)` : "No items packed yet — add a box to get started.");
+  // per-room unpack bars (visual representation)
+  const ru = document.getElementById("room-unpack");
+  while (ru.firstChild) ru.removeChild(ru.firstChild);
+  const ruAria = [];
+  for (const r of allRooms()) {
+    const rb = boxes.filter(b => b.room === r);
+    if (!rb.length) continue;
+    let t = 0, d = 0;
+    for (const b of rb) { for (const i of b.items) { t++; if (i.unpacked) d++; } }
+    const rp = t ? Math.round((d / t) * 100) : 0;
+    ruAria.push(r + ": " + d + " of " + t + " (" + rp + "%)");
+    const row = el("div", "ru-row");
+    const nm = el("div", "ru-name"); txt(nm, r);
+    const vl = el("div", "ru-val"); txt(vl, t ? d + "/" + t + " · " + rp + "%" : "no items");
+    const track = el("div", "ru-track");
+    const fill = el("div", "ru-fill");
+    fill.style.width = rp + "%";
+    track.appendChild(fill);
+    row.appendChild(nm); row.appendChild(vl); row.appendChild(track);
+    ru.appendChild(row);
+  }
+  ru.setAttribute("aria-label", "Unpack progress by room: " + ruAria.join(", "));
 }
 
 // ---------- Search ----------

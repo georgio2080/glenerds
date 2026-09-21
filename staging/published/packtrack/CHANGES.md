@@ -1,5 +1,14 @@
 # PackTrack — Build Log
 
+## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
+- **New "Unpack progress by room" bars** on the Dashboard, between the room
+  pills and the overall unpack bar: per-room unpacked/total with % and green
+  gradient fills matching the existing overall progress style. Live-updates
+  through the app's own render path (unpack-mode toggles -> save -> renderAll
+  -> renderDashboard). Group-level aria-label summarizes every room.
+  Verified headlessly: 3 room bars, correct counts, live update on toggle
+  (Kitchen 2/9 = 22%); screenshot inspected.
+
 **App:** PackTrack (Moving Box Inventory Indexer) — free-loop app #2
 **Built:** 2026-09-19
 **File:** `index.html` (single file, ~36 KB, zero external requests)
