@@ -1,5 +1,14 @@
 # MoveInProof — build log
 
+## 2026-09-21 — visual representation pass (Glen's "spruce up" order)
+1. **New "Condition overview" in the Move-In Condition Report**: Room ratings
+   distribution (Excellent/Good/Fair/Poor/Not rated) and Defects-by-severity
+   (Minor/Moderate/Major) bar groups at the top of the report, theme-aware
+   colors (--good/--accent1/--warn/--bad), counts in a right column, aria-labels
+   per group, print-color-adjust so bars survive printing. Only renders when
+   rooms exist. Verified headlessly with demo data (1 Good, 1 Fair; 1 minor,
+   2 moderate); screenshot inspected.
+
 ## 2026-09-19 — Initial build (spec v1)
 - Single-file offline app at `staging/moveinproof/index.html` (~39 KB, zero external requests, works from file://).
 - Property header (address, landlord/manager, tenant names, lease start, move-in date defaulting to today), saved to localStorage on change.

@@ -220,6 +220,15 @@
   #report dl.rep-head dd { margin: 0; }
   .rep-room { border: 1px solid var(--border); border-radius: 10px; padding: .8rem; margin: .8rem 0; break-inside: avoid; page-break-inside: avoid; background: var(--surface); }
   .rep-room h3 { margin: 0 0 .3rem; }
+  /* condition overview bars (visual representation) */
+  .ov-group { margin-top: .9rem; }
+  .ov-group h4 { margin: .8rem 0 .4rem; font-size: .95rem; }
+  .ov-bars { display: grid; gap: .55rem; }
+  .ov-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 3px 10px; align-items: center; }
+  .ov-name { font-weight: 600; }
+  .ov-val { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; }
+  .ov-track { grid-column: 1 / -1; height: 12px; border-radius: 999px; background: var(--chip); border: 1px solid var(--border); overflow: hidden; }
+  .ov-fill { height: 100%; border-radius: 999px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .rep-defect { margin: .6rem 0; padding-top: .6rem; border-top: 1px solid var(--border); }
   .rep-thumbs { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .4rem; }
   .rep-thumbs img { width: 120px; height: 120px; object-fit: cover; border: 1px solid var(--border); border-radius: 8px; }
@@ -815,6 +824,31 @@ function renderRooms() {
 }
 
 /* ---------- report ---------- */
+/* Condition-overview bar groups for the report (visual representation). */
+function ovBars(title, rows) {
+  var g = h("div", "ov-group");
+  g.appendChild(h("h4", null, title));
+  var max = 0;
+  rows.forEach(function (r) { if (r[1] > max) max = r[1]; });
+  var chart = h("div", "ov-bars");
+  chart.setAttribute("role", "img");
+  chart.setAttribute("aria-label", title + " — " +
+    rows.map(function (r) { return r[0] + ": " + r[1]; }).join(", "));
+  rows.forEach(function (r) {
+    var row = h("div", "ov-row");
+    row.appendChild(h("div", "ov-name", r[0]));
+    row.appendChild(h("div", "ov-val", String(r[1])));
+    var track = h("div", "ov-track");
+    var fill = h("div", "ov-fill");
+    fill.style.width = (max > 0 ? (r[1] / max * 100) : 0).toFixed(1) + "%";
+    fill.style.background = r[2];
+    track.appendChild(fill);
+    row.appendChild(track);
+    chart.appendChild(row);
+  });
+  g.appendChild(chart);
+  return g;
+}
 function renderReport() {
   var rep = document.getElementById("report");
   while (rep.firstChild) rep.removeChild(rep.firstChild);
@@ -830,6 +864,34 @@ function renderReport() {
   });
   block.appendChild(dl);
   rep.appendChild(block);
+
+  /* Condition overview: rating distribution + defect severity bars. */
+  if (state.rooms.length) {
+  var ov = h("div", "rep-block");
+  ov.appendChild(h("h3", null, "Condition overview"));
+  var rCounts = { "Excellent": 0, "Good": 0, "Fair": 0, "Poor": 0, "Not rated": 0 };
+  var sevCounts = { "minor": 0, "moderate": 0, "major": 0 };
+  state.rooms.forEach(function (r) {
+    var key = RATINGS.indexOf(r.rating) >= 0 ? r.rating : "Not rated";
+    rCounts[key]++;
+    (r.defects || []).forEach(function (d) {
+      if (SEVS.indexOf(d.severity) >= 0) sevCounts[d.severity]++;
+    });
+  });
+  ov.appendChild(ovBars("Room ratings", [
+    ["Excellent", rCounts["Excellent"], "var(--good)"],
+    ["Good", rCounts["Good"], "var(--accent1)"],
+    ["Fair", rCounts["Fair"], "var(--warn)"],
+    ["Poor", rCounts["Poor"], "var(--bad)"],
+    ["Not rated", rCounts["Not rated"], "var(--muted)"]
+  ]));
+  ov.appendChild(ovBars("Defects by severity", [
+    ["Minor", sevCounts["minor"], "var(--warn)"],
+    ["Moderate", sevCounts["moderate"], "var(--accent1)"],
+    ["Major", sevCounts["major"], "var(--bad)"]
+  ]));
+  rep.appendChild(ov);
+  }
 
   state.rooms.forEach(function (r, ri) {
     var rb = h("div", "rep-room");
